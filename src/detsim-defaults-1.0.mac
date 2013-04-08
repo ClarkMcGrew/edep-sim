@@ -1,0 +1,35 @@
+# The default configuration file for the T2K DSim detector.  This sets up
+#the "usual" defaults for that detector and should be included any macro
+#files used to simulate the DSim.
+#
+# This is loaded using:
+#
+# /dsim/control detsim-defaults 1.0
+#
+
+/control/verbose 2
+
+##############################################
+# Define the default GEANT parameter settings
+##############################################
+/run/verbose 0
+/event/verbose 0
+/tracking/verbose 0
+
+##############################################
+# Define which volumes will have trajectory points saved as 
+# particles enter and exit.
+##############################################
+/db/set/trajectoryBoundary :charged:.*/Active
+
+##############################################
+# Set the thresholds for saving trajectories into the output file.  All
+# primary particle trajectories are saved so these only apply to secondary
+# particles.  Energy that is deposited by unsaved secondaries is "assigned"
+# to the "nearest" parent particle.
+##############################################
+/db/set/gammaThreshold 10 MeV
+
+##############################################
+# Set any physics limits.
+##############################################

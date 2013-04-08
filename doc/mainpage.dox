@@ -1,0 +1,80 @@
+// The following documentation will appear on the main page.  This
+// file is essentially the global readme for this library and any
+// general descriptions of the oaEvent functioning go here.  This is a
+// collection of \mainpage and \page directives
+
+/*! \mainpage The T2K 280m Off-Axis Detector Simulation
+  
+\section detSim Introduction
+
+The ND280 off-axis detector simulation is intended to simulate all of the
+particle propagation and geometry related issues.  This MC is intended to
+be detailed and general enough to become part of the final T2K physics
+analysis.  Be aware that the sequence of random numbers depends on the
+floating point accuracy of the machine, so given runs are machine dependent
+and may not be reproducible.
+
+This uses the \ref oaEvent library to save events.  The Geant 4 macro
+language can be used to control the program execution and the reference
+manual can found at in the \ref detSimCommandList, you can also find many
+the generic commands documented at the G4 web site.  
+
+For testing purposes, particles can be injected into the MC using the
+General Particle Source (GPS).  Since the main documentation for GPS is a
+bit sparse, there is information specific to our code at \ref detSimGPS
+which covers many of the cases we need to simulate.  
+
+See Related pages for the release history, detSim command list, bug list and
+to do list.  The related pages also provides information about adjusting
+the "alignment" of the MC geometry.
+
+\section runningND280MC Running the ND280 Detector Simulation
+
+The ND280 detector simulation is run using the \c ND280MC.exe program which
+is a standard GEANT main program with minimal customization for T2K.  This
+can be run in any directory.  You will need to provide some sort of event
+kinematics generator (NEUT, NUANCE, NEUGEN, GPS, &c).  The preferred input
+format is a rooTracker tree, but you can also use the text based tracker
+input format (NUANCE may be the only program in the world still using this
+format.  It was developed as a standard kinematics format for the IMB III
+experiment in about 1990)
+
+\section geomControl Controlling the ND280 Detector Geometry.
+
+The coordinate system for the ND280MC is centered around the center of the
+unloaded (and undeflected) basket as defined in T2K-TN-10.
+
+The \ref detSimCommandList documents how to get low level control over the
+detector geometry, but most standard geometries can be simulated using
+"/dsim/control" directives.  In particular, the controls are provided to
+configure the geometry for various run periods.  
+
+For example, the control line below will configure the detector geometry
+to match the installed detectors for February 2010.  During this period,
+the barrel ECal (with the exception of the top left Tracker) were not
+installed.  
+
+\code
+/dsim/control  baseline-2010-02 1.0
+\endcode
+
+The water can be added or removed from the P0D using the following control
+lines.  The default value is p0d-with-water, so it should not be explicitly
+set.
+
+\code
+/dsim/control p0d-with-water 1.0
+/dsim/control p0d-with-air 1.0
+\endcode
+
+*/
+
+/*! \page detSimCommandList ND280MC Command List
+
+GEANT 4 defines a simple macro language that is used to control the
+execution of the detector simulation.  All of the commands defined in the 
+ND280MC.exe executable are defined below.
+
+\verbinclude detSim-command.list
+
+*/

@@ -1,0 +1,9 @@
+############################################################
+# Baseline conditions for the nd280 detectors.
+#
+# This sets the default detSime geometry.
+#
+# This is loaded using the /dsim/control directive.
+#
+# Note that the default geometry is built by default (nothing to do here).
+############################################################
