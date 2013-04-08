@@ -1,0 +1,64 @@
+package detSim
+
+# Please contact the package manager before changing to detector simulation
+# so that we can make sure that there aren't people planning changes to the
+# same code.  The various detector geometries are managed by the various
+# detector groups.  A new stable version should be created before large
+# changes are made. 
+manager Clark McGrew <clark.mcgrew@sunysb.edu>
+author Clark McGrew <clark.mcgrew@sunysb.edu>
+
+use GEANT4 v* LCG_Interfaces
+use captEvent 
+    
+# Build methods to include.
+document doxygen doxygen -group=documentation *.cc *.hh \
+	 kinem/*.cc kinem/*.hh \
+	 captain/*.cc captain/*.hh 
+
+# The library to build
+library detSim *.cc *.hh \
+	kinem/*.cc kinem/*.hh \
+	captain/*.cc captain/*.hh 
+
+# Build information used by packages that use this one.
+macro detSim_cppflags " -DDETSIM_USED "
+macro detSim_linkopts " -L$(DETSIMROOT)/$(detSim_tag) -ldetSim "
+macro detSim_stamps " $(DETSIMROOT)/$(detSim_tag)/detSim.stamp"
+
+# Install the run condition macro files.
+macro install_dir $(DETSIMROOT)/$(detSim_tag)
+document installer installer *.mac
+
+# The applications to build.
+application DETSIM ../app/detSim.cc
+macro_append DETSIM_dependencies " detSim "
+
+# application detSimTUT -check ../test/detSimTUT.cxx ../test/tut*.cxx
+# application detSim-sElec ../sElec/*.cxx
+
+# Build this for the validation tests.
+# application detSimLayerEnergy ../test/detSimLayerEnergy.cxx
+# application detSimParticleRange ../test/detSimParticleRange.cxx
+# application detSimCalculateMass ../test/detSimCalculateMass.cxx
+# application detSimTrajectoryParents ../test/detSimTrajectoryParents.cxx
+
+# The paths to find this library.
+path_remove LD_LIBRARY_PATH "$(DETSIMROOT)" 
+path_prepend LD_LIBRARY_PATH "$(DETSIMROOT)/$(detSim_tag)
+
+path_remove PATH "$(DETSIMROOT)"
+path_prepend PATH "$(DETSIMROOT)/$(detSim_tag)"
+
+# THESE NEED TO BE ADDED TO GEANT4 LCG_Interfaces
+
+macro g4Share /home/mcgrew/work/captain/software/LCGCMT/0.1.1/EXTERNALS/geant4/share
+
+set G4LEDATA $(g4Share)/G4EMLOW6.32
+set G4LEVELGAMMADATA $(g4Share)/PhotonEvaporation2.3
+set G4NEUTRONHPDATA $(g4Share)/G4NDL4.2
+set G4NEUTRONXSDATA $(g4Share)/G4NEUTRONXS1.2
+set G4PIIDATA $(g4Share)/G4PII1.3
+set G4RADIOACTIVEDATA $(g4Share)/RadioactiveDecay3.6
+set G4REALSURFACEDATA $(g4Share)/RealSurface1.0
+set G4SAIDXSDATA $(g4Share)/G4SAIDDATA1.1
