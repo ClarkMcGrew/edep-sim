@@ -1,6 +1,6 @@
 # Macro that use G4 particle gun to create a single particle
 
-COUNT="10"
+COUNT="1"
 source ${DETSIMROOT}/cmt/setup.sh
 
 MACRO=`mktemp -t detsim.XXXXXXXXXX` || exit 1
@@ -20,17 +20,12 @@ cat >> $MACRO <<EOF
 /gps/position 0.0 0.0 0.0 cm
 /gps/pos/type Volume
 /gps/pos/shape Para
-/gps/pos/halfx 50 cm
-/gps/pos/halfy 50 cm
+/gps/pos/halfx 10 cm
+/gps/pos/halfy 10 cm
 /gps/pos/halfz 10 cm
 
-# This generates the direction of the first particle gun.  This aims
-# the particle downstream with the directions uniformly distributed in
-# a 45 deg cone.
+# This generates the direction of the first particle gun. 
 /gps/ang/type iso
-/gps/ang/maxtheta 45 deg
-/gps/ang/rot1 -1 0 0 
-/gps/ang/rot2  0 1 0
 
 /run/beamOn ${COUNT}
 

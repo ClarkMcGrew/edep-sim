@@ -2,7 +2,7 @@
 
 #include <globals.hh>
 
-#include <TCaptLog.hxx>
+#include <DSimLog.hh>
 
 #include "kinem/DSimVTimeFactory.hh"
 #include "kinem/DSimSpillTimeFactory.hh"
@@ -100,8 +100,8 @@ void DSimSpillTimeFactory::SetBunchCount(int bunchs) {
 
 void DSimSpillTimeFactory::SetBunchPower(int bunch, double power) {
     if (bunch<1 || (unsigned) bunch > fBunchPower.size()) {
-        CaptError("Illegal bunch number: " << bunch);
-        CaptError("Invalid bunch structure");
+        DSimError("Illegal bunch number: " << bunch);
+        DSimError("Invalid bunch structure");
     }
     fBunchPower[bunch-1] = power;
 }

@@ -46,7 +46,7 @@
 #include <TGeoMedium.h>
 #include <TGeoPgon.h>
 
-#include <TCaptLog.hxx>
+#include <DSimLog.hh>
 #include <TEvent.hxx>
 #include <TMCHeader.hxx>
 #include <TGeomIdManager.hxx>
@@ -84,13 +84,13 @@ bool DSimRootPersistencyManager::IsOpen() {
 
 bool DSimRootPersistencyManager::Open(G4String filename) {
     if (fOutput) {
-        CaptLog("DSimRootPersistencyManager::Open "
+        DSimLog("DSimRootPersistencyManager::Open "
                  << "-- Delete current file pointer" );
     }
 
     SetFilename(filename +".root");
 
-    CaptLog("DSimRootPersistencyManager::Open " << GetFilename());
+    DSimLog("DSimRootPersistencyManager::Open " << GetFilename());
 
     fOutput = TFile::Open(GetFilename(), "RECREATE", "T2K-DSim Root Output");
 
@@ -104,7 +104,7 @@ bool DSimRootPersistencyManager::Open(G4String filename) {
 
 bool DSimRootPersistencyManager::Close() {
     if (!fOutput) {
-        CaptError("DSimRootPersistencyManager::Close "
+        DSimError("DSimRootPersistencyManager::Close "
                    << "-- No Output File");
         return false;
     }
@@ -112,7 +112,7 @@ bool DSimRootPersistencyManager::Close() {
     fOutput->cd();
     fOutput->Write();
     fOutput->Close();
-    CaptLog("Output file " << GetFilename() << " closed.");
+    DSimLog("Output file " << GetFilename() << " closed.");
 
     fEventTree = NULL;
     fEvent = NULL;
@@ -129,7 +129,7 @@ namespace {
 
 bool DSimRootPersistencyManager::Store(const G4Event* anEvent) {
     if (!fOutput) {
-        CaptError("DSimRootPersistencyManager::Store "
+        DSimError("DSimRootPersistencyManager::Store "
                    << "-- No Output File");
         return false;
     }
@@ -143,7 +143,7 @@ bool DSimRootPersistencyManager::Store(const G4Event* anEvent) {
         = dynamic_cast<DSimUserEventInformation*>(
             anEvent->GetUserInformation());
     if (!eventInfo) {
-        CaptError("  %%% Event without user information.");
+        DSimError("  %%% Event without user information.");
         DSimError("Trying to write an event without user information");
     }
 
@@ -187,7 +187,7 @@ bool DSimRootPersistencyManager::Store(const G4Event* anEvent) {
         vect->push_back(vertexContainer);
     }
     else {
-        CaptVerbose("%% No Primary Particles to save");
+        DSimVerbose("%% No Primary Particles to save");
     }
     
     // Save the informational particles.
@@ -214,7 +214,7 @@ bool DSimRootPersistencyManager::Store(const G4Event* anEvent) {
 
     ++fEventsNotSaved;
     if (fEventsNotSaved>100) {
-        CaptInfo("AutoSave Event Tree");
+        DSimInfo("AutoSave Event Tree");
         fEventTree->AutoSave("SaveSelf");
         fEventsNotSaved = 0;
     }
@@ -228,11 +228,11 @@ bool DSimRootPersistencyManager::Store(const G4Run* aRun) {
 
 bool DSimRootPersistencyManager::Store(const G4VPhysicalVolume* aWorld) {
     if (!gGeoManager) {
-        CaptError("DSimRootPersistencyManage::Store(world) run before /dsim/update");
+        DSimError("DSimRootPersistencyManage::Store(world) run before /dsim/update");
         DSimRootGeometryManager::Get()->Update(aWorld,true);
     }
     if (!fOutput) {
-        CaptError("DSimRootPersistencyManager::Store "
+        DSimError("DSimRootPersistencyManager::Store "
                    << "-- No Output File");
         return false;
     }
@@ -255,12 +255,12 @@ std::vector<int>::iterator DSimRootPersistencyManager::CleanHitContributors(
         while (!trajCon.GetTrajectory(*c)) {
             std::map<int,int>::iterator t = parentMap.find(*c);
             if (t == parentMap.end()) {
-                CaptWarn("% Contributing trajectory without parent");
+                DSimWarn("% Contributing trajectory without parent");
                 break;
             }
             *c = t->second;
             if ( 0 > --loopTrap) {
-                CaptWarn("Break loop in "
+                DSimWarn("Break loop in "
                           << "DSimRootPersistencyManager::"
                           << "CleanHitContributors");
                 break;
@@ -288,7 +288,7 @@ void DSimRootPersistencyManager::FillParentMap(std::map<int,int>& parentMap,
         }
     }
     else {
-        CaptWarn("%%% Missing trajectories for Hit Contributors");
+        DSimWarn("%%% Missing trajectories for Hit Contributors");
     }
 }
                                                        
@@ -389,7 +389,7 @@ CP::TG4PrimaryVertexContainer* DSimRootPersistencyManager::MakePrimary(
             else E = 0;
             prim.GetMomentum().SetE(E);
             vtx.GetPrimaryParticles().push_back(prim);
-            CaptVerbose("   "
+            DSimVerbose("   "
                       << " id " << g4Prim->GetTrackID()
                       << " " << g4Prim->GetG4code()->GetParticleName()
                       << " with " << G4BestUnit(prim.GetMomentum().E(),"Energy")
@@ -467,7 +467,7 @@ void DSimRootPersistencyManager::CopyTrajectories(
     CP::TEvent& dest,
     const G4TrajectoryContainer* src) {
     if (!src) {
-        CaptVerbose("No Trajectories ");
+        DSimVerbose("No Trajectories ");
         return;
     }
 

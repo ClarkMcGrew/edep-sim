@@ -13,7 +13,7 @@
 
 #include <TGeoManager.h>
 
-#include <TCaptLog.hxx>
+#include <DSimLog.hh>
 
 G4Allocator<DSimTrajectoryPoint> aDSimTrajPointAllocator;
 
@@ -107,7 +107,7 @@ std::vector<G4AttValue>* DSimTrajectoryPoint::CreateAttValues() const {
     values->push_back(G4AttValue("PhysVolName",fPhysVolName,""));
 
 #ifdef G4ATTDEBUG
-    CaptInfo(G4AttCheck(values,GetAttDefs()));
+    DSimInfo(G4AttCheck(values,GetAttDefs()));
 #endif
 
     return values;

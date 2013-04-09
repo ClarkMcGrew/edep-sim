@@ -22,9 +22,9 @@
 // since it is only used by this class to create a singleton object.
 DSimPersistencyManager::DSimPersistencyManager() 
     : G4VPersistencyManager(), fFilename("/dev/null"),
-      fLengthThreshold(2*cm),
-      fGammaThreshold(50*MeV), fNeutronThreshold(50*MeV),
-      fTrajectoryPointAccuracy(1*cm), fSaveAllPrimaryTrajectories(false) {
+      fLengthThreshold(10*mm),
+      fGammaThreshold(5*MeV), fNeutronThreshold(50*MeV),
+      fTrajectoryPointAccuracy(1*mm), fSaveAllPrimaryTrajectories(true) {
     fPersistencyMessenger = new DSimPersistencyMessenger(this);
 }
 
@@ -36,19 +36,19 @@ DSimPersistencyManager::~DSimPersistencyManager() {
 }
 
 G4bool DSimPersistencyManager::Store(const G4Event* anEvent) {
-    CaptSevere(" -- Event store called without a save method " 
+    DSimSevere(" -- Event store called without a save method " 
                 << GetFilename());
     return false;
 }
 
 G4bool DSimPersistencyManager::Store(const G4Run* aRun) {
-    CaptSevere(" -- Run store called without a save method " 
+    DSimSevere(" -- Run store called without a save method " 
                 << GetFilename());
     return false;
 }
 
 G4bool DSimPersistencyManager::Store(const G4VPhysicalVolume* aWorld) {
-    CaptSevere(" -- Geometry store called without a save method " 
+    DSimSevere(" -- Geometry store called without a save method " 
                 << GetFilename());
     return false;
 }
@@ -82,12 +82,12 @@ bool DSimPersistencyManager::SaveTrajectoryBoundary(G4VTrajectory* g4Traj,
          ++r) {
         // Check if a watched volume is being entered.
         if ((*r)->Match(current)>0 && (*r)->Match(previous)<1) {
-            CaptNamedDebug("boundary","Entering " << current);
+            DSimNamedDebug("boundary","Entering " << current);
             return true;
         }
         // Check if a watched volume is being exited.
         if ((*r)->Match(current)<1 && (*r)->Match(previous)>0) {
-            CaptNamedDebug("boundary","Exiting " << current);
+            DSimNamedDebug("boundary","Exiting " << current);
             return true;
         }
     }
@@ -98,7 +98,7 @@ void DSimPersistencyManager::MarkTrajectories(const G4Event* event) {
 
     const G4TrajectoryContainer* trajectories = event->GetTrajectoryContainer();
     if (!trajectories) {
-        CaptVerbose("No Trajectories ");
+        DSimVerbose("No Trajectories ");
         return;
     }
 
@@ -193,7 +193,7 @@ void DSimPersistencyManager::MarkTrajectories(const G4Event* event) {
             DSimHitSegment* g4Hit
                 = dynamic_cast<DSimHitSegment*>(g4Hits->GetHit(h));
             if (!g4Hit) {
-                CaptSevere("Not a hit segment");
+                DSimSevere("Not a hit segment");
                 continue;
             }
 
@@ -205,7 +205,7 @@ void DSimPersistencyManager::MarkTrajectories(const G4Event* event) {
                 = dynamic_cast<DSimTrajectory*>(
                     DSimTrajectoryMap::Get(primaryId));
             if (ndTraj) ndTraj->MarkTrajectory(false);
-            else CaptSevere("Primary trajectory not found");
+            else DSimSevere("Primary trajectory not found");
 
         }
     }
@@ -236,8 +236,8 @@ int DSimPersistencyManager::SplitTrajectory(
     G4VTrajectory* g4Traj, int point1, int point2) {
 
     int point3 = 0.5*(point1 + point2);
-    if (point3 <= point1) DSimError("Points too close to split");
-    if (point2 <= point3) DSimError("Points too close to split");
+    if (point3 <= point1) DSimThrow("Points too close to split");
+    if (point2 <= point3) DSimThrow("Points too close to split");
     double bestAccuracy = FindTrajectoryAccuracy(g4Traj, point1, point3);
 
     bestAccuracy = std::max(FindTrajectoryAccuracy(g4Traj, point3, point2),

@@ -13,7 +13,7 @@
 #include <G4Tubs.hh>
 #include <G4SubtractionSolid.hh>
 
-#include <TCaptLog.hxx>
+#include <DSimLog.hh>
 
 class CaptWorldMessenger
     : public DSimBuilderMessenger {

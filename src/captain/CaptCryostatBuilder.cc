@@ -3,7 +3,7 @@
 
 #include "DSimBuilder.hh"
 
-#include <TCaptLog.hxx>
+#include <DSimLog.hh>
 
 #include <globals.hh>
 #include <G4Material.hh>
@@ -96,6 +96,8 @@ void CaptCryostatBuilder::Init(void) {
     SetInnerHeight(2000*mm);
     SetWallThickness(15*mm);
     SetArgonDepth(1500*mm);
+
+    SetSensitiveDetector("cryo","segment");
 
     AddBuilder(new CaptDriftRegionBuilder("Drift",this));
 
@@ -226,6 +228,10 @@ G4LogicalVolume *CaptCryostatBuilder::GetPiece(void) {
                                          0*degree, 360*degree),
                               FindMaterial("Argon_Liquid"),
                               GetName()+"/Liquid");
+
+    if (GetSensitiveDetector()) {
+        logLAr->SetSensitiveDetector(GetSensitiveDetector());
+    }
 
     new G4PVPlacement(NULL,                    // rotation.
                       G4ThreeVector(0,0,       // position

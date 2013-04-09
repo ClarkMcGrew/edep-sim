@@ -21,8 +21,8 @@ G4VSensitiveDetector* DSimSDFactory::MakeSD(G4String name) {
             sd = new DSimSegmentSD(name);
         }
         else {
-            CaptError("No such sensitive detector " << name);
-            DSimError("sensitive detector type not implemented");
+            DSimError("No such sensitive detector " << name);
+            DSimThrow("sensitive detector type not implemented");
         }
         G4SDManager::GetSDMpointer()->AddNewDetector(sd);
     }

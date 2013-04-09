@@ -1,10 +1,10 @@
 #ifndef DSimException_hh_seen
 #define DSimException_hh_seen
-#include <TCaptLog.hxx>
+#include <DSimLog.hh>
 #include <exception>
 
 /// The standard exception from detsim.  This is usually thrown by the
-/// DSimError macro.
+/// DSimThrow macro.
 class DSimException : public std::exception {
 public:
     DSimException() {}
@@ -13,5 +13,5 @@ public:
 };
 
 /// Print an error message, and then throw an exception.
-#define DSimError(message) {CaptError(message);throw DSimException();} 
+#define DSimThrow(message) {DSimError(message);throw DSimException();} 
 #endif

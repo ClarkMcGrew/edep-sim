@@ -44,7 +44,7 @@
 #include <TGeoPcon.h>
 #include <TColor.h>
 
-#include <TCaptLog.hxx>
+#include <DSimLog.hh>
 #include <TManager.hxx>
 #include <TGeomIdManager.hxx>
 
@@ -56,9 +56,9 @@
 DSimRootGeometryManager* DSimRootGeometryManager::fThis = NULL;
 
 DSimRootGeometryManager::DSimRootGeometryManager() {
-    ShouldPrintMass("/Captain/Cryostat");
-    ShouldPrintMass("/Captain/Cryostat/Liquid");
-    ShouldPrintMass("/Captain/Cryostat/Drift");
+    ShouldPrintMass("/DSimain/Cryostat");
+    ShouldPrintMass("/DSimain/Cryostat/Liquid");
+    ShouldPrintMass("/DSimain/Cryostat/Drift");
 }
 
 DSimRootGeometryManager* DSimRootGeometryManager::Get() {
@@ -69,7 +69,7 @@ DSimRootGeometryManager* DSimRootGeometryManager::Get() {
 DSimRootGeometryManager::~DSimRootGeometryManager() {}
 
 void DSimRootGeometryManager::Export(const char *file) {
-    CaptLog("   *** Export to " << file);
+    DSimLog("   *** Export to " << file);
     gGeoManager->Export(file);
 }
 
@@ -81,10 +81,10 @@ int DSimRootGeometryManager::GetNodeId(const G4ThreeVector& pos) {
 
 void DSimRootGeometryManager::Update(const G4VPhysicalVolume* aWorld,
                                       bool validateGeometry) {
-    CaptLog("%%%%%%%%%%%%%%%%%%%%%%%%%% Update ROOT Geometry "
+    DSimLog("%%%%%%%%%%%%%%%%%%%%%%%%%% Update ROOT Geometry "
              << "%%%%%%%%%%%%%%%%%%%%%%%%%%" );
     if (gGeoManager) {
-        CaptLog("%%%%%%%%%%%%%%% Warning: Replacing ROOT Geometry ");
+        DSimLog("%%%%%%%%%%%%%%% Warning: Replacing ROOT Geometry ");
         delete gGeoManager;
         // Clear the node counts definitions.
         fNodeCount.clear();
@@ -129,8 +129,7 @@ void DSimRootGeometryManager::Update(const G4VPhysicalVolume* aWorld,
             overlap->PrintInfo();
         }
         if (count > 0) {
-            CaptError("Geometry has overlaps");
-            DSimError("Geometry has Overlaps");
+            DSimThrow("Geometry has overlaps");
         }
     }
 
@@ -145,8 +144,7 @@ void DSimRootGeometryManager::Update(const G4VPhysicalVolume* aWorld,
             overlap->PrintInfo();
         }
         if (count > 0) {
-            CaptError("Geometry has overlaps");
-            DSimError("Geometry has Overlaps");
+            DSimThrow("Geometry has Overlaps");
         }
     }
 
@@ -350,7 +348,7 @@ TGeoShape* DSimRootGeometryManager::CreateShape(const G4VSolid* theSolid,
         theShape = xtru;
     }
     else {
-        DSimError("shape not implemented");
+        DSimThrow("shape not implemented");
     }
     
     return theShape;
@@ -415,8 +413,8 @@ void DSimRootGeometryManager::CreateMaterials(
     if (!theMedium) {
         G4Material *mat = theLog->GetMaterial();
         if (mat->GetNumberOfElements()==0) {
-            CaptError("Material without elements " << mat->GetName());
-            DSimError("Material defined without elements");
+            DSimError("Material without elements " << mat->GetName());
+            DSimThrow("Material defined without elements");
         }
         // Make a mixture
         TGeoMixture *theMix
@@ -519,7 +517,7 @@ bool DSimRootGeometryManager::CreateEnvelope(
     G4LogicalVolume* theLog = theG4PhysVol->GetLogicalVolume();
 
     if (PrintMass(theG4PhysVol)) {
-        CaptLog("%%% Mass: " << theLog->GetMass(true)/kg/1000.0 << " ton"
+        DSimLog("%%% Mass: " << theLog->GetMass(true)/kg/1000.0 << " ton"
                  << " Volume: " << theG4PhysVol->GetName());
     }
     
@@ -547,23 +545,23 @@ bool DSimRootGeometryManager::CreateEnvelope(
 
     // Check the volume names for validity.
     if (theShortName == theFullName) {
-        CaptError("Invalid volume name: " << theFullName);
-        CaptError("   Expected name is: " << theVolumeName);
+        DSimError("Invalid volume name: " << theFullName);
+        DSimError("   Expected name is: " << theVolumeName);
         theFullName = theVolumeName;
     }
 
     if (theFullName.find("//") != std::string::npos) {
-        CaptError("Invalid volume name: " << theFullName);
-        CaptError("   Expected name is: " << theVolumeName);
+        DSimError("Invalid volume name: " << theFullName);
+        DSimError("   Expected name is: " << theVolumeName);
         theFullName = theVolumeName;
     }
 
     std::string::size_type dsimPos = theFullName.find("/dsim");
     if (dsimPos != std::string::npos
         && theFullName.find("/dsim",dsimPos+1) != std::string::npos) {
-        CaptError("Invalid volume name: " << theFullName);
-        CaptError("   Duplicate '/dsim' prefix");
-        CaptError("   Expected name is: " << theVolumeName);
+        DSimError("Invalid volume name: " << theFullName);
+        DSimError("   Duplicate '/dsim' prefix");
+        DSimError("   Expected name is: " << theVolumeName);
         theFullName = theVolumeName;
     }
 
@@ -571,8 +569,8 @@ bool DSimRootGeometryManager::CreateEnvelope(
     std::string materialName = theLog->GetMaterial()->GetName();
     TGeoMedium *theMedium = fMedium[materialName];
     if (!theMedium) {
-        CaptError("MISSING MATERIAL IS " << materialName);
-        DSimError("Material definition is missing");
+        DSimError("MISSING MATERIAL IS " << materialName);
+        DSimThrow("Material definition is missing");
     }
 
     // Create the root volume (the solid in G4 lingo).
@@ -588,7 +586,7 @@ bool DSimRootGeometryManager::CreateEnvelope(
 
     // There is no mother so set this as the top volume.
     if (!theMother) {
-        CaptLog("Making \"" << theVolume->GetName() << "\" the top\n");
+        DSimLog("Making \"" << theVolume->GetName() << "\" the top\n");
         theEnvelope->SetTopVolume(theVolume);
     }
 
@@ -618,7 +616,7 @@ bool DSimRootGeometryManager::CreateEnvelope(
         double totalMass = theLog->GetMass(true);
         double totalVolume = theLog->GetSolid()->GetCubicVolume();
         double totalDensity = totalMass/totalVolume;
-        CaptNamedDebug("ROOTGeom", "Skipping sub-volumes. Correct "
+        DSimNamedDebug("ROOTGeom", "Skipping sub-volumes. Correct "
                         << theMedium->GetName() << " density "
                         << theMedium->GetMaterial()->GetDensity()/(g/cm3)
                         << " g/cm3 to " << totalDensity/(g/cm3) << " g/cm3");
@@ -649,7 +647,7 @@ bool DSimRootGeometryManager::CreateEnvelope(
             case kYAxis: axis.set(0,1,0); break;
             case kZAxis: axis.set(0,0,1); break;
             default: 
-                DSimError("DSimRootGeometryManager::CreateEnvelope:"
+                DSimThrow("DSimRootGeometryManager::CreateEnvelope:"
                             "Bad replication data.");
             }
             for (int i=0; i<nRep; ++i) {
@@ -700,7 +698,7 @@ int DSimRootGeometryManager::GetFill(const G4VPhysicalVolume* vol) {
     AttributeMap::const_iterator colorPair = fColorMap.find(materialName);
 
     if (colorPair == fColorMap.end()) {
-        CaptError("Missing color for \"" << materialName << "\""
+        DSimError("Missing color for \"" << materialName << "\""
                    " in volume " << theFullName);
         fColorMap[materialName].color = kOrange+1;
         fColorMap[materialName].fill = 0;
@@ -721,7 +719,7 @@ G4Color DSimRootGeometryManager::GetG4Color(G4Material* material) {
     double alpha = 1.0;
 
     if (colorPair == fColorMap.end()) {
-        CaptError("Missing color for \"" << materialName << "\"");
+        DSimError("Missing color for \"" << materialName << "\"");
         fColorMap[materialName].color = kOrange+1;
         fColorMap[materialName].fill = 0;
         index = kOrange+1;
@@ -744,7 +742,7 @@ int DSimRootGeometryManager::GetColor(const G4VPhysicalVolume* vol) {
     AttributeMap::const_iterator colorPair = fColorMap.find(materialName);
     
     if (colorPair == fColorMap.end()) {
-        CaptError("Missing color for \"" << materialName << "\""
+        DSimError("Missing color for \"" << materialName << "\""
                    " in volume " << theFullName);
         fColorMap[materialName].color = kOrange+1;
         fColorMap[materialName].fill = 0;

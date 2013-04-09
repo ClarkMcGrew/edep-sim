@@ -1,7 +1,7 @@
 #include "CaptWirePlaneBuilder.hh"
 #include "DSimBuilder.hh"
 
-#include <TCaptLog.hxx>
+#include <DSimLog.hh>
 
 #include <globals.hh>
 #include <G4Material.hh>
@@ -65,6 +65,9 @@ void CaptWirePlaneBuilder::Init(void) {
     SetApothem(1000*mm);
     SetSpacing(3*mm);
     SetHeight(1*mm);
+
+    SetSensitiveDetector("drift","segment");
+
 }
 
 CaptWirePlaneBuilder::~CaptWirePlaneBuilder() {};
@@ -82,6 +85,10 @@ G4LogicalVolume *CaptWirePlaneBuilder::GetPiece(void) {
                                               zPlane, rInner, rOuter),
                               FindMaterial("Argon_Liquid"),
                               GetName());
+
+    if (GetSensitiveDetector()) {
+        logVolume->SetSensitiveDetector(GetSensitiveDetector());
+    }
 
     // Determine the maximum (possible) wire length.
     double maxLength = 2*GetApothem()/std::cos(30*degree);

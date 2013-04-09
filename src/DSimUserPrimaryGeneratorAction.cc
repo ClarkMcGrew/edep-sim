@@ -5,7 +5,7 @@
 #include "kinem/DSimPrimaryGenerator.hh"
 #include "kinem/DSimVKinematicsGenerator.hh"
 
-#include <TCaptLog.hxx>
+#include <DSimLog.hh>
 
 #include <G4Event.hh>
 #include <G4StateManager.hh>
@@ -15,8 +15,8 @@
 
 DSimUserPrimaryGeneratorAction::DSimUserPrimaryGeneratorAction() {
     fMessenger = new DSimUserPrimaryGeneratorMessenger(this);
-    fAllowEmptyEvents = false;
-    fAddFakeGeantino = true;
+    fAllowEmptyEvents = true;
+    fAddFakeGeantino = false;
 }
 
 DSimUserPrimaryGeneratorAction::~DSimUserPrimaryGeneratorAction() {
@@ -39,13 +39,13 @@ void DSimUserPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent) {
                 (*generator)->GeneratePrimaryVertex(anEvent);
             }
             catch (DSimNoMoreEvents) {
-                CaptSevere("Run aborted.");
+                DSimLog("Run aborted.  No more input events.");
                 G4RunManager::GetRunManager()->AbortRun();
                 return;
             }
         }
         if (fAddFakeGeantino) {
-            CaptWarn("Add a GEANTINO vertex.");
+            DSimWarn("Add a GEANTINO vertex.");
             // Put the vertex far downstream, and long after beam spill.
             G4PrimaryVertex* theVertex = 
                 new G4PrimaryVertex(G4ThreeVector(0*cm, 0*cm, 20*m),
@@ -62,9 +62,9 @@ void DSimUserPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent) {
         }
         if (anEvent->GetNumberOfPrimaryVertex()>0) break;
         if (fAllowEmptyEvents) continue;
-        CaptError("DSimUserPrimaryGeneratorAction::GeneratePrimaries(): "
+        DSimError("DSimUserPrimaryGeneratorAction::GeneratePrimaries(): "
                    << "Event generated without any primary verticies.");
-        CaptError("No primaries generated.");
+        DSimThrow("No primaries generated.");
     }
 }
 

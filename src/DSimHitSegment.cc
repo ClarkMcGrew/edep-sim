@@ -4,10 +4,10 @@
 // Define an Off Axis Tracker Hit to hold information about particles that hit
 // the Tracker sensitive detectors.
 
-#include <cmath>
-#include <iostream>
-#include <map>
-#include <sstream>
+#include "DSimRootGeometryManager.hh"
+#include "DSimHitSegment.hh"
+#include "DSimTrajectoryMap.hh"
+#include "DSimLog.hh"
 
 #include <G4EventManager.hh>
 #include <G4Event.hh>
@@ -23,9 +23,10 @@
 #include <G4Polyline.hh>
 #include <G4Color.hh>
 
-#include "DSimRootGeometryManager.hh"
-#include "DSimHitSegment.hh"
-#include "DSimTrajectoryMap.hh"
+#include <cmath>
+#include <iostream>
+#include <map>
+#include <sstream>
 
 G4Allocator<DSimHitSegment> DSimHitSegmentAllocator;
 
@@ -85,25 +86,28 @@ void DSimHitSegment::AddStep(G4Step* theStep, double start, double end) {
     double trackLength = theStep->GetStepLength();
 
     if (trackLength < 0.75*stepLength || trackLength < stepLength - 1*mm) {
-        CaptWarn("Track length shorter than step: " 
+        DSimWarn("Track length shorter than step: " 
                   << trackLength/mm << " mm "
                   << "<" << stepLength/mm << " mm");
-        CaptWarn("    Volume: "
+        DSimWarn("    Volume: "
                   << theStep->GetTrack()->GetVolume()->GetName());
-        CaptWarn("    Particle: " << particle->GetParticleName()
+        DSimWarn("    Particle: " << particle->GetParticleName()
                   << " Depositing " << energyDeposit/MeV << " MeV");
-        CaptWarn("    Total Energy: " 
+        DSimWarn("    Total Energy: " 
                   << theStep->GetTrack()->GetTotalEnergy());
     }
 
     trackLength = std::max(trackLength,stepLength);
 
+    DSimTrace("Add Step with " << energyDeposit 
+              << " in " << theStep->GetTrack()->GetVolume()->GetName());
+
     if (energyDeposit <= 0.) {
-        CaptWarn("DSimHitSegment:: No energy deposited: " << energyDeposit);
+        DSimWarn("DSimHitSegment:: No energy deposited: " << energyDeposit);
     }
 
     if (trackLength <= 0.) {
-        CaptWarn("DSimHitSegment:: No track length: " << trackLength);
+        DSimWarn("DSimHitSegment:: No track length: " << trackLength);
     }
 
     // Occasionally, a neutral particle will produce a particle below
@@ -115,22 +119,22 @@ void DSimHitSegment::AddStep(G4Step* theStep, double start, double end) {
         G4ThreeVector dir = (postPos - prePos).unit();
         stepLength = trackLength = std::min(0.5*mm,0.8*origStep);
         prePos = postPos - stepLength*mm*dir;
-        CaptDebug("DSimHitSegment:: " << particle->GetParticleName()
+        DSimDebug("DSimHitSegment:: " << particle->GetParticleName()
                    << " Deposited " << energyDeposit/MeV << " MeV");
-        CaptDebug("    Original step: " << origStep/mm << " mm");
-        CaptDebug("    New step: " << stepLength/mm << " mm");
+        DSimDebug("    Original step: " << origStep/mm << " mm");
+        DSimDebug("    New step: " << stepLength/mm << " mm");
     }
 
     if (stepLength>fMaxLength || trackLength>fMaxLength) {
         G4Track* trk = theStep->GetTrack();
-        CaptWarn("DSimHitSegment:: Long step in "
+        DSimWarn("DSimHitSegment:: Long step in "
                   << trk->GetVolume()->GetName());
-        CaptWarn("  Step Length is " 
+        DSimWarn("  Step Length is " 
                   << stepLength/mm 
                   << " mm and track length is " 
                   << trackLength/mm << " mm");
 
-        CaptWarn("  PID: " << particle->GetParticleName()
+        DSimWarn("  PID: " << particle->GetParticleName()
                   << " E: " << trk->GetTotalEnergy()/MeV << " MeV"
                   << " (kin: " << trk->GetKineticEnergy()/MeV << " MeV"
                   << " Deposit: " 
@@ -141,10 +145,10 @@ void DSimHitSegment::AddStep(G4Step* theStep, double start, double end) {
         const G4VProcess* proc = theStep->GetPostStepPoint()
             ->GetProcessDefinedStep();
         if (!proc) {
-            CaptWarn("    Step Limit Reached");
+            DSimWarn("    Step Limit Reached");
         }
         else {
-            CaptWarn("    Process: " << proc->GetProcessName()
+            DSimWarn("    Process: " << proc->GetProcessName()
                       <<"/"<< proc->GetProcessTypeName(proc->GetProcessType()));
         }
     }

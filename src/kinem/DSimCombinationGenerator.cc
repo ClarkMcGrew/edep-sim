@@ -7,7 +7,7 @@
 #include <G4Event.hh>
 #undef private
 
-#include <TCaptLog.hxx>
+#include <DSimLog.hh>
 
 #include "DSimCombinationGenerator.hh"
 
@@ -16,7 +16,7 @@ DSimCombinationGenerator::DSimCombinationGenerator() {}
 DSimCombinationGenerator::~DSimCombinationGenerator(void) {}
 
 void DSimCombinationGenerator::GeneratePrimaryVertex(G4Event* evt) {
-    CaptInfo("# Combine previous two vertices");
+    DSimInfo("# Combine previous two vertices");
 
     // Find the second to last vertex.
     G4PrimaryVertex* vtx = NULL;

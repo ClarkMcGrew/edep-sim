@@ -10,7 +10,7 @@
 #include <G4SDManager.hh>
 #include <G4UnitsTable.hh>
 
-#include <TCaptLog.hxx>
+#include <DSimLog.hh>
 
 #include "DSimSegmentSD.hh"
 #include "DSimHitSegment.hh"
@@ -38,7 +38,7 @@ void DSimSegmentSD::Initialize(G4HCofThisEvent* HCE) {
     if (fHCID<0) {
         G4String hcName = GetName() + "/" + GetCollectionName(0);
         fHCID = G4SDManager::GetSDMpointer()->GetCollectionID(hcName);
-        CaptInfo("Initialize SD for " 
+        DSimInfo("Initialize SD for " 
                   << GetName() << "/" << GetCollectionName(0)
                   << " w/ sagitta " << G4BestUnit(fMaximumHitSagitta,"Length")
                   << " & " << G4BestUnit(fMaximumHitLength,"Length"));
@@ -47,9 +47,10 @@ void DSimSegmentSD::Initialize(G4HCofThisEvent* HCE) {
 }
 
 G4bool DSimSegmentSD::ProcessHits(G4Step* theStep,
-                                          G4TouchableHistory*) {
+                                  G4TouchableHistory*) {
     // Get the hit information.
     G4double energyDeposit = theStep->GetTotalEnergyDeposit();
+    DSimTrace("Process hit with " << energyDeposit);
 
     if (energyDeposit <= 0.) return true;
 
@@ -74,8 +75,8 @@ G4bool DSimSegmentSD::ProcessHits(G4Step* theStep,
         const G4VProcess* preProcess = preStepPoint->GetProcessDefinedStep();
         G4ProcessType preProcessType = fNotDefined;
         if (preProcess) preProcessType = preProcess->GetProcessType();
-        G4StepPoint* postStepPoint = theStep->GetPostStepPoint();
 #ifdef USE_postProcessType
+        G4StepPoint* postStepPoint = theStep->GetPostStepPoint();
         const G4VProcess* postProcess = postStepPoint->GetProcessDefinedStep();
         G4ProcessType postProcessType = fNotDefined;
         if (postProcess) postProcessType = postProcess->GetProcessType();
@@ -91,7 +92,7 @@ G4bool DSimSegmentSD::ProcessHits(G4Step* theStep,
             if (tmpHit->SameHit(theStep)) {
                 currentHit = tmpHit;
                 fLastHit = hitNumber;
-                CaptNamedVerbose("hit","Add step to " << hitNumber);
+                DSimNamedVerbose("hit","Add step to " << hitNumber);
                 break;
             }
         }

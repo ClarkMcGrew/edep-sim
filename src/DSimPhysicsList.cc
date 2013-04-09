@@ -3,7 +3,7 @@
 #include "DSimException.hh"
 #include "DSimExtraPhysics.hh"
 
-#include <TCaptLog.hxx>
+#include <DSimLog.hh>
 
 #include <G4OpticalPhysics.hh>
 
@@ -24,7 +24,7 @@
 #include <G4SystemOfUnits.hh>
 
 void DSimPhysicsList::SetPhysicsListName(G4String pName) {
-    CaptLog("Set the physics list name to '" << pName << "'");
+    DSimLog("Set the physics list name to '" << pName << "'");
     fPhysicsListName = pName;
 }
  
@@ -44,8 +44,9 @@ DSimPhysicsList::DSimPhysicsList(G4String physName)
     G4VModularPhysicsList* phys = NULL;
     
     if (fPhysicsListName.size()<1) {
-        CaptLog("Set the default physics list");
-        fPhysicsListName = "Shielding";
+        DSimLog("Set the default physics list");
+        // fPhysicsListName = "Shielding";
+        fPhysicsListName = "QGSP_BERT";
     }
 
     if (factory.IsReferencePhysList(fPhysicsListName)) {
@@ -59,7 +60,7 @@ DSimPhysicsList::DSimPhysicsList(G4String physName)
     }
 
     if (!phys) {
-        DSimError("No physics list was created.");
+        DSimThrow("No physics list was created.");
     }
 
     // Transfer the physics list from the factory to this one.

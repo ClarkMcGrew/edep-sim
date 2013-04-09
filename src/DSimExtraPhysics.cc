@@ -1,7 +1,7 @@
 #include "DSimExtraPhysics.hh"
 #include "DSimException.hh"
 
-#include <TCaptLog.hxx>
+#include <DSimLog.hh>
 
 #include <globals.hh>
 #include <G4ParticleTypes.hh>
@@ -23,7 +23,7 @@ DSimExtraPhysics::~DSimExtraPhysics() { }
 void DSimExtraPhysics::ConstructParticle() { }
 
 void DSimExtraPhysics::ConstructProcess() {
-    CaptLog("DSimExtraPhysics:: Add Extra Physics Processes");
+    DSimLog("DSimExtraPhysics:: Add Extra Physics Processes");
 
     theParticleIterator->reset();
     while ((*theParticleIterator)()) {
@@ -34,10 +34,10 @@ void DSimExtraPhysics::ConstructProcess() {
         double charge = particle->GetPDGCharge();
 
         if (!pman) {
-            CaptError("Particle " 
+            DSimError("Particle " 
                       << particleName 
                       << " without a Process Manager.");
-            DSimError("Particle without a Process Manager.");
+            DSimThrow("Particle without a Process Manager.");
         }
 
         // All charged particles should have a step limiter to make sure that

@@ -258,12 +258,12 @@ void DSimVConstrainedPositionGenerator::FindLimits() {
         }
     }
 
-    CaptLog("Sampling volume extent:");
-    CaptLog("    X: " << G4BestUnit(fMinimumCorner[0],"Length") 
+    DSimLog("Sampling volume extent:");
+    DSimLog("    X: " << G4BestUnit(fMinimumCorner[0],"Length") 
              << "to " << G4BestUnit(fMaximumCorner[0],"Length"));
-    CaptLog("    Y: " << G4BestUnit(fMinimumCorner[1],"Length") 
+    DSimLog("    Y: " << G4BestUnit(fMinimumCorner[1],"Length") 
              << "to " << G4BestUnit(fMaximumCorner[1],"Length"));
-    CaptLog("    Z: " << G4BestUnit(fMinimumCorner[2],"Length") 
+    DSimLog("    Z: " << G4BestUnit(fMinimumCorner[2],"Length") 
              << "to " << G4BestUnit(fMaximumCorner[2],"Length"));
 }
 

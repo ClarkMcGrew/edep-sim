@@ -3,7 +3,7 @@
 
 #include <Randomize.hh>
 
-#include <TCaptLog.hxx>
+#include <DSimLog.hh>
 
 DSimSpillTimeGenerator::DSimSpillTimeGenerator(
     G4String name, double spillTime, double bunchSeparation,
@@ -20,7 +20,7 @@ DSimSpillTimeGenerator::DSimSpillTimeGenerator(
     }
 
     if (fMaxPower<0.001) {
-        CaptError("Spill created without any power in bunchs");
+        DSimError("Spill created without any power in bunchs");
     }
 }
 

@@ -7,7 +7,7 @@
 #include "DSimHitSegment.hh"
 #include "DSimRootGeometryManager.hh"
 
-#include <TCaptLog.hxx>
+#include <DSimLog.hh>
 
 #include <TGeoManager.h>
 #include <TGeoNode.h>
@@ -28,7 +28,7 @@ DSimUserEventAction::DSimUserEventAction() {}
 DSimUserEventAction::~DSimUserEventAction() {}
 
 void DSimUserEventAction::BeginOfEventAction(const G4Event* evt) {
-    CaptInfo("Event: " << evt->GetEventID() 
+    DSimInfo("Begin Event: " << evt->GetEventID() 
              << " w/ " << evt->GetNumberOfPrimaryVertex()
              << " vertices");
     
@@ -47,17 +47,11 @@ void DSimUserEventAction::BeginOfEventAction(const G4Event* evt) {
         gGeoManager->PushPath();
         DSimRootGeometryManager::Get()->GetNodeId(
             G4ThreeVector(vtx->GetX0(), vtx->GetY0(), vtx->GetZ0()));
-        CaptVerbose("Vertex: " << vtxNumber  
+        DSimVerbose("Vertex: " << vtxNumber  
                  << " w/ " << vtx->GetNumberOfParticle() << " primaries"
                  " in " << gGeoManager->GetPath());
         gGeoManager->PopPath();
-#ifdef DUMP_VERTEX
-        if (CP::TCaptLog::InfoLevel == CP::TCaptLog::GetLogLevel()) {
-            CP::TCaptLog::GetLogStream() 
-                << "%%   Vertex " << vtxNumber << ":";
-        }
-#endif
-        CaptVerbose(" at " 
+        DSimVerbose(" at " 
                      << " (" << G4BestUnit(vtx->GetX0(),"Length") 
                      << ", " << G4BestUnit(vtx->GetY0(),"Length") 
                      << ", " << G4BestUnit(vtx->GetZ0(),"Length") 
@@ -65,49 +59,37 @@ void DSimUserEventAction::BeginOfEventAction(const G4Event* evt) {
         DSimVertexInfo* vInfo 
             = dynamic_cast<DSimVertexInfo*>(vtx->GetUserInformation());
         if (vInfo) {
-            CaptVerbose("  Generator: " << vInfo->GetName());
-            CaptVerbose("  Reaction:  " << vInfo->GetReaction());
+            DSimVerbose("  Generator: " << vInfo->GetName());
+            DSimVerbose("  Reaction:  " << vInfo->GetReaction());
         }
         for (int p=0; p<vtx->GetNumberOfParticle(); ++p) {
             G4PrimaryParticle* prim = vtx->GetPrimary(p);
             G4ParticleDefinition* partDef = prim->GetG4code();
             G4ThreeVector dir = prim->GetMomentum().unit();
             if (partDef) {
-#ifdef DUMP_VERTEX
-                if (CP::TCaptLog::InfoLevel == CP::TCaptLog::GetLogLevel()) {
-                    CP::TCaptLog::GetLogStream() 
-                        << " " << partDef->GetParticleName()
-                        << " " <<G4BestUnit(prim->GetMomentum().mag(),"Energy");
-                } 
-#endif               
-                CaptVerbose("    " << partDef->GetParticleName()
-                             << " w/ "
-                             << G4BestUnit(prim->GetMomentum().mag(),"Energy")
-                             << "  Direction: (" << dir.x()
-                             << ", " << dir.y()
-                             << ", " << dir.z() << ")");
+                DSimVerbose("    " << partDef->GetParticleName()
+                            << " w/ "
+                            << G4BestUnit(prim->GetMomentum().mag(),"Energy")
+                            << "  Direction: (" << dir.x()
+                            << ", " << dir.y()
+                            << ", " << dir.z() << ")");
             }
             else {
-                CaptVerbose("    " << prim->GetPDGcode()
-                          << " w/ "
-                          << G4BestUnit(prim->GetMomentum().mag(),"Energy")
-                          << "  Direction: (" << dir.x()
-                          << ", " << dir.y()
-                          << ", " << dir.z() << ")");
+                DSimVerbose("    " << prim->GetPDGcode()
+                            << " w/ "
+                            << G4BestUnit(prim->GetMomentum().mag(),"Energy")
+                            << "  Direction: (" << dir.x()
+                            << ", " << dir.y()
+                            << ", " << dir.z() << ")");
             }
         }
-#ifdef DUMP_VERTEX
-        if (CP::TCaptLog::InfoLevel == CP::TCaptLog::GetLogLevel()) {
-            CP::TCaptLog::GetLogStream() << std::endl;
-        }
-#endif
     }
 
     DSimTrajectoryMap::Clear();
 }
 
 void DSimUserEventAction::EndOfEventAction(const G4Event* evt) {
-    CaptInfo("### Event " << evt->GetEventID() << " completed.");
+    DSimInfo("Event " << evt->GetEventID() << " completed.");
 
     // Fill the trajectories with the amount of energy deposited into
     // sensitive detectors.
@@ -129,12 +111,12 @@ void DSimUserEventAction::EndOfEventAction(const G4Event* evt) {
             int trackId = g4Hit->GetContributors().front();
             G4VTrajectory* g4Traj = DSimTrajectoryMap::Get(trackId);
             if (!g4Traj) {
-                CaptError("Missing trackId " << trackId);
+                DSimError("Missing trackId " << trackId);
                 continue;
             }
             DSimTrajectory* traj = dynamic_cast<DSimTrajectory*>(g4Traj);
             if (!traj) {
-                CaptError("Not a DSimTrajectory  " << trackId);
+                DSimError("Not a DSimTrajectory  " << trackId);
                 continue;
             }
             traj->AddSDEnergyDeposit(energy);
@@ -144,18 +126,18 @@ void DSimUserEventAction::EndOfEventAction(const G4Event* evt) {
                 if (!parentId) break;
                 g4Traj = DSimTrajectoryMap::Get(parentId);
                 if (!g4Traj) {
-                    CaptError("Missing parentId " << parentId);
+                    DSimError("Missing parentId " << parentId);
                     break;
                 }
                 traj = dynamic_cast<DSimTrajectory*>(g4Traj);
                 if (!traj) {
-                    CaptError("Not a DSimTrajectory  " << trackId);
+                    DSimError("Not a DSimTrajectory  " << trackId);
                     break;
                 }
                 traj->AddSDDaughterEnergyDeposit(energy);
                 if (loopCount>9999) {
-                    CaptError("Infinite loop for trajectory id " << trackId);
-                    DSimError("Infinite loop trap");
+                    DSimError("Infinite loop for trajectory id " << trackId);
+                    DSimThrow("Infinite loop trap");
                 }
             }
         }

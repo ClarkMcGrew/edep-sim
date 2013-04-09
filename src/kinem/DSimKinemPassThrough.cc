@@ -4,7 +4,7 @@
 #include <TROOT.h>
 #include <TList.h>
 
-#include "TCaptLog.hxx"
+#include "DSimLog.hh"
 
 #include <memory>
 #include <cstdlib>
@@ -19,12 +19,12 @@ DSimKinemPassThrough::~DSimKinemPassThrough() {
 
 DSimKinemPassThrough::DSimKinemPassThrough() {
     Init();
-    CaptNamedDebug("PassThru",
+    DSimNamedDebug("PassThru",
                     "Have called the DSimKinemPassThrough constructor."); 
 }
 
 DSimKinemPassThrough * DSimKinemPassThrough::GetInstance() {
-    CaptNamedTrace("PassThru",
+    DSimNamedTrace("PassThru",
                     "Get pointer to DSimKinemPassThrough instance."); 
     if (fKinemPassThrough) return fKinemPassThrough;
     fKinemPassThrough = new DSimKinemPassThrough();
@@ -35,14 +35,14 @@ DSimKinemPassThrough * DSimKinemPassThrough::GetInstance() {
 bool DSimKinemPassThrough::AddInputTree(const TTree * inputTreePtr,
                                          const char * inputFileName, 
                                          const char* generatorName) {
-    CaptNamedDebug("PassThru",
+    DSimNamedDebug("PassThru",
                     "Adding a generator mc-truth input"
                     " tree to the list of input trees that can be used."); 
 
     CreateInternalTrees();
   
     if (inputTreePtr == NULL) {
-        CaptError("NULL input tree pointer.  TTree not saved.");  
+        DSimError("NULL input tree pointer.  TTree not saved.");  
         return false;
     }
   
@@ -55,14 +55,14 @@ bool DSimKinemPassThrough::AddInputTree(const TTree * inputTreePtr,
     }
   
     if (fFirstTreeName != inputTreeName) {
-        CaptError("Input tree name not compatible: "
+        DSimError("Input tree name not compatible: "
                    "  All pass-through trees must have same name.");
         return false;
     }
 
     // check if its already been added
     if (fInputTreeMap.find(inputTreePtr) != fInputTreeMap.end()) {
-        CaptError("Input tree already in chain.");
+        DSimError("Input tree already in chain.");
         return false;
     }
   
@@ -73,7 +73,7 @@ bool DSimKinemPassThrough::AddInputTree(const TTree * inputTreePtr,
     // tree is NULL rather than looking to see if fInputTreeChain has a list
     // of clones (as for a TChain this always returns false). 
     if (fPersistentTree == NULL) {
-        CaptNamedDebug("PassThru", "Clone the input TTree");
+        DSimNamedDebug("PassThru", "Clone the input TTree");
         fPersistentTree = (TTree*) fInputTreeChain->CloneTree(0);
     }
 
@@ -101,7 +101,7 @@ bool DSimKinemPassThrough::AddInputTree(const TTree * inputTreePtr,
     fInputFileEntries = inputTreePtr->GetEntries();
     fInputFilesTree->Fill();
 
-    CaptNamedDebug("PassThru", 
+    DSimNamedDebug("PassThru", 
                     "Have added a " << fFirstTreeName 
                     << " tree from the input file "<< inputFileName); 
     
@@ -125,7 +125,7 @@ void DSimKinemPassThrough::CreateInternalTrees() {
     // Create the book keeping three that connects a particular entry to the
     // entry in the original file.
     if (fInputKinemTree == NULL) {
-        CaptNamedDebug("PassThru", "Create InputKinem TTree");
+        DSimNamedDebug("PassThru", "Create InputKinem TTree");
         // This adds the tree to the current output file.
         fInputKinemTree = new TTree("InputKinem",
                                      "Map kinematics with input files");
@@ -134,7 +134,7 @@ void DSimKinemPassThrough::CreateInternalTrees() {
     }
 
     if (fInputFilesTree == NULL) {
-        CaptNamedDebug("PassThru","Create inputFileList TTree");
+        DSimNamedDebug("PassThru","Create inputFileList TTree");
         // This adds the tree to the current output file.
         fInputFilesTree = new TTree("InputFiles","Input file information");
         fInputFilesTree->Branch("fileName", &fInputFileName,
@@ -151,7 +151,7 @@ void DSimKinemPassThrough::CreateInternalTrees() {
 bool 
 DSimKinemPassThrough::AddEntry(const TTree* inputTree, int origEntry) {
     if (!fPersistentTree) {       
-        CaptNamedDebug("PassThru", "Cannot copy entry from tree "
+        DSimNamedDebug("PassThru", "Cannot copy entry from tree "
                         "since  fPersistentTree is NULL."); 
         return false;
     }
@@ -164,7 +164,7 @@ DSimKinemPassThrough::AddEntry(const TTree* inputTree, int origEntry) {
     TreeToInt::iterator firstentry_iter = fFirstEntryMap.find(inputTree);
     if (treeid_iter == fInputTreeMap.end() 
         || firstentry_iter == fFirstEntryMap.end()) {
-        CaptError("Cannot copy entry from tree not in list of input trees.");
+        DSimError("Cannot copy entry from tree not in list of input trees.");
         return false;
     }
   
@@ -178,7 +178,7 @@ DSimKinemPassThrough::AddEntry(const TTree* inputTree, int origEntry) {
         fPersistentTree->Fill();
         fInputKinemTree->Fill(); // Also store book keeping info.
     
-        CaptNamedTrace("PassThru", 
+        DSimNamedTrace("PassThru", 
                         "Copied entry " << origEntry
                         << " from " << fFirstTreeName
                         <<  " tree in file "
@@ -187,7 +187,7 @@ DSimKinemPassThrough::AddEntry(const TTree* inputTree, int origEntry) {
         return true;
     }
 
-    CaptError("Cannot copy entry " << origEntry+first_event_in_chain 
+    DSimError("Cannot copy entry " << origEntry+first_event_in_chain 
                << " from TChained Tree.  Make sure entry is in input tree!"); 
     return false;
 }
@@ -197,7 +197,7 @@ int DSimKinemPassThrough::LastEntryNumber() {
     // the current tree plus the number of entries already stored in 
     // persistent tree.
     if (!fPersistentTree) {
-        CaptError("No entries in fPersistent tree.");
+        DSimError("No entries in fPersistent tree.");
     }
     return fPersistentTree->GetEntries() - 1;
 }

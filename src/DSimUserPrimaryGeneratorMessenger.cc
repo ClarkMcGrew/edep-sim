@@ -32,7 +32,7 @@
 #include <G4UIcmdWithAString.hh>
 #include <G4UIcmdWithAnInteger.hh>
 
-#include <TCaptLog.hxx>
+#include <DSimLog.hh>
 
 DSimUserPrimaryGeneratorMessenger::DSimUserPrimaryGeneratorMessenger(
     DSimUserPrimaryGeneratorAction* gen)
@@ -127,7 +127,7 @@ DSimUserPrimaryGeneratorMessenger::DSimUserPrimaryGeneratorMessenger(
     SetKinematicsFactory("gps");
     SetCountFactory("fixed");
     SetPositionFactory("free");
-    SetTimeFactory("spill");
+    SetTimeFactory("fixed");
 
 }
 
@@ -182,7 +182,7 @@ void DSimUserPrimaryGeneratorMessenger::SetNewValue(G4UIcommand* command,
             fAddFakeGeantinoCMD->GetNewBoolValue(newValue));
     }
     else {
-        DSimError("DSimUserPrimaryGeneratorMessenger:: "
+        DSimThrow("DSimUserPrimaryGeneratorMessenger:: "
                     "Unimplemented command");
     }
 }
@@ -194,10 +194,10 @@ DSimPrimaryGenerator* DSimUserPrimaryGeneratorMessenger::CreateGenerator() {
     DSimVTimeGenerator* time = fTime->GetGenerator();
     DSimPrimaryGenerator* gen
         = new DSimPrimaryGenerator(kine,count,position,time);
-    CaptLog("#############################################");
-    CaptLog("# Create a new DSimPrimaryGenerator: " 
+    DSimLog("#############################################");
+    DSimLog("# Create a new DSimPrimaryGenerator: " 
              << gen->GetName());
-    CaptLog("#############################################");
+    DSimLog("#############################################");
     return gen;
 }
 
@@ -216,10 +216,10 @@ void DSimUserPrimaryGeneratorMessenger::SetKinematicsFactory(
         = fKinematicsFactories.find(name);
     if (p != fKinematicsFactories.end()) {
         fKinematics = p->second;
-        CaptLog("  Kinematics factory set to: " << fKinematics->GetName());
+        DSimLog("  Kinematics factory set to: " << fKinematics->GetName());
     }
     else {
-        DSimError("  Illegal kinematics factory name.");
+        DSimThrow("  Illegal kinematics factory name.");
     }
 }
 
@@ -245,10 +245,10 @@ void DSimUserPrimaryGeneratorMessenger::SetCountFactory(
         = fCountFactories.find(name);
     if (p != fCountFactories.end()) {
         fCount = p->second;
-        CaptLog("  Count factory set to: " << fCount->GetName());
+        DSimLog("  Count factory set to: " << fCount->GetName());
     }
     else {
-        DSimError("  Illegal count factory name.");
+        DSimThrow("  Illegal count factory name.");
     }
 }
 
@@ -274,10 +274,10 @@ void DSimUserPrimaryGeneratorMessenger::SetPositionFactory(
         = fPositionFactories.find(name);
     if (p != fPositionFactories.end()) {
         fPosition = p->second;
-        CaptLog("  Position factory set to: " << fPosition->GetName());
+        DSimLog("  Position factory set to: " << fPosition->GetName());
     }
     else {
-        DSimError("  Illegal position factory name.");
+        DSimThrow("  Illegal position factory name.");
     }
 }
 
@@ -303,10 +303,10 @@ void DSimUserPrimaryGeneratorMessenger::SetTimeFactory(
         = fTimeFactories.find(name);
     if (p != fTimeFactories.end()) {
         fTime = p->second;
-        CaptLog("  Time factory set to: " << fTime->GetName());
+        DSimLog("  Time factory set to: " << fTime->GetName());
     }
     else {
-        DSimError("  Illegal time factory name.");
+        DSimThrow("  Illegal time factory name.");
     }
 }
 

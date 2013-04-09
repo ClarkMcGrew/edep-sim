@@ -13,7 +13,7 @@
 #include <G4ios.hh>
 #include <G4Timer.hh>
 
-#include <TCaptLog.hxx>
+#include <DSimLog.hh>
 
 #include "DSimUserRunAction.hh"
 #include "DSimUserRunActionMessenger.hh"
@@ -42,7 +42,7 @@ void DSimUserRunAction::BeginOfRunAction(const G4Run* aRun) {
     } 
 #endif
 
-    CaptLog("### Run " << aRun->GetRunID() << " starting.");
+    DSimLog("### Run " << aRun->GetRunID() << " starting.");
 
 }
 
@@ -51,9 +51,9 @@ void DSimUserRunAction::EndOfRunAction(const G4Run* aRun) {
     time_t ltime = time(NULL);
     fStopTime = ctime(&ltime);
 
-    CaptLog("### Run " << aRun->GetRunID() << " ending.");
-    CaptLog("Number of events = " << aRun->GetNumberOfEvent());
-    CaptLog(*fTimer);
+    DSimLog("### Run " << aRun->GetRunID() << " ending.");
+    DSimLog("Number of events = " << aRun->GetNumberOfEvent());
+    DSimLog(*fTimer);
 
 
 #ifdef UPDATE_VISUALIZATION
@@ -67,7 +67,7 @@ void DSimUserRunAction::EndOfRunAction(const G4Run* aRun) {
 
 void DSimUserRunAction::SetSeed(long seed) {
     if (seed<0) seed = -seed;
-    CaptLog("### Random seed number set to: " << seed);
+    DSimLog("### Random seed number set to: " << seed);
     G4Random::setTheSeed(seed);
 }
 
@@ -81,8 +81,8 @@ void DSimUserRunAction::SetTimeSeed() {
 #ifdef __USE_POSIX
     struct timeval buffer;
     gettimeofday(&buffer,NULL);
-    CaptLog("### Set seed from local time: " << ctime(&buffer.tv_sec));
-    CaptLog("###      Micro-second offset: " << buffer.tv_usec);
+    DSimLog("### Set seed from local time: " << ctime(&buffer.tv_sec));
+    DSimLog("###      Micro-second offset: " << buffer.tv_usec);
     seed = long(buffer.tv_sec + buffer.tv_usec);
 #else
 #warning Using seconds since epoch to seed the random generator.

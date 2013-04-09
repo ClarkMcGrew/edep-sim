@@ -6,7 +6,7 @@
 #include <G4VTrajectoryPoint.hh>
 #include <G4ThreeVector.hh>
 
-#include <TCaptLog.hxx>
+#include <DSimLog.hh>
 
 std::map<int, G4VTrajectory*> DSimTrajectoryMap::fMap;
 
@@ -34,7 +34,7 @@ int DSimTrajectoryMap::FindPrimaryId(int trackId) {
         // Decay products are primary trajectories since they should be
         // independently reconstructed
         DSimTrajectory * dsimTraj = dynamic_cast<DSimTrajectory*>(t);
-        if (!dsimTraj) DSimError("Invalid Trajectory");
+        if (!dsimTraj) DSimThrow("Invalid Trajectory");
         if (dsimTraj->GetProcessName() == "Decay") break;
         // A parent ID of zero means that this particle is a primary particle,
         // so that makes it a primary trajectory too.
@@ -42,7 +42,7 @@ int DSimTrajectoryMap::FindPrimaryId(int trackId) {
         currentId = parentId;
     }
     if (loopCount>9999) {
-        CaptLog("Infinite Loop in DSimTrajectoryMap::FindPrimaryId(): "
+        DSimLog("Infinite Loop in DSimTrajectoryMap::FindPrimaryId(): "
                  << "Track Id: " << trackId);
     }
     

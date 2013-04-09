@@ -24,7 +24,7 @@
 
 #include "G4RegionStore.hh"
 
-#include <TCaptLog.hxx>
+#include <DSimLog.hh>
  
 DSimUserDetectorConstruction::DSimUserDetectorConstruction() {
 
@@ -200,7 +200,7 @@ void DSimUserDetectorConstruction::DefineMaterials() {
     geoMan->SetDrawAtt(g10,kGreen+1);
 
     // Print all the materials defined.
-    CaptLog(*(G4Material::GetMaterialTable()));
+    DSimLog(*(G4Material::GetMaterialTable()));
 }
 
 G4Element* DSimUserDetectorConstruction::DefineElement(G4String name,

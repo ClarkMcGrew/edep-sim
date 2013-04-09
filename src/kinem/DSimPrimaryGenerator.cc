@@ -10,7 +10,7 @@
 
 #include <Randomize.hh>
 
-#include <TCaptLog.hxx>
+#include <DSimLog.hh>
 
 #include "DSimVertexInfo.hh"
 #include "kinem/DSimPrimaryGenerator.hh"
@@ -32,7 +32,7 @@ void DSimPrimaryGenerator::GeneratePrimaryVertex(G4Event* evt) {
 
     int count = fCount->GetCount();
     int brake = 0;
-    CaptVerbose("# Generate " << count << " vertices w/ " << GetName());
+    DSimVerbose("# Generate " << count << " vertices w/ " << GetName());
     while (count > 0 && brake<1000) {
         // Stash the most recent primary vertex.  This is saving the last
         // existing primary vertex before the call to the
@@ -66,14 +66,14 @@ void DSimPrimaryGenerator::GeneratePrimaryVertex(G4Event* evt) {
             }
             vInfo->SetName(GetName());
             if (fPosition->ForcePosition()) {
-                CaptVerbose("#    Force position to" 
+                DSimVerbose("#    Force position to" 
                          << " x: " << vertex.x()/cm << " cm"
                          << " y: " << vertex.y()/cm << " cm"
                          << " z: " << vertex.z()/cm << " cm");
                 vtx->SetPosition(vertex.x(), vertex.y(), vertex.z());
             }
             if (fTime->ForceTime()) {
-                CaptVerbose("#    Force time to " 
+                DSimVerbose("#    Force time to " 
                              << vertex.t()/ns << " ns");
                 vtx->SetT0(vertex.t());
             }

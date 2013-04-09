@@ -6,7 +6,7 @@
 #include <G4VisExtent.hh>
 #include <Randomize.hh>
 
-#include "TCaptLog.hxx"
+#include "DSimLog.hh"
 
 #include "kinem/DSimDensityPositionGenerator.hh"
 
@@ -47,7 +47,7 @@ G4LorentzVector DSimDensityPositionGenerator::GetPosition() {
         // The vertex meets the density sampling, so check if it is valid.
         if (ValidPosition(vtx)) return vtx;
     }
-    CaptWarn("DSimDensityPositionGenerator::GetPosition:"
+    DSimWarn("DSimDensityPositionGenerator::GetPosition:"
               << " No valid position found");
     throw;
 }

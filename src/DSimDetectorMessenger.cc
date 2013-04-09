@@ -15,7 +15,7 @@
 #include "G4UIcmdWithADoubleAndUnit.hh"
 #include "G4UIcmdWithoutParameter.hh"
 
-#include "TCaptLog.hxx"
+#include "DSimLog.hh"
 
 #include <cstdlib>
 #include <sstream>
@@ -85,7 +85,7 @@ void DSimDetectorMessenger::SetNewValue(G4UIcommand * cmd,
         fConstruction->UpdateGeometry();
     }
     else if (cmd == fValidateCmd) {
-        CaptLog("Geometry will be validated");
+        DSimLog("Geometry will be validated");
         fConstruction->ValidateGeometry();
     }
     else if (cmd == fExportCmd) {
@@ -101,16 +101,16 @@ void DSimDetectorMessenger::SetNewValue(G4UIcommand * cmd,
         std::string version;
         input >> name >> version;
         char *tmp = std::getenv("DETSIMROOT");
-        if (!tmp) DSimError("DETSIMROOT not set");
+        if (!tmp) DSimThrow("DETSIMROOT not set");
         std::string packageroot(tmp);
         tmp = std::getenv("DETSIMCONFIG");
-        if (!tmp) DSimError("DETSIMCONFIG not set");
+        if (!tmp) DSimThrow("DETSIMCONFIG not set");
         std::string packageconfig(tmp);
         std::string file = packageroot + "/" + packageconfig + "/" 
             + name + "-" + version + ".mac";
-        CaptLog("%%%% Set Run Conditions");
-        CaptLog("%%     Condition Name: "<< name);
-        CaptLog("%%     Version:        " << version);
+        DSimLog("%%%% Set Run Conditions");
+        DSimLog("%%     Condition Name: "<< name);
+        DSimLog("%%     Version:        " << version);
         G4UImanager* UI = G4UImanager::GetUIpointer();
         UI->ApplyCommand("/control/execute " + file);
     }

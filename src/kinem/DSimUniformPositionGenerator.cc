@@ -1,4 +1,4 @@
-#include <TCaptLog.hxx>
+#include <DSimLog.hh>
 
 #include "kinem/DSimUniformPositionGenerator.hh"
 
@@ -12,7 +12,7 @@ G4LorentzVector DSimUniformPositionGenerator::GetPosition() {
         G4LorentzVector vtx = TrialPosition();
         if (ValidPosition(vtx)) return vtx;
     }
-    CaptWarn("DSimUniformPositionGenerator::GetPosition:"
+    DSimWarn("DSimUniformPositionGenerator::GetPosition:"
               << " No valid position found");
     throw;
 }

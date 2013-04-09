@@ -6,7 +6,7 @@
 #include <G4FieldManager.hh>
 #include <G4TransportationManager.hh>
 
-#include <TCaptLog.hxx>
+#include <DSimLog.hh>
 
 DSimMagneticField::DSimMagneticField(G4double f) 
     : fFieldStrength(f),
@@ -52,21 +52,21 @@ void DSimMagneticField::GetFieldValue(const double point[4],
         || (fCoilInnerWidth > fCoilOuterWidth)
         || (fCoilInnerHeight > fCoilOuterHeight)
         || (fCoilInnerLength > fCoilOuterLength)) {
-        CaptLog("DSimMagneticField:: Bad coil and yoke dimensions");
-        CaptLog("Outer Yoke Width:    " << fYokeOuterWidth);
-        CaptLog("Inner Yoke Width:    " << fYokeInnerWidth);
-        CaptLog("Outer Coil Width:    " << fCoilOuterWidth);
-        CaptLog("Inner Coil Width:    " << fCoilInnerWidth);
-        CaptLog("Outer Yoke Height:   " << fYokeOuterHeight);
-        CaptLog("Inner Yoke Height:   " << fYokeInnerHeight);
-        CaptLog("Outer Coil Height:   " << fCoilOuterHeight);
-        CaptLog("Inner Coil Height:   " << fCoilInnerHeight);
-        CaptLog("Outer Yoke Length:   " << fYokeOuterLength);
-        CaptLog("Inner Yoke Length:   " << fYokeInnerLength);
-        CaptLog("Outer Coil Length:   " << fCoilOuterLength);
-        CaptLog("Inner Coil Length:   " << fCoilInnerLength);
+        DSimLog("DSimMagneticField:: Bad coil and yoke dimensions");
+        DSimLog("Outer Yoke Width:    " << fYokeOuterWidth);
+        DSimLog("Inner Yoke Width:    " << fYokeInnerWidth);
+        DSimLog("Outer Coil Width:    " << fCoilOuterWidth);
+        DSimLog("Inner Coil Width:    " << fCoilInnerWidth);
+        DSimLog("Outer Yoke Height:   " << fYokeOuterHeight);
+        DSimLog("Inner Yoke Height:   " << fYokeInnerHeight);
+        DSimLog("Outer Coil Height:   " << fCoilOuterHeight);
+        DSimLog("Inner Coil Height:   " << fCoilInnerHeight);
+        DSimLog("Outer Yoke Length:   " << fYokeOuterLength);
+        DSimLog("Inner Yoke Length:   " << fYokeInnerLength);
+        DSimLog("Outer Coil Length:   " << fCoilOuterLength);
+        DSimLog("Inner Coil Length:   " << fCoilInnerLength);
 
-        DSimError("DSimMagneticField:: Bad coil and yoke dimensions");
+        DSimThrow("DSimMagneticField:: Bad coil and yoke dimensions");
     }
 
     if (std::abs(pos.x()) > fYokeOuterWidth/2) return;

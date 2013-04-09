@@ -40,40 +40,6 @@
 /// build with the CommandName() method.  All command names should begin with
 /// a lower case letter.
 class DSimBuilder {
-private:
-    /// The short local name of the constructor.
-    G4String fLocalName;
-
-    /// The name of the constructor.
-    G4String fName;
-
-    /// The G4VUserDetectorConstruction class that this is cooperating with.
-    DSimUserDetectorConstruction* fConstruction;
-
-    /// The parent of this constructor
-    DSimBuilder* fParent;
-
-    /// The user interface messenger that will provide values for this class. 
-    G4UImessenger* fMessenger;
-
-    /// If this is true, then draw constructed object.
-    bool fVisible;
-
-    /// If this is true, then check the constructed object for overlaps.
-    bool fCheck;
-
-    /// The sub constructors that might be used in this class.
-    std::map<G4String,DSimBuilder*> fSubBuilders;
-
-protected:
-    G4Material* FindMaterial(G4String m);
-
-    /// Takes logical volume and returns the attributes. 
-    G4VisAttributes GetColor(G4LogicalVolume* volume);
-
-    /// Takes a material and returns the attributes.
-    G4VisAttributes GetColor(G4Material* volume);
-
 public:
     DSimBuilder(G4String n, DSimUserDetectorConstruction* c);
     DSimBuilder(G4String n, DSimBuilder* parent);
@@ -97,17 +63,37 @@ public:
     /// Set the visibility of the constructed object.
     void SetVisible(bool v);
     
-    /// Set the visibility of the object daughters
-    void SetVisibleDaughters(bool v);
-    
     /// Get the visibility of the constructed object.
     bool GetVisible(void) const {return fVisible;}
 
+    /// Set the visibility of the object daughters
+    void SetVisibleDaughters(bool v);
+    
     /// Return the detector construction that is building this piece.
     DSimUserDetectorConstruction* GetConstruction(void) {
         return fConstruction;
     };
     
+    /// Set the sensitive detector for this component.
+    virtual void SetSensitiveDetector(G4VSensitiveDetector* s) {
+        fSensitiveDetector = s;
+    }
+    
+    /// Get the sensitive detector for this component.
+    virtual G4VSensitiveDetector* GetSensitiveDetector(void) {
+        return fSensitiveDetector;
+    }
+
+    /// Set the sensitive detector for this component by name.
+    virtual void SetSensitiveDetector(G4String name, G4String type);
+    
+    /// Set the maximum sagitta for a track being added to a single hit
+    /// segment.
+    virtual void SetMaximumHitSagitta(double sagitta);
+
+    /// Set the maximum length of a single hit segment.
+    virtual void SetMaximumHitLength(double length);
+
     /// Return the messenger for this constructor
     G4UImessenger* GetMessenger(void) {return fMessenger;};
 
@@ -126,7 +112,7 @@ public:
             std::cout << "Multiply defined constructor name " 
                       << c->GetName()
                       << std::endl;
-            DSimError("DSimBuilder::AddBuilder(): Multiple defines");
+            DSimThrow("DSimBuilder::AddBuilder(): Multiple defines");
         }
         fSubBuilders[c->GetLocalName()] = c;
     }
@@ -148,14 +134,14 @@ public:
                           << " for constructor: " << (*p).second->GetName()
                           << std::endl;
             }
-            DSimError(" Undefined constructor");
+            DSimThrow(" Undefined constructor");
         }
         T* c = dynamic_cast<T*>((*p).second);
         if (!c) {
             std::cout << "Error in " << GetName() << std::endl;
             std::cout << "  Cannot type cast " << n 
                       << " to requested class" << std::endl;
-            DSimError("DSimBuilder::Get<>:"
+            DSimThrow("DSimBuilder::Get<>:"
                         " Bad typecast");
         }
         return *c;
@@ -178,6 +164,43 @@ public:
     /// Set the check value.
     void SetCheck(bool v) {fCheck = v;}
 
+protected:
+    G4Material* FindMaterial(G4String m);
+
+    /// Takes logical volume and returns the attributes. 
+    G4VisAttributes GetColor(G4LogicalVolume* volume);
+
+    /// Takes a material and returns the attributes.
+    G4VisAttributes GetColor(G4Material* volume);
+
+private:
+    /// The short local name of the constructor.
+    G4String fLocalName;
+
+    /// The name of the constructor.
+    G4String fName;
+
+    /// The G4VUserDetectorConstruction class that this is cooperating with.
+    DSimUserDetectorConstruction* fConstruction;
+
+    /// The parent of this constructor
+    DSimBuilder* fParent;
+
+    /// The user interface messenger that will provide values for this class. 
+    G4UImessenger* fMessenger;
+
+    /// The sensitive detector for this tracking component.
+    G4VSensitiveDetector* fSensitiveDetector;
+
+    /// If this is true, then draw constructed object.
+    bool fVisible;
+
+    /// If this is true, then check the constructed object for overlaps.
+    bool fCheck;
+
+    /// The sub constructors that might be used in this class.
+    std::map<G4String,DSimBuilder*> fSubBuilders;
+
 };
 
 class DSimBuilderMessenger: public G4UImessenger {
@@ -190,9 +213,12 @@ private:
     /// The directory name for this messenger
     G4String fDirName;
 
-    G4UIcmdWithABool* fVisibleCMD;
-    G4UIcmdWithABool* fVisibleDaughtersCMD;
-    G4UIcmdWithABool* fCheckCMD;
+    G4UIcmdWithABool*          fVisibleCMD;
+    G4UIcmdWithABool*          fVisibleDaughtersCMD;
+    G4UIcmdWithABool*          fCheckCMD;
+    G4UIcommand*               fSensitiveCMD;
+    G4UIcmdWithADoubleAndUnit* fMaximumHitSagittaCMD;
+    G4UIcmdWithADoubleAndUnit* fMaximumHitLengthCMD;
 
 public:
     DSimBuilderMessenger(DSimBuilder* c, const char* guide=NULL);

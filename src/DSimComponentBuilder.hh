@@ -18,14 +18,10 @@ class DSimComponentBuilder : public DSimBuilder {
 public:
     DSimComponentBuilder(G4String n, DSimUserDetectorConstruction* c)
         : DSimBuilder(n,c), fLength(0.0), 
-          fMaximumWidth(0.0), fMaximumHeight(0.0),
-          fSensitiveDetector(NULL), 
-          fMaximumHitLength(5*mm), fMaximumHitSagitta(1*mm) {}
+          fMaximumWidth(0.0), fMaximumHeight(0.0) {}
     DSimComponentBuilder(G4String n, DSimBuilder* p)
         : DSimBuilder(n,p), fLength(0.0),
-          fMaximumWidth(0.0), fMaximumHeight(0.0),
-          fSensitiveDetector(NULL), 
-          fMaximumHitLength(5*mm), fMaximumHitSagitta(1*mm) {}
+          fMaximumWidth(0.0), fMaximumHeight(0.0) {}
     virtual ~DSimComponentBuilder() {;};
 
     /// Set the width of the component.  This is the X dimension of the space
@@ -90,42 +86,6 @@ public:
         return h;
     }
 
-    /// Set the sensitive detector for this component.
-    virtual void SetSensitiveDetector(G4VSensitiveDetector* s) {
-        fSensitiveDetector = s;
-    }
-
-    /// Set the sensitive detector for this component by name.
-    virtual void SetSensitiveDetector(G4String name, G4String type) {
-        DSimSDFactory factory(type);
-        SetSensitiveDetector(factory.MakeSD(name));
-        SetMaximumHitSagitta(fMaximumHitSagitta);
-        SetMaximumHitLength(fMaximumHitLength);
-    }
-
-    /// Get the sensitive detector for this component.
-    virtual G4VSensitiveDetector* GetSensitiveDetector(void) {
-        return fSensitiveDetector;
-    }
-
-    virtual void SetMaximumHitSagitta(double sagitta) {
-        fMaximumHitSagitta = sagitta;
-        DSimSegmentSD *segSD 
-            = dynamic_cast<DSimSegmentSD*>(fSensitiveDetector);
-        if (segSD) {
-            segSD->SetMaximumHitSagitta(fMaximumHitSagitta);
-        }
-    }
-
-    virtual void SetMaximumHitLength(double length) {
-        fMaximumHitLength = length;
-        DSimSegmentSD *segSD 
-            = dynamic_cast<DSimSegmentSD*>(fSensitiveDetector);
-        if (segSD) {
-            segSD->SetMaximumHitLength(fMaximumHitLength);
-        }
-    }
-
 protected:
     /// Increment the length of the component.  This is the distance the
     /// component stretchs along the Z axis of the detector.
@@ -148,16 +108,6 @@ private:
     /// The maximum physical height of the constructed component.  This must be
     /// less than the available height.
     double fMaximumHeight;
-
-    /// The sensitive detector for this tracking component.
-    G4VSensitiveDetector* fSensitiveDetector;
-
-    /// Control the total length of track that can be added to a single hit.
-    double fMaximumHitLength;
-
-    /// Control the maximum sagitta of a single hit.
-    double fMaximumHitSagitta;
-
 };
 
 class DSimComponentBuilderMessenger: public DSimBuilderMessenger {
@@ -167,9 +117,6 @@ private:
     G4UIcmdWithADoubleAndUnit* fHeightCMD;
     G4UIcmdWithADoubleAndUnit* fMaxWidthCMD;
     G4UIcmdWithADoubleAndUnit* fMaxHeightCMD;
-    G4UIcommand*               fSensitiveCMD;
-    G4UIcmdWithADoubleAndUnit* fMaximumHitSagittaCMD;
-    G4UIcmdWithADoubleAndUnit* fMaximumHitLengthCMD;
 
 public:
     DSimComponentBuilderMessenger(DSimComponentBuilder* c,
@@ -199,27 +146,6 @@ public:
         fMaxHeightCMD->SetParameterName("Height",false);
         fMaxHeightCMD->SetUnitCategory("Length");
 
-        fSensitiveCMD = new G4UIcommand(CommandName("sensitive"),this);
-        fSensitiveCMD->SetGuidance("Set the name of the sensitive detector");
-        G4UIparameter* nameParam = new G4UIparameter('s');
-        nameParam->SetParameterName("Name");
-        fSensitiveCMD->SetParameter(nameParam);
-        G4UIparameter* typeParam = new G4UIparameter('s');
-        typeParam->SetParameterName("Type");
-        fSensitiveCMD->SetParameter(typeParam);
-
-        fMaximumHitSagittaCMD 
-            = new G4UIcmdWithADoubleAndUnit(CommandName("maxHitSagitta"),this);
-        fMaximumHitSagittaCMD->SetGuidance("Set the maximum sagitta for a hit.");
-        fMaximumHitSagittaCMD->SetParameterName("Sagitta",false);
-        fMaximumHitSagittaCMD->SetUnitCategory("Length");
-
-        fMaximumHitLengthCMD 
-            = new G4UIcmdWithADoubleAndUnit(CommandName("maxHitLength"),this);
-        fMaximumHitLengthCMD->SetGuidance("Set the maximum length for a hit.");
-        fMaximumHitLengthCMD->SetParameterName("HitLength",false);
-        fMaximumHitLengthCMD->SetUnitCategory("Length");
-
     };
 
     virtual ~DSimComponentBuilderMessenger() {
@@ -227,9 +153,6 @@ public:
         delete fHeightCMD;
         delete fMaxWidthCMD;
         delete fMaxHeightCMD;
-        delete fSensitiveCMD;
-        delete fMaximumHitSagittaCMD;
-        delete fMaximumHitLengthCMD;
     };
 
     void SetNewValue(G4UIcommand *cmd, G4String val) {
@@ -246,23 +169,6 @@ public:
         else if (cmd==fMaxHeightCMD) {
             fBuilder->
                 SetMaximumHeight(fMaxHeightCMD->GetNewDoubleValue(val));
-        }
-        else if (cmd==fSensitiveCMD) {
-            std::istringstream buf(val.c_str());
-            std::string name, type;
-            buf >> name;
-            buf >> type;
-            fBuilder->SetSensitiveDetector(name,type);
-        }
-        else if (cmd==fMaximumHitSagittaCMD) {
-            fBuilder->
-                SetMaximumHitSagitta(
-                    fMaximumHitSagittaCMD->GetNewDoubleValue(val));
-        }
-        else if (cmd==fMaximumHitLengthCMD) {
-            fBuilder->
-                SetMaximumHitLength(
-                    fMaximumHitLengthCMD->GetNewDoubleValue(val));
         }
         else {
             DSimBuilderMessenger::SetNewValue(cmd,val);

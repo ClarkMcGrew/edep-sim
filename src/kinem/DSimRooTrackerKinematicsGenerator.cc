@@ -8,7 +8,7 @@
 #include "DSimException.hh"
 #include "kinem/DSimRooTrackerKinematicsGenerator.hh"
 
-#include "TCaptLog.hxx"
+#include "DSimLog.hh"
 
 #include <globals.hh>
 #include <G4Event.hh>
@@ -39,14 +39,14 @@ DSimRooTrackerKinematicsGenerator::DSimRooTrackerKinematicsGenerator(
         DSimError("DSimRooTrackerKinematicsGenerator:: File Not Open");
     }
 
-    CaptLog("Open a RooTracker tree from " << filename);
+    DSimLog("Open a RooTracker tree from " << filename);
 
     fTree = dynamic_cast<TTree*>(fInput->Get(treeName));
     if (!fTree) {
         DSimError("DSimRooTrackerKinematicsGenerator:: "
                     "Tree not found by constructor");
     }
-    CaptInfo("   File has  " << fTree->GetEntries() << " entries");
+    DSimInfo("   File has  " << fTree->GetEntries() << " entries");
 
     // Find the basename of the input filename. 
     std::string::size_type start_pos = filename.rfind("/");
@@ -119,7 +119,7 @@ DSimRooTrackerKinematicsGenerator::DSimRooTrackerKinematicsGenerator(
     }
 
     if (firstEvent > 0) {
-        CaptLog("   FIRST EVENT WILL BE " << firstEvent);
+        DSimLog("   FIRST EVENT WILL BE " << firstEvent);
         if (firstEvent >= entries) {
             DSimError("DSimRooTrackerKinematicsGenerator::"
                         "  First event after last event");
@@ -146,7 +146,7 @@ bool DSimRooTrackerKinematicsGenerator::GeneratePrimaryVertex(
     
     /// Check to see if the next event is there.
     if (fNextEntry >= fEntryVector.size()) {
-        CaptLog("DSimRooTrackerKinematicsGenerator: end of input file.");
+        DSimLog("DSimRooTrackerKinematicsGenerator: end of input file.");
         throw DSimNoMoreEvents();
     }
 
@@ -159,7 +159,7 @@ bool DSimRooTrackerKinematicsGenerator::GeneratePrimaryVertex(
     // and false results call DSimKinemPassThrough::AddEntry(fTreePtr, X)
     // where X is same as X in most recent call to fTreePtr->GetEntry(X).
     DSimKinemPassThrough::GetInstance()->AddEntry(fTree, entry);
-    CaptVerbose("Use rooTracker event number " << fEvtNum 
+    DSimVerbose("Use rooTracker event number " << fEvtNum 
                  << " (entry #" << entry << " in tree)");
 
     // Increment the next entry counter.
@@ -240,7 +240,7 @@ bool DSimRooTrackerKinematicsGenerator::GeneratePrimaryVertex(
                                  fStdHepP4[cnt][3]*GeV);
         
         if (fStdHepStatus[cnt] != 1) {
-            CaptVerbose("Untracked particle: " << cnt 
+            DSimVerbose("Untracked particle: " << cnt 
                          << " " << particleName
                          << " with " << momentum.e()/MeV 
                          << " MeV " 
@@ -255,7 +255,7 @@ bool DSimRooTrackerKinematicsGenerator::GeneratePrimaryVertex(
 
 
         if (!particleDef) {
-            CaptSevere(" Particle code " << fStdHepPdg[cnt]
+            DSimSevere(" Particle code " << fStdHepPdg[cnt]
                       << " not recognized (not tracking)");
             continue;
         }

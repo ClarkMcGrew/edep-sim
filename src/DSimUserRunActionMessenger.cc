@@ -10,7 +10,7 @@
 #include <G4UIcmdWithAnInteger.hh>
 #include <G4Timer.hh>
 
-#include <TCaptLog.hxx>
+#include <DSimLog.hh>
 
 DSimUserRunActionMessenger::DSimUserRunActionMessenger(
     DSimUserRunAction* rdm)
@@ -68,7 +68,7 @@ void DSimUserRunActionMessenger::SetNewValue(G4UIcommand* command,
     }
     else if (command == fShowRandomSeedCmd) {
         long seed = fUserRunAction->GetSeed();
-        CaptLog("### Random number seed: " << seed);
+        DSimLog("### Random number seed: " << seed);
     }
     else if (command == fDetSimRunIdCmd) {
         int runId = fDetSimRunIdCmd->GetNewIntValue(newValue);
@@ -79,7 +79,7 @@ void DSimUserRunActionMessenger::SetNewValue(G4UIcommand* command,
         fUserRunAction->SetDetSimSubrunId(subrunId);
     }
     else {
-        DSimError("DSimUserRunActionMessenger:: Unimplemented command");
+        DSimThrow("DSimUserRunActionMessenger:: Unimplemented command");
     }
 }
 

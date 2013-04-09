@@ -2,7 +2,7 @@
 #include "CaptWirePlaneBuilder.hh"
 #include "DSimBuilder.hh"
 
-#include <TCaptLog.hxx>
+#include <DSimLog.hh>
 
 #include <globals.hh>
 #include <G4Material.hh>
@@ -75,6 +75,8 @@ void CaptDriftRegionBuilder::Init(void) {
     SetDriftLength(1200*mm);
     SetWirePlaneSpacing(5*mm);
     
+    SetSensitiveDetector("drift","segment");
+    
     AddBuilder(new CaptWirePlaneBuilder("VPlane",this));
     AddBuilder(new CaptWirePlaneBuilder("UPlane",this));
     AddBuilder(new CaptWirePlaneBuilder("XPlane",this));
@@ -100,6 +102,10 @@ G4LogicalVolume *CaptDriftRegionBuilder::GetPiece(void) {
                                               zPlane, rInner, rOuter),
                               FindMaterial("Argon_Liquid"),
                               GetName());
+
+    if (GetSensitiveDetector()) {
+        logVolume->SetSensitiveDetector(GetSensitiveDetector());
+    }
 
     CaptWirePlaneBuilder& xPlane = Get<CaptWirePlaneBuilder>("XPlane");
     G4LogicalVolume *logX = xPlane.GetPiece();

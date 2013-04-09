@@ -2,7 +2,7 @@
 // $Id: DSimUserSteppingAction.cc,v 1.11 2008/08/21 18:36:54 mcgrew Exp $
 //
 
-#include "TCaptLog.hxx"
+#include "DSimLog.hh"
 
 #include "DSimUserSteppingAction.hh"
 #include <G4UnitsTable.hh>
@@ -15,7 +15,6 @@ DSimUserSteppingAction::DSimUserSteppingAction()
     : fStenchAndRot(0) {}
 
 void DSimUserSteppingAction::UserSteppingAction(const G4Step* theStep) { 
-
     G4Track* theTrack = theStep->GetTrack();
 
     G4String theParticleName = theTrack->GetDefinition()->GetParticleName();
@@ -26,7 +25,7 @@ void DSimUserSteppingAction::UserSteppingAction(const G4Step* theStep) {
     static int throttle = 1000;
     static int governor = 0;
     if (steps%throttle == 0 && steps>0) {
-        CaptWarn("DSimUserSteppingAction:: Excessive Steps "
+        DSimWarn("DSimUserSteppingAction:: Excessive Steps "
                   << " " << steps 
                   << " " << theParticleName
                   << " " << theTrack->GetTrackLength()/m << " m" 
@@ -38,7 +37,7 @@ void DSimUserSteppingAction::UserSteppingAction(const G4Step* theStep) {
     }
     if (governor>0) {
         --governor;
-        CaptDebug("    " << theCurrentVolumeName
+        DSimDebug("    " << theCurrentVolumeName
                    << ": " << theParticleName
                    << " -- Step: " << theStep->GetStepLength()/mm << " mm"
                    << " Energy Loss: "<< theStep->GetDeltaEnergy()/MeV 
@@ -47,7 +46,7 @@ void DSimUserSteppingAction::UserSteppingAction(const G4Step* theStep) {
 
     if (theStep->GetTrack()->GetTrackLength() > 100*m) {
         theTrack->SetTrackStatus(fStopAndKill);
-        CaptSevere("Stop and kill w/ track too long for " 
+        DSimSevere("Stop and kill w/ track too long for " 
                     << theParticleName << " w/ " 
                     << G4BestUnit(theTrack->GetKineticEnergy(),"Energy")
                     << " (" << G4BestUnit(theTrack->GetTrackLength(),
@@ -62,7 +61,7 @@ void DSimUserSteppingAction::UserSteppingAction(const G4Step* theStep) {
     ++steps;
     if (steps>50000) {
         theTrack->SetTrackStatus(fStopAndKill);
-        CaptSevere("Stop and kill with to many steps for " 
+        DSimSevere("Stop and kill with to many steps for " 
                     << theParticleName << " in "
                     << theCurrentVolumeName << " w/ " 
                     << G4BestUnit(theTrack->GetKineticEnergy(),"Energy"));
@@ -82,7 +81,7 @@ void DSimUserSteppingAction::UserSteppingAction(const G4Step* theStep) {
     // Make sure the particle is someplace near the detector
     if (theTrack->GetPosition().mag()>50.0*meter) {
         theTrack->SetTrackStatus(fStopAndKill);
-        CaptSevere("Stop and kill track far from detector");
+        DSimSevere("Stop and kill track far from detector");
         fStenchAndRot = 0;
         return;
     }
@@ -100,7 +99,7 @@ void DSimUserSteppingAction::UserSteppingAction(const G4Step* theStep) {
     ++fStenchAndRot;
     if (fStenchAndRot>10) {
         theTrack->SetTrackStatus(fStopAndKill);
-        CaptSevere("Stop and kill stuck " 
+        DSimSevere("Stop and kill stuck " 
                     << theParticleName << " in "
                     << theCurrentVolumeName << " w/ " 
                     << G4BestUnit(theTrack->GetKineticEnergy(),"Energy")

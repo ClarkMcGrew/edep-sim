@@ -9,7 +9,7 @@
 #include <G4PVPlacement.hh>
 #include <G4VisAttributes.hh>
 
-#include <TCaptLog.hxx>
+#include <DSimLog.hh>
 
 #include <cmath>
 
@@ -61,8 +61,8 @@ G4LogicalVolume *DSimModuleBuilder::GetPiece(void) {
                              e != fPartsList->end();++e) {
         double componentLength = (*e)->GetLength();
         if (componentLength < 0.0) {
-            CaptWarn("%%%%%%% Negative Component Length ");
-            CaptWarn("%% " << (*e)->GetName());
+            DSimWarn("%%%%%%% Negative Component Length ");
+            DSimWarn("%% " << (*e)->GetName());
             continue;
         }
         fLength += componentLength;
@@ -71,10 +71,10 @@ G4LogicalVolume *DSimModuleBuilder::GetPiece(void) {
     if (fLength<0.10*mm) return NULL;
 
     if (GetLength()>GetTargetLength()) {
-        CaptError(GetName());
-        CaptError(" Is " << GetLength()/cm << " cm long with "
+        DSimError(GetName());
+        DSimError(" Is " << GetLength()/cm << " cm long with "
                    << GetTargetLength()/cm << " cm available");
-        DSimError("DSimModuleBuilder::GetPiece(): Volume too long");
+        DSimThrow("DSimModuleBuilder::GetPiece(): Volume too long");
     }
 
     /// Position all of the sub volumes.
@@ -151,8 +151,8 @@ void DSimModuleBuilder::SetRepetitions(int r, int c) {
     }
 
     if (fPartsList->size()<(unsigned) c) {
-        CaptError("Not enough parts to build module");
-        CaptError("    Parts supplied: " << fPartsList->size() 
+        DSimError("Not enough parts to build module");
+        DSimError("    Parts supplied: " << fPartsList->size() 
                    << "  Parts required: " << c);
         DSimError("Module construction failed.");
         return;
