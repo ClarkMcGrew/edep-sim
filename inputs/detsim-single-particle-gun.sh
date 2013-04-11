@@ -1,6 +1,6 @@
 # Macro that use G4 particle gun to create a single particle
 
-COUNT="1"
+COUNT="10"
 source ${DETSIMROOT}/cmt/setup.sh
 
 MACRO=`mktemp -t detsim.XXXXXXXXXX` || exit 1

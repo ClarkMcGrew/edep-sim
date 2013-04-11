@@ -107,7 +107,7 @@ void DSimRootGeometryManager::Update(const G4VPhysicalVolume* aWorld,
         }
     }
     // Create the new geometry.
-    gGeoManager = new TGeoManager("DSimGeometry","DSim Detector Geometry");
+    gGeoManager = new TGeoManager("CAPTAINGeometry","DSim Detector Geometry");
     // Create all of the materials.
     CreateMaterials(aWorld);
     // Create the ROOT geometry definitions.
