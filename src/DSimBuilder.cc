@@ -186,12 +186,14 @@ void DSimBuilder::SetSensitiveDetector(G4String name, G4String type) {
     
 void DSimBuilder::SetMaximumHitSagitta(double sagitta) {
     if (!fSensitiveDetector) {
-        DSimError("Builder does not have sensitive detector defined");
+        DSimError("Maximum hit sagitta must be set after the sensitive"
+                  " detector is defined.");
+        DSimThrow("Builder does not have sensitive detector defined");
         return;
     }
     DSimSegmentSD *segSD = dynamic_cast<DSimSegmentSD*>(fSensitiveDetector);
     if (!segSD) {
-        DSimError("Sensitive detector not derived from DSimSegmentSD");
+        DSimThrow("Sensitive detector not derived from DSimSegmentSD");
         return;
     }
     segSD->SetMaximumHitSagitta(sagitta);
@@ -199,12 +201,14 @@ void DSimBuilder::SetMaximumHitSagitta(double sagitta) {
 
 void DSimBuilder::SetMaximumHitLength(double length) {
     if (!fSensitiveDetector) {
-        DSimError("Builder does not have sensitive detector defined");
+        DSimError("Maximum hit length must be set after the sensitive"
+                  " detector is defined.");
+        DSimThrow("Builder does not have sensitive detector defined");
         return;
     }
     DSimSegmentSD *segSD = dynamic_cast<DSimSegmentSD*>(fSensitiveDetector);
     if (!segSD) {
-        DSimError("Sensitive detector not derived from DSimSegmentSD");
+        DSimThrow("Sensitive detector not derived from DSimSegmentSD");
         return;
     }
     segSD->SetMaximumHitLength(length);

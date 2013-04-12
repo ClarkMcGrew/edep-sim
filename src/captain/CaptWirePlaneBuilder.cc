@@ -65,8 +65,9 @@ void CaptWirePlaneBuilder::Init(void) {
     SetApothem(1000*mm);
     SetSpacing(3*mm);
     SetHeight(1*mm);
-
     SetSensitiveDetector("drift","segment");
+    SetMaximumHitLength(1*mm);
+    SetMaximumHitSagitta(0.5*mm);
 
 }
 

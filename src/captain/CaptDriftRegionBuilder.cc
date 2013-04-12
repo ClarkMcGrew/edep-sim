@@ -10,6 +10,7 @@
 #include <G4VPhysicalVolume.hh>
 #include <G4PVPlacement.hh>
 #include <G4VisAttributes.hh>
+#include <G4UserLimits.hh>
 
 #include <G4Polyhedra.hh>
 
@@ -74,9 +75,10 @@ void CaptDriftRegionBuilder::Init(void) {
     SetApothem(1000*mm);
     SetDriftLength(1200*mm);
     SetWirePlaneSpacing(5*mm);
-    
     SetSensitiveDetector("drift","segment");
-    
+    SetMaximumHitLength(1*mm);
+    SetMaximumHitSagitta(0.5*mm);
+
     AddBuilder(new CaptWirePlaneBuilder("VPlane",this));
     AddBuilder(new CaptWirePlaneBuilder("UPlane",this));
     AddBuilder(new CaptWirePlaneBuilder("XPlane",this));
@@ -105,6 +107,7 @@ G4LogicalVolume *CaptDriftRegionBuilder::GetPiece(void) {
 
     if (GetSensitiveDetector()) {
         logVolume->SetSensitiveDetector(GetSensitiveDetector());
+        logVolume->SetUserLimits(new G4UserLimits(1.0*mm));
     }
 
     CaptWirePlaneBuilder& xPlane = Get<CaptWirePlaneBuilder>("XPlane");
