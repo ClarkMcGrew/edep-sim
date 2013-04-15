@@ -110,11 +110,12 @@ G4LogicalVolume *CaptWirePlaneBuilder::GetPiece(void) {
         // The position of the wire.
         double wireOffset = baseOffset + wire*GetSpacing();
         double wireLength = maxLength-2*std::abs(wireOffset)*std::tan(30*deg);
-        double wireDiameter = std::min(GetHeight(), 
+        double wireDiameter = std::min(GetHeight()/2, 
                                        GetSpacing()/4);
+
         G4LogicalVolume* logWire 
             = new G4LogicalVolume(new G4Tubs(GetName()+"/Wire",
-                                             0.0, wireDiameter,
+                                             0.0, wireDiameter/2.0,
                                              wireLength/2,
                                              0*degree, 360*degree),
                                   FindMaterial("Captain_Wire"),
