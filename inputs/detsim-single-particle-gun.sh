@@ -20,12 +20,12 @@ cat >> $MACRO <<EOF
 /gps/position 0.0 0.0 -60.0 cm
 /gps/pos/type Volume
 /gps/pos/shape Para
-/gps/pos/halfx 10 cm
-/gps/pos/halfy 10 cm
-/gps/pos/halfz 10 cm
+/gps/pos/halfx 1 cm
+/gps/pos/halfy 1 cm
+/gps/pos/halfz 1 cm
 
 # This generates the direction of the first particle gun. 
-/gps/ang/type iso
+/gps/direction 1 0 0 
 
 /run/beamOn ${COUNT}
 
