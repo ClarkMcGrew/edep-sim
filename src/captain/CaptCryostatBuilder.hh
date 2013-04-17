@@ -63,6 +63,18 @@ public:
     void SetArgonDepth(double v) {fArgonDepth = v;}
     /// @}
 
+    /// Get (or set) distance from the bottom of the cryostat to the bottom of
+    /// the drift region.  @{
+    double GetBottomSpace() const {return fBottomSpace;}
+    void SetBottomSpace(double v) {fBottomSpace = v;}
+    /// @}
+
+    /// Return the offset of the cryostat from the center of the world so that
+    /// the center of the wire planes are at the origin.  The bottom of the V
+    /// wire plane is at the origin.  This means that the wires for the V
+    /// plane are at a (very) small z coordinate.
+    G4ThreeVector GetOffset();
+
 private:
     void Init(void);
 
@@ -77,5 +89,9 @@ private:
 
     /// The liquid argon depth
     double fArgonDepth;
+
+    /// The space between the bottom of the drift region and the cryostat wall.
+    double fBottomSpace;
+
 };
 #endif

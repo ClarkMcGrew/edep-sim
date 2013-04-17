@@ -103,17 +103,19 @@ G4LogicalVolume *CaptWorldBuilder::GetPiece(void) {
 
     CaptCryostatBuilder& cryo
         = Get<CaptCryostatBuilder>("Cryostat");
-    
-    new G4PVPlacement(NULL,                  // rotation.
-                      G4ThreeVector(0,0,0),  // position
-                      cryo.GetPiece(),      // logical volume
-                      cryo.GetName(),       // name
+    G4LogicalVolume* logCryostat = cryo.GetPiece();
+
+    new G4PVPlacement(NULL,                   // rotation.
+                      cryo.GetOffset(),       // position
+                      logCryostat,            // logical volume
+                      logCryostat->GetName(), // name
                       logVolume,              // mother  volume
-                      false,                 // overlapping volume (not used)
-                      0,                     // Copy number (zero)
-                      Check());              // Check overlaps.
+                      false,                  // overlapping volume (not used)
+                      0,                      // Copy number (zero)
+                      Check());               // Check overlaps.
     
     G4ThreeVector centerFloor(0,0,-cryo.GetHeight()/2.0-50*cm-floorThickness/2);
+    centerFloor = centerFloor + cryo.GetOffset();
 
     new G4PVPlacement(NULL,                // rotation.
                       centerFloor,         // position

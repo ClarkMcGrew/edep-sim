@@ -96,6 +96,7 @@ void CaptCryostatBuilder::Init(void) {
     SetInnerHeight(2000*mm);
     SetWallThickness(15*mm);
     SetArgonDepth(1500*mm);
+    SetBottomSpace(100*mm);
 
     SetSensitiveDetector("cryo","segment");
 
@@ -115,6 +116,15 @@ double CaptCryostatBuilder::GetHeight() {
     // Calculate the total height of the cryostat based on it's other
     // dimensions.
     return GetInnerHeight() + 2*GetWallThickness();
+}
+
+G4ThreeVector CaptCryostatBuilder::GetOffset() {
+    CaptDriftRegionBuilder& drift = Get<CaptDriftRegionBuilder>("Drift");
+    double zCenter = - GetInnerHeight()/2;
+    zCenter += drift.GetHeight();
+    zCenter += GetBottomSpace();
+    zCenter -= 2*drift.GetWirePlaneSpacing() + 1*mm;
+    return G4ThreeVector(0,0,-zCenter);
 }
 
 G4LogicalVolume *CaptCryostatBuilder::GetPiece(void) {
@@ -251,7 +261,7 @@ G4LogicalVolume *CaptCryostatBuilder::GetPiece(void) {
                       G4ThreeVector(0,0,       // position
                                     - GetArgonDepth()/2
                                     + drift.GetHeight()/2
-                                    + 100*mm),    
+                                    + GetBottomSpace()),    
                       logDrift,                // logical volume
                       logDrift->GetName(),     // name
                       logLAr,                  // mother  volume
