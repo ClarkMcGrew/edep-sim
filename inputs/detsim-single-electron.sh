@@ -11,8 +11,8 @@ cat >> $MACRO <<EOF
 # Create the first particle source.  This source will be used to
 # specify the position of the vertex.  The any of the GPS direction
 # and energy commands can be used.
-/gps/particle mu+
-/gps/energy 600 MeV
+/gps/particle e-
+/gps/energy 300 MeV
 
 # This generates the position of the first particle gun.  It will be
 # used for the other particle guns.  The /gps/position command must
@@ -31,7 +31,7 @@ cat >> $MACRO <<EOF
 
 EOF
 
-OUTPUT=detsim-single-particle-gun
+OUTPUT=detsim-single-electron
 
 if [ -f $OUTPUT ]; then
     rm $OUTPUT
