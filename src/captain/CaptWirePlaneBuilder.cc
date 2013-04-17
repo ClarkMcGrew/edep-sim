@@ -11,6 +11,7 @@
 #include <G4VisAttributes.hh>
 
 #include <G4Polyhedra.hh>
+#include <G4Box.hh>
 #include <G4Tubs.hh>
 
 #include <cmath>
@@ -98,11 +99,12 @@ G4LogicalVolume *CaptWirePlaneBuilder::GetPiece(void) {
     int wires = int (2.0*GetApothem()/GetSpacing());
     if (wires<1) wires = 1;
 
-    /// \todo Does the current wire rotation make any sense?  We need to think
-    /// about how the local wire coordinates should be defined (or if they
-    /// even matter).
-    G4RotationMatrix* wireRotation = new G4RotationMatrix(); 
-    wireRotation->rotateX(90*degree);
+    G4RotationMatrix* wireRotation = NULL;
+
+    // The core needs to be rotated into the wire volume.  The core is not
+    // used inside the geometry.
+    G4RotationMatrix* coreRotation = new G4RotationMatrix(); 
+    coreRotation->rotateX(90*degree);
 
     // The offset of the first wire.
     double baseOffset = - 0.5*GetSpacing()*(wires-1);
@@ -110,24 +112,51 @@ G4LogicalVolume *CaptWirePlaneBuilder::GetPiece(void) {
         // The position of the wire.
         double wireOffset = baseOffset + wire*GetSpacing();
         double wireLength = maxLength-2*std::abs(wireOffset)*std::tan(30*deg);
-        double wireDiameter = std::min(GetHeight()/2, 
-                                       GetSpacing()/4);
+        double wireDiameter = std::min(GetHeight()/2, GetSpacing()/4);
+
+        // Apply a correction to the length account for the corners of the
+        // wire box.
+        wireLength -= 2*GetSpacing()*std::cos(30*deg);
 
         G4LogicalVolume* logWire 
-            = new G4LogicalVolume(new G4Tubs(GetName()+"/Wire",
+            = new G4LogicalVolume(new G4Box(GetName()+"/Wire",
+                                            GetSpacing()/2,
+                                            wireLength/2,
+                                            GetHeight()/2),
+                                  FindMaterial("Argon_Liquid"),
+                                  GetName()+"/Wire");
+
+        if (GetSensitiveDetector()) {
+            logWire->SetSensitiveDetector(GetSensitiveDetector());
+        }
+
+        new G4PVPlacement(wireRotation,                  // rotation.
+                          G4ThreeVector(wireOffset,0,0), // position
+                          logWire,                       // logical volume
+                          logWire->GetName(),            // name
+                          logVolume,                     // mother  volume
+                          false,                         // (not used)
+                          0,                             // Copy number (zero)
+                          false);                         // Check overlaps.
+
+        G4LogicalVolume* logCore 
+            = new G4LogicalVolume(new G4Tubs(GetName()+"/Wire/Core",
                                              0.0, wireDiameter/2.0,
                                              wireLength/2,
                                              0*degree, 360*degree),
                                   FindMaterial("Captain_Wire"),
                                   GetName()+"/Wire");
-        new G4PVPlacement(wireRotation,             // rotation.
-                          G4ThreeVector(wireOffset,0,0), // position
-                          logWire,                  // logical volume
-                          logWire->GetName(),       // name
-                          logVolume,                // mother  volume
-                          false,                    // (not used)
-                          0,                        // Copy number (zero)
-                          false);                 // Check overlaps.
+        new G4PVPlacement(coreRotation,         // rotation.
+                          G4ThreeVector(0,0,0), // position
+                          logCore,              // logical volume
+                          logCore->GetName(),   // name
+                          logWire,              // mother  volume
+                          false,                // (not used)
+                          0,                    // Copy number (zero)
+                          false);               // Check overlaps.
+
+        
+
     }
 
     if (GetVisible()) {
