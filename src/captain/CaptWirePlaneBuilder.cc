@@ -145,7 +145,7 @@ G4LogicalVolume *CaptWirePlaneBuilder::GetPiece(void) {
                                              wireLength/2,
                                              0*degree, 360*degree),
                                   FindMaterial("Captain_Wire"),
-                                  GetName()+"/Wire");
+                                  GetName()+"/Wire/Core");
         new G4PVPlacement(coreRotation,         // rotation.
                           G4ThreeVector(0,0,0), // position
                           logCore,              // logical volume

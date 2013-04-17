@@ -5,7 +5,12 @@
 
 class G4LogicalVolume;
 
-/// Construct the drift region of the TPC.
+/// Construct the drift region of the TPC.  The wire planes are located at the
+/// top of the drift region, with the first wire for each plane located at the
+/// most negative X coordinate.  The U plane runs from negative Y to positive
+/// Y.  The V plane runs from positive Y to negative Y.  The planes are
+/// oriented from top to bottom X, U, V (in otherwords, the first plane seen
+/// by the electrons is the V plane).  The X plane is the collection plane.
 class CaptDriftRegionBuilder : public DSimBuilder {
 public:
     CaptDriftRegionBuilder(G4String name, DSimBuilder* parent)

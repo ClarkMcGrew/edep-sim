@@ -115,7 +115,7 @@ G4LogicalVolume *CaptDriftRegionBuilder::GetPiece(void) {
     // (this puts the local Y axis along the -Y global axis.
     G4RotationMatrix* xRotation = new G4RotationMatrix(); 
     xRotation->rotateX(180*degree);
-    xRotation->rotateZ(180*degree);
+    // xRotation->rotateZ(180*degree);
 
     CaptWirePlaneBuilder& xPlane = Get<CaptWirePlaneBuilder>("XPlane");
     G4LogicalVolume *logX = xPlane.GetPiece();
@@ -132,7 +132,7 @@ G4LogicalVolume *CaptDriftRegionBuilder::GetPiece(void) {
     
     G4RotationMatrix* uRotation = new G4RotationMatrix(); 
     uRotation->rotateX(180*degree);
-    uRotation->rotateZ((180+60)*degree);
+    uRotation->rotateZ(60*degree);
     
     CaptWirePlaneBuilder& uPlane = Get<CaptWirePlaneBuilder>("UPlane");
     G4LogicalVolume *logU = uPlane.GetPiece();
@@ -149,7 +149,7 @@ G4LogicalVolume *CaptDriftRegionBuilder::GetPiece(void) {
     
     G4RotationMatrix* vRotation = new G4RotationMatrix(); 
     vRotation->rotateX(180*degree);
-    vRotation->rotateZ((180-60)*degree);
+    vRotation->rotateZ(-60*degree);
                        
     CaptWirePlaneBuilder& vPlane = Get<CaptWirePlaneBuilder>("VPlane");
     G4LogicalVolume *logV = vPlane.GetPiece();
