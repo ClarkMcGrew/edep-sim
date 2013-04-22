@@ -74,14 +74,14 @@ void CaptDriftRegionBuilder::Init(void) {
     SetMessenger(new CaptDriftRegionMessenger(this));
     SetApothem(1000*mm);
     SetDriftLength(1200*mm);
-    SetWirePlaneSpacing(3*mm);
+    SetWirePlaneSpacing(3.1*mm);
     SetSensitiveDetector("drift","segment");
     SetMaximumHitLength(1*mm);
-    SetMaximumHitSagitta(0.5*mm);
+    SetMaximumHitSagitta(0.25*mm);
 
+    AddBuilder(new CaptWirePlaneBuilder("XPlane",this));
     AddBuilder(new CaptWirePlaneBuilder("VPlane",this));
     AddBuilder(new CaptWirePlaneBuilder("UPlane",this));
-    AddBuilder(new CaptWirePlaneBuilder("XPlane",this));
 }
 
 CaptDriftRegionBuilder::~CaptDriftRegionBuilder() {};
@@ -115,7 +115,6 @@ G4LogicalVolume *CaptDriftRegionBuilder::GetPiece(void) {
     // (this puts the local Y axis along the -Y global axis.
     G4RotationMatrix* xRotation = new G4RotationMatrix(); 
     xRotation->rotateX(180*degree);
-    // xRotation->rotateZ(180*degree);
 
     CaptWirePlaneBuilder& xPlane = Get<CaptWirePlaneBuilder>("XPlane");
     G4LogicalVolume *logX = xPlane.GetPiece();
@@ -130,23 +129,7 @@ G4LogicalVolume *CaptDriftRegionBuilder::GetPiece(void) {
                       0,                        // Copy number (zero)
                       Check());                 // Check overlaps.
     
-    G4RotationMatrix* uRotation = new G4RotationMatrix(); 
-    uRotation->rotateX(180*degree);
-    uRotation->rotateZ(60*degree);
-    
-    CaptWirePlaneBuilder& uPlane = Get<CaptWirePlaneBuilder>("UPlane");
-    G4LogicalVolume *logU = uPlane.GetPiece();
-    new G4PVPlacement(uRotation,                // rotation.
-                      G4ThreeVector(0,0,
-                                    (GetHeight()/2 - xPlane.GetHeight()/2
-                                     - GetWirePlaneSpacing())),
-                      logU,                     // logical volume
-                      logU->GetName(),          // name
-                      logVolume,                // mother  volume
-                      false,                    // (not used)
-                      0,                        // Copy number (zero)
-                      Check());                 // Check overlaps.
-    
+
     G4RotationMatrix* vRotation = new G4RotationMatrix(); 
     vRotation->rotateX(180*degree);
     vRotation->rotateZ(-60*degree);
@@ -156,9 +139,27 @@ G4LogicalVolume *CaptDriftRegionBuilder::GetPiece(void) {
     new G4PVPlacement(vRotation,                // rotation.
                       G4ThreeVector(0,0,
                                     (GetHeight()/2 - xPlane.GetHeight()/2
-                                     - 2*GetWirePlaneSpacing())),
+                                     - GetWirePlaneSpacing())),
                       logV,                     // logical volume
                       logV->GetName(),          // name
+                      logVolume,                // mother  volume
+                      false,                    // (not used)
+                      0,                        // Copy number (zero)
+                      Check());                 // Check overlaps.
+
+
+    G4RotationMatrix* uRotation = new G4RotationMatrix(); 
+    uRotation->rotateX(180*degree);
+    uRotation->rotateZ(60*degree);
+    
+    CaptWirePlaneBuilder& uPlane = Get<CaptWirePlaneBuilder>("UPlane");
+    G4LogicalVolume *logU = uPlane.GetPiece();
+    new G4PVPlacement(uRotation,                // rotation.
+                      G4ThreeVector(0,0,
+                                    (GetHeight()/2 - xPlane.GetHeight()/2
+                                     - 2*GetWirePlaneSpacing())),
+                      logU,                     // logical volume
+                      logU->GetName(),          // name
                       logVolume,                // mother  volume
                       false,                    // (not used)
                       0,                        // Copy number (zero)
