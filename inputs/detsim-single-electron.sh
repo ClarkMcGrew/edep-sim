@@ -12,12 +12,12 @@ cat >> $MACRO <<EOF
 # specify the position of the vertex.  The any of the GPS direction
 # and energy commands can be used.
 /gps/particle e-
-/gps/energy 300 MeV
+/gps/energy 600 MeV
 
 # This generates the position of the first particle gun.  It will be
 # used for the other particle guns.  The /gps/position command must
 # come first.
-/gps/position 0.0 0.0 -60.0 cm
+/gps/position 0.0 100.0 -60.0 cm
 /gps/pos/type Volume
 /gps/pos/shape Para
 /gps/pos/halfx 10 cm
@@ -25,7 +25,9 @@ cat >> $MACRO <<EOF
 /gps/pos/halfz 10 cm
 
 # This generates the direction of the first particle gun. 
-/gps/ang/type iso
+/gps/ang/type beam1d
+/gps/ang/sigma_r 15 deg
+/gps/ang/rot2 0 0 -1
 
 /run/beamOn ${COUNT}
 
