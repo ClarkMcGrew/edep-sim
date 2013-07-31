@@ -50,15 +50,3 @@ path_prepend LD_LIBRARY_PATH "$(DETSIMROOT)/$(detSim_tag)
 path_remove PATH "$(DETSIMROOT)"
 path_prepend PATH "$(DETSIMROOT)/$(detSim_tag)"
 
-# THESE NEED TO BE ADDED TO GEANT4 LCG_Interfaces
-
-macro g4Share /home/mcgrew/work/captain/software/LCGCMT/0.1.1/EXTERNALS/geant4/share
-
-set G4LEDATA $(g4Share)/G4EMLOW6.32
-set G4LEVELGAMMADATA $(g4Share)/PhotonEvaporation2.3
-set G4NEUTRONHPDATA $(g4Share)/G4NDL4.2
-set G4NEUTRONXSDATA $(g4Share)/G4NEUTRONXS1.2
-set G4PIIDATA $(g4Share)/G4PII1.3
-set G4RADIOACTIVEDATA $(g4Share)/RadioactiveDecay3.6
-set G4REALSURFACEDATA $(g4Share)/RealSurface1.0
-set G4SAIDXSDATA $(g4Share)/G4SAIDDATA1.1
