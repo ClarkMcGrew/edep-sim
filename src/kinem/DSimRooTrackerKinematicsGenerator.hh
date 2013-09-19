@@ -167,38 +167,5 @@ private:
     /// The index of the last mother of the particle in the arrays.
     int         fStdHepLm[kNPmax]; //[fStdHepN]
 
-    //////////////////////////////
-    /// The following variables are copied more or less directly from the
-    /// input flux generator.
-    //////////////////////////////
-
-    /// The PDG code of the particle which created the parent neutrino.
-    int         fNuParentPdg;
-
-    /// The interaction mode at the vertex which created the parent neutrino.
-    /// This is normally the decay mode of the parent particle.
-    int         fNuParentDecMode;
-
-    /// The 4 momentum of the particle at the vertex which created the parent
-    /// neutrino.  This is normally the momentum of the parent particle at the
-    /// decay point.
-    double      fNuParentDecP4[4];
-
-    /// The position of the vertex at which the neutrino was created.  This is
-    /// passed directly from the beam (or other flux) generator, and is in the
-    /// native units of the original generator.
-    double      fNuParentDecX4[4];
-
-    /// The momentum of the parent particle at it's production point.  This is
-    /// in the native energy units of the flux generator.
-    double      fNuParentProP4[4];
-    
-    /// The position of the parent particle at it's production point.  This
-    /// uses the target as the origin and is in the native units of the flux
-    /// generator.
-    double      fNuParentProX4[4];
-
-    /// The vertex ID of the parent particle vertex.
-    int         fNuParentProNVtx;
 };
 #endif

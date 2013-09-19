@@ -74,13 +74,6 @@ DSimRooTrackerKinematicsGenerator::DSimRooTrackerKinematicsGenerator(
     fTree->SetBranchAddress("StdHepLd",        fStdHepLd);
     fTree->SetBranchAddress("StdHepFm",        fStdHepFm);
     fTree->SetBranchAddress("StdHepLm",        fStdHepLm);
-    fTree->SetBranchAddress("NuParentPdg",    &fNuParentPdg);
-    fTree->SetBranchAddress("NuParentDecMode",&fNuParentDecMode);
-    fTree->SetBranchAddress("NuParentDecP4",   fNuParentDecP4);
-    fTree->SetBranchAddress("NuParentDecX4",   fNuParentDecX4);
-    fTree->SetBranchAddress("NuParentProP4",   fNuParentProP4);
-    fTree->SetBranchAddress("NuParentProX4",   fNuParentProX4);
-    fTree->SetBranchAddress("NuParentProNVtx",&fNuParentProNVtx);
 
     // Set the input tree to the current rootracker tree that this class is
     // using.
@@ -276,54 +269,6 @@ bool DSimRooTrackerKinematicsGenerator::GeneratePrimaryVertex(
             theVertex->SetPrimary(theParticle);
         }
     }
-
-    // Fill the particles at the decay vertex.  These are the first info
-    // vertex.
-    G4PrimaryVertex* theDecayVertex 
-        = new G4PrimaryVertex(G4ThreeVector(fNuParentDecX4[0]*m,
-                                            fNuParentDecX4[1]*m,
-                                            fNuParentDecX4[2]*m),
-                              fNuParentDecX4[3]*second);
-    vertexInfo->AddInformationalVertex(theDecayVertex);
-
-    // Add an information field to the vertex.
-    DSimVertexInfo *decayVertexInfo = new DSimVertexInfo;
-    decayVertexInfo->SetName("beam-particle:Decay");
-    {
-        std::ostringstream tmp;
-        tmp << fNuParentDecMode;
-        decayVertexInfo->SetReaction(tmp.str());
-    }
-    theDecayVertex->SetUserInformation(decayVertexInfo);
-
-    G4PrimaryParticle* theDecayParticle
-        = new G4PrimaryParticle(fNuParentPdg,
-                                fNuParentDecP4[0]*GeV,
-                                fNuParentDecP4[1]*GeV,
-                                fNuParentDecP4[2]*GeV);
-    theDecayVertex->SetPrimary(theDecayParticle);
-
-    // Fill the particles at the production vertex.
-    G4PrimaryVertex* theProductionVertex 
-        = new G4PrimaryVertex(G4ThreeVector(fNuParentProX4[0]*m,
-                                            fNuParentProX4[1]*m,
-                                            fNuParentProX4[2]*m),
-                              fNuParentProX4[3]*second);
-    decayVertexInfo->AddInformationalVertex(theProductionVertex);
-
-    // Add information about the production vertex.
-    DSimVertexInfo *productionVertexInfo = new DSimVertexInfo;
-    productionVertexInfo->SetName("beam-particle:Production");
-    productionVertexInfo->SetInteractionNumber(fNuParentProNVtx);
-    theProductionVertex->SetUserInformation(productionVertexInfo);
-
-    G4PrimaryParticle* theProductionParticle
-        = new G4PrimaryParticle(fNuParentPdg,
-                                fNuParentProP4[0]*GeV,
-                                fNuParentProP4[1]*GeV,
-                                fNuParentProP4[2]*GeV);
-    theProductionVertex->SetPrimary(theProductionParticle);
-
 
     return true;
 }
