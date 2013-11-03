@@ -16,7 +16,7 @@
 
 DSimVConstrainedPositionGenerator::DSimVConstrainedPositionGenerator(
     const G4String& name) 
-    : DSimVPositionGenerator(name), fSampleVolume("OA"),
+    : DSimVPositionGenerator(name), fSampleVolume("Cryostat"),
       fLimitsFound(false) {}
 
 DSimVConstrainedPositionGenerator::~DSimVConstrainedPositionGenerator() {}
