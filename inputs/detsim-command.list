@@ -11,12 +11,15 @@ Command directory path : /
    /run/   Run control commands.
    /random/   Random number status control commands.
    /particle/   Particle control commands.
-   /dsim/   Control the world geometry.
+   /dsim/   T2K detector control.
+   /Captain/   Control the world geometry.
+   /hits/   Sensitive detectors and Hits
    /material/   Commands for materials
    /physics_engine/   commands related to the physics simulation engine.
    /optics_engine/   Commands related to the optical physics simulation engine.
    /generator/   Control of the particle generator.
    /gps/   General Paricle Source control commands.
+   /vis/   Visualization commands.
    /db/   Output file control commands.
  Commands : 
 Command directory path : /control/
@@ -2944,7 +2947,7 @@ Command directory path : /dsim/
 
 
 Guidance :
-Control the world geometry.
+T2K detector control.
 
  Sub-directories : 
    /dsim/phys/   Control the physics lists
@@ -2959,13 +2962,6 @@ generation, or reading of kinematics files.
 of a run condition and a version.  This is translated into a G4
 macro file which is executed.  The run condition macros are saved
 in the <package-root>/src directory (e.g. src/baseline-1.0.mac). 
-   visible * The object is drawn if this is true.
-   visibleDaughters * The daughters of this object are drawn if this is true.
-   width * Set the width of the world.
-   height * Set the height of the world.
-   length * Set the length of the world.
-   UseStandAloneModule * Set true to have only a single module
-   StandAloneModuleName * Name of Stand Alone Module
    runId * This is the first run id that will be used by GEANT.  GEANT will automatically increment the run id every time it starts a new internal run so care must be taken if you depend on this to pass-through the run id.
    subrunId * Set the sub run context field for documentation purposes.  This has no internal meaning.
 
@@ -3023,93 +3019,6 @@ Parameter : Name
 Parameter : Version
  Parameter type  : s
  Omittable       : False
-
-
-
-Command /dsim/visible
-Guidance :
-The object is drawn if this is true.
-
-Parameter : Visibility
- Parameter type  : b
- Omittable       : False
-
-
-
-Command /dsim/visibleDaughters
-Guidance :
-The daughters of this object are drawn if this is true.
-
-Parameter : Visibility
- Parameter type  : b
- Omittable       : False
-
-
-
-Command /dsim/width
-Guidance :
-Set the width of the world.
-
-Parameter : Width
- Parameter type  : d
- Omittable       : False
-
-Parameter : Unit
- Parameter type  : s
- Omittable       : False
- Candidates      : pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
-
-
-
-Command /dsim/height
-Guidance :
-Set the height of the world.
-
-Parameter : Height
- Parameter type  : d
- Omittable       : False
-
-Parameter : Unit
- Parameter type  : s
- Omittable       : False
- Candidates      : pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
-
-
-
-Command /dsim/length
-Guidance :
-Set the length of the world.
-
-Parameter : Length
- Parameter type  : d
- Omittable       : False
-
-Parameter : Unit
- Parameter type  : s
- Omittable       : False
- Candidates      : pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
-
-
-
-Command /dsim/UseStandAloneModule
-Guidance :
-Set true to have only a single module
-
-Parameter : UseStandAloneModule
- Parameter type  : b
- Omittable       : False
- Default value   : 0
-
-
-
-Command /dsim/StandAloneModuleName
-Guidance :
-Name of Stand Alone Module
-
-Parameter : StandAloneModuleName
- Parameter type  : s
- Omittable       : False
- Default value   : NoValueSet
 
 
 
@@ -3243,6 +3152,849 @@ Sets the random number generator seed using the system time.
 Command /dsim/random/showRandomSeed
 Guidance :
 Show the random number seed.
+
+Command directory path : /Captain/
+
+
+Guidance :
+Control the world geometry.
+
+ Sub-directories : 
+   /Captain/Cryostat/   Control the driftRegion geometry.
+ Commands : 
+   visible * The object is drawn if this is true.
+   visibleDaughters * The daughters of this object are drawn if this is true.
+   check * If this is true then check for overlaps
+   sensitive * Set the name of the sensitive detector
+   maxHitSagitta * Set the maximum sagitta for a hit.
+   maxHitLength * Set the maximum length for a hit.
+   length * Set the length of the world.
+   width * Set the width of the world.
+   height * Set the height of the world.
+
+
+Command /Captain/visible
+Guidance :
+The object is drawn if this is true.
+
+Parameter : visibility
+ Parameter type  : b
+ Omittable       : False
+
+
+
+Command /Captain/visibleDaughters
+Guidance :
+The daughters of this object are drawn if this is true.
+
+Parameter : visibility
+ Parameter type  : b
+ Omittable       : False
+
+
+
+Command /Captain/check
+Guidance :
+If this is true then check for overlaps
+
+Parameter : check
+ Parameter type  : b
+ Omittable       : False
+
+
+
+Command /Captain/sensitive
+Guidance :
+Set the name of the sensitive detector
+
+Parameter : Name
+ Parameter type  : s
+ Omittable       : False
+
+Parameter : Type
+ Parameter type  : s
+ Omittable       : False
+
+
+
+Command /Captain/maxHitSagitta
+Guidance :
+Set the maximum sagitta for a hit.
+
+Parameter : Sagitta
+ Parameter type  : d
+ Omittable       : False
+
+Parameter : Unit
+ Parameter type  : s
+ Omittable       : False
+ Candidates      : pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
+
+
+
+Command /Captain/maxHitLength
+Guidance :
+Set the maximum length for a hit.
+
+Parameter : HitLength
+ Parameter type  : d
+ Omittable       : False
+
+Parameter : Unit
+ Parameter type  : s
+ Omittable       : False
+ Candidates      : pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
+
+
+
+Command /Captain/length
+Guidance :
+Set the length of the world.
+
+Parameter : Length
+ Parameter type  : d
+ Omittable       : False
+
+Parameter : Unit
+ Parameter type  : s
+ Omittable       : False
+ Candidates      : pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
+
+
+
+Command /Captain/width
+Guidance :
+Set the width of the world.
+
+Parameter : Width
+ Parameter type  : d
+ Omittable       : False
+
+Parameter : Unit
+ Parameter type  : s
+ Omittable       : False
+ Candidates      : pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
+
+
+
+Command /Captain/height
+Guidance :
+Set the height of the world.
+
+Parameter : Height
+ Parameter type  : d
+ Omittable       : False
+
+Parameter : Unit
+ Parameter type  : s
+ Omittable       : False
+ Candidates      : pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
+
+Command directory path : /Captain/Cryostat/
+
+
+Guidance :
+Control the driftRegion geometry.
+
+ Sub-directories : 
+   /Captain/Cryostat/Drift/   Control the drift region geometry.
+ Commands : 
+   visible * The object is drawn if this is true.
+   visibleDaughters * The daughters of this object are drawn if this is true.
+   check * If this is true then check for overlaps
+   sensitive * Set the name of the sensitive detector
+   maxHitSagitta * Set the maximum sagitta for a hit.
+   maxHitLength * Set the maximum length for a hit.
+   innerDiameter * Set the inner diameter of the cryostat.  This is the
+diameter of the cold volume.
+   innerHeight * Set the inner height of the cryostat.  This is the height
+of the cold volume.
+   wallThickness * Set the thickness of the SS wall of the cryostat.
+   argonDepth * Set the depth of the liquid argon.
+
+
+Command /Captain/Cryostat/visible
+Guidance :
+The object is drawn if this is true.
+
+Parameter : visibility
+ Parameter type  : b
+ Omittable       : False
+
+
+
+Command /Captain/Cryostat/visibleDaughters
+Guidance :
+The daughters of this object are drawn if this is true.
+
+Parameter : visibility
+ Parameter type  : b
+ Omittable       : False
+
+
+
+Command /Captain/Cryostat/check
+Guidance :
+If this is true then check for overlaps
+
+Parameter : check
+ Parameter type  : b
+ Omittable       : False
+
+
+
+Command /Captain/Cryostat/sensitive
+Guidance :
+Set the name of the sensitive detector
+
+Parameter : Name
+ Parameter type  : s
+ Omittable       : False
+
+Parameter : Type
+ Parameter type  : s
+ Omittable       : False
+
+
+
+Command /Captain/Cryostat/maxHitSagitta
+Guidance :
+Set the maximum sagitta for a hit.
+
+Parameter : Sagitta
+ Parameter type  : d
+ Omittable       : False
+
+Parameter : Unit
+ Parameter type  : s
+ Omittable       : False
+ Candidates      : pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
+
+
+
+Command /Captain/Cryostat/maxHitLength
+Guidance :
+Set the maximum length for a hit.
+
+Parameter : HitLength
+ Parameter type  : d
+ Omittable       : False
+
+Parameter : Unit
+ Parameter type  : s
+ Omittable       : False
+ Candidates      : pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
+
+
+
+Command /Captain/Cryostat/innerDiameter
+Guidance :
+Set the inner diameter of the cryostat.  This is the
+diameter of the cold volume.
+
+Parameter : diameter
+ Parameter type  : d
+ Omittable       : False
+
+Parameter : Unit
+ Parameter type  : s
+ Omittable       : False
+ Candidates      : pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
+
+
+
+Command /Captain/Cryostat/innerHeight
+Guidance :
+Set the inner height of the cryostat.  This is the height
+of the cold volume.
+
+Parameter : height
+ Parameter type  : d
+ Omittable       : False
+
+Parameter : Unit
+ Parameter type  : s
+ Omittable       : False
+ Candidates      : pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
+
+
+
+Command /Captain/Cryostat/wallThickness
+Guidance :
+Set the thickness of the SS wall of the cryostat.
+
+Parameter : thickness
+ Parameter type  : d
+ Omittable       : False
+
+Parameter : Unit
+ Parameter type  : s
+ Omittable       : False
+ Candidates      : pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
+
+
+
+Command /Captain/Cryostat/argonDepth
+Guidance :
+Set the depth of the liquid argon.
+
+Parameter : depth
+ Parameter type  : d
+ Omittable       : False
+
+Parameter : Unit
+ Parameter type  : s
+ Omittable       : False
+ Candidates      : pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
+
+Command directory path : /Captain/Cryostat/Drift/
+
+
+Guidance :
+Control the drift region geometry.
+
+ Sub-directories : 
+   /Captain/Cryostat/Drift/XPlane/   Control the drift region geometry.
+   /Captain/Cryostat/Drift/VPlane/   Control the drift region geometry.
+   /Captain/Cryostat/Drift/UPlane/   Control the drift region geometry.
+ Commands : 
+   visible * The object is drawn if this is true.
+   visibleDaughters * The daughters of this object are drawn if this is true.
+   check * If this is true then check for overlaps
+   sensitive * Set the name of the sensitive detector
+   maxHitSagitta * Set the maximum sagitta for a hit.
+   maxHitLength * Set the maximum length for a hit.
+   length * Set the apothem of the drift region.
+   driftLength * Set the drift length from cathode to wires.
+   wirePlaneSpacing * Set spacing between the wires.
+
+
+Command /Captain/Cryostat/Drift/visible
+Guidance :
+The object is drawn if this is true.
+
+Parameter : visibility
+ Parameter type  : b
+ Omittable       : False
+
+
+
+Command /Captain/Cryostat/Drift/visibleDaughters
+Guidance :
+The daughters of this object are drawn if this is true.
+
+Parameter : visibility
+ Parameter type  : b
+ Omittable       : False
+
+
+
+Command /Captain/Cryostat/Drift/check
+Guidance :
+If this is true then check for overlaps
+
+Parameter : check
+ Parameter type  : b
+ Omittable       : False
+
+
+
+Command /Captain/Cryostat/Drift/sensitive
+Guidance :
+Set the name of the sensitive detector
+
+Parameter : Name
+ Parameter type  : s
+ Omittable       : False
+
+Parameter : Type
+ Parameter type  : s
+ Omittable       : False
+
+
+
+Command /Captain/Cryostat/Drift/maxHitSagitta
+Guidance :
+Set the maximum sagitta for a hit.
+
+Parameter : Sagitta
+ Parameter type  : d
+ Omittable       : False
+
+Parameter : Unit
+ Parameter type  : s
+ Omittable       : False
+ Candidates      : pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
+
+
+
+Command /Captain/Cryostat/Drift/maxHitLength
+Guidance :
+Set the maximum length for a hit.
+
+Parameter : HitLength
+ Parameter type  : d
+ Omittable       : False
+
+Parameter : Unit
+ Parameter type  : s
+ Omittable       : False
+ Candidates      : pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
+
+
+
+Command /Captain/Cryostat/Drift/length
+Guidance :
+Set the apothem of the drift region.
+
+Parameter : apothem
+ Parameter type  : d
+ Omittable       : False
+
+Parameter : Unit
+ Parameter type  : s
+ Omittable       : False
+ Candidates      : pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
+
+
+
+Command /Captain/Cryostat/Drift/driftLength
+Guidance :
+Set the drift length from cathode to wires.
+
+Parameter : drift
+ Parameter type  : d
+ Omittable       : False
+
+Parameter : Unit
+ Parameter type  : s
+ Omittable       : False
+ Candidates      : pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
+
+
+
+Command /Captain/Cryostat/Drift/wirePlaneSpacing
+Guidance :
+Set spacing between the wires.
+
+Parameter : space
+ Parameter type  : d
+ Omittable       : False
+
+Parameter : Unit
+ Parameter type  : s
+ Omittable       : False
+ Candidates      : pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
+
+Command directory path : /Captain/Cryostat/Drift/XPlane/
+
+
+Guidance :
+Control the drift region geometry.
+
+ Sub-directories : 
+ Commands : 
+   visible * The object is drawn if this is true.
+   visibleDaughters * The daughters of this object are drawn if this is true.
+   check * If this is true then check for overlaps
+   sensitive * Set the name of the sensitive detector
+   maxHitSagitta * Set the maximum sagitta for a hit.
+   maxHitLength * Set the maximum length for a hit.
+   length * Set the apothem of the drift region.
+   wireSpacing * Set the wire spacing.
+
+
+Command /Captain/Cryostat/Drift/XPlane/visible
+Guidance :
+The object is drawn if this is true.
+
+Parameter : visibility
+ Parameter type  : b
+ Omittable       : False
+
+
+
+Command /Captain/Cryostat/Drift/XPlane/visibleDaughters
+Guidance :
+The daughters of this object are drawn if this is true.
+
+Parameter : visibility
+ Parameter type  : b
+ Omittable       : False
+
+
+
+Command /Captain/Cryostat/Drift/XPlane/check
+Guidance :
+If this is true then check for overlaps
+
+Parameter : check
+ Parameter type  : b
+ Omittable       : False
+
+
+
+Command /Captain/Cryostat/Drift/XPlane/sensitive
+Guidance :
+Set the name of the sensitive detector
+
+Parameter : Name
+ Parameter type  : s
+ Omittable       : False
+
+Parameter : Type
+ Parameter type  : s
+ Omittable       : False
+
+
+
+Command /Captain/Cryostat/Drift/XPlane/maxHitSagitta
+Guidance :
+Set the maximum sagitta for a hit.
+
+Parameter : Sagitta
+ Parameter type  : d
+ Omittable       : False
+
+Parameter : Unit
+ Parameter type  : s
+ Omittable       : False
+ Candidates      : pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
+
+
+
+Command /Captain/Cryostat/Drift/XPlane/maxHitLength
+Guidance :
+Set the maximum length for a hit.
+
+Parameter : HitLength
+ Parameter type  : d
+ Omittable       : False
+
+Parameter : Unit
+ Parameter type  : s
+ Omittable       : False
+ Candidates      : pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
+
+
+
+Command /Captain/Cryostat/Drift/XPlane/length
+Guidance :
+Set the apothem of the drift region.
+
+Parameter : apothem
+ Parameter type  : d
+ Omittable       : False
+
+Parameter : Unit
+ Parameter type  : s
+ Omittable       : False
+ Candidates      : pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
+
+
+
+Command /Captain/Cryostat/Drift/XPlane/wireSpacing
+Guidance :
+Set the wire spacing.
+
+Parameter : spacing
+ Parameter type  : d
+ Omittable       : False
+
+Parameter : Unit
+ Parameter type  : s
+ Omittable       : False
+ Candidates      : pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
+
+Command directory path : /Captain/Cryostat/Drift/VPlane/
+
+
+Guidance :
+Control the drift region geometry.
+
+ Sub-directories : 
+ Commands : 
+   visible * The object is drawn if this is true.
+   visibleDaughters * The daughters of this object are drawn if this is true.
+   check * If this is true then check for overlaps
+   sensitive * Set the name of the sensitive detector
+   maxHitSagitta * Set the maximum sagitta for a hit.
+   maxHitLength * Set the maximum length for a hit.
+   length * Set the apothem of the drift region.
+   wireSpacing * Set the wire spacing.
+
+
+Command /Captain/Cryostat/Drift/VPlane/visible
+Guidance :
+The object is drawn if this is true.
+
+Parameter : visibility
+ Parameter type  : b
+ Omittable       : False
+
+
+
+Command /Captain/Cryostat/Drift/VPlane/visibleDaughters
+Guidance :
+The daughters of this object are drawn if this is true.
+
+Parameter : visibility
+ Parameter type  : b
+ Omittable       : False
+
+
+
+Command /Captain/Cryostat/Drift/VPlane/check
+Guidance :
+If this is true then check for overlaps
+
+Parameter : check
+ Parameter type  : b
+ Omittable       : False
+
+
+
+Command /Captain/Cryostat/Drift/VPlane/sensitive
+Guidance :
+Set the name of the sensitive detector
+
+Parameter : Name
+ Parameter type  : s
+ Omittable       : False
+
+Parameter : Type
+ Parameter type  : s
+ Omittable       : False
+
+
+
+Command /Captain/Cryostat/Drift/VPlane/maxHitSagitta
+Guidance :
+Set the maximum sagitta for a hit.
+
+Parameter : Sagitta
+ Parameter type  : d
+ Omittable       : False
+
+Parameter : Unit
+ Parameter type  : s
+ Omittable       : False
+ Candidates      : pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
+
+
+
+Command /Captain/Cryostat/Drift/VPlane/maxHitLength
+Guidance :
+Set the maximum length for a hit.
+
+Parameter : HitLength
+ Parameter type  : d
+ Omittable       : False
+
+Parameter : Unit
+ Parameter type  : s
+ Omittable       : False
+ Candidates      : pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
+
+
+
+Command /Captain/Cryostat/Drift/VPlane/length
+Guidance :
+Set the apothem of the drift region.
+
+Parameter : apothem
+ Parameter type  : d
+ Omittable       : False
+
+Parameter : Unit
+ Parameter type  : s
+ Omittable       : False
+ Candidates      : pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
+
+
+
+Command /Captain/Cryostat/Drift/VPlane/wireSpacing
+Guidance :
+Set the wire spacing.
+
+Parameter : spacing
+ Parameter type  : d
+ Omittable       : False
+
+Parameter : Unit
+ Parameter type  : s
+ Omittable       : False
+ Candidates      : pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
+
+Command directory path : /Captain/Cryostat/Drift/UPlane/
+
+
+Guidance :
+Control the drift region geometry.
+
+ Sub-directories : 
+ Commands : 
+   visible * The object is drawn if this is true.
+   visibleDaughters * The daughters of this object are drawn if this is true.
+   check * If this is true then check for overlaps
+   sensitive * Set the name of the sensitive detector
+   maxHitSagitta * Set the maximum sagitta for a hit.
+   maxHitLength * Set the maximum length for a hit.
+   length * Set the apothem of the drift region.
+   wireSpacing * Set the wire spacing.
+
+
+Command /Captain/Cryostat/Drift/UPlane/visible
+Guidance :
+The object is drawn if this is true.
+
+Parameter : visibility
+ Parameter type  : b
+ Omittable       : False
+
+
+
+Command /Captain/Cryostat/Drift/UPlane/visibleDaughters
+Guidance :
+The daughters of this object are drawn if this is true.
+
+Parameter : visibility
+ Parameter type  : b
+ Omittable       : False
+
+
+
+Command /Captain/Cryostat/Drift/UPlane/check
+Guidance :
+If this is true then check for overlaps
+
+Parameter : check
+ Parameter type  : b
+ Omittable       : False
+
+
+
+Command /Captain/Cryostat/Drift/UPlane/sensitive
+Guidance :
+Set the name of the sensitive detector
+
+Parameter : Name
+ Parameter type  : s
+ Omittable       : False
+
+Parameter : Type
+ Parameter type  : s
+ Omittable       : False
+
+
+
+Command /Captain/Cryostat/Drift/UPlane/maxHitSagitta
+Guidance :
+Set the maximum sagitta for a hit.
+
+Parameter : Sagitta
+ Parameter type  : d
+ Omittable       : False
+
+Parameter : Unit
+ Parameter type  : s
+ Omittable       : False
+ Candidates      : pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
+
+
+
+Command /Captain/Cryostat/Drift/UPlane/maxHitLength
+Guidance :
+Set the maximum length for a hit.
+
+Parameter : HitLength
+ Parameter type  : d
+ Omittable       : False
+
+Parameter : Unit
+ Parameter type  : s
+ Omittable       : False
+ Candidates      : pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
+
+
+
+Command /Captain/Cryostat/Drift/UPlane/length
+Guidance :
+Set the apothem of the drift region.
+
+Parameter : apothem
+ Parameter type  : d
+ Omittable       : False
+
+Parameter : Unit
+ Parameter type  : s
+ Omittable       : False
+ Candidates      : pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
+
+
+
+Command /Captain/Cryostat/Drift/UPlane/wireSpacing
+Guidance :
+Set the wire spacing.
+
+Parameter : spacing
+ Parameter type  : d
+ Omittable       : False
+
+Parameter : Unit
+ Parameter type  : s
+ Omittable       : False
+ Candidates      : pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
+
+Command directory path : /hits/
+
+
+Guidance :
+Sensitive detectors and Hits
+
+ Sub-directories : 
+ Commands : 
+   list * List sensitive detector tree.
+   activate * Activate sensitive detector(s).
+   inactivate * Inactivate sensitive detector(s).
+   verbose * Set the Verbose level.
+
+
+Command /hits/list
+Guidance :
+List sensitive detector tree.
+
+
+
+Command /hits/activate
+Guidance :
+Activate sensitive detector(s).
+
+Parameter : detector
+ Parameter type  : s
+ Omittable       : True
+ Default value   : /
+
+
+
+Command /hits/inactivate
+Guidance :
+Inactivate sensitive detector(s).
+
+Parameter : detector
+ Parameter type  : s
+ Omittable       : True
+ Default value   : /
+
+
+
+Command /hits/verbose
+Guidance :
+Set the Verbose level.
+
+Parameter : level
+ Parameter type  : i
+ Omittable       : False
 
 Command directory path : /material/
 
@@ -6180,6 +6932,4139 @@ Parameter : int
  Default value   : Lin
  Candidates      : Lin Log Exp Spline
 
+Command directory path : /vis/
+
+
+Guidance :
+Visualization commands.
+
+ Sub-directories : 
+   /vis/ASCIITree/   Commands for ASCIITree control.
+   /vis/heprep/   HepRep commands.
+   /vis/rayTracer/   RayTracer commands.
+   /vis/gMocren/   gMocren commands.
+   /vis/ogl/   G4OpenGLViewer commands.
+   /vis/modeling/   Modeling commands.
+   /vis/filtering/   Filtering commands.
+   /vis/geometry/   Operations on vis attributes of Geant4 geometry.
+   /vis/set/   Set quantities for use in future commands where appropriate.
+   /vis/scene/   Operations on Geant4 scenes.
+   /vis/sceneHandler/   Operations on Geant4 scene handlers.
+   /vis/touchable/   Operations on touchables.
+   /vis/viewer/   Operations on Geant4 viewers.
+ Commands : 
+   verbose * Simple graded message scheme - digit or string (1st character defines):
+   initialize * Initialise visualisation manager.
+   abortReviewKeptEvents * Abort review of kept events.
+   enable * Enables/disables visualization system.
+   disable * Disables visualization system.
+   list * Lists visualization parameters.
+   reviewKeptEvents * Review kept events.
+   drawTree * (DTREE) Creates a scene consisting of this physical volume and
+  produces a representation of the geometry hieracrhy.
+   drawView * Draw view from this angle, etc.
+   drawVolume * Creates a scene containing this physical volume and asks the
+current viewer to draw it.  The scene becomes current.
+   open * Creates a scene handler ready for drawing.
+   specify * Draws logical volume with Boolean components, voxels and readout geometry.
+
+
+Command /vis/verbose
+Guidance :
+Simple graded message scheme - digit or string (1st character defines):
+  0) quiet,         // Nothing is printed.
+  1) startup,       // Startup and endup messages are printed...
+  2) errors,        // ...and errors...
+  3) warnings,      // ...and warnings...
+  4) confirmations, // ...and confirming messages...
+  5) parameters,    // ...and parameters of scenes and views...
+  6) all            // ...and everything available.
+
+Parameter : verbosity
+ Parameter type  : s
+ Omittable       : True
+ Default value   : warnings
+
+
+
+Command /vis/initialize
+Guidance :
+Initialise visualisation manager.
+
+
+
+Command /vis/abortReviewKeptEvents
+Guidance :
+Abort review of kept events.
+
+Parameter : abort
+ Parameter type  : b
+ Omittable       : True
+ Default value   : 1
+
+
+
+Command /vis/enable
+Guidance :
+Enables/disables visualization system.
+
+Parameter : enabled
+ Parameter type  : b
+ Omittable       : True
+ Default value   : 1
+
+
+
+Command /vis/disable
+Guidance :
+Disables visualization system.
+
+
+
+Command /vis/list
+Guidance :
+Lists visualization parameters.
+
+Parameter : verbosity
+ Parameter type  : s
+ Omittable       : True
+ Default value   : warnings
+
+
+
+Command /vis/reviewKeptEvents
+Guidance :
+Review kept events.
+If a macro file is specified, it is executed for each event.
+If a macro file is not specified, each event is drawn to the current
+viewer.  After each event, the session is paused.  The user may issue
+any allowed command.  Then enter "cont[inue]" to continue to the next
+event.
+Useful commands might be:
+  "/vis/viewer/..." to change the view (zoom, set/viewpoint,...).
+  "/vis/oglx/printEPS" to get hard copy.
+  "/vis/open" to get alternative viewer.
+  "/vis/abortReviewKeptEvents", then "cont[inue]", to abort.
+
+Parameter : macro-file-name
+ Parameter type  : s
+ Omittable       : True
+
+
+
+Command /vis/drawTree
+Guidance :
+(DTREE) Creates a scene consisting of this physical volume and
+  produces a representation of the geometry hieracrhy.
+The scene becomes current.
+
+Parameter : physical-volume-name
+ Parameter type  : s
+ Omittable       : True
+ Default value   : world
+
+Parameter : system
+ Parameter type  : s
+ Omittable       : True
+ Default value   : ATree
+
+
+
+Command /vis/drawView
+Guidance :
+Draw view from this angle, etc.
+
+Parameter : theta-degrees
+ Parameter type  : d
+ Omittable       : True
+ Default value   : 0
+
+Parameter : phi-degrees
+ Parameter type  : d
+ Omittable       : True
+ Default value   : 0
+
+Parameter : pan-right
+ Parameter type  : d
+ Omittable       : True
+ Default value   : 0
+
+Parameter : pan-up
+ Parameter type  : d
+ Omittable       : True
+ Default value   : 0
+
+Parameter : pan-unit
+ Parameter type  : s
+ Omittable       : True
+ Default value   : cm
+
+Parameter : zoom-factor
+ Parameter type  : d
+ Omittable       : True
+ Default value   : 1
+
+Parameter : dolly
+ Parameter type  : d
+ Omittable       : True
+ Default value   : 0
+
+Parameter : dolly-unit
+ Parameter type  : s
+ Omittable       : True
+ Default value   : cm
+
+
+
+Command /vis/drawVolume
+Guidance :
+Creates a scene containing this physical volume and asks the
+current viewer to draw it.  The scene becomes current.
+If physical-volume-name is "world" (the default), the main geometry
+tree (material world) is drawn.  If "worlds", all worlds - material
+world and parallel worlds, if any - are drawn.  Otherwise a search of
+all worlds is made, taking the first matching occurence only.  To see
+a representation of the geometry hierarchy of the worlds, try
+"/vis/drawTree [worlds]" or one of the driver/browser combinations
+that have the required functionality, e.g., HepRep
+
+Parameter : physical-volume-name
+ Parameter type  : s
+ Omittable       : True
+ Default value   : world
+
+
+
+Command /vis/open
+Guidance :
+Creates a scene handler ready for drawing.
+The scene handler becomes current (the name is auto-generated).
+
+Parameter : graphics-system-name
+ Parameter type  : s
+ Omittable       : False
+ Candidates      : ATree DAWNFILE HepRepXML HepRepFile RayTracer VRML1FILE VRML2FILE gMocrenFile OGL OGLI OGLS OGL_FALLBACK OGLI_FALLBACK OGLS_FALLBACK OGLIX OGLSX OGLIQt OGLSQt OGLIQt_FALLBACK OGLSQt_FALLBACK RayTracerX
+
+Parameter : window-size-hint
+integer (pixels) for square window placed by window manager or X-Windows-type geometry string, e.g. 600x600-100+100
+ Parameter type  : s
+ Omittable       : True
+ Default value   : 600
+
+
+
+Command /vis/specify
+Guidance :
+Draws logical volume with Boolean components, voxels and readout geometry.
+Creates a scene consisting of this logical volume and asks the
+  current viewer to draw it to the specified depth of descent
+  showing boolean components (if any), voxels (if any)
+  and readout geometry (if any), under control of the appropriate flag.
+Note: voxels are not constructed until start of run - /run/beamOn.
+The scene becomes current.
+
+Parameter : logical-volume-name
+ Parameter type  : s
+ Omittable       : False
+
+Parameter : depth-of-descent
+ Parameter type  : i
+ Omittable       : True
+ Default value   : 1
+
+Parameter : booleans-flag
+ Parameter type  : b
+ Omittable       : True
+ Default value   : 1
+
+Parameter : voxels-flag
+ Parameter type  : b
+ Omittable       : True
+ Default value   : 1
+
+Parameter : readout-flag
+ Parameter type  : b
+ Omittable       : True
+ Default value   : 1
+
+Command directory path : /vis/ASCIITree/
+
+
+Guidance :
+Commands for ASCIITree control.
+
+ Sub-directories : 
+   /vis/ASCIITree/set/   Settings for ASCIITree control.
+ Commands : 
+   verbose *   <  10: - does not print daughters of repeated placements, does not repeat replicas.
+
+
+Command /vis/ASCIITree/verbose
+Guidance :
+  <  10: - does not print daughters of repeated placements, does not repeat replicas.
+  >= 10: prints all physical volumes.
+The level of detail is given by verbosity%10:
+for each volume:
+  >=  0: physical volume name.
+  >=  1: logical volume name (and names of sensitive detector and readout geometry, if any).
+  >=  2: solid name and type.
+  >=  3: volume and density.
+  >=  5: daughter-subtracted volume and mass.
+and in the summary at the end of printing:
+  >=  4: daughter-included mass of top physical volume(s) in scene to depth specified.
+Note: by default, culling is switched off so all volumes are seen.
+Note: the mass calculation takes into account daughters, which can be time consuming.  If you want the mass of a particular subtree to a particular depth:
+  /vis/open ATree
+  /vis/ASCIITree/verbose 14
+  /vis/scene/create
+  /vis/scene/add/volume <subtree-physical-volume> ! <depth>
+  /vis/sceneHandler/attach
+  /vis/viewer/flush
+
+Parameter : verbosity
+ Parameter type  : i
+ Omittable       : True
+ Default value   : 0
+
+Command directory path : /vis/ASCIITree/set/
+
+
+Guidance :
+Settings for ASCIITree control.
+
+ Sub-directories : 
+ Commands : 
+   outFile * Set name of output file.
+
+
+Command /vis/ASCIITree/set/outFile
+Guidance :
+Set name of output file.
+
+Parameter : out-filename
+ Parameter type  : s
+ Omittable       : True
+ Default value   : G4cout
+
+Command directory path : /vis/heprep/
+
+
+Guidance :
+HepRep commands.
+
+ Sub-directories : 
+ Commands : 
+   setFileDir * Set directory for output.
+   setFileName * Set file name for output.
+   setOverwrite * Set true to write all output to exact same file name.
+   setCullInvisibles * Remove invisible objects from output file.
+   renderCylAsPolygons * Render cylinders and cones as polygons.
+   scale * Re-Scale coordinates.
+   center * Re-Center coordinates.
+   setEventNumberSuffix * Write separate event files, appended with given suffix.
+   appendGeometry * Appends copy of geometry to every event.
+   addPointAttributes * Adds point attributes to the points of trajectories.
+   useSolids * Use HepRep Solids, rather than Geant4 Primitives.
+
+
+Command /vis/heprep/setFileDir
+Guidance :
+Set directory for output.
+This command is used by HepRepFile, not by HepRepXML.
+
+Parameter : directory
+ Parameter type  : s
+ Omittable       : False
+
+
+
+Command /vis/heprep/setFileName
+Guidance :
+Set file name for output.
+This command is used by HepRepFile, not by HepRepXML.
+
+Parameter : directory
+ Parameter type  : s
+ Omittable       : False
+ Default value   : G4Data
+
+
+
+Command /vis/heprep/setOverwrite
+Guidance :
+Set true to write all output to exact same file name.
+Set false to increment the file name for each new output.
+This command is used by HepRepFile, not by HepRepXML.
+
+Parameter : flag
+ Parameter type  : b
+ Omittable       : False
+ Default value   : 0
+
+
+
+Command /vis/heprep/setCullInvisibles
+Guidance :
+Remove invisible objects from output file.
+This command is used by HepRepFile, not by HepRepXML.
+
+Parameter : flag
+ Parameter type  : b
+ Omittable       : False
+ Default value   : 0
+
+
+
+Command /vis/heprep/renderCylAsPolygons
+Guidance :
+Render cylinders and cones as polygons.
+This command is used by HepRepFile, not by HepRepXML.
+
+Parameter : flag
+ Parameter type  : b
+ Omittable       : False
+ Default value   : 0
+
+
+
+Command /vis/heprep/scale
+Guidance :
+Re-Scale coordinates.
+ Range of parameters : Scale > 0
+
+Parameter : Scale
+ Parameter type  : d
+ Omittable       : True
+ Default value   : 1
+
+
+
+Command /vis/heprep/center
+Guidance :
+Re-Center coordinates.
+
+Parameter : CenterX
+ Parameter type  : d
+ Omittable       : True
+ Default value   : 0
+
+Parameter : CenterY
+ Parameter type  : d
+ Omittable       : True
+ Default value   : 0
+
+Parameter : CenterZ
+ Parameter type  : d
+ Omittable       : True
+ Default value   : 0
+
+Parameter : Unit
+ Parameter type  : s
+ Omittable       : True
+ Default value   : m
+ Candidates      : pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
+
+
+
+Command /vis/heprep/setEventNumberSuffix
+Guidance :
+Write separate event files, appended with given suffix.
+Define the suffix with a pattern such as '-0000'.
+This command is used by HepRepXML, not by HepRepFile.
+
+Parameter : suffix
+ Parameter type  : s
+ Omittable       : False
+
+
+
+Command /vis/heprep/appendGeometry
+Guidance :
+Appends copy of geometry to every event.
+This command is used by HepRepXML, not by HepRepFile.
+
+Parameter : flag
+ Parameter type  : b
+ Omittable       : False
+ Default value   : 1
+
+
+
+Command /vis/heprep/addPointAttributes
+Guidance :
+Adds point attributes to the points of trajectories.
+This command is used by HepRepXML, not by HepRepFile.
+
+Parameter : flag
+ Parameter type  : b
+ Omittable       : False
+ Default value   : 0
+
+
+
+Command /vis/heprep/useSolids
+Guidance :
+Use HepRep Solids, rather than Geant4 Primitives.
+This command is used by HepRepXML, not by HepRepFile..
+
+Parameter : flag
+ Parameter type  : b
+ Omittable       : False
+ Default value   : 1
+
+Command directory path : /vis/rayTracer/
+
+
+Guidance :
+RayTracer commands.
+
+ Sub-directories : 
+ Commands : 
+   trace * Start the ray tracing.
+   column * Define the number of horizontal pixels.
+   row * Define the number of virtical pixels.
+   target * Define the center position of the target.
+   eyePosition * Define the eye position.
+   lightDirection * Define the direction of illumination light.
+   span * Define the angle per 100 pixels.
+   headAngle * Define the head direction.
+   attenuation * Define the attenuation length for transparent material.
+   distortion * Distortion effect of the fish eye lens.
+   ignoreTransparency * Ignore transparency even if the alpha of G4Colour < 1.
+   backgroundColour * Command has been deprecated.  Use /vis/viewer/set/background instead.
+
+
+Command /vis/rayTracer/trace
+Guidance :
+Start the ray tracing.
+Define the name of output JPEG file.
+
+Parameter : fileName
+ Parameter type  : s
+ Omittable       : True
+ Default value   : g4RayTracer.jpeg
+
+
+
+Command /vis/rayTracer/column
+Guidance :
+Define the number of horizontal pixels.
+ Range of parameters : nPixel > 0
+
+Parameter : nPixel
+ Parameter type  : i
+ Omittable       : False
+
+
+
+Command /vis/rayTracer/row
+Guidance :
+Define the number of virtical pixels.
+ Range of parameters : nPixel > 0
+
+Parameter : nPixel
+ Parameter type  : i
+ Omittable       : False
+
+
+
+Command /vis/rayTracer/target
+Guidance :
+Define the center position of the target.
+
+Parameter : X
+ Parameter type  : d
+ Omittable       : True
+ Default value   : 0
+
+Parameter : Y
+ Parameter type  : d
+ Omittable       : True
+ Default value   : 0
+
+Parameter : Z
+ Parameter type  : d
+ Omittable       : True
+ Default value   : 0
+
+Parameter : Unit
+ Parameter type  : s
+ Omittable       : True
+ Default value   : m
+ Candidates      : pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
+
+
+
+Command /vis/rayTracer/eyePosition
+Guidance :
+Define the eye position.
+Eye direction is calsurated from (target - eyePosition).
+
+Parameter : X
+ Parameter type  : d
+ Omittable       : True
+ Default value   : 0
+
+Parameter : Y
+ Parameter type  : d
+ Omittable       : True
+ Default value   : 0
+
+Parameter : Z
+ Parameter type  : d
+ Omittable       : True
+ Default value   : 0
+
+Parameter : Unit
+ Parameter type  : s
+ Omittable       : True
+ Default value   : m
+ Candidates      : pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
+
+
+
+Command /vis/rayTracer/lightDirection
+Guidance :
+Define the direction of illumination light.
+The vector needs not to be a unit vector, but it must not be a zero vector.
+ Range of parameters : Px != 0 || Py != 0 || Pz != 0
+
+Parameter : Px
+ Parameter type  : d
+ Omittable       : True
+ Default value   : 0.1
+
+Parameter : Py
+ Parameter type  : d
+ Omittable       : True
+ Default value   : 0.2
+
+Parameter : Pz
+ Parameter type  : d
+ Omittable       : True
+ Default value   : 0.3
+
+
+
+Command /vis/rayTracer/span
+Guidance :
+Define the angle per 100 pixels.
+ Range of parameters : span>0.
+
+Parameter : span
+ Parameter type  : d
+ Omittable       : True
+ Default value   : 50
+
+Parameter : Unit
+ Parameter type  : s
+ Omittable       : True
+ Default value   : deg
+ Candidates      : rad mrad deg radian milliradian degree
+
+
+
+Command /vis/rayTracer/headAngle
+Guidance :
+Define the head direction.
+ Range of parameters : headAngle>=0. && headAngle<360.
+
+Parameter : headAngle
+ Parameter type  : d
+ Omittable       : True
+ Default value   : 270
+
+Parameter : Unit
+ Parameter type  : s
+ Omittable       : True
+ Default value   : deg
+ Candidates      : rad mrad deg radian milliradian degree
+
+
+
+Command /vis/rayTracer/attenuation
+Guidance :
+Define the attenuation length for transparent material.
+Note that this value is independent to the attenuation length for the optical photon processes.
+ Range of parameters : Length > 0.
+
+Parameter : Length
+ Parameter type  : d
+ Omittable       : True
+ Default value   : 1
+
+Parameter : Unit
+ Parameter type  : s
+ Omittable       : True
+ Default value   : m
+ Candidates      : pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
+
+
+
+Command /vis/rayTracer/distortion
+Guidance :
+Distortion effect of the fish eye lens.
+
+Parameter : flag
+ Parameter type  : b
+ Omittable       : True
+ Default value   : 0
+
+
+
+Command /vis/rayTracer/ignoreTransparency
+Guidance :
+Ignore transparency even if the alpha of G4Colour < 1.
+
+Parameter : flag
+ Parameter type  : b
+ Omittable       : True
+ Default value   : 0
+
+
+
+Command /vis/rayTracer/backgroundColour
+Guidance :
+Command has been deprecated.  Use /vis/viewer/set/background instead.
+
+Parameter : red
+ Parameter type  : d
+ Omittable       : True
+ Default value   : 1
+
+Parameter : green
+ Parameter type  : d
+ Omittable       : True
+ Default value   : 1
+
+Parameter : blue
+ Parameter type  : d
+ Omittable       : True
+ Default value   : 1
+
+Command directory path : /vis/gMocren/
+
+
+Guidance :
+gMocren commands.
+
+ Sub-directories : 
+ Commands : 
+   setEventNumberSuffix * Write separate event files, appended with given suffix.
+   appendGeometry * Appends copy of geometry to every event.
+   addPointAttributes * Adds point attributes to the points of trajectories.
+   useSolids * Use GMocren Solids, rather than Geant4 Primitives.
+   setVolumeName * detector name for a volume data in gMocren data.
+   addHitName * hit name for a dose distribution in gMocren data.
+   resetHitNames * reset all hit names.
+   setScoringMeshName * scoring mesh name for a dose distribution in gMocren data.
+   addHitScorerName * hit scorer name for a dose distribution in gMocren data.
+   resetHitScorerName * reset all hit scorer names.
+   setNumberOfVoxels * set number of voxels.
+   list * list gMocren command parameters.
+   drawVolumeGrid * Add grid of the volume.
+
+
+Command /vis/gMocren/setEventNumberSuffix
+Guidance :
+Write separate event files, appended with given suffix.
+Define the suffix with a pattern such as '-0000'.
+
+Parameter : suffix
+ Parameter type  : s
+ Omittable       : False
+
+
+
+Command /vis/gMocren/appendGeometry
+Guidance :
+Appends copy of geometry to every event.
+
+Parameter : flag
+ Parameter type  : b
+ Omittable       : False
+ Default value   : 1
+
+
+
+Command /vis/gMocren/addPointAttributes
+Guidance :
+Adds point attributes to the points of trajectories.
+
+Parameter : flag
+ Parameter type  : b
+ Omittable       : False
+ Default value   : 0
+
+
+
+Command /vis/gMocren/useSolids
+Guidance :
+Use GMocren Solids, rather than Geant4 Primitives.
+
+Parameter : flag
+ Parameter type  : b
+ Omittable       : False
+ Default value   : 1
+
+
+
+Command /vis/gMocren/setVolumeName
+Guidance :
+detector name for a volume data in gMocren data.
+
+Parameter : kgMocrenVolumeName
+ Parameter type  : s
+ Omittable       : False
+ Default value   : gMocrenVolume
+
+
+
+Command /vis/gMocren/addHitName
+Guidance :
+hit name for a dose distribution in gMocren data.
+
+Parameter : kgMocrenHitName
+ Parameter type  : s
+ Omittable       : False
+
+
+
+Command /vis/gMocren/resetHitNames
+Guidance :
+reset all hit names.
+
+
+
+Command /vis/gMocren/setScoringMeshName
+Guidance :
+scoring mesh name for a dose distribution in gMocren data.
+
+Parameter : kgMocrenScoringMeshName
+ Parameter type  : s
+ Omittable       : False
+ Default value   : gMocrenScoringMesh
+
+
+
+Command /vis/gMocren/addHitScorerName
+Guidance :
+hit scorer name for a dose distribution in gMocren data.
+
+Parameter : kgMocrenHitScorerNames
+ Parameter type  : s
+ Omittable       : False
+
+
+
+Command /vis/gMocren/resetHitScorerName
+Guidance :
+reset all hit scorer names.
+
+
+
+Command /vis/gMocren/setNumberOfVoxels
+Guidance :
+set number of voxels.
+
+Parameter : nX
+ Parameter type  : i
+ Omittable       : False
+ Default value   : 1
+ Parameter range : nX>0
+
+Parameter : nY
+ Parameter type  : i
+ Omittable       : False
+ Default value   : 1
+ Parameter range : nY>0
+
+Parameter : nZ
+ Parameter type  : i
+ Omittable       : False
+ Default value   : 1
+ Parameter range : nZ>0
+
+
+
+Command /vis/gMocren/list
+Guidance :
+list gMocren command parameters.
+
+
+
+Command /vis/gMocren/drawVolumeGrid
+Guidance :
+Add grid of the volume.
+
+Parameter : kDrawVolumeGrid
+ Parameter type  : b
+ Omittable       : False
+ Default value   : 0
+
+Command directory path : /vis/ogl/
+
+
+Guidance :
+G4OpenGLViewer commands.
+
+ Sub-directories : 
+   /vis/ogl/set/   G4OpenGLViewer set commands.
+ Commands : 
+   printEPS * Print Encapsulated PostScript file.
+
+
+Command /vis/ogl/printEPS
+Guidance :
+Print Encapsulated PostScript file.
+Generates files with names G4OpenGL_n.eps, where n is a sequence
+number, starting at 0.
+Can be "vectored" or "pixmap" - see "/vis/ogl/set/printMode".
+
+Command directory path : /vis/ogl/set/
+
+
+Guidance :
+G4OpenGLViewer set commands.
+
+ Sub-directories : 
+ Commands : 
+   displayHeadTime * Display head time of range in 2D text.
+   displayLightFront * Display the light front at head time.
+   displayListLimit * Set/reset display list limit (to avoid memory exhaustion).
+   endTime * Set end and range of track time.
+   eventsDrawInterval * Set number of events allowed in drawing pipeline - speeds drawing
+   fade * 0: no fade; 1: maximum fade with time within range.
+   printFilename * Set print filename
+   printMode * Set print mode
+   printSize * Set print size
+   startTime * Set start and range of track time.
+   transparency * True/false to enable/disable rendering of transparent objects.
+
+
+Command /vis/ogl/set/displayHeadTime
+Guidance :
+Display head time of range in 2D text.
+
+Parameter : displayHeadTime
+ Parameter type  : b
+ Omittable       : False
+ Default value   : 0
+
+Parameter : screenX
+-1 < screenX < 1
+ Parameter type  : d
+ Omittable       : True
+ Default value   : -0.9
+ Parameter range : screenX >= -1. && screenX <= 1.
+
+Parameter : screenY
+-1 < screenY < 1
+ Parameter type  : d
+ Omittable       : True
+ Default value   : -0.9
+ Parameter range : screenY >= -1. && screenY <= 1.
+
+Parameter : screenSize
+ Parameter type  : d
+ Omittable       : True
+ Default value   : 24
+
+Parameter : red
+ Parameter type  : d
+ Omittable       : True
+ Default value   : 0
+ Parameter range : red >= 0. && red <= 1.
+
+Parameter : green
+ Parameter type  : d
+ Omittable       : True
+ Default value   : 1
+ Parameter range : green >= 0. && green <= 1.
+
+Parameter : blue
+ Parameter type  : d
+ Omittable       : True
+ Default value   : 1
+ Parameter range : blue >= 0. && blue <= 1.
+
+
+
+Command /vis/ogl/set/displayLightFront
+Guidance :
+Display the light front at head time.
+Tip: The trajectories can appear of jump ahead of the light front
+because their time range overlaps the viewer's time range.  To
+average out this discrete time effect, advance the light front by
+half the trajectories interval. E.g., if the trajectory time slice
+interval is 0.01 ns:
+  /vis/ogl/set/displayLightFront true -90 0 0 mm -0.005 ns
+To prevent them beating the light front at all:
+  /vis/ogl/set/displayLightFront true -90 0 0 mm -0.01 ns
+
+Parameter : displayLightFront
+ Parameter type  : b
+ Omittable       : False
+ Default value   : 0
+
+Parameter : originX
+ Parameter type  : d
+ Omittable       : True
+ Default value   : 0
+
+Parameter : originY
+ Parameter type  : d
+ Omittable       : True
+ Default value   : 0
+
+Parameter : originZ
+ Parameter type  : d
+ Omittable       : True
+ Default value   : 0
+
+Parameter : space_unit
+ Parameter type  : s
+ Omittable       : True
+ Default value   : m
+
+Parameter : originT
+ Parameter type  : d
+ Omittable       : True
+ Default value   : 0
+
+Parameter : time_unit
+ Parameter type  : s
+ Omittable       : True
+ Default value   : s
+
+Parameter : red
+ Parameter type  : d
+ Omittable       : True
+ Default value   : 0
+ Parameter range : red >= 0. && red <= 1.
+
+Parameter : green
+ Parameter type  : d
+ Omittable       : True
+ Default value   : 1
+ Parameter range : green >= 0. && green <= 1.
+
+Parameter : blue
+ Parameter type  : d
+ Omittable       : True
+ Default value   : 0
+ Parameter range : blue >= 0. && blue <= 1.
+
+
+
+Command /vis/ogl/set/displayListLimit
+Guidance :
+Set/reset display list limit (to avoid memory exhaustion).
+ Range of parameters : limit>=10000
+
+Parameter : limit
+ Parameter type  : i
+ Omittable       : True
+ Default value   : 50000
+
+
+
+Command /vis/ogl/set/endTime
+Guidance :
+Set end and range of track time.
+
+Parameter : end-time
+ Parameter type  : d
+ Omittable       : False
+ Default value   : 1.79769e+308
+
+Parameter : end-time-unit
+ Parameter type  : s
+ Omittable       : False
+ Default value   : ns
+
+Parameter : time-range
+ Parameter type  : d
+ Omittable       : True
+ Default value   : -1
+
+Parameter : time-range-unit
+ Parameter type  : s
+ Omittable       : True
+ Default value   : ns
+
+
+
+Command /vis/ogl/set/eventsDrawInterval
+Guidance :
+Set number of events allowed in drawing pipeline - speeds drawing
+By default, the screen is updated at the end of every event.
+Allowing OpenGL to buffer several events can make a big improvement
+in drawing speed.
+
+Parameter : interval
+ Parameter type  : i
+ Omittable       : True
+ Default value   : 1
+
+
+
+Command /vis/ogl/set/fade
+Guidance :
+0: no fade; 1: maximum fade with time within range.
+ Range of parameters : fadefactor>=0.&&fadefactor<=1.
+
+Parameter : fadefactor
+ Parameter type  : d
+ Omittable       : False
+ Default value   : 0
+
+
+
+Command /vis/ogl/set/printFilename
+Guidance :
+Set print filename
+Setting 'incremental' will increment filename by one at each new print, starting at 0
+
+Parameter : name
+ Parameter type  : s
+ Omittable       : True
+ Default value   : G4OpenGL
+
+Parameter : incremental
+ Parameter type  : b
+ Omittable       : True
+ Default value   : 1
+
+
+
+Command /vis/ogl/set/printMode
+Guidance :
+Set print mode
+
+Parameter : print_mode
+ Parameter type  : s
+ Omittable       : True
+ Default value   : vectored
+ Candidates      : vectored pixmap
+
+
+
+Command /vis/ogl/set/printSize
+Guidance :
+Set print size
+Tip : -1 will mean 'print size' = 'window size'
+       Setting size greatter than your maximum graphic card capacity , will set the size to maximum  size.
+
+Parameter : width
+ Parameter type  : d
+ Omittable       : False
+ Default value   : -1
+
+Parameter : height
+ Parameter type  : d
+ Omittable       : False
+ Default value   : -1
+
+
+
+Command /vis/ogl/set/startTime
+Guidance :
+Set start and range of track time.
+
+Parameter : start-time
+ Parameter type  : d
+ Omittable       : False
+ Default value   : -1.79769e+308
+
+Parameter : start-time-unit
+ Parameter type  : s
+ Omittable       : False
+ Default value   : ns
+
+Parameter : time-range
+ Parameter type  : d
+ Omittable       : True
+ Default value   : -1
+
+Parameter : time-range-unit
+ Parameter type  : s
+ Omittable       : True
+ Default value   : ns
+
+
+
+Command /vis/ogl/set/transparency
+Guidance :
+True/false to enable/disable rendering of transparent objects.
+
+Parameter : transparency-enabled
+ Parameter type  : b
+ Omittable       : True
+ Default value   : 1
+
+Command directory path : /vis/modeling/
+
+
+Guidance :
+Modeling commands.
+
+ Sub-directories : 
+   /vis/modeling/trajectories/   Trajectory model commands.
+ Commands : 
+Command directory path : /vis/modeling/trajectories/
+
+
+Guidance :
+Trajectory model commands.
+
+ Sub-directories : 
+   /vis/modeling/trajectories/create/   Create trajectory models and messengers.
+ Commands : 
+   list * List objects registered with list manager
+   select * Select created object
+
+
+Command /vis/modeling/trajectories/list
+Guidance :
+List objects registered with list manager
+
+Parameter : name
+ Parameter type  : s
+ Omittable       : True
+
+
+
+Command /vis/modeling/trajectories/select
+Guidance :
+Select created object
+
+Parameter : name
+ Parameter type  : s
+ Omittable       : False
+
+Command directory path : /vis/modeling/trajectories/create/
+
+
+Guidance :
+Create trajectory models and messengers.
+
+ Sub-directories : 
+ Commands : 
+   generic * Create a generic model and associated messengers.
+   drawByCharge * Create a drawByCharge model and associated messengers.
+   drawByParticleID * Create a drawByParticleID model and associated messengers.
+   drawByOriginVolume * Create a drawByOriginVolume model and associated messengers.
+   drawByAttribute * Create a drawByAttribute model and associated messengers.
+
+
+Command /vis/modeling/trajectories/create/generic
+Guidance :
+Create a generic model and associated messengers.
+Generated model becomes current.
+
+Parameter : model-name
+ Parameter type  : s
+ Omittable       : True
+
+
+
+Command /vis/modeling/trajectories/create/drawByCharge
+Guidance :
+Create a drawByCharge model and associated messengers.
+Generated model becomes current.
+
+Parameter : model-name
+ Parameter type  : s
+ Omittable       : True
+
+
+
+Command /vis/modeling/trajectories/create/drawByParticleID
+Guidance :
+Create a drawByParticleID model and associated messengers.
+Generated model becomes current.
+
+Parameter : model-name
+ Parameter type  : s
+ Omittable       : True
+
+
+
+Command /vis/modeling/trajectories/create/drawByOriginVolume
+Guidance :
+Create a drawByOriginVolume model and associated messengers.
+Generated model becomes current.
+
+Parameter : model-name
+ Parameter type  : s
+ Omittable       : True
+
+
+
+Command /vis/modeling/trajectories/create/drawByAttribute
+Guidance :
+Create a drawByAttribute model and associated messengers.
+Generated model becomes current.
+
+Parameter : model-name
+ Parameter type  : s
+ Omittable       : True
+
+Command directory path : /vis/filtering/
+
+
+Guidance :
+Filtering commands.
+
+ Sub-directories : 
+   /vis/filtering/trajectories/   Trajectory filtering commands.
+   /vis/filtering/hits/   Hit filtering commands.
+   /vis/filtering/digi/   Digi filtering commands.
+ Commands : 
+Command directory path : /vis/filtering/trajectories/
+
+
+Guidance :
+Trajectory filtering commands.
+
+ Sub-directories : 
+   /vis/filtering/trajectories/create/   Create trajectory filters and messengers.
+ Commands : 
+   list * List objects registered with list manager
+   mode * Set mode of operation
+
+
+Command /vis/filtering/trajectories/list
+Guidance :
+List objects registered with list manager
+
+Parameter : name
+ Parameter type  : s
+ Omittable       : True
+
+
+
+Command /vis/filtering/trajectories/mode
+Guidance :
+Set mode of operation
+
+Parameter : mode
+ Parameter type  : s
+ Omittable       : False
+ Candidates      : soft hard
+
+Command directory path : /vis/filtering/trajectories/create/
+
+
+Guidance :
+Create trajectory filters and messengers.
+
+ Sub-directories : 
+ Commands : 
+   chargeFilter * Create a chargeFilter model and associated messengers.
+   particleFilter * Create a particleFilter model and associated messengers.
+   originVolumeFilter * Create a originVolumeFilter model and associated messengers.
+   attributeFilter * Create a attributeFilter model and associated messengers.
+
+
+Command /vis/filtering/trajectories/create/chargeFilter
+Guidance :
+Create a chargeFilter model and associated messengers.
+Generated model becomes current.
+
+Parameter : model-name
+ Parameter type  : s
+ Omittable       : True
+
+
+
+Command /vis/filtering/trajectories/create/particleFilter
+Guidance :
+Create a particleFilter model and associated messengers.
+Generated model becomes current.
+
+Parameter : model-name
+ Parameter type  : s
+ Omittable       : True
+
+
+
+Command /vis/filtering/trajectories/create/originVolumeFilter
+Guidance :
+Create a originVolumeFilter model and associated messengers.
+Generated model becomes current.
+
+Parameter : model-name
+ Parameter type  : s
+ Omittable       : True
+
+
+
+Command /vis/filtering/trajectories/create/attributeFilter
+Guidance :
+Create a attributeFilter model and associated messengers.
+Generated model becomes current.
+
+Parameter : model-name
+ Parameter type  : s
+ Omittable       : True
+
+Command directory path : /vis/filtering/hits/
+
+
+Guidance :
+Hit filtering commands.
+
+ Sub-directories : 
+   /vis/filtering/hits/create/   Create hit filters and messengers.
+ Commands : 
+   list * List objects registered with list manager
+   mode * Set mode of operation
+
+
+Command /vis/filtering/hits/list
+Guidance :
+List objects registered with list manager
+
+Parameter : name
+ Parameter type  : s
+ Omittable       : True
+
+
+
+Command /vis/filtering/hits/mode
+Guidance :
+Set mode of operation
+
+Parameter : mode
+ Parameter type  : s
+ Omittable       : False
+ Candidates      : soft hard
+
+Command directory path : /vis/filtering/hits/create/
+
+
+Guidance :
+Create hit filters and messengers.
+
+ Sub-directories : 
+ Commands : 
+   attributeFilter * Create a attributeFilter model and associated messengers.
+
+
+Command /vis/filtering/hits/create/attributeFilter
+Guidance :
+Create a attributeFilter model and associated messengers.
+Generated model becomes current.
+
+Parameter : model-name
+ Parameter type  : s
+ Omittable       : True
+
+Command directory path : /vis/filtering/digi/
+
+
+Guidance :
+Digi filtering commands.
+
+ Sub-directories : 
+   /vis/filtering/digi/create/   Create digi filters and messengers.
+ Commands : 
+   list * List objects registered with list manager
+   mode * Set mode of operation
+
+
+Command /vis/filtering/digi/list
+Guidance :
+List objects registered with list manager
+
+Parameter : name
+ Parameter type  : s
+ Omittable       : True
+
+
+
+Command /vis/filtering/digi/mode
+Guidance :
+Set mode of operation
+
+Parameter : mode
+ Parameter type  : s
+ Omittable       : False
+ Candidates      : soft hard
+
+Command directory path : /vis/filtering/digi/create/
+
+
+Guidance :
+Create digi filters and messengers.
+
+ Sub-directories : 
+ Commands : 
+   attributeFilter * Create a attributeFilter model and associated messengers.
+
+
+Command /vis/filtering/digi/create/attributeFilter
+Guidance :
+Create a attributeFilter model and associated messengers.
+Generated model becomes current.
+
+Parameter : model-name
+ Parameter type  : s
+ Omittable       : True
+
+Command directory path : /vis/geometry/
+
+
+Guidance :
+Operations on vis attributes of Geant4 geometry.
+
+ Sub-directories : 
+   /vis/geometry/set/   Set vis attributes of Geant4 geometry.
+ Commands : 
+   list * Lists vis attributes of logical volume(s).
+   restore * Restores vis attributes of logical volume(s).
+
+
+Command /vis/geometry/list
+Guidance :
+Lists vis attributes of logical volume(s).
+"all" lists all logical volumes.
+
+Parameter : logical-volume-name
+ Parameter type  : s
+ Omittable       : True
+ Default value   : all
+
+
+
+Command /vis/geometry/restore
+Guidance :
+Restores vis attributes of logical volume(s).
+
+Parameter : logical-volume-name
+ Parameter type  : s
+ Omittable       : True
+ Default value   : all
+
+Command directory path : /vis/geometry/set/
+
+
+Guidance :
+Set vis attributes of Geant4 geometry.
+
+ Sub-directories : 
+ Commands : 
+   colour * Sets colour of logical volume(s).
+   daughtersInvisible * Makes daughters of logical volume(s) invisible.
+   lineStyle * Sets line style of logical volume(s) drawing.
+   lineWidth * Sets line width of logical volume(s) drawing.
+   forceAuxEdgeVisible * Forces auxiliary (soft) edges of logical volume(s) to be visible,
+regardless of the view parameters.
+   forceLineSegmentsPerCircle * Forces number of line segments per circle, the precision with which a
+curved line or surface is represented by a polygon or polyhedron,
+regardless of the view parameters.
+   forceSolid * Forces logical volume(s) always to be drawn solid (surface drawing),
+regardless of the view parameters.
+   forceWireframe * Forces logical volume(s) always to be drawn as wireframe,
+regardless of the view parameters.
+   visibility * Sets visibility of logical volume(s).
+
+
+Command /vis/geometry/set/colour
+Guidance :
+Sets colour of logical volume(s).
+"all" sets all logical volumes.
+Optionally propagates down hierarchy to given depth.
+
+Parameter : logical-volume-name
+ Parameter type  : s
+ Omittable       : True
+ Default value   : all
+
+Parameter : depth
+Depth of propagation (-1 means unlimited depth).
+ Parameter type  : d
+ Omittable       : True
+ Default value   : 0
+
+Parameter : red
+Red component or a string, e.g., "blue", in which case succeeding colour components are ignored.
+ Parameter type  : s
+ Omittable       : True
+ Default value   : 1.
+
+Parameter : green
+ Parameter type  : d
+ Omittable       : True
+ Default value   : 1
+
+Parameter : blue
+ Parameter type  : d
+ Omittable       : True
+ Default value   : 1
+
+Parameter : opacity
+ Parameter type  : d
+ Omittable       : True
+ Default value   : 1
+
+
+
+Command /vis/geometry/set/daughtersInvisible
+Guidance :
+Makes daughters of logical volume(s) invisible.
+"all" sets all logical volumes.
+Optionally propagates down hierarchy to given depth.
+
+Parameter : logical-volume-name
+ Parameter type  : s
+ Omittable       : True
+ Default value   : all
+
+Parameter : depth
+Depth of propagation (-1 means unlimited depth).
+ Parameter type  : d
+ Omittable       : True
+ Default value   : 0
+
+Parameter : daughtersInvisible
+ Parameter type  : b
+ Omittable       : True
+ Default value   : 0
+
+
+
+Command /vis/geometry/set/lineStyle
+Guidance :
+Sets line style of logical volume(s) drawing.
+"all" sets all logical volumes.
+Optionally propagates down hierarchy to given depth.
+
+Parameter : logical-volume-name
+ Parameter type  : s
+ Omittable       : True
+ Default value   : all
+
+Parameter : depth
+Depth of propagation (-1 means unlimited depth).
+ Parameter type  : d
+ Omittable       : True
+ Default value   : 0
+
+Parameter : lineStyle
+ Parameter type  : s
+ Omittable       : True
+ Default value   : unbroken
+ Candidates      : unbroken dashed dotted
+
+
+
+Command /vis/geometry/set/lineWidth
+Guidance :
+Sets line width of logical volume(s) drawing.
+"all" sets all logical volumes.
+Optionally propagates down hierarchy to given depth.
+
+Parameter : logical-volume-name
+ Parameter type  : s
+ Omittable       : True
+ Default value   : all
+
+Parameter : depth
+Depth of propagation (-1 means unlimited depth).
+ Parameter type  : d
+ Omittable       : True
+ Default value   : 0
+
+Parameter : lineWidth
+ Parameter type  : d
+ Omittable       : True
+ Default value   : 1
+
+
+
+Command /vis/geometry/set/forceAuxEdgeVisible
+Guidance :
+Forces auxiliary (soft) edges of logical volume(s) to be visible,
+regardless of the view parameters.
+"all" sets all logical volumes.
+Optionally propagates down hierarchy to given depth.
+
+Parameter : logical-volume-name
+ Parameter type  : s
+ Omittable       : True
+ Default value   : all
+
+Parameter : depth
+Depth of propagation (-1 means unlimited depth).
+ Parameter type  : d
+ Omittable       : True
+ Default value   : 0
+
+Parameter : forceAuxEdgeVisible
+ Parameter type  : b
+ Omittable       : True
+ Default value   : 0
+
+
+
+Command /vis/geometry/set/forceLineSegmentsPerCircle
+Guidance :
+Forces number of line segments per circle, the precision with which a
+curved line or surface is represented by a polygon or polyhedron,
+regardless of the view parameters.
+"all" sets all logical volumes.
+Optionally propagates down hierarchy to given depth.
+
+Parameter : logical-volume-name
+ Parameter type  : s
+ Omittable       : True
+ Default value   : all
+
+Parameter : depth
+Depth of propagation (-1 means unlimited depth).
+ Parameter type  : d
+ Omittable       : True
+ Default value   : 0
+
+Parameter : lineSegmentsPerCircle
+< 0 means not forced, i.e., under control of viewer.
+ Parameter type  : d
+ Omittable       : True
+ Default value   : -1
+
+
+
+Command /vis/geometry/set/forceSolid
+Guidance :
+Forces logical volume(s) always to be drawn solid (surface drawing),
+regardless of the view parameters.
+"all" sets all logical volumes.
+Optionally propagates down hierarchy to given depth.
+
+Parameter : logical-volume-name
+ Parameter type  : s
+ Omittable       : True
+ Default value   : all
+
+Parameter : depth
+Depth of propagation (-1 means unlimited depth).
+ Parameter type  : d
+ Omittable       : True
+ Default value   : 0
+
+Parameter : forceSolid
+ Parameter type  : b
+ Omittable       : True
+ Default value   : 0
+
+
+
+Command /vis/geometry/set/forceWireframe
+Guidance :
+Forces logical volume(s) always to be drawn as wireframe,
+regardless of the view parameters.
+"all" sets all logical volumes.
+Optionally propagates down hierarchy to given depth.
+
+Parameter : logical-volume-name
+ Parameter type  : s
+ Omittable       : True
+ Default value   : all
+
+Parameter : depth
+Depth of propagation (-1 means unlimited depth).
+ Parameter type  : d
+ Omittable       : True
+ Default value   : 0
+
+Parameter : forceWireframe
+ Parameter type  : b
+ Omittable       : True
+ Default value   : 0
+
+
+
+Command /vis/geometry/set/visibility
+Guidance :
+Sets visibility of logical volume(s).
+"all" sets all logical volumes.
+Optionally propagates down hierarchy to given depth.
+
+Parameter : logical-volume-name
+ Parameter type  : s
+ Omittable       : True
+ Default value   : all
+
+Parameter : depth
+Depth of propagation (-1 means unlimited depth).
+ Parameter type  : d
+ Omittable       : True
+ Default value   : 0
+
+Parameter : visibility
+ Parameter type  : b
+ Omittable       : True
+ Default value   : 1
+
+Command directory path : /vis/set/
+
+
+Guidance :
+Set quantities for use in future commands where appropriate.
+
+ Sub-directories : 
+ Commands : 
+   colour * Defines colour and opacity for future "/vis/scene/add/" commands.
+   lineWidth * Defines lineWidth for future "/vis/scene/add/" commands.
+   textColour * Defines colour and opacity for future "/vis/scene/add/text" commands.
+   textLayout * Defines layout future "/vis/scene/add/text" commands.
+   touchable * Defines touchable for future "/vis/touchable/set/" commands.
+
+
+Command /vis/set/colour
+Guidance :
+Defines colour and opacity for future "/vis/scene/add/" commands.
+(Except "/vis/scene/add/text" commands - see "/vis/set/textColour".)
+Default: white and opaque.
+
+Parameter : red
+Red component or a string, e.g., "cyan" (green and blue parameters are ignored).
+ Parameter type  : s
+ Omittable       : True
+ Default value   : 1.
+
+Parameter : green
+ Parameter type  : d
+ Omittable       : True
+ Default value   : 1
+
+Parameter : blue
+ Parameter type  : d
+ Omittable       : True
+ Default value   : 1
+
+Parameter : alpha
+Opacity
+ Parameter type  : d
+ Omittable       : True
+ Default value   : 1
+
+
+
+Command /vis/set/lineWidth
+Guidance :
+Defines lineWidth for future "/vis/scene/add/" commands.
+ Range of parameters : lineWidth >= 1.
+
+Parameter : lineWidth
+ Parameter type  : d
+ Omittable       : True
+ Default value   : 1
+
+
+
+Command /vis/set/textColour
+Guidance :
+Defines colour and opacity for future "/vis/scene/add/text" commands.
+Default: blue and opaque.
+
+Parameter : red
+Red component or a string, e.g., "cyan" (green and blue parameters are ignored).
+ Parameter type  : s
+ Omittable       : True
+ Default value   : 0.
+
+Parameter : green
+ Parameter type  : d
+ Omittable       : True
+ Default value   : 0
+
+Parameter : blue
+ Parameter type  : d
+ Omittable       : True
+ Default value   : 1
+
+Parameter : alpha
+Opacity
+ Parameter type  : d
+ Omittable       : True
+ Default value   : 1
+
+
+
+Command /vis/set/textLayout
+Guidance :
+Defines layout future "/vis/scene/add/text" commands.
+"left" (default) for left justification to provided coordinate.
+"centre" or "center" for text centered on provided coordinate.
+"right" for right justification to provided coordinate.
+Default: left.
+
+Parameter : layout
+ Parameter type  : s
+ Omittable       : True
+ Default value   : left
+ Candidates      : left centre center right
+
+
+
+Command /vis/set/touchable
+Guidance :
+Defines touchable for future "/vis/touchable/set/" commands.
+Please provide a list of space-separated physical volume names and
+copy number pairs starting at the world volume, e.g:
+/vis/set/touchable World 0 Envelope 0 Shape1 0
+
+Parameter : list
+List of physical volume names and copy number pairs
+ Parameter type  : s
+ Omittable       : False
+
+Command directory path : /vis/scene/
+
+
+Guidance :
+Operations on Geant4 scenes.
+
+ Sub-directories : 
+   /vis/scene/add/   Add model to current scene.
+ Commands : 
+   activateModel * Activate or de-activate model.
+   create * Creates an empty scene.
+   endOfEventAction * Accumulate or refresh the viewer for each new event.
+   endOfRunAction * Accumulate or refresh the viewer for each new run.
+   list * Lists scene(s).
+   notifyHandlers * Notifies scene handlers and forces re-rendering.
+   select * Selects a scene
+
+
+Command /vis/scene/activateModel
+Guidance :
+Activate or de-activate model.
+Attempts to match search string to name of model - use unique sub-string.
+Use "/vis/scene/list" to see model names.
+If name == "all" (default), all models are activated.
+
+Parameter : search-string
+ Parameter type  : s
+ Omittable       : True
+ Default value   : all
+
+Parameter : activate
+ Parameter type  : b
+ Omittable       : True
+ Default value   : 1
+
+
+
+Command /vis/scene/create
+Guidance :
+Creates an empty scene.
+Invents a name if not supplied.  This scene becomes current.
+
+Parameter : scene-name
+ Parameter type  : s
+ Omittable       : True
+
+
+
+Command /vis/scene/endOfEventAction
+Guidance :
+Accumulate or refresh the viewer for each new event.
+"accumulate": viewer accumulates hits, etc., event by event, or
+"refresh": viewer shows them at end of event or, for direct-screen
+  viewers, refreshes the screen just before drawing the next event.
+
+Parameter : action
+ Parameter type  : s
+ Omittable       : True
+ Default value   : refresh
+ Candidates      : accumulate refresh
+
+Parameter : maxNumber
+Maximum number of events kept.  Unlimited if negative.
+ Parameter type  : i
+ Omittable       : True
+ Default value   : 100
+
+
+
+Command /vis/scene/endOfRunAction
+Guidance :
+Accumulate or refresh the viewer for each new run.
+"accumulate": viewer accumulates hits, etc., run by run, or
+"refresh": viewer shows them at end of run or, for direct-screen
+  viewers, refreshes the screen just before drawing the first
+  event of the next run.
+The detector remains or is redrawn.
+
+Parameter : action
+ Parameter type  : s
+ Omittable       : True
+ Default value   : refresh
+ Candidates      : accumulate refresh
+
+
+
+Command /vis/scene/list
+Guidance :
+Lists scene(s).
+"help /vis/verbose" for definition of verbosity.
+
+Parameter : scene-name
+ Parameter type  : s
+ Omittable       : True
+ Default value   : all
+
+Parameter : verbosity
+ Parameter type  : s
+ Omittable       : True
+ Default value   : warnings
+
+
+
+Command /vis/scene/notifyHandlers
+Guidance :
+Notifies scene handlers and forces re-rendering.
+Notifies the handler(s) of the specified scene and forces a
+reconstruction of any graphical databases.
+Clears and refreshes all viewers of current scene.
+  The default action "refresh" does not issue "update" (see
+    /vis/viewer/update).
+If "flush" is specified, it issues an "update" as well as
+  "refresh" - "update" and initiates post-processing
+  for graphics systems which need it.
+The default for <scene-name> is the current scene name.
+This command does not change current scene, scene handler or viewer.
+
+Parameter : scene-name
+ Parameter type  : s
+ Omittable       : True
+ Default value   : taken from the current value
+
+Parameter : refresh-flush
+ Parameter type  : s
+ Omittable       : True
+ Default value   : refresh
+ Candidates      : r refresh f flush
+
+
+
+Command /vis/scene/select
+Guidance :
+Selects a scene
+Makes the scene current.  "/vis/scene/list" to see
+ possible scene names.
+
+Parameter : scene-name
+ Parameter type  : s
+ Omittable       : False
+
+Command directory path : /vis/scene/add/
+
+
+Guidance :
+Add model to current scene.
+
+ Sub-directories : 
+ Commands : 
+   arrow * Adds arrow to current scene.
+   arrow2D * Adds 2D arrow to current scene.
+   axes * Add axes.
+   date * Adds date to current scene.
+   digis * Adds digis to current scene.
+   eventID * Adds eventID to current scene.
+   frame * Adds frame to current scene.
+   ghosts * Adds ghost volumes (G4FlavoredParallelWorld) to the current scene.
+   hits * Adds hits to current scene.
+   line * Adds line to current scene.
+   line2D * Adds 2D line to current scene.
+   logicalVolume * Adds a logical volume to the current scene,
+   logo * Adds a G4 logo to the current scene.
+   logo2D * Adds 2D logo to current scene.
+   psHits * Adds Primitive Scorer Hits (PSHits) to current scene.
+   scale * Adds an annotated scale line to the current scene.
+   text * Adds text to current scene.
+   text2D * Adds 2D text to current scene.
+   trajectories * Adds trajectories to current scene.
+   userAction * Add named Vis User Action to current scene.
+   volume * Adds a physical volume to current scene, with optional clipping volume.
+
+
+Command /vis/scene/add/arrow
+Guidance :
+Adds arrow to current scene.
+
+Parameter : x1
+ Parameter type  : d
+ Omittable       : False
+
+Parameter : y1
+ Parameter type  : d
+ Omittable       : False
+
+Parameter : z1
+ Parameter type  : d
+ Omittable       : False
+
+Parameter : x2
+ Parameter type  : d
+ Omittable       : False
+
+Parameter : y2
+ Parameter type  : d
+ Omittable       : False
+
+Parameter : z2
+ Parameter type  : d
+ Omittable       : False
+
+Parameter : unit
+ Parameter type  : s
+ Omittable       : True
+ Default value   : m
+
+
+
+Command /vis/scene/add/arrow2D
+Guidance :
+Adds 2D arrow to current scene.
+
+Parameter : x1
+ Parameter type  : d
+ Omittable       : False
+
+Parameter : y1
+ Parameter type  : d
+ Omittable       : False
+
+Parameter : x2
+ Parameter type  : d
+ Omittable       : False
+
+Parameter : y2
+ Parameter type  : d
+ Omittable       : False
+
+
+
+Command /vis/scene/add/axes
+Guidance :
+Add axes.
+Draws axes at (x0, y0, z0) of given length and colour.
+
+Parameter : x0
+ Parameter type  : d
+ Omittable       : True
+ Default value   : 0
+
+Parameter : y0
+ Parameter type  : d
+ Omittable       : True
+ Default value   : 0
+
+Parameter : z0
+ Parameter type  : d
+ Omittable       : True
+ Default value   : 0
+
+Parameter : length
+If negative, length automatic, about 25% of scene extent.
+ Parameter type  : d
+ Omittable       : True
+ Default value   : -1
+
+Parameter : unit
+ Parameter type  : s
+ Omittable       : True
+ Default value   : m
+
+Parameter : unitcolour
+Otherwise choose from the pre-defined text-specified colours - 
+  see information printed by the vis manager at start-up or
+  use "/vis/list".
+ Parameter type  : s
+ Omittable       : True
+ Default value   : auto
+
+
+
+Command /vis/scene/add/date
+Guidance :
+Adds date to current scene.
+
+Parameter : size
+Screen size of text in pixels.
+ Parameter type  : i
+ Omittable       : True
+ Default value   : 18
+
+Parameter : x-position
+x screen position in range -1 < x < 1.
+ Parameter type  : d
+ Omittable       : True
+ Default value   : 0
+
+Parameter : y-position
+y screen position in range -1 < y < 1.
+ Parameter type  : d
+ Omittable       : True
+ Default value   : 0.9
+
+Parameter : layout
+Layout, i.e., adjustment: left|centre|right.
+ Parameter type  : s
+ Omittable       : True
+ Default value   : left
+
+Parameter : date
+The date you want to appear on the view of the scene (this includes the
+rest of the line, including spaces).  The default, '-', writes the
+date and time of the moment of drawing.
+ Parameter type  : s
+ Omittable       : True
+ Default value   : -
+
+
+
+Command /vis/scene/add/digis
+Guidance :
+Adds digis to current scene.
+Digis are drawn at end of event when the scene in which
+they are added is current.
+
+
+
+Command /vis/scene/add/eventID
+Guidance :
+Adds eventID to current scene.
+Run and event numbers are drawn at end of event or run when
+ the scene in which they are added is current.
+
+Parameter : size
+Screen size of text in pixels.
+ Parameter type  : i
+ Omittable       : True
+ Default value   : 18
+
+Parameter : x-position
+x screen position in range -1 < x < 1.
+ Parameter type  : d
+ Omittable       : True
+ Default value   : -0.95
+
+Parameter : y-position
+y screen position in range -1 < y < 1.
+ Parameter type  : d
+ Omittable       : True
+ Default value   : 0.9
+
+Parameter : layout
+Layout, i.e., adjustment: left|centre|right.
+ Parameter type  : s
+ Omittable       : True
+ Default value   : left
+
+
+
+Command /vis/scene/add/frame
+Guidance :
+Adds frame to current scene.
+
+Parameter : size
+Size of frame.  1 = full window.
+ Parameter type  : d
+ Omittable       : True
+ Default value   : 0.97
+ Parameter range : size > 0 && size <=1
+
+
+
+Command /vis/scene/add/ghosts
+Guidance :
+Adds ghost volumes (G4FlavoredParallelWorld) to the current scene.
+Selects by particle.
+
+Parameter : particle
+ Parameter type  : s
+ Omittable       : True
+ Default value   : all
+
+
+
+Command /vis/scene/add/hits
+Guidance :
+Adds hits to current scene.
+Hits are drawn at end of event when the scene in which
+they are added is current.
+
+
+
+Command /vis/scene/add/line
+Guidance :
+Adds line to current scene.
+
+Parameter : x1
+ Parameter type  : d
+ Omittable       : False
+
+Parameter : y1
+ Parameter type  : d
+ Omittable       : False
+
+Parameter : z1
+ Parameter type  : d
+ Omittable       : False
+
+Parameter : x2
+ Parameter type  : d
+ Omittable       : False
+
+Parameter : y2
+ Parameter type  : d
+ Omittable       : False
+
+Parameter : z2
+ Parameter type  : d
+ Omittable       : False
+
+Parameter : unit
+ Parameter type  : s
+ Omittable       : True
+ Default value   : m
+
+
+
+Command /vis/scene/add/line2D
+Guidance :
+Adds 2D line to current scene.
+
+Parameter : x1
+ Parameter type  : d
+ Omittable       : False
+
+Parameter : y1
+ Parameter type  : d
+ Omittable       : False
+
+Parameter : x2
+ Parameter type  : d
+ Omittable       : False
+
+Parameter : y2
+ Parameter type  : d
+ Omittable       : False
+
+
+
+Command /vis/scene/add/logicalVolume
+Guidance :
+Adds a logical volume to the current scene,
+Shows boolean components (if any), voxels (if any) and readout geometry
+(if any).  Note: voxels are not constructed until start of run -
+ "/run/beamOn".
+
+Parameter : logical-volume-name
+ Parameter type  : s
+ Omittable       : False
+
+Parameter : depth-of-descent
+Depth of descent of geometry hierarchy.
+ Parameter type  : i
+ Omittable       : True
+ Default value   : 1
+
+Parameter : booleans-flag
+ Parameter type  : b
+ Omittable       : True
+ Default value   : 1
+
+Parameter : voxels-flag
+ Parameter type  : b
+ Omittable       : True
+ Default value   : 1
+
+Parameter : readout-flag
+ Parameter type  : b
+ Omittable       : True
+ Default value   : 1
+
+
+
+Command /vis/scene/add/logo
+Guidance :
+Adds a G4 logo to the current scene.
+
+Parameter : height
+ Parameter type  : d
+ Omittable       : True
+ Default value   : 1
+
+Parameter : unit
+auto or valid length unit - defaults to auto.
+If auto, height is roughly one tenth of scene extent.
+ Parameter type  : s
+ Omittable       : True
+ Default value   : auto
+
+Parameter : direction
+auto|[-]x|[-]y|[-]z - defaults to auto.
+Direction of outward-facing normal to front face of logo.
+If automatic, logo faces the user in the current viewer.
+ Parameter type  : s
+ Omittable       : True
+ Default value   : auto
+
+Parameter : red
+ Parameter type  : d
+ Omittable       : True
+ Default value   : 0
+
+Parameter : green
+ Parameter type  : d
+ Omittable       : True
+ Default value   : 1
+
+Parameter : blue
+ Parameter type  : d
+ Omittable       : True
+ Default value   : 0
+
+Parameter : auto|manual
+logo direction.
+ Parameter type  : s
+ Omittable       : True
+ Default value   : auto
+ Candidates      : auto manual
+
+Parameter : xmid
+ Parameter type  : d
+ Omittable       : True
+ Default value   : 0
+
+Parameter : ymid
+ Parameter type  : d
+ Omittable       : True
+ Default value   : 0
+
+Parameter : zmid
+ Parameter type  : d
+ Omittable       : True
+ Default value   : 0
+
+Parameter : unit
+ Parameter type  : s
+ Omittable       : True
+ Default value   : m
+
+
+
+Command /vis/scene/add/logo2D
+Guidance :
+Adds 2D logo to current scene.
+
+Parameter : size
+Screen size of text in pixels.
+ Parameter type  : i
+ Omittable       : True
+ Default value   : 48
+
+Parameter : x-position
+x screen position in range -1 < x < 1.
+ Parameter type  : d
+ Omittable       : True
+ Default value   : -0.9
+
+Parameter : y-position
+y screen position in range -1 < y < 1.
+ Parameter type  : d
+ Omittable       : True
+ Default value   : -0.9
+
+Parameter : layout
+Layout, i.e., adjustment: left|centre|right.
+ Parameter type  : s
+ Omittable       : True
+ Default value   : left
+
+
+
+Command /vis/scene/add/psHits
+Guidance :
+Adds Primitive Scorer Hits (PSHits) to current scene.
+PSHits are drawn at end of run when the scene in which
+they are added is current.
+Optional parameter specifies name of scoring map.  By default all
+scoring maps registered with the G4ScoringManager are drawn.
+
+Parameter : mapname
+ Parameter type  : s
+ Omittable       : True
+ Default value   : all
+
+
+
+Command /vis/scene/add/scale
+Guidance :
+Adds an annotated scale line to the current scene.
+An annotated line in the specified direction with tick marks at the
+end.  If autoPlacing is true it is required to be centred at the
+front, right, bottom corner of the world space, comfortably outside
+the existing bounding box/sphere so that existing objects do not
+obscure it.  Otherwise it is required to be drawn with mid-point at
+(xmid, ymid, zmid).
+
+The auto placing algorithm might be:
+  x = xmin + (1 + comfort) * (xmax - xmin);
+  y = ymin - comfort * (ymax - ymin);
+  z = zmin + (1 + comfort) * (zmax - zmin);
+  if direction == x then (x - length,y,z) to (x,y,z);
+  if direction == y then (x,y,z) to (x,y + length,z);
+  if direction == z then (x,y,z - length) to (x,y,z);
+
+Parameter : length
+ Parameter type  : d
+ Omittable       : True
+ Default value   : 1
+
+Parameter : unit
+auto or valid length unit - defaults to auto.
+If auto, length is roughly one tenth of the scene extent.
+ Parameter type  : s
+ Omittable       : True
+ Default value   : auto
+
+Parameter : direction
+auto|x|y|z - defaults to auto.
+If auto, scale is roughly in the plane of the current view.
+ Parameter type  : s
+ Omittable       : True
+ Default value   : auto
+
+Parameter : red
+ Parameter type  : d
+ Omittable       : True
+ Default value   : 1
+
+Parameter : green
+ Parameter type  : d
+ Omittable       : True
+ Default value   : 0
+
+Parameter : blue
+ Parameter type  : d
+ Omittable       : True
+ Default value   : 0
+
+Parameter : auto|manual
+Automatic placement or manual placement at (xmid,ymid,zmid).
+If automatic, scale is placed at bottom left of current view.
+ Parameter type  : s
+ Omittable       : True
+ Default value   : auto
+ Candidates      : auto manual
+
+Parameter : xmid
+ Parameter type  : d
+ Omittable       : True
+ Default value   : 0
+
+Parameter : ymid
+ Parameter type  : d
+ Omittable       : True
+ Default value   : 0
+
+Parameter : zmid
+ Parameter type  : d
+ Omittable       : True
+ Default value   : 0
+
+Parameter : unit
+ Parameter type  : s
+ Omittable       : True
+ Default value   : m
+
+
+
+Command /vis/scene/add/text
+Guidance :
+Adds text to current scene.
+Use "/vis/set/textColour" to set colour.
+Use "/vis/set/textLayout" to set layout:
+
+Parameter : x
+x
+ Parameter type  : d
+ Omittable       : True
+ Default value   : 0
+
+Parameter : y
+y
+ Parameter type  : d
+ Omittable       : True
+ Default value   : 0
+
+Parameter : z
+z
+ Parameter type  : d
+ Omittable       : True
+ Default value   : 0
+
+Parameter : unit
+ Parameter type  : s
+ Omittable       : True
+ Default value   : m
+
+Parameter : font_size
+pixels
+ Parameter type  : d
+ Omittable       : True
+ Default value   : 12
+
+Parameter : x_offset
+pixels
+ Parameter type  : d
+ Omittable       : True
+ Default value   : 0
+
+Parameter : y_offset
+pixels
+ Parameter type  : d
+ Omittable       : True
+ Default value   : 0
+
+Parameter : text
+The rest of the line is text.
+ Parameter type  : s
+ Omittable       : True
+ Default value   : Hello G4
+
+
+
+Command /vis/scene/add/text2D
+Guidance :
+Adds 2D text to current scene.
+Use "/vis/set/textColour" to set colour.
+Use "/vis/set/textLayout" to set layout:
+
+Parameter : x
+x
+ Parameter type  : d
+ Omittable       : True
+ Default value   : 0
+
+Parameter : y
+y
+ Parameter type  : d
+ Omittable       : True
+ Default value   : 0
+
+Parameter : font_size
+pixels
+ Parameter type  : d
+ Omittable       : True
+ Default value   : 12
+
+Parameter : x_offset
+pixels
+ Parameter type  : d
+ Omittable       : True
+ Default value   : 0
+
+Parameter : y_offset
+pixels
+ Parameter type  : d
+ Omittable       : True
+ Default value   : 0
+
+Parameter : text
+The rest of the line is text.
+ Parameter type  : s
+ Omittable       : True
+ Default value   : Hello G4
+
+
+
+Command /vis/scene/add/trajectories
+Guidance :
+Adds trajectories to current scene.
+Causes trajectories, if any, to be drawn at the end of processing an
+event.  Switches on trajectory storing and sets the
+default trajectory type.
+The command line parameter list determines the default trajectory type.
+If it contains the string "smooth", auxiliary inter-step points will
+be inserted to improve the smoothness of the drawing of a curved
+trajectory.
+If it contains the string "rich", significant extra information will
+be stored in the trajectory (G4RichTrajectory) amenable to modeling
+and filtering with "/vis/modeling/trajectories/create/drawByAttribute"
+and "/vis/filtering/trajectories/create/attributeFilter" commands.
+It may contain both strings in any order.
+
+To switch off trajectory storing: "/tracking/storeTrajectory 0".
+See also "/vis/scene/endOfEventAction".
+Note:  This only sets the default.  Independently of the result of this
+command, a user may instantiate a trajectory that overrides this default
+in PreUserTrackingAction.
+
+Parameter : default-trajectory-type
+ Parameter type  : s
+ Omittable       : True
+
+
+
+Command /vis/scene/add/userAction
+Guidance :
+Add named Vis User Action to current scene.
+Attempts to match search string to name of action - use unique sub-string.
+(Use /vis/list to see names of registered actions.)
+If name == "all" (default), all actions are added.
+
+Parameter : action-name
+ Parameter type  : s
+ Omittable       : True
+ Default value   : all
+
+
+
+Command /vis/scene/add/volume
+Guidance :
+Adds a physical volume to current scene, with optional clipping volume.
+If physical-volume-name is "world" (the default), the top of the
+main geometry tree (material world) is added.  If "worlds", the
+top of all worlds - material world and parallel worlds, if any - are
+added.  Otherwise a search of all worlds is made, taking the first
+matching occurence only.  To see a representation of the geometry
+hierarchy of the worlds, try "/vis/drawTree [worlds]" or one of the
+driver/browser combinations that have the required functionality, e.g., HepRep.
+If clip-volume-type is specified, the subsequent parameters are used to
+to define a clipping volume.  For example,
+"vis/scene/add/volume ! ! ! -box km 0 1 0 1 0 1" will draw the world
+with the positive octant cut away.
+If clip-volume-type is prepended with '-', the clip-volume is subtracted
+(cutaway). (This is the default if there is no prepended character.)
+If '*' is prepended, the intersection of the physical-volume and the
+clip-volume is made. (You can make a section/DCUT with a thin box, for
+example).
+For "box", the parameters are xmin,xmax,ymin,ymax,zmin,zmax.
+Only "box" is programmed at present.
+
+Parameter : physical-volume-name
+ Parameter type  : s
+ Omittable       : True
+ Default value   : world
+
+Parameter : copy-no
+If negative, matches any copy no.  First name match is taken.
+ Parameter type  : i
+ Omittable       : True
+ Default value   : -1
+
+Parameter : depth-of-descent
+Depth of descent of geometry hierarchy. Default = unlimited depth.
+ Parameter type  : i
+ Omittable       : True
+ Default value   : -1
+
+Parameter : clip-volume-type
+[-|*]type.  See general guidance.
+ Parameter type  : s
+ Omittable       : True
+ Default value   : none
+ Candidates      : none box -box *box
+
+Parameter : parameter-unit
+ Parameter type  : s
+ Omittable       : True
+ Default value   : m
+
+Parameter : parameter-1
+ Parameter type  : d
+ Omittable       : True
+ Default value   : 0
+
+Parameter : parameter-2
+ Parameter type  : d
+ Omittable       : True
+ Default value   : 0
+
+Parameter : parameter-3
+ Parameter type  : d
+ Omittable       : True
+ Default value   : 0
+
+Parameter : parameter-4
+ Parameter type  : d
+ Omittable       : True
+ Default value   : 0
+
+Parameter : parameter-5
+ Parameter type  : d
+ Omittable       : True
+ Default value   : 0
+
+Parameter : parameter-6
+ Parameter type  : d
+ Omittable       : True
+ Default value   : 0
+
+Command directory path : /vis/sceneHandler/
+
+
+Guidance :
+Operations on Geant4 scene handlers.
+
+ Sub-directories : 
+ Commands : 
+   attach * Attaches scene to current scene handler.
+   create * Creates an scene handler for a specific graphics system.
+   list * Lists scene handler(s).
+   select * Selects a scene handler.
+
+
+Command /vis/sceneHandler/attach
+Guidance :
+Attaches scene to current scene handler.
+If scene-name is omitted, current scene is attached.  To see scenes and
+scene handlers, use "/vis/scene/list" and "/vis/sceneHandler/list"
+
+Parameter : scene-name
+ Parameter type  : s
+ Omittable       : True
+ Default value   : taken from the current value
+
+
+
+Command /vis/sceneHandler/create
+Guidance :
+Creates an scene handler for a specific graphics system.
+Attaches current scene, if any.  (You can change attached scenes with
+"/vis/sceneHandler/attach".)  Invents a scene handler name if not
+supplied.  This scene handler becomes current.
+
+Parameter : graphics-system-name
+ Parameter type  : s
+ Omittable       : False
+ Candidates      : ATree DAWNFILE HepRepXML HepRepFile RayTracer VRML1FILE VRML2FILE gMocrenFile OGL OGLI OGLS OGL_FALLBACK OGLI_FALLBACK OGLS_FALLBACK OGLIX OGLSX OGLIQt OGLSQt OGLIQt_FALLBACK OGLSQt_FALLBACK RayTracerX
+
+Parameter : scene-handler-name
+ Parameter type  : s
+ Omittable       : True
+ Default value   : taken from the current value
+
+
+
+Command /vis/sceneHandler/list
+Guidance :
+Lists scene handler(s).
+"help /vis/verbose" for definition of verbosity.
+
+Parameter : scene-handler-name
+ Parameter type  : s
+ Omittable       : True
+ Default value   : all
+
+Parameter : verbosity
+ Parameter type  : s
+ Omittable       : True
+ Default value   : warnings
+
+
+
+Command /vis/sceneHandler/select
+Guidance :
+Selects a scene handler.
+Makes the scene handler current.  "/vis/sceneHandler/list" to see
+ possible scene handler names.
+
+Parameter : scene-handler-name
+ Parameter type  : s
+ Omittable       : False
+
+Command directory path : /vis/touchable/
+
+
+Guidance :
+Operations on touchables.
+
+ Sub-directories : 
+   /vis/touchable/set/   Set vis attributes of current touchable.
+ Commands : 
+Command directory path : /vis/touchable/set/
+
+
+Guidance :
+Set vis attributes of current touchable.
+
+ Sub-directories : 
+ Commands : 
+   colour * Set colour of current touchable.
+   daughtersInvisible * Daughters of current touchable invisible: true/false.
+   forceAuxEdgeVisible * Force auxiliary (soft) edges of current touchable to be visible: true/false.
+   lineSegmentsPerCircle * For current touchable, set number of line segments per circle, the
+precision with which a curved line or surface is represented by a
+polygon or polyhedron, regardless of the view parameters.
+Negative to pick up G4Polyhedron default value.
+   forceSolid * Force current touchable always to be drawn solid (surface drawing).
+   forceWireframe * Force current touchable always to be drawn as wireframe.
+   lineStyle * Set line style of current touchable drawing.
+   lineWidth * Set line width of current touchable.
+   visibility * Set visibility of current touchable: true/false.
+
+
+Command /vis/touchable/set/colour
+Guidance :
+Set colour of current touchable.
+Use "/vis/set/touchable" to set current touchable.
+
+Parameter : red
+Red component or a string, e.g., "blue", in which case succeeding colour
+components are ignored.
+ Parameter type  : s
+ Omittable       : True
+ Default value   : 1.
+
+Parameter : green
+ Parameter type  : d
+ Omittable       : True
+ Default value   : 1
+
+Parameter : blue
+ Parameter type  : d
+ Omittable       : True
+ Default value   : 1
+
+Parameter : opacity
+ Parameter type  : d
+ Omittable       : True
+ Default value   : 1
+
+
+
+Command /vis/touchable/set/daughtersInvisible
+Guidance :
+Daughters of current touchable invisible: true/false.
+Use "/vis/set/touchable" to set current touchable.
+
+Parameter : daughtersInvisible
+ Parameter type  : b
+ Omittable       : True
+ Default value   : 0
+
+
+
+Command /vis/touchable/set/forceAuxEdgeVisible
+Guidance :
+Force auxiliary (soft) edges of current touchable to be visible: true/false.
+Use "/vis/set/touchable" to set current touchable.
+
+Parameter : forceAuxEdgeVisible
+ Parameter type  : b
+ Omittable       : True
+ Default value   : 0
+
+
+
+Command /vis/touchable/set/lineSegmentsPerCircle
+Guidance :
+For current touchable, set number of line segments per circle, the
+precision with which a curved line or surface is represented by a
+polygon or polyhedron, regardless of the view parameters.
+Negative to pick up G4Polyhedron default value.
+Use "/vis/set/touchable" to set current touchable.
+
+Parameter : lineSegmentsPerCircle
+ Parameter type  : i
+ Omittable       : True
+ Default value   : -1
+
+
+
+Command /vis/touchable/set/forceSolid
+Guidance :
+Force current touchable always to be drawn solid (surface drawing).
+Use "/vis/set/touchable" to set current touchable.
+
+Parameter : forceSolid
+ Parameter type  : b
+ Omittable       : True
+ Default value   : 0
+
+
+
+Command /vis/touchable/set/forceWireframe
+Guidance :
+Force current touchable always to be drawn as wireframe.
+Use "/vis/set/touchable" to set current touchable.
+
+Parameter : forceWireframe
+ Parameter type  : b
+ Omittable       : True
+ Default value   : 0
+
+
+
+Command /vis/touchable/set/lineStyle
+Guidance :
+Set line style of current touchable drawing.
+Use "/vis/set/touchable" to set current touchable.
+
+Parameter : lineStyle
+ Parameter type  : s
+ Omittable       : True
+ Default value   : unbroken
+ Candidates      : unbroken dashed dotted
+
+
+
+Command /vis/touchable/set/lineWidth
+Guidance :
+Set line width of current touchable.
+Use "/vis/set/touchable" to set current touchable.
+
+Parameter : lineWidth
+ Parameter type  : d
+ Omittable       : True
+ Default value   : 1
+
+
+
+Command /vis/touchable/set/visibility
+Guidance :
+Set visibility of current touchable: true/false.
+Use "/vis/set/touchable" to set current touchable.
+
+Parameter : visibility
+ Parameter type  : b
+ Omittable       : True
+ Default value   : 0
+
+Command directory path : /vis/viewer/
+
+
+Guidance :
+Operations on Geant4 viewers.
+
+ Sub-directories : 
+   /vis/viewer/default/   Set default values for future viewers.
+   /vis/viewer/set/   Set view parameters of current viewer.
+ Commands : 
+   addCutawayPlane * Add cutaway plane to current viewer.
+   changeCutawayPlane * Change cutaway plane.
+   clear * Clears viewer.
+   clearCutawayPlanes * Clear cutaway planes of current viewer.
+   clearTransients * Clears transients from viewer.
+   clone * Clones viewer.
+   copyViewFrom * Copy the camera-specific parameters from the specified viewer.
+   create * Creates a viewer for the specified scene handler.
+   dolly * Incremental dolly.
+   dollyTo * Dolly to specific coordinate.
+   flush * Compound command: "/vis/viewer/refresh" + "/vis/viewer/update".
+   list * Lists viewers(s).
+   pan * Incremental pan.
+   panTo * Pan to specific coordinate.
+   rebuild * Forces rebuild of graphical database.
+   refresh * Refreshes viewer.
+   reset * Resets viewer.
+   save * Write commands that define the current view to file.
+   scale * Incremental (non-uniform) scaling.
+   scaleTo * Absolute (non-uniform) scaling.
+   select * Selects viewer.
+   update * Triggers graphical database post-processing for viewers
+using that technique.
+   zoom * Incremental zoom.
+   zoomTo * Absolute zoom.
+
+
+Command /vis/viewer/addCutawayPlane
+Guidance :
+Add cutaway plane to current viewer.
+
+Parameter : x
+Coordinate of point on the plane.
+ Parameter type  : d
+ Omittable       : True
+ Default value   : 0
+
+Parameter : y
+Coordinate of point on the plane.
+ Parameter type  : d
+ Omittable       : True
+ Default value   : 0
+
+Parameter : z
+Coordinate of point on the plane.
+ Parameter type  : d
+ Omittable       : True
+ Default value   : 0
+
+Parameter : unit
+Unit of point on the plane.
+ Parameter type  : s
+ Omittable       : True
+ Default value   : m
+
+Parameter : nx
+Component of plane normal.
+ Parameter type  : d
+ Omittable       : True
+ Default value   : 1
+
+Parameter : ny
+Component of plane normal.
+ Parameter type  : d
+ Omittable       : True
+ Default value   : 0
+
+Parameter : nz
+Component of plane normal.
+ Parameter type  : d
+ Omittable       : True
+ Default value   : 0
+
+
+
+Command /vis/viewer/changeCutawayPlane
+Guidance :
+Change cutaway plane.
+
+Parameter : index
+Index of plane: 0, 1, 2.
+ Parameter type  : i
+ Omittable       : False
+
+Parameter : x
+Coordinate of point on the plane.
+ Parameter type  : d
+ Omittable       : True
+ Default value   : 0
+
+Parameter : y
+Coordinate of point on the plane.
+ Parameter type  : d
+ Omittable       : True
+ Default value   : 0
+
+Parameter : z
+Coordinate of point on the plane.
+ Parameter type  : d
+ Omittable       : True
+ Default value   : 0
+
+Parameter : unit
+Unit of point on the plane.
+ Parameter type  : s
+ Omittable       : True
+ Default value   : m
+
+Parameter : nx
+Component of plane normal.
+ Parameter type  : d
+ Omittable       : True
+ Default value   : 1
+
+Parameter : ny
+Component of plane normal.
+ Parameter type  : d
+ Omittable       : True
+ Default value   : 0
+
+Parameter : nz
+Component of plane normal.
+ Parameter type  : d
+ Omittable       : True
+ Default value   : 0
+
+
+
+Command /vis/viewer/clear
+Guidance :
+Clears viewer.
+By default, clears current viewer.  Specified viewer becomes current.
+"/vis/viewer/list" to see  possible viewer names.
+
+Parameter : viewer-name
+ Parameter type  : s
+ Omittable       : True
+ Default value   : taken from the current value
+
+
+
+Command /vis/viewer/clearCutawayPlanes
+Guidance :
+Clear cutaway planes of current viewer.
+
+
+
+Command /vis/viewer/clearTransients
+Guidance :
+Clears transients from viewer.
+By default, operates on current viewer.  Specified viewer becomes current.
+"/vis/viewer/list" to see  possible viewer names.
+
+Parameter : viewer-name
+ Parameter type  : s
+ Omittable       : True
+ Default value   : taken from the current value
+
+
+
+Command /vis/viewer/clone
+Guidance :
+Clones viewer.
+By default, clones current viewer.  Clone becomes current.
+Clone name, if not provided, is derived from the original name.
+"/vis/viewer/list" to see  possible viewer names.
+
+Parameter : original-viewer-name
+ Parameter type  : s
+ Omittable       : True
+ Default value   : taken from the current value
+
+Parameter : clone-name
+ Parameter type  : s
+ Omittable       : True
+ Default value   : none
+
+
+
+Command /vis/viewer/copyViewFrom
+Guidance :
+Copy the camera-specific parameters from the specified viewer.
+Note: To copy scene modifications - style, etc. - please use
+"/vis/viewer/set/all"
+
+Parameter : from-viewer-name
+ Parameter type  : s
+ Omittable       : False
+
+
+
+Command /vis/viewer/create
+Guidance :
+Creates a viewer for the specified scene handler.
+Default scene handler is the current scene handler.  Invents a name
+if not supplied.  (Note: the system adds information to the name
+for identification - only the characters up to the first blank are
+used for removing, selecting, etc.)  This scene handler and viewer
+become current.
+
+Parameter : scene-handler
+ Parameter type  : s
+ Omittable       : True
+ Default value   : taken from the current value
+
+Parameter : viewer-name
+ Parameter type  : s
+ Omittable       : True
+ Default value   : taken from the current value
+
+Parameter : window-size-hint
+integer (pixels) for square window placed by window manager or X-Windows-type geometry string, e.g. 600x600-100+100
+ Parameter type  : s
+ Omittable       : True
+ Default value   : 600
+
+
+
+Command /vis/viewer/dolly
+Guidance :
+Incremental dolly.
+Moves the camera incrementally towards target point.
+
+Parameter : increment
+ Parameter type  : d
+ Omittable       : True
+ Default value   : taken from the current value
+
+Parameter : Unit
+ Parameter type  : s
+ Omittable       : True
+ Default value   : m
+ Candidates      : pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
+
+
+
+Command /vis/viewer/dollyTo
+Guidance :
+Dolly to specific coordinate.
+Places the camera towards target point relative to standard camera point.
+
+Parameter : distance
+ Parameter type  : d
+ Omittable       : True
+ Default value   : taken from the current value
+
+Parameter : Unit
+ Parameter type  : s
+ Omittable       : True
+ Default value   : m
+ Candidates      : pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
+
+
+
+Command /vis/viewer/flush
+Guidance :
+Compound command: "/vis/viewer/refresh" + "/vis/viewer/update".
+Useful for refreshing and initiating post-processing for graphics
+systems which need post-processing.  By default, acts on current
+viewer.  "/vis/viewer/list" to see possible viewers.  Viewer
+becomes current.
+
+Parameter : viewer-name
+ Parameter type  : s
+ Omittable       : True
+ Default value   : taken from the current value
+
+
+
+Command /vis/viewer/list
+Guidance :
+Lists viewers(s).
+See "/vis/verbose" for definition of verbosity.
+
+Parameter : viewer-name
+ Parameter type  : s
+ Omittable       : True
+ Default value   : all
+
+Parameter : verbosity
+ Parameter type  : s
+ Omittable       : True
+ Default value   : warnings
+
+
+
+Command /vis/viewer/pan
+Guidance :
+Incremental pan.
+Moves the camera incrementally right and up by these amounts (as seen
+from viewpoint direction).
+
+Parameter : right-increment
+ Parameter type  : d
+ Omittable       : True
+ Default value   : taken from the current value
+
+Parameter : up-increment
+ Parameter type  : d
+ Omittable       : True
+ Default value   : taken from the current value
+
+Parameter : unit
+ Parameter type  : s
+ Omittable       : True
+ Default value   : m
+
+
+
+Command /vis/viewer/panTo
+Guidance :
+Pan to specific coordinate.
+Places the camera in this position right and up relative to standard
+target point (as seen from viewpoint direction).
+
+Parameter : right
+ Parameter type  : d
+ Omittable       : True
+ Default value   : taken from the current value
+
+Parameter : up
+ Parameter type  : d
+ Omittable       : True
+ Default value   : taken from the current value
+
+Parameter : unit
+ Parameter type  : s
+ Omittable       : True
+ Default value   : m
+
+
+
+Command /vis/viewer/rebuild
+Guidance :
+Forces rebuild of graphical database.
+By default, acts on current viewer.  "/vis/viewer/list"
+to see possible viewers.  Viewer becomes current.
+
+Parameter : viewer-name
+ Parameter type  : s
+ Omittable       : True
+ Default value   : taken from the current value
+
+
+
+Command /vis/viewer/refresh
+Guidance :
+Refreshes viewer.
+By default, acts on current viewer.  "/vis/viewer/list"
+to see possible viewers.  Viewer becomes current.
+
+Parameter : viewer-name
+ Parameter type  : s
+ Omittable       : True
+ Default value   : taken from the current value
+
+
+
+Command /vis/viewer/reset
+Guidance :
+Resets viewer.
+By default, acts on current viewer.  "/vis/viewer/list"
+to see possible viewers.  Viewer becomes current.
+
+Parameter : viewer-name
+ Parameter type  : s
+ Omittable       : True
+ Default value   : taken from the current value
+
+
+
+Command /vis/viewer/save
+Guidance :
+Write commands that define the current view to file.
+
+Parameter : file-name
+ Parameter type  : s
+ Omittable       : True
+ Default value   : G4cout
+
+
+
+Command /vis/viewer/scale
+Guidance :
+Incremental (non-uniform) scaling.
+Multiplies components of current scaling by components of this factor.
+ Scales (x,y,z) by corresponding components of the resulting factor.
+
+
+Parameter : x-scale-multiplier
+ Parameter type  : d
+ Omittable       : True
+ Default value   : taken from the current value
+
+Parameter : y-scale-multiplier
+ Parameter type  : d
+ Omittable       : True
+ Default value   : taken from the current value
+
+Parameter : z-scale-multiplier
+ Parameter type  : d
+ Omittable       : True
+ Default value   : taken from the current value
+
+
+
+Command /vis/viewer/scaleTo
+Guidance :
+Absolute (non-uniform) scaling.
+Scales (x,y,z) by corresponding components of this factor.
+
+Parameter : x-scale-factor
+ Parameter type  : d
+ Omittable       : True
+ Default value   : taken from the current value
+
+Parameter : y-scale-factor
+ Parameter type  : d
+ Omittable       : True
+ Default value   : taken from the current value
+
+Parameter : z-scale-factor
+ Parameter type  : d
+ Omittable       : True
+ Default value   : taken from the current value
+
+
+
+Command /vis/viewer/select
+Guidance :
+Selects viewer.
+Specify viewer by name.  "/vis/viewer/list" to see possible viewers.
+
+Parameter : viewer-name
+ Parameter type  : s
+ Omittable       : False
+
+
+
+Command /vis/viewer/update
+Guidance :
+Triggers graphical database post-processing for viewers
+using that technique.
+For such viewers the view only becomes visible with this command.
+By default, acts on current viewer.  "/vis/viewer/list"
+to see possible viewers.  Viewer becomes current.
+
+Parameter : viewer-name
+ Parameter type  : s
+ Omittable       : True
+ Default value   : taken from the current value
+
+
+
+Command /vis/viewer/zoom
+Guidance :
+Incremental zoom.
+Multiplies current magnification by this factor.
+
+Parameter : multiplier
+ Parameter type  : d
+ Omittable       : True
+ Default value   : taken from the current value
+
+
+
+Command /vis/viewer/zoomTo
+Guidance :
+Absolute zoom.
+Magnifies standard magnification by this factor.
+
+Parameter : factor
+ Parameter type  : d
+ Omittable       : True
+ Default value   : taken from the current value
+
+Command directory path : /vis/viewer/default/
+
+
+Guidance :
+Set default values for future viewers.
+
+ Sub-directories : 
+ Commands : 
+   hiddenEdge * Default hiddenEdge drawing for future viewers.
+   style * Default drawing style for future viewers.
+
+
+Command /vis/viewer/default/hiddenEdge
+Guidance :
+Default hiddenEdge drawing for future viewers.
+Edges become hidden/seen in wireframe or surface mode.
+
+Parameter : hidden-edge
+ Parameter type  : b
+ Omittable       : True
+ Default value   : 1
+
+
+
+Command /vis/viewer/default/style
+Guidance :
+Default drawing style for future viewers.
+Set style of drawing - w[ireframe] or s[urface].
+(Default hidden line drawing is controlled by "/vis/viewer/default/hiddenEdge".)
+
+Parameter : style
+ Parameter type  : s
+ Omittable       : False
+
+Command directory path : /vis/viewer/set/
+
+
+Guidance :
+Set view parameters of current viewer.
+
+ Sub-directories : 
+ Commands : 
+   all * Copies view parameters.
+   autoRefresh * Sets auto-refresh.
+   auxiliaryEdge * Sets visibility of auxiliary edges
+   background * Set background colour and transparency (default black and opaque).
+   culling * Set culling options.
+   cutawayMode * Sets cutaway mode - add (union) or multiply (intersection).
+   defaultColour * Set defaultColour colour and transparency (default white and opaque).
+   defaultTextColour * Set defaultTextColour colour and transparency (default white and opaque).
+   edge * Edges become visible/invisible in surface mode.
+   explodeFactor * Moves top-level drawn volumes by this factor from this centre.
+   globalLineWidthScale * Multiplies line widths by this factor.
+   globalMarkerScale * Multiplies marker sizes by this factor.
+   hiddenEdge * Edges become hidden/seen in wireframe or surface mode.
+   hiddenMarker * If true, closer objects hide markers. Otherwise, markers always show.
+   lightsMove * Lights move with camera or with object
+   lightsThetaPhi * Set direction from target to lights.
+   lightsVector * Set direction from target to lights.
+   lineSegmentsPerCircle * Set number of sides per circle for polygon/polyhedron drawing.
+   picking * Sets picking, if available.
+   projection * Orthogonal or perspective projection.
+   rotationStyle * Set style of rotation - constrainUpDirection or freeRotation.
+   sectionPlane * Set plane for drawing section (DCUT).
+   style * Set style of drawing - w[ireframe] or s[urface].
+   targetPoint * Set target point.
+   upThetaPhi * Set up vector.
+   upVector * Set up vector.
+   viewpointThetaPhi * Set direction from target to camera.
+   viewpointVector * Set direction from target to camera.
+
+
+Command /vis/viewer/set/all
+Guidance :
+Copies view parameters.
+Copies view parameters (except the autoRefresh status) from
+from-viewer to current viewer.
+
+Parameter : from-viewer-name
+ Parameter type  : s
+ Omittable       : False
+
+
+
+Command /vis/viewer/set/autoRefresh
+Guidance :
+Sets auto-refresh.
+If true, view is automatically refreshed after a change of
+view parameters.
+
+Parameter : auto-refresh
+ Parameter type  : b
+ Omittable       : True
+ Default value   : 1
+
+
+
+Command /vis/viewer/set/auxiliaryEdge
+Guidance :
+Sets visibility of auxiliary edges
+Auxiliary edges, i.e., those that are part of a curved surface,
+sometimes called soft edges, become visible/invisible.
+
+Parameter : edge
+ Parameter type  : b
+ Omittable       : True
+ Default value   : 1
+
+
+
+Command /vis/viewer/set/background
+Guidance :
+Set background colour and transparency (default black and opaque).
+Accepts (a) RGB triplet. e.g., ".3 .4 .5", or
+(b) string such as "white", "black", "grey", "red"...
+(c) an additional number for opacity, e.g., ".3 .4 .5 .6"
+    or "grey ! ! .6" (note "!"'s for unused green and blue parameters),
+    e.g. "! ! ! 0." for a transparent background.
+
+Parameter : red_or_string
+ Parameter type  : s
+ Omittable       : True
+ Default value   : 0.
+
+Parameter : green
+ Parameter type  : d
+ Omittable       : True
+ Default value   : 0
+
+Parameter : blue
+ Parameter type  : d
+ Omittable       : True
+ Default value   : 0
+
+Parameter : opacity
+ Parameter type  : d
+ Omittable       : True
+ Default value   : 1
+
+
+
+Command /vis/viewer/set/culling
+Guidance :
+Set culling options.
+"global": enables/disables all other culling options.
+"coveredDaughters": culls, i.e., eliminates, volumes that would not
+be seen because covered by ancester volumes in surface drawing mode,
+and then only if the ancesters are visible and opaque, and then only
+if no sections or cutaways are in operation.  Intended solely to
+improve the speed of rendering visible volumes.
+"invisible": culls objects with the invisible attribute set.
+"density": culls volumes with density lower than threshold.  Useful
+for eliminating "container volumes" with no physical correspondence,
+whose material is usually air.  If this is selected, provide threshold
+density and unit (g/cm3 mg/cm3 or kg/m3).
+
+Parameter : culling-option
+ Parameter type  : s
+ Omittable       : False
+ Candidates      : global coveredDaughters invisible density
+
+Parameter : action
+ Parameter type  : b
+ Omittable       : True
+ Default value   : 1
+
+Parameter : density-threshold
+ Parameter type  : d
+ Omittable       : True
+ Default value   : 0.01
+
+Parameter : unit
+ Parameter type  : s
+ Omittable       : True
+ Default value   : g/cm3
+ Candidates      : g/cm3, mg/cm3 kg/m3
+
+
+
+Command /vis/viewer/set/cutawayMode
+Guidance :
+Sets cutaway mode - add (union) or multiply (intersection).
+
+Parameter : cutaway-mode
+ Parameter type  : s
+ Omittable       : False
+ Default value   : union
+ Candidates      : add union multiply intersection
+
+
+
+Command /vis/viewer/set/defaultColour
+Guidance :
+Set defaultColour colour and transparency (default white and opaque).
+Accepts (a) RGB triplet. e.g., ".3 .4 .5", or
+(b) string such as "white", "black", "grey", "red"...
+(c) an additional number for opacity, e.g., ".3 .4 .5 .6"
+    or "grey ! ! .6" (note "!"'s for unused green and blue parameters),
+    e.g. "! ! ! 0." for a transparent colour.
+
+Parameter : red_or_string
+ Parameter type  : s
+ Omittable       : True
+ Default value   : 1.
+
+Parameter : green
+ Parameter type  : d
+ Omittable       : True
+ Default value   : 1
+
+Parameter : blue
+ Parameter type  : d
+ Omittable       : True
+ Default value   : 1
+
+Parameter : opacity
+ Parameter type  : d
+ Omittable       : True
+ Default value   : 1
+
+
+
+Command /vis/viewer/set/defaultTextColour
+Guidance :
+Set defaultTextColour colour and transparency (default white and opaque).
+Accepts (a) RGB triplet. e.g., ".3 .4 .5", or
+(b) string such as "white", "black", "grey", "red"...
+(c) an additional number for opacity, e.g., ".3 .4 .5 .6"
+    or "grey ! ! .6" (note "!"'s for unused green and blue parameters),
+    e.g. "! ! ! 0." for a transparent colour.
+
+Parameter : red_or_string
+ Parameter type  : s
+ Omittable       : True
+ Default value   : 1.
+
+Parameter : green
+ Parameter type  : d
+ Omittable       : True
+ Default value   : 1
+
+Parameter : blue
+ Parameter type  : d
+ Omittable       : True
+ Default value   : 1
+
+Parameter : opacity
+ Parameter type  : d
+ Omittable       : True
+ Default value   : 1
+
+
+
+Command /vis/viewer/set/edge
+Guidance :
+Edges become visible/invisible in surface mode.
+
+Parameter : edge
+ Parameter type  : b
+ Omittable       : True
+ Default value   : 1
+
+
+
+Command /vis/viewer/set/explodeFactor
+Guidance :
+Moves top-level drawn volumes by this factor from this centre.
+
+Parameter : explodeFactor
+ Parameter type  : d
+ Omittable       : True
+ Default value   : 1
+ Parameter range : explodeFactor>=1.
+
+Parameter : x
+Coordinate of explode centre.
+ Parameter type  : d
+ Omittable       : True
+ Default value   : 0
+
+Parameter : y
+Coordinate of explode centre.
+ Parameter type  : d
+ Omittable       : True
+ Default value   : 0
+
+Parameter : z
+Coordinate of explode centre.
+ Parameter type  : d
+ Omittable       : True
+ Default value   : 0
+
+Parameter : unit
+Unit of explode centre.
+ Parameter type  : s
+ Omittable       : True
+ Default value   : m
+
+
+
+Command /vis/viewer/set/globalLineWidthScale
+Guidance :
+Multiplies line widths by this factor.
+
+Parameter : scale-factor
+ Parameter type  : d
+ Omittable       : True
+ Default value   : 1
+
+
+
+Command /vis/viewer/set/globalMarkerScale
+Guidance :
+Multiplies marker sizes by this factor.
+
+Parameter : scale-factor
+ Parameter type  : d
+ Omittable       : True
+ Default value   : 1
+
+
+
+Command /vis/viewer/set/hiddenEdge
+Guidance :
+Edges become hidden/seen in wireframe or surface mode.
+
+Parameter : hidden-edge
+ Parameter type  : b
+ Omittable       : True
+ Default value   : 1
+
+
+
+Command /vis/viewer/set/hiddenMarker
+Guidance :
+If true, closer objects hide markers. Otherwise, markers always show.
+
+Parameter : hidden-marker
+ Parameter type  : b
+ Omittable       : True
+ Default value   : 1
+
+
+
+Command /vis/viewer/set/lightsMove
+Guidance :
+Lights move with camera or with object
+
+Parameter : lightsMove
+ Parameter type  : s
+ Omittable       : False
+ Candidates      : cam camera with-camera obj object with-object
+
+
+
+Command /vis/viewer/set/lightsThetaPhi
+Guidance :
+Set direction from target to lights.
+
+Parameter : theta
+ Parameter type  : d
+ Omittable       : True
+ Default value   : 60
+
+Parameter : phi
+ Parameter type  : d
+ Omittable       : True
+ Default value   : 45
+
+Parameter : unit
+ Parameter type  : s
+ Omittable       : True
+ Default value   : deg
+
+
+
+Command /vis/viewer/set/lightsVector
+Guidance :
+Set direction from target to lights.
+
+Parameter : x
+ Parameter type  : d
+ Omittable       : True
+ Default value   : 1
+
+Parameter : y
+ Parameter type  : d
+ Omittable       : True
+ Default value   : 1
+
+Parameter : z
+ Parameter type  : d
+ Omittable       : True
+ Default value   : 1
+
+
+
+Command /vis/viewer/set/lineSegmentsPerCircle
+Guidance :
+Set number of sides per circle for polygon/polyhedron drawing.
+Refers to graphical representation of objects with curved lines/surfaces.
+
+Parameter : line-segments
+ Parameter type  : i
+ Omittable       : True
+ Default value   : 24
+
+
+
+Command /vis/viewer/set/picking
+Guidance :
+Sets picking, if available.
+If true, view is set up for picking, if available.
+You may need to issue "/vis/viewer/update".
+For required actions, watch for instructions for viewer.
+
+Parameter : picking
+ Parameter type  : b
+ Omittable       : True
+ Default value   : 1
+
+
+
+Command /vis/viewer/set/projection
+Guidance :
+Orthogonal or perspective projection.
+
+Parameter : projection
+ Parameter type  : s
+ Omittable       : True
+ Default value   : orthogonal
+ Candidates      : o orthogonal p perspective
+
+Parameter : field-half-angle
+ Parameter type  : d
+ Omittable       : True
+ Default value   : 30
+
+Parameter : unit
+ Parameter type  : s
+ Omittable       : True
+ Default value   : deg
+
+
+
+Command /vis/viewer/set/rotationStyle
+Guidance :
+Set style of rotation - constrainUpDirection or freeRotation.
+constrainUpDirection: conventional HEP view.
+freeRotation: Google-like rotation, using mouse-grab.
+
+Parameter : style
+ Parameter type  : s
+ Omittable       : False
+ Candidates      : constrainUpDirection freeRotation
+
+
+
+Command /vis/viewer/set/sectionPlane
+Guidance :
+Set plane for drawing section (DCUT).
+E.g., for a y-z plane at x = 1 cm:
+"/vis/viewer/set/sectionPlane on 1 0 0 cm 1 0 0".
+To turn off: /vis/viewer/set/sectionPlane off
+
+Parameter : Selector
+ Parameter type  : c
+ Omittable       : True
+ Default value   : on
+
+Parameter : x
+Coordinate of point on the plane.
+ Parameter type  : d
+ Omittable       : True
+ Default value   : 0
+
+Parameter : y
+Coordinate of point on the plane.
+ Parameter type  : d
+ Omittable       : True
+ Default value   : 0
+
+Parameter : z
+Coordinate of point on the plane.
+ Parameter type  : d
+ Omittable       : True
+ Default value   : 0
+
+Parameter : unit
+Unit of point on the plane.
+ Parameter type  : s
+ Omittable       : True
+ Default value   : m
+
+Parameter : nx
+Component of plane normal.
+ Parameter type  : d
+ Omittable       : True
+ Default value   : 1
+
+Parameter : ny
+Component of plane normal.
+ Parameter type  : d
+ Omittable       : True
+ Default value   : 0
+
+Parameter : nz
+Component of plane normal.
+ Parameter type  : d
+ Omittable       : True
+ Default value   : 0
+
+
+
+Command /vis/viewer/set/style
+Guidance :
+Set style of drawing - w[ireframe] or s[urface].
+(Hidden line drawing is controlled by "/vis/viewer/set/hiddenEdge".)
+
+Parameter : style
+ Parameter type  : s
+ Omittable       : False
+
+
+
+Command /vis/viewer/set/targetPoint
+Guidance :
+Set target point.
+This sets the "Current Target Point" relative to the "Standard
+Target Point" so that the actual target point is as requested.
+(See G4ViewParameters.hh for an explanation of target points.)
+
+Parameter : x
+ Parameter type  : d
+ Omittable       : False
+
+Parameter : y
+ Parameter type  : d
+ Omittable       : False
+
+Parameter : z
+ Parameter type  : d
+ Omittable       : False
+
+Parameter : Unit
+ Parameter type  : s
+ Omittable       : False
+ Candidates      : pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
+
+
+
+Command /vis/viewer/set/upThetaPhi
+Guidance :
+Set up vector.
+Viewer will attempt always to show this direction upwards.
+
+Parameter : theta
+ Parameter type  : d
+ Omittable       : True
+ Default value   : 90
+
+Parameter : phi
+ Parameter type  : d
+ Omittable       : True
+ Default value   : 90
+
+Parameter : unit
+ Parameter type  : s
+ Omittable       : True
+ Default value   : deg
+
+
+
+Command /vis/viewer/set/upVector
+Guidance :
+Set up vector.
+Viewer will attempt always to show this direction upwards.
+
+Parameter : x
+ Parameter type  : d
+ Omittable       : True
+ Default value   : 0
+
+Parameter : y
+ Parameter type  : d
+ Omittable       : True
+ Default value   : 1
+
+Parameter : z
+ Parameter type  : d
+ Omittable       : True
+ Default value   : 0
+
+
+
+Command /vis/viewer/set/viewpointThetaPhi
+Guidance :
+Set direction from target to camera.
+Also changes lightpoint direction if lights are set to move with camera.
+
+Parameter : theta
+ Parameter type  : d
+ Omittable       : True
+ Default value   : 60
+
+Parameter : phi
+ Parameter type  : d
+ Omittable       : True
+ Default value   : 45
+
+Parameter : unit
+ Parameter type  : s
+ Omittable       : True
+ Default value   : deg
+
+
+
+Command /vis/viewer/set/viewpointVector
+Guidance :
+Set direction from target to camera.
+Also changes lightpoint direction if lights are set to move with camera.
+
+Parameter : x
+ Parameter type  : d
+ Omittable       : True
+ Default value   : 1
+
+Parameter : y
+ Parameter type  : d
+ Omittable       : True
+ Default value   : 1
+
+Parameter : z
+ Parameter type  : d
+ Omittable       : True
+ Default value   : 1
+
 Command directory path : /db/
 
 
@@ -6321,4 +11206,6 @@ Command /db/set/clearBoundaries
 Guidance :
 Remove all of the boundaries for trajectory points.
 
+Graphics systems deleted.
+Visualization Manager deleting...
 ERROR: ../src/DSimRootPersistencyManager.cc:108: DSimRootPersistencyManager::Close -- No Output File

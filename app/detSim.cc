@@ -2,32 +2,28 @@
 //
 //  $Id: detsim.cc,v 1.29 2009/08/31 20:07:07 mcgrew Exp $
 
-#include <iostream>
-#include <fstream>
-
-#include <csignal>
-#include <cstdlib>
-
-#include "TCaptLog.hxx"
-
-
-#include "globals.hh"
-#include "G4RunManager.hh"
-#include "G4UImanager.hh"
-#include "G4UIExecutive.hh"
-#include "G4UIterminal.hh"
-#include "G4UItcsh.hh"
-
 #include "DSimCreateRunManager.hh"
 #include "DSimPersistencyManager.hh"
 #include "DSimRootPersistencyManager.hh"
-
-// The physics lists that can be used.
 #include "DSimPhysicsList.hh"
+
+#include "TCaptLog.hxx"
+
+#include "G4RunManager.hh"
+#include "G4UImanager.hh"
+
+#include "G4UIExecutive.hh"
 
 #ifdef G4VIS_USE
 #include <G4VisExecutive.hh>
 #endif
+
+#include "globals.hh"
+
+#include <iostream>
+#include <fstream>
+#include <csignal>
+#include <cstdlib>
 
 int main(int argc,char** argv) {
     CP::TCaptLog::Configure();
@@ -94,11 +90,7 @@ int main(int argc,char** argv) {
         G4String command = "/control/execute ";
         for (int i=optind; i<argc; ++i) {
             G4String macroFilename = argv[i];
-            std::cout << std::endl;
-            std::cout << "##################################" << std::endl;
-            std::cout << "## Macro: " << macroFilename << std::endl;
-            std::cout << "##################################" << std::endl;
-            std::cout << std::endl;
+            std::cout << "## Run macro: " << macroFilename << std::endl;
             UI->ApplyCommand(command+macroFilename);
         }
         ui->SessionStart();

@@ -22,7 +22,7 @@ library detSim *.cc *.hh \
 	captain/*.cc captain/*.hh 
 
 # Build information used by packages that use this one.
-macro detSim_cppflags " -DDETSIM_USED "
+macro detSim_cppflags " -DDETSIM_USED -DG4VIS_USE"
 macro detSim_linkopts " -L$(DETSIMROOT)/$(detSim_tag) -ldetSim "
 macro detSim_stamps " $(DETSIMROOT)/$(detSim_tag)/detSim.stamp"
 
