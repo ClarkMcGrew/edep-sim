@@ -10,9 +10,11 @@
 
 #include "TCaptLog.hxx"
 
+
 #include "globals.hh"
 #include "G4RunManager.hh"
 #include "G4UImanager.hh"
+#include "G4UIExecutive.hh"
 #include "G4UIterminal.hh"
 #include "G4UItcsh.hh"
 
@@ -35,8 +37,8 @@ int main(int argc,char** argv) {
 
     G4int errflg = 0;
     G4int c = 0;
-    G4bool useUItcsh = true;
-    while (!errflg && ((c=getopt(argc,argv,"p:k:o:tn")) != -1)) {
+    G4bool useUI = false;
+    while (!errflg && ((c=getopt(argc,argv,"hp:o:u")) != -1)) {
         switch (c) {
         case 'p':
             physicsList = optarg;
@@ -44,12 +46,17 @@ int main(int argc,char** argv) {
         case 'o':
             outputFilename = optarg;
             break;
-        case 't': // Don't use a tcsh-style command line interface
-            useUItcsh = false;
+        case 'u': // Don't use a tcsh-style command line interface
+            useUI = true;
             break;
+        case 'h':
         default:
-            errflg++;
-            G4cout << "Option not implemented" << G4endl;
+            std::cout << "Usage: DETSIM.exe [options] [macro]" << std::endl;
+            std::cout << "    -h      -- This help message." << std::endl;
+            std::cout << "    -p      -- Select the physics list" << std::endl;
+            std::cout << "    -o      -- Set the output file" << std::endl;
+            std::cout << "    -u      -- Start an interactive run" << std::endl;
+            exit(1);
         }
     }
 
@@ -82,25 +89,27 @@ int main(int argc,char** argv) {
     std::signal(SIGBUS,  SIG_DFL);
     std::signal(SIGSEGV, SIG_DFL);
 
-    if (optind < argc) {
+    if (useUI) {
+        G4UIExecutive* ui = new G4UIExecutive(argc, argv);
+        G4String command = "/control/execute ";
+        for (int i=optind; i<argc; ++i) {
+            G4String macroFilename = argv[i];
+            std::cout << std::endl;
+            std::cout << "##################################" << std::endl;
+            std::cout << "## Macro: " << macroFilename << std::endl;
+            std::cout << "##################################" << std::endl;
+            std::cout << std::endl;
+            UI->ApplyCommand(command+macroFilename);
+        }
+        ui->SessionStart();
+        delete ui;
+    }
+    else if (optind < argc) {
         G4String command = "/control/execute ";
         for (int i=optind; i<argc; ++i) {
             G4String macroFilename = argv[i];
             UI->ApplyCommand(command+macroFilename);
         }
-    }
-    else {
-        // G4UIterminal is a (dumb) terminal.
-        G4UIsession * session;
-        if(useUItcsh) {
-            // G4UIterminal is a terminal with tcsh-like control.
-            session = new G4UIterminal(new G4UItcsh);
-        }
-        else {
-            session = new G4UIterminal();
-        }
-        session->SessionStart();
-        delete session;
     }
     
     // job termination
