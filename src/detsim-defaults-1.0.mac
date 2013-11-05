@@ -29,10 +29,10 @@
 # to the "nearest" parent particle.
 ##############################################
 /db/set/saveAllPrimTraj true
-/db/set/lengthThreshold 10 mm
+/db/set/lengthThreshold 3 mm
 /db/set/trajectoryAccuracy 1 mm
 /db/set/neutronThreshold 50 MeV
-/db/set/gammaThreshold 10 MeV
+/db/set/gammaThreshold 1 MeV
 
 ##############################################
 # Set any physics limits.
