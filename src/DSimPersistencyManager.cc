@@ -200,7 +200,7 @@ void DSimPersistencyManager::MarkTrajectories(const G4Event* event) {
             // Make sure that the primary trajectory associated with this hit
             // is saved.  The primary trajectories are defined by
             // DSimTrajectoryMap::FindPrimaryId().
-            int primaryId = g4Hit->GetPrimaryId();
+            int primaryId = g4Hit->GetPrimaryTrajectoryId();
             DSimTrajectory* ndTraj 
                 = dynamic_cast<DSimTrajectory*>(
                     DSimTrajectoryMap::Get(primaryId));
