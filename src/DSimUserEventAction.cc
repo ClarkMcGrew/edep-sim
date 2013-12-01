@@ -28,16 +28,9 @@ DSimUserEventAction::DSimUserEventAction() {}
 DSimUserEventAction::~DSimUserEventAction() {}
 
 void DSimUserEventAction::BeginOfEventAction(const G4Event* evt) {
-    if (0 == (evt->GetEventID() % 100)) {
-        DSimInfo("Begin Event: " << evt->GetEventID() 
+    DSimNamedLog("Event", "Begin Event: " << evt->GetEventID() 
                  << " w/ " << evt->GetNumberOfPrimaryVertex()
                  << " vertices");
-    }
-    else {
-        DSimInfo("Begin Event: " << evt->GetEventID() 
-                 << " w/ " << evt->GetNumberOfPrimaryVertex()
-                 << " vertices");
-    }
     
     // The last chance to create the user information object.  This should be
     // created in the primary particle generater
@@ -54,40 +47,78 @@ void DSimUserEventAction::BeginOfEventAction(const G4Event* evt) {
         gGeoManager->PushPath();
         DSimRootGeometryManager::Get()->GetNodeId(
             G4ThreeVector(vtx->GetX0(), vtx->GetY0(), vtx->GetZ0()));
-        DSimVerbose("Vertex: " << vtxNumber  
-                 << " w/ " << vtx->GetNumberOfParticle() << " primaries"
-                 " in " << gGeoManager->GetPath());
+        DSimNamedInfo(
+            "Event",
+            "Vertex: " << vtxNumber  
+            << " w/ " << vtx->GetNumberOfParticle() << " primaries"
+            " in " << gGeoManager->GetPath());
         gGeoManager->PopPath();
-        DSimVerbose(" at " 
-                     << " (" << G4BestUnit(vtx->GetX0(),"Length") 
-                     << ", " << G4BestUnit(vtx->GetY0(),"Length") 
-                     << ", " << G4BestUnit(vtx->GetZ0(),"Length") 
-                     << ", " << G4BestUnit(vtx->GetT0(),"Time") << ")");
+        DSimNamedVerbose(
+            "Event",
+            "Position: " 
+            << " (" << G4BestUnit(vtx->GetX0(),"Length") 
+            << ", " << G4BestUnit(vtx->GetY0(),"Length") 
+            << ", " << G4BestUnit(vtx->GetZ0(),"Length") 
+            << ", " << G4BestUnit(vtx->GetT0(),"Time") << ")");
         DSimVertexInfo* vInfo 
             = dynamic_cast<DSimVertexInfo*>(vtx->GetUserInformation());
         if (vInfo) {
-            DSimVerbose("  Generator: " << vInfo->GetName());
-            DSimVerbose("  Reaction:  " << vInfo->GetReaction());
+            DSimNamedInfo("Event","Generator: " << vInfo->GetName());
+            DSimNamedInfo("Event","Reaction:  " << vInfo->GetReaction());
+            int infoVertices = vInfo->GetNumberOfInformationalVertex();
+            for (int iVert = 0; iVert<infoVertices; ++iVert) {
+                const G4PrimaryVertex* ivtx 
+                    = vInfo->GetInformationalVertex(iVert);
+                for (int p=0; p<ivtx->GetNumberOfParticle(); ++p) {
+                    G4PrimaryParticle* prim = ivtx->GetPrimary(p);
+                    G4ParticleDefinition* partDef = prim->GetG4code();
+                    G4ThreeVector dir = prim->GetMomentum().unit();
+                    if (partDef) {
+                        DSimNamedInfo(
+                            "Event",
+                            "Info: " << partDef->GetParticleName()
+                            << " w/ "
+                            << G4BestUnit(prim->GetMomentum().mag(),"Energy")
+                            << "  Dir: (" << dir.x()
+                            << ", " << dir.y()
+                            << ", " << dir.z() << ")");
+                    }
+                    else {
+                        DSimNamedInfo(
+                            "Event",
+                            "Info: " << prim->GetPDGcode()
+                            << " w/ "
+                            << G4BestUnit(prim->GetMomentum().mag(),"Energy")
+                            << "  Dir: (" << dir.x()
+                            << ", " << dir.y()
+                            << ", " << dir.z() << ")");
+                    }
+                }
+            }
         }
         for (int p=0; p<vtx->GetNumberOfParticle(); ++p) {
             G4PrimaryParticle* prim = vtx->GetPrimary(p);
             G4ParticleDefinition* partDef = prim->GetG4code();
             G4ThreeVector dir = prim->GetMomentum().unit();
             if (partDef) {
-                DSimVerbose("    " << partDef->GetParticleName()
-                            << " w/ "
-                            << G4BestUnit(prim->GetMomentum().mag(),"Energy")
-                            << "  Direction: (" << dir.x()
-                            << ", " << dir.y()
-                            << ", " << dir.z() << ")");
+                DSimNamedVerbose(
+                    "Event",
+                    partDef->GetParticleName()
+                    << " w/ "
+                    << G4BestUnit(prim->GetMomentum().mag(),"Energy")
+                    << "  Dir: (" << dir.x()
+                    << ", " << dir.y()
+                    << ", " << dir.z() << ")");
             }
             else {
-                DSimVerbose("    " << prim->GetPDGcode()
-                            << " w/ "
-                            << G4BestUnit(prim->GetMomentum().mag(),"Energy")
-                            << "  Direction: (" << dir.x()
-                            << ", " << dir.y()
-                            << ", " << dir.z() << ")");
+                DSimNamedVerbose(
+                    "Event",
+                    prim->GetPDGcode()
+                    << " w/ "
+                    << G4BestUnit(prim->GetMomentum().mag(),"Energy")
+                    << "  Dir: (" << dir.x()
+                    << ", " << dir.y()
+                    << ", " << dir.z() << ")");
             }
         }
     }
