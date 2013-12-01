@@ -28,9 +28,16 @@ DSimUserEventAction::DSimUserEventAction() {}
 DSimUserEventAction::~DSimUserEventAction() {}
 
 void DSimUserEventAction::BeginOfEventAction(const G4Event* evt) {
-    DSimInfo("Begin Event: " << evt->GetEventID() 
-             << " w/ " << evt->GetNumberOfPrimaryVertex()
-             << " vertices");
+    if (0 == (evt->GetEventID() % 100)) {
+        DSimInfo("Begin Event: " << evt->GetEventID() 
+                 << " w/ " << evt->GetNumberOfPrimaryVertex()
+                 << " vertices");
+    }
+    else {
+        DSimInfo("Begin Event: " << evt->GetEventID() 
+                 << " w/ " << evt->GetNumberOfPrimaryVertex()
+                 << " vertices");
+    }
     
     // The last chance to create the user information object.  This should be
     // created in the primary particle generater
