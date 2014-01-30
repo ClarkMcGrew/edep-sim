@@ -75,6 +75,6 @@ GEANT 4 defines a simple macro language that is used to control the
 execution of the detector simulation.  All of the commands defined in the 
 ND280MC.exe executable are defined below.
 
-\verbinclude detSim-command.list
+\verbinclude detsim-command.list
 
 */
