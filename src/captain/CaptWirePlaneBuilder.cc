@@ -1,7 +1,7 @@
 #include "CaptWirePlaneBuilder.hh"
 #include "DSimBuilder.hh"
 
-#include <DSimLog.hh>
+#include "DSimLog.hh"
 
 #include <globals.hh>
 #include <G4Material.hh>
@@ -98,6 +98,10 @@ G4LogicalVolume *CaptWirePlaneBuilder::GetPiece(void) {
     // Determine the number of wires.  There is always at least one wire.
     int wires = int (2.0*GetApothem()/GetSpacing());
     if (wires<1) wires = 1;
+
+    DSimLog("Construct " << GetName() 
+            << " with " << wires << " wires"
+            << "  (spacing: " << GetSpacing()/mm << " mm)");
 
     G4RotationMatrix* wireRotation = NULL;
 
