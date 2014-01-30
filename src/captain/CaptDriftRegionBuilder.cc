@@ -73,7 +73,7 @@ public:
 void CaptDriftRegionBuilder::Init(void) {
     SetMessenger(new CaptDriftRegionMessenger(this));
     SetApothem(1000*mm);
-    SetDriftLength(1200*mm);
+    SetDriftLength(1000*mm);
     SetWirePlaneSpacing(3.1*mm);
     SetSensitiveDetector("drift","segment");
     SetMaximumHitLength(1*mm);
