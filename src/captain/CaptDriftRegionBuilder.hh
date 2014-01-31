@@ -34,7 +34,7 @@ public:
     /// @}
 
     /// Set the length of the drift region from the cathode to the first wire
-    /// plane.
+    /// plane.  (i.e. the grid plane).
     /// @{
     void SetDriftLength(double v) {fDriftLength = v;}
     double GetDriftLength() {return fDriftLength;}
@@ -45,7 +45,18 @@ public:
     double GetWirePlaneSpacing() {return fWirePlaneSpacing;}
     /// @}
 
-    
+    /// Get the offset of the X plane from the top of the drift region.
+    double GetXPlaneOffset();
+
+    /// Get the offset of the X plane from the top of the drift region.
+    double GetVPlaneOffset();
+
+    /// Get the offset of the X plane from the top of the drift region.
+    double GetUPlaneOffset();
+
+    /// Get the offset of the grid from the top of the drift region.
+    double GetGridPlaneOffset();
+
 private:
     void Init(void);
 
@@ -55,7 +66,7 @@ private:
     /// The distance from the cathode to the first wire plane.
     double fDriftLength;
 
-    /// The distance between the 3 wire planes.
+    /// The distance between the wire planes.
     double fWirePlaneSpacing;
 
 };

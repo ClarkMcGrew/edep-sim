@@ -72,7 +72,7 @@ public:
 
 void CaptDriftRegionBuilder::Init(void) {
     SetMessenger(new CaptDriftRegionMessenger(this));
-    SetApothem(1000*mm);
+    SetApothem(1037.5*mm);
     SetDriftLength(1000*mm);
     SetWirePlaneSpacing(3.1*mm);
     SetSensitiveDetector("drift","segment");
@@ -82,13 +82,34 @@ void CaptDriftRegionBuilder::Init(void) {
     AddBuilder(new CaptWirePlaneBuilder("XPlane",this));
     AddBuilder(new CaptWirePlaneBuilder("VPlane",this));
     AddBuilder(new CaptWirePlaneBuilder("UPlane",this));
+    AddBuilder(new CaptWirePlaneBuilder("GridPlane",this));
 }
 
 CaptDriftRegionBuilder::~CaptDriftRegionBuilder() {};
 
 double CaptDriftRegionBuilder::GetHeight() {
     CaptWirePlaneBuilder& wires = Get<CaptWirePlaneBuilder>("UPlane");
-    return GetDriftLength() + 2*GetWirePlaneSpacing() + wires.GetHeight();
+    return GetDriftLength() + 3*GetWirePlaneSpacing() + wires.GetHeight();
+}
+
+double CaptDriftRegionBuilder::GetXPlaneOffset() {
+    CaptWirePlaneBuilder& wires = Get<CaptWirePlaneBuilder>("XPlane");
+    return wires.GetHeight()/2;
+}
+
+double CaptDriftRegionBuilder::GetVPlaneOffset() {
+    CaptWirePlaneBuilder& wires = Get<CaptWirePlaneBuilder>("XPlane");
+    return 1*GetWirePlaneSpacing() + wires.GetHeight()/2;
+}
+
+double CaptDriftRegionBuilder::GetUPlaneOffset() {
+    CaptWirePlaneBuilder& wires = Get<CaptWirePlaneBuilder>("XPlane");
+    return 2*GetWirePlaneSpacing() + wires.GetHeight()/2;
+}
+
+double CaptDriftRegionBuilder::GetGridPlaneOffset() {
+    CaptWirePlaneBuilder& wires = Get<CaptWirePlaneBuilder>("XPlane");
+    return 3*GetWirePlaneSpacing() + wires.GetHeight()/2;
 }
 
 G4LogicalVolume *CaptDriftRegionBuilder::GetPiece(void) {
@@ -96,6 +117,10 @@ G4LogicalVolume *CaptDriftRegionBuilder::GetPiece(void) {
     double rInner[] = {0.0, 0.0};
     double rOuter[] = {GetApothem(), GetApothem()};
     double zPlane[] = {-GetHeight()/2, GetHeight()/2};
+
+    DSimLog("Construct " << GetName() 
+            << " with " << GetHeight()/mm << " mm height"
+            << " and " <<  GetDriftLength()/mm << " mm drift");
 
     G4LogicalVolume *logVolume
 	= new G4LogicalVolume(new G4Polyhedra(GetName(),
@@ -117,11 +142,11 @@ G4LogicalVolume *CaptDriftRegionBuilder::GetPiece(void) {
     xRotation->rotateX(180*degree);
 
     CaptWirePlaneBuilder& xPlane = Get<CaptWirePlaneBuilder>("XPlane");
+    xPlane.SetApothem(GetApothem());
     G4LogicalVolume *logX = xPlane.GetPiece();
     new G4PVPlacement(xRotation,                // rotation.
                       G4ThreeVector(0,0,
-                                    (GetHeight()/2 
-                                     - xPlane.GetHeight()/2)), 
+                                    (GetHeight()/2 - GetXPlaneOffset())), 
                       logX,                     // logical volume
                       logX->GetName(),          // name
                       logVolume,                // mother  volume
@@ -135,11 +160,11 @@ G4LogicalVolume *CaptDriftRegionBuilder::GetPiece(void) {
     vRotation->rotateZ(-60*degree);
                        
     CaptWirePlaneBuilder& vPlane = Get<CaptWirePlaneBuilder>("VPlane");
+    vPlane.SetApothem(GetApothem());
     G4LogicalVolume *logV = vPlane.GetPiece();
     new G4PVPlacement(vRotation,                // rotation.
                       G4ThreeVector(0,0,
-                                    (GetHeight()/2 - xPlane.GetHeight()/2
-                                     - GetWirePlaneSpacing())),
+                                    (GetHeight()/2 - GetVPlaneOffset())),
                       logV,                     // logical volume
                       logV->GetName(),          // name
                       logVolume,                // mother  volume
@@ -153,13 +178,26 @@ G4LogicalVolume *CaptDriftRegionBuilder::GetPiece(void) {
     uRotation->rotateZ(60*degree);
     
     CaptWirePlaneBuilder& uPlane = Get<CaptWirePlaneBuilder>("UPlane");
+    uPlane.SetApothem(GetApothem());
     G4LogicalVolume *logU = uPlane.GetPiece();
     new G4PVPlacement(uRotation,                // rotation.
                       G4ThreeVector(0,0,
-                                    (GetHeight()/2 - xPlane.GetHeight()/2
-                                     - 2*GetWirePlaneSpacing())),
+                                    (GetHeight()/2 - GetUPlaneOffset())),
                       logU,                     // logical volume
                       logU->GetName(),          // name
+                      logVolume,                // mother  volume
+                      false,                    // (not used)
+                      0,                        // Copy number (zero)
+                      Check());                 // Check overlaps.
+    
+    CaptWirePlaneBuilder& gridPlane = Get<CaptWirePlaneBuilder>("GridPlane");
+    gridPlane.SetApothem(GetApothem());
+    G4LogicalVolume *logGrid = gridPlane.GetPiece();
+    new G4PVPlacement(xRotation,                // rotation.
+                      G4ThreeVector(0,0,
+                                    (GetHeight()/2 - GetGridPlaneOffset())),
+                      logGrid,                     // logical volume
+                      logGrid->GetName(),          // name
                       logVolume,                // mother  volume
                       false,                    // (not used)
                       0,                        // Copy number (zero)

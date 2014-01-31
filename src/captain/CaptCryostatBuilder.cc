@@ -123,7 +123,7 @@ G4ThreeVector CaptCryostatBuilder::GetOffset() {
     double zCenter = - GetInnerHeight()/2;
     zCenter += drift.GetHeight();
     zCenter += GetBottomSpace();
-    zCenter -= 2*drift.GetWirePlaneSpacing() + 1*mm;
+    zCenter -= drift.GetGridPlaneOffset();
     return G4ThreeVector(0,0,-zCenter);
 }
 
