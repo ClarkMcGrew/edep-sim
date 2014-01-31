@@ -199,6 +199,38 @@ void DSimUserDetectorConstruction::DefineMaterials() {
     g10->AddElement(elNa,2.2*perCent);
     geoMan->SetDrawAtt(g10,kGreen+1);
 
+    // FR4 - Approximated by the composition of G10.  The density is from
+    // Wikipedia.
+    G4Material* fr4
+        = new G4Material(name="FR4", 
+                         density = 1850*kg/m3,
+                         nel=6);
+    fr4->AddElement(elH,6.2*perCent);
+    fr4->AddElement(elC,36.8*perCent);
+    fr4->AddElement(elO,30.7*perCent);
+    fr4->AddElement(elSi,21.9*perCent);
+    fr4->AddElement(elB,2.2*perCent);
+    fr4->AddElement(elNa,2.2*perCent);
+    geoMan->SetDrawAtt(fr4,kGreen+1);
+
+    // FR4_Copper - Approximated by the composition of G10 plus copper.  The
+    // coper is from the cladding, but is approximated as spread through the
+    // FR4.  The density is from Wikipedia.
+    G4Material* fr4Copper
+        = new G4Material(name="FR4_Copper", 
+                         density = 1850*kg/m3,
+                         nel=7);
+    double cuFrac = 3*perCent;
+    double fr4Frac = 1.0 - cuFrac;
+    fr4Copper->AddElement(elH,6.2*perCent*fr4Frac);
+    fr4Copper->AddElement(elC,36.8*perCent*fr4Frac);
+    fr4Copper->AddElement(elO,30.7*perCent*fr4Frac);
+    fr4Copper->AddElement(elSi,21.9*perCent*fr4Frac);
+    fr4Copper->AddElement(elB,2.2*perCent*fr4Frac);
+    fr4Copper->AddElement(elNa,2.2*perCent*fr4Frac);
+    fr4Copper->AddElement(elCu,cuFrac);
+    geoMan->SetDrawAtt(fr4Copper,kOrange);
+
     // Print all the materials defined.
     DSimLog(*(G4Material::GetMaterialTable()));
 }
