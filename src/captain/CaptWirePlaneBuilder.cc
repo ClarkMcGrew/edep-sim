@@ -29,7 +29,7 @@ public:
           fBuilder(c) {
 
         fApothemCMD
-            = new G4UIcmdWithADoubleAndUnit(CommandName("length"),this);
+            = new G4UIcmdWithADoubleAndUnit(CommandName("apothem"),this);
         fApothemCMD->SetGuidance("Set the apothem of the drift region.");
         fApothemCMD->SetParameterName("apothem",false);
         fApothemCMD->SetUnitCategory("Length");

@@ -3457,6 +3457,7 @@ Control the drift region geometry.
    /Captain/Cryostat/Drift/XPlane/   Control the drift region geometry.
    /Captain/Cryostat/Drift/VPlane/   Control the drift region geometry.
    /Captain/Cryostat/Drift/UPlane/   Control the drift region geometry.
+   /Captain/Cryostat/Drift/GridPlane/   Control the drift region geometry.
  Commands : 
    visible * The object is drawn if this is true.
    visibleDaughters * The daughters of this object are drawn if this is true.
@@ -3464,7 +3465,7 @@ Control the drift region geometry.
    sensitive * Set the name of the sensitive detector
    maxHitSagitta * Set the maximum sagitta for a hit.
    maxHitLength * Set the maximum length for a hit.
-   length * Set the apothem of the drift region.
+   apothem * Set the apothem of the drift region.
    driftLength * Set the drift length from cathode to wires.
    wirePlaneSpacing * Set spacing between the wires.
 
@@ -3543,7 +3544,7 @@ Parameter : Unit
 
 
 
-Command /Captain/Cryostat/Drift/length
+Command /Captain/Cryostat/Drift/apothem
 Guidance :
 Set the apothem of the drift region.
 
@@ -3600,7 +3601,7 @@ Control the drift region geometry.
    sensitive * Set the name of the sensitive detector
    maxHitSagitta * Set the maximum sagitta for a hit.
    maxHitLength * Set the maximum length for a hit.
-   length * Set the apothem of the drift region.
+   apothem * Set the apothem of the drift region.
    wireSpacing * Set the wire spacing.
 
 
@@ -3678,7 +3679,7 @@ Parameter : Unit
 
 
 
-Command /Captain/Cryostat/Drift/XPlane/length
+Command /Captain/Cryostat/Drift/XPlane/apothem
 Guidance :
 Set the apothem of the drift region.
 
@@ -3720,7 +3721,7 @@ Control the drift region geometry.
    sensitive * Set the name of the sensitive detector
    maxHitSagitta * Set the maximum sagitta for a hit.
    maxHitLength * Set the maximum length for a hit.
-   length * Set the apothem of the drift region.
+   apothem * Set the apothem of the drift region.
    wireSpacing * Set the wire spacing.
 
 
@@ -3798,7 +3799,7 @@ Parameter : Unit
 
 
 
-Command /Captain/Cryostat/Drift/VPlane/length
+Command /Captain/Cryostat/Drift/VPlane/apothem
 Guidance :
 Set the apothem of the drift region.
 
@@ -3840,7 +3841,7 @@ Control the drift region geometry.
    sensitive * Set the name of the sensitive detector
    maxHitSagitta * Set the maximum sagitta for a hit.
    maxHitLength * Set the maximum length for a hit.
-   length * Set the apothem of the drift region.
+   apothem * Set the apothem of the drift region.
    wireSpacing * Set the wire spacing.
 
 
@@ -3918,7 +3919,7 @@ Parameter : Unit
 
 
 
-Command /Captain/Cryostat/Drift/UPlane/length
+Command /Captain/Cryostat/Drift/UPlane/apothem
 Guidance :
 Set the apothem of the drift region.
 
@@ -3934,6 +3935,126 @@ Parameter : Unit
 
 
 Command /Captain/Cryostat/Drift/UPlane/wireSpacing
+Guidance :
+Set the wire spacing.
+
+Parameter : spacing
+ Parameter type  : d
+ Omittable       : False
+
+Parameter : Unit
+ Parameter type  : s
+ Omittable       : False
+ Candidates      : pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
+
+Command directory path : /Captain/Cryostat/Drift/GridPlane/
+
+
+Guidance :
+Control the drift region geometry.
+
+ Sub-directories : 
+ Commands : 
+   visible * The object is drawn if this is true.
+   visibleDaughters * The daughters of this object are drawn if this is true.
+   check * If this is true then check for overlaps
+   sensitive * Set the name of the sensitive detector
+   maxHitSagitta * Set the maximum sagitta for a hit.
+   maxHitLength * Set the maximum length for a hit.
+   apothem * Set the apothem of the drift region.
+   wireSpacing * Set the wire spacing.
+
+
+Command /Captain/Cryostat/Drift/GridPlane/visible
+Guidance :
+The object is drawn if this is true.
+
+Parameter : visibility
+ Parameter type  : b
+ Omittable       : False
+
+
+
+Command /Captain/Cryostat/Drift/GridPlane/visibleDaughters
+Guidance :
+The daughters of this object are drawn if this is true.
+
+Parameter : visibility
+ Parameter type  : b
+ Omittable       : False
+
+
+
+Command /Captain/Cryostat/Drift/GridPlane/check
+Guidance :
+If this is true then check for overlaps
+
+Parameter : check
+ Parameter type  : b
+ Omittable       : False
+
+
+
+Command /Captain/Cryostat/Drift/GridPlane/sensitive
+Guidance :
+Set the name of the sensitive detector
+
+Parameter : Name
+ Parameter type  : s
+ Omittable       : False
+
+Parameter : Type
+ Parameter type  : s
+ Omittable       : False
+
+
+
+Command /Captain/Cryostat/Drift/GridPlane/maxHitSagitta
+Guidance :
+Set the maximum sagitta for a hit.
+
+Parameter : Sagitta
+ Parameter type  : d
+ Omittable       : False
+
+Parameter : Unit
+ Parameter type  : s
+ Omittable       : False
+ Candidates      : pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
+
+
+
+Command /Captain/Cryostat/Drift/GridPlane/maxHitLength
+Guidance :
+Set the maximum length for a hit.
+
+Parameter : HitLength
+ Parameter type  : d
+ Omittable       : False
+
+Parameter : Unit
+ Parameter type  : s
+ Omittable       : False
+ Candidates      : pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
+
+
+
+Command /Captain/Cryostat/Drift/GridPlane/apothem
+Guidance :
+Set the apothem of the drift region.
+
+Parameter : apothem
+ Parameter type  : d
+ Omittable       : False
+
+Parameter : Unit
+ Parameter type  : s
+ Omittable       : False
+ Candidates      : pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
+
+
+
+Command /Captain/Cryostat/Drift/GridPlane/wireSpacing
 Guidance :
 Set the wire spacing.
 

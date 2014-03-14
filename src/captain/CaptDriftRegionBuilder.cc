@@ -28,7 +28,7 @@ public:
           fBuilder(c) {
 
         fApothemCMD
-            = new G4UIcmdWithADoubleAndUnit(CommandName("length"),this);
+            = new G4UIcmdWithADoubleAndUnit(CommandName("apothem"),this);
         fApothemCMD->SetGuidance("Set the apothem of the drift region.");
         fApothemCMD->SetParameterName("apothem",false);
         fApothemCMD->SetUnitCategory("Length");
@@ -74,7 +74,7 @@ void CaptDriftRegionBuilder::Init(void) {
     SetMessenger(new CaptDriftRegionMessenger(this));
     SetApothem(1037.5*mm);
     SetDriftLength(1000*mm);
-    SetWirePlaneSpacing(3.1*mm);
+    SetWirePlaneSpacing(3.18*mm);
     SetSensitiveDetector("drift","segment");
     SetMaximumHitLength(1*mm);
     SetMaximumHitSagitta(0.25*mm);
