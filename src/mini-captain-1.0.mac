@@ -1,9 +1,11 @@
 ############################################################
-# Baseline conditions for the CAPTAIN TPC.
+# Baseline conditions for the mini-CAPTAIN TPC.
 #
 # This sets the default detSim geometry.
 #
 # This is loaded using the /dsim/control directive.
 #
-# Note that the default geometry is built by default (nothing to do here).
 ############################################################
+
+/Captain/Cryostat/Drift/apothem 50 cm
+/Captain/Cryostat/Drift/driftLength 32 cm
