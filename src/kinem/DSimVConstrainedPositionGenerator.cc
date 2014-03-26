@@ -17,7 +17,10 @@
 DSimVConstrainedPositionGenerator::DSimVConstrainedPositionGenerator(
     const G4String& name) 
     : DSimVPositionGenerator(name), fSampleVolume("Cryostat"),
-      fLimitsFound(false) {}
+      fLimitsFound(false) {
+    fMaximumCorner.set(1000000*meter,1000000*meter,1000000*meter);
+    fMinimumCorner.set(-1000000*meter,-1000000*meter,-1000000*meter);
+}
 
 DSimVConstrainedPositionGenerator::~DSimVConstrainedPositionGenerator() {}
 
@@ -172,26 +175,32 @@ void DSimVConstrainedPositionGenerator::CheckNotVolumeMaterial(
 };
 
 void DSimVConstrainedPositionGenerator::CheckMinX(double x) {
+    if (fMinimumCorner.x() < x) fMinimumCorner.setX(x);
     fPositionTests.push_back(new InternalMinimumCoordinate(0,x));
 };
 
 void DSimVConstrainedPositionGenerator::CheckMinY(double y) {
+    if (fMinimumCorner.y() < y) fMinimumCorner.setY(y);
     fPositionTests.push_back(new InternalMinimumCoordinate(1,y));
 };
 
 void DSimVConstrainedPositionGenerator::CheckMinZ(double z) {
+    if (fMinimumCorner.z() < z) fMinimumCorner.setZ(z);
     fPositionTests.push_back(new InternalMinimumCoordinate(2,z));
 };
 
 void DSimVConstrainedPositionGenerator::CheckMaxX(double x) {
+    if (fMaximumCorner.x() > x) fMaximumCorner.setX(x);
     fPositionTests.push_back(new InternalMaximumCoordinate(0,x));
 };
 
 void DSimVConstrainedPositionGenerator::CheckMaxY(double y) {
+    if (fMaximumCorner.y() > y) fMaximumCorner.setY(y);
     fPositionTests.push_back(new InternalMaximumCoordinate(1,y));
 };
 
 void DSimVConstrainedPositionGenerator::CheckMaxZ(double z) {
+    if (fMaximumCorner.z() > z) fMaximumCorner.setZ(z);
     fPositionTests.push_back(new InternalMaximumCoordinate(2,z));
 };
 
@@ -239,14 +248,22 @@ void DSimVConstrainedPositionGenerator::FindLimits() {
         if (phyVolume->GetName().find(fSampleVolume) != std::string::npos) {
             G4VisExtent volExtent 
                 = phyVolume->GetLogicalVolume()->GetSolid()->GetExtent();
-            fMinimumCorner.set(volExtent.GetXmin(),
-                               volExtent.GetYmin(),
-                               volExtent.GetZmin());
-            fMaximumCorner.set(volExtent.GetXmax(),
+            G4ThreeVector volMin;
+            G4ThreeVector volMax;
+            volMin.set(volExtent.GetXmin(),
+                       volExtent.GetYmin(),
+                       volExtent.GetZmin());
+            volMax.set(volExtent.GetXmax(),
                                volExtent.GetYmax(),
                                volExtent.GetZmax());
-            fMinimumCorner = rotation*fMinimumCorner + translation;
-            fMaximumCorner = rotation*fMaximumCorner + translation;
+            volMin = rotation*volMin + translation;
+            volMax = rotation*volMax + translation;
+            if (fMaximumCorner.x()>volMax.x()) fMaximumCorner.setX(volMax.x());
+            if (fMaximumCorner.y()>volMax.y()) fMaximumCorner.setY(volMax.y());
+            if (fMaximumCorner.z()>volMax.z()) fMaximumCorner.setZ(volMax.z());
+            if (fMinimumCorner.x()<volMin.x()) fMinimumCorner.setX(volMin.x());
+            if (fMinimumCorner.y()<volMin.y()) fMinimumCorner.setY(volMin.y());
+            if (fMinimumCorner.z()<volMin.z()) fMinimumCorner.setZ(volMin.z());
             break;
         } 
 
