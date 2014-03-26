@@ -47,7 +47,7 @@ G4LorentzVector DSimDensityPositionGenerator::GetPosition() {
         // The vertex meets the density sampling, so check if it is valid.
         if (ValidPosition(vtx)) return vtx;
     }
-    DSimWarn("DSimDensityPositionGenerator::GetPosition:"
+    DSimError("DSimDensityPositionGenerator::GetPosition:"
               << " No valid position found");
     throw;
 }

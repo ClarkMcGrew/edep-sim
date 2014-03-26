@@ -12,7 +12,7 @@ G4LorentzVector DSimUniformPositionGenerator::GetPosition() {
         G4LorentzVector vtx = TrialPosition();
         if (ValidPosition(vtx)) return vtx;
     }
-    DSimWarn("DSimUniformPositionGenerator::GetPosition:"
+    DSimError("DSimUniformPositionGenerator::GetPosition:"
               << " No valid position found");
     throw;
 }
