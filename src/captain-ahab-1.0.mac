@@ -1,0 +1,23 @@
+############################################################
+# Baseline conditions for the "infinite captain detector".  This is only
+# good for truth studies where all of the energy is deposited in the
+# detector.
+#
+# This sets the default detSim geometry.
+#
+# This is loaded using the /dsim/control directive.
+#
+############################################################
+
+/Captain/length 200 m
+/Captain/width 200 m
+/Captain/height 200 m
+/Captain/Cryostat/innerDiameter 80 m 
+/Captain/Cryostat/innerHeight 80 m 
+/Captain/Cryostat/argonDepth 75 m 
+/Captain/Cryostat/Drift/apothem 60 m
+/Captain/Cryostat/Drift/driftLength 60 m
+/Captain/Cryostat/Drift/XPlane/wireSpacing 1 m
+/Captain/Cryostat/Drift/VPlane/wireSpacing 1 m
+/Captain/Cryostat/Drift/UPlane/wireSpacing 1 m
+/Captain/Cryostat/Drift/GridPlane/wireSpacing 1 m
