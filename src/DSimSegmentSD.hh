@@ -6,6 +6,7 @@
 #define DSimSegmentSD_h 1
 
 #include "G4VSensitiveDetector.hh"
+#include "DSimLog.hh"
 #include "DSimHitSegment.hh"
 
 class G4HCofThisEvent;
@@ -25,12 +26,20 @@ public:
 
     /// Set the maximum sagitta for the DSimHitSegment objects created by
     /// this sensitive detector.
-    void SetMaximumHitSagitta(double sagitta) {fMaximumHitSagitta = sagitta;}
+    void SetMaximumHitSagitta(double sagitta) {
+        DSimLog("Set max segment sagitta to " << sagitta
+                << " for " << GetName());
+        fMaximumHitSagitta = sagitta;
+    }
     double GetMaximumHitSagitta(void) {return fMaximumHitSagitta;}
 
     /// Set the maximum length for the DSimHitSegment objects created by this
     /// sensitive detector.
-    void SetMaximumHitLength(double length) {fMaximumHitLength = length;}
+    void SetMaximumHitLength(double length) {
+        DSimLog("Set max segment length to " << length
+                << " for " << GetName());
+        fMaximumHitLength = length;
+    }
     double GetMaximumHitLength(void) {return fMaximumHitLength;}
 
 private:
