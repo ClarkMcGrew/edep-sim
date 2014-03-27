@@ -15,7 +15,9 @@
 /Captain/Cryostat/innerDiameter 80 m 
 /Captain/Cryostat/innerHeight 80 m 
 /Captain/Cryostat/argonDepth 75 m 
-/Captain/Cryostat/Drift/apothem 60 m
+/Captain/Cryostat/Drift/maxHitSagitta 5 mm
+/Captain/Cryostat/Drift/maxHitLength 3 cm
+/Captain/Cryostat/Drift/apothem 30 m
 /Captain/Cryostat/Drift/driftLength 60 m
 /Captain/Cryostat/Drift/XPlane/wireSpacing 1 m
 /Captain/Cryostat/Drift/VPlane/wireSpacing 1 m
