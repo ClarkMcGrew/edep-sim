@@ -49,6 +49,7 @@ path_prepend LD_LIBRARY_PATH "$(DETSIMROOT)/$(detSim_tag)
 
 path_remove PATH "$(DETSIMROOT)"
 path_prepend PATH "$(DETSIMROOT)/$(detSim_tag)"
+path_prepend PATH "$(DETSIMROOT)/scripts"
 
 # make the captControl package available when working directly in the
 # detSim package.  This lets basic control scripts be run (as long as they

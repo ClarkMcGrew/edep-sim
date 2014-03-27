@@ -1,0 +1,57 @@
+#!/bin/bash
+
+# An example of a script using captain-control to run a DETSIM macro.
+# This is actually pretty convenient to run from the command line.
+
+source captain-control.bash
+
+# Do a little bit of error checking and tweeking to the input macro
+# file so that the number of particles to generate can be specified
+# from the command line.  The number of particles is only set if the
+# /run/beamOn directive is missing from the macro file.
+if [ ${#1} = 0 ]; then
+    echo "usage: control-detsim.sh macro [events] [run]"
+    captain-error "The macro file must be passed as the first argument."
+fi
+
+if [ ! -f ${1} ]; then
+    captain-error "The macro file does not exist."
+fi
+
+# Set the file name fields.
+captain-experiment mc
+captain-data-source pg
+captain-run-type $(basename ${1} .mac)
+captain-run-number 0
+
+# Set the run number from the command line.
+if [ ${#3} != 0 ]; then
+    captain-run-number ${3}
+fi
+
+DETSIM_MACRO=$(mktemp)
+cat >> ${DETSIM_MACRO} < ${1}
+
+# Check if the number of events to generate should be added to the file.
+if grep beamOn ${DETSIM_MACRO} >> /dev/null; then
+    if [ ${#2} != 0 ]; then
+	cat >> ${DETSIM_MACRO} <<EOF
+/run/beamOn ${2}
+EOF
+    else
+	echo "usage: control-detsim.sh macro [run] [events]"
+	captain-error "Macro file must contain a /run/beamOn directive," \
+	    "or the number of events to generate must be specified as" \
+	    "the third argument on the command line."
+    fi
+fi
+
+#####################################################
+# The is the meat of the script: Run the DETSIM
+#####################################################
+captain-process-detsim-macro ${DETSIM_MACRO}
+
+#####################################################
+# Try to run ELECSIM, calibration, and reconstruction.
+#####################################################
+captain-run-reconstruction
