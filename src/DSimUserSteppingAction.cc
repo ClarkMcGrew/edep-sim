@@ -21,11 +21,26 @@ void DSimUserSteppingAction::UserSteppingAction(const G4Step* theStep) {
     G4String theCurrentVolumeName = theStep->GetPreStepPoint()->
                                              GetPhysicalVolume()->GetName();
 
+#ifdef KILL_NEUTRONS
+    if (theParticleName == "neutron") {
+        if (theTrack->GetKineticEnergy() < 1.*MeV) {
+            DSimSevere("DSimUserSteppingAction:: Kill " << theParticleName
+                      << " " << theTrack->GetCurrentStepNumber()
+                      << " " << theTrack->GetTrackLength()/m << " m" 
+                      << " " << theTrack->GetGlobalTime()/ns << " ns"
+                      << " " << theTrack->GetTotalEnergy()/MeV << " MeV"
+                      << " " << theCurrentVolumeName);
+            theTrack->SetTrackStatus(fStopAndKill);
+        }
+    }
+#endif
+
+    const int defaultThrottle = 10000;
     static int steps = 0;
-    static int throttle = 1000;
+    static int throttle = defaultThrottle;
     static int governor = 0;
     if (steps%throttle == 0 && steps>0) {
-        DSimWarn("DSimUserSteppingAction:: Excessive Steps "
+        DSimSevere("DSimUserSteppingAction:: Excessive Steps "
                   << " " << steps 
                   << " " << theParticleName
                   << " " << theTrack->GetTrackLength()/m << " m" 
@@ -54,34 +69,34 @@ void DSimUserSteppingAction::UserSteppingAction(const G4Step* theStep) {
                     << ")");
         fStenchAndRot = 0;
         steps = 0;
-        throttle = 1000;
+        throttle = defaultThrottle;
         return;
     }
 
     ++steps;
-    if (steps>50000) {
+    if (steps>100000) {
         theTrack->SetTrackStatus(fStopAndKill);
         DSimSevere("Stop and kill with to many steps for " 
-                    << theParticleName << " in "
-                    << theCurrentVolumeName << " w/ " 
-                    << G4BestUnit(theTrack->GetKineticEnergy(),"Energy"));
+                  << theParticleName << " in "
+                  << theCurrentVolumeName << " w/ " 
+                  << G4BestUnit(theTrack->GetKineticEnergy(),"Energy"));
         fStenchAndRot = 0;
         steps = 0;
-        throttle = 1000;
+        throttle = defaultThrottle;
         return;
     }
 
     if (theTrack->GetTrackStatus()==fStopAndKill) {
         fStenchAndRot = 0;
         steps = 0;
-        throttle = 1000;
+        throttle = defaultThrottle;
         return;
     }
 
     // Make sure the particle is someplace near the detector
-    if (theTrack->GetPosition().mag()>50.0*meter) {
+    if (theTrack->GetPosition().mag()>2000.0*meter) {
         theTrack->SetTrackStatus(fStopAndKill);
-        DSimSevere("Stop and kill track far from detector");
+        DSimError("Stop and kill track far from detector");
         fStenchAndRot = 0;
         return;
     }
@@ -99,13 +114,13 @@ void DSimUserSteppingAction::UserSteppingAction(const G4Step* theStep) {
     ++fStenchAndRot;
     if (fStenchAndRot>10) {
         theTrack->SetTrackStatus(fStopAndKill);
-        DSimSevere("Stop and kill stuck " 
+        DSimError("Stop and kill stuck " 
                     << theParticleName << " in "
                     << theCurrentVolumeName << " w/ " 
                     << G4BestUnit(theTrack->GetKineticEnergy(),"Energy")
                     << " MeV");
         fStenchAndRot = 0;
         steps = 0;
-        throttle = 1000;
+        throttle = defaultThrottle;
     }
 }

@@ -24,7 +24,7 @@ DSimPersistencyManager::DSimPersistencyManager()
     : G4VPersistencyManager(), fFilename("/dev/null"),
       fLengthThreshold(10*mm),
       fGammaThreshold(5*MeV), fNeutronThreshold(50*MeV),
-      fTrajectoryPointAccuracy(1*mm), fSaveAllPrimaryTrajectories(true) {
+      fTrajectoryPointAccuracy(1.*mm), fSaveAllPrimaryTrajectories(true) {
     fPersistencyMessenger = new DSimPersistencyMessenger(this);
 }
 
@@ -219,12 +219,14 @@ double DSimPersistencyManager::FindTrajectoryAccuracy(
     G4ThreeVector p1 = g4Traj->GetPoint(point1)->GetPosition();
     G4ThreeVector p2 = g4Traj->GetPoint(point2)->GetPosition();
 
-    if ( (p2-p1).mag() < 0.1*mm) return 0;
+    if ( (p2-p1).mag() < fTrajectoryPointAccuracy) return 0;
 
     G4ThreeVector dir = (p2-p1).unit();
 
+    int step = (point2-point1)/10 + 1;
+
     double approach = 0.0;
-    for (int p = point1+1; p<point2; ++p) {
+    for (int p = point1+1; p<point2; p = p + step) {
         p2 = g4Traj->GetPoint(p)->GetPosition() - p1;
         approach = std::max((p2 - (dir*p2)*dir).mag(), approach);
     }

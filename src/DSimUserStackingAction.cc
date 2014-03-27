@@ -14,18 +14,18 @@ DSimUserStackingAction::~DSimUserStackingAction() { }
 
 G4ClassificationOfNewTrack
 DSimUserStackingAction::ClassifyNewTrack(const G4Track* aTrack) {
+    // Get the particle type of the new track.
+    const G4ParticleDefinition* particle = aTrack->GetDefinition();
+    
+    // if (aTrack->GetCurrentStepNumber() > 0) return fUrgent;
 
-    if (aTrack->GetCurrentStepNumber() == 0) {
-        // Get the particle type of the new track.
-        const G4ParticleDefinition* particle = aTrack->GetDefinition();
-        
-        // This is where we can throw away particles that we don't want to
-        // track.
-        if (particle->GetParticleName() == "gamma") {
-            if (aTrack->GetKineticEnergy() < 10.*keV) return fKill;
-        }
+    if (aTrack->GetParentID() <= 0) return fUrgent;
 
+    // This is where we can throw away particles that we don't want to
+    // track.
+    if (particle->GetParticleName() == "gamma") {
+        if (aTrack->GetKineticEnergy() < 5.*keV) return fKill;
     }
 
-    return fUrgent;
+    return G4UserStackingAction::ClassifyNewTrack(aTrack);
 }
