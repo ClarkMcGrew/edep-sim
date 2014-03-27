@@ -16,4 +16,4 @@ tail -n +${LINE} detsim-command.temp > detsim-command.list
 rm detsim-command.temp
 rm $MACRO
 
-cp detsim-command.list ${DETSIMROOT}/doc
+mv detsim-command.list ${DETSIMROOT}/doc

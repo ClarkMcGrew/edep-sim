@@ -1,13 +1,7 @@
-#!/bin/bash
-# 
-# Macro that use G4 particle gun to create two particles 
-# per event. 
+################################################################## 
+# A macro that uses the G4 particle gun to create two particles per event.
+##################################################################
 
-COUNT="10"
-source ${DETSIMROOT}/cmt/setup.sh
-
-MACRO=`mktemp -t detsim.XXXXXXXXXX` || exit 1
-cat >> $MACRO <<EOF
 /dsim/control baseline 1.0
 /dsim/update
 
@@ -71,17 +65,3 @@ cat >> $MACRO <<EOF
 # vertex.  If you have more than two particles, you can use multiple
 # combine commands until you get a single vertex.
 /generator/combine
-
-/run/beamOn ${COUNT}
-
-EOF
-
-OUTPUT=detsim-double-particle-gun
-
-if [ -f $OUTPUT ]; then
-    rm $OUTPUT
-fi
-
-DETSIM.exe -o $OUTPUT $MACRO 
-
-rm $MACRO

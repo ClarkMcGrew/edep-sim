@@ -1,14 +1,7 @@
-#!/bin/bash
-# 
 # Example of generating an event with three particles at a common
 # vertex. In particular, this creates three muons with common vertex
 # point near the center of the detector.
 
-COUNT="10"
-source ${DETSIMROOT}/cmt/setup.sh
-
-MACRO=`mktemp -t detsim.XXXXXXXXXX` || exit 1
-cat >> $MACRO <<EOF
 /dsim/control baseline 1.0
 /dsim/update
 
@@ -89,17 +82,3 @@ cat >> $MACRO <<EOF
 # combine commands until you get a single vertex.
 /generator/combine
 /generator/combine
-
-/run/beamOn ${COUNT}
-
-EOF
-
-OUTPUT=detsim-triple-particle-gun
-
-if [ -f $OUTPUT ]; then
-    rm $OUTPUT
-fi
-
-DETSIM.exe -o $OUTPUT $MACRO 
-
-rm $MACRO
