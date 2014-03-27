@@ -63,8 +63,8 @@ G4bool DSimSegmentSD::ProcessHits(G4Step* theStep,
         }
     }
 
-// #define SEPARATE_STEPS
-#ifndef SEPARATE_STEPS
+// #define COMBINE_STEPS
+#ifdef COMBINE_STEPS
     // Look through the list of available hits and see the new hit should be
     // added to an existing one.
     do {
