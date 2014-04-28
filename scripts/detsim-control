@@ -10,7 +10,7 @@ source captain-control.bash
 # from the command line.  The number of particles is only set if the
 # /run/beamOn directive is missing from the macro file.
 if [ ${#1} = 0 ]; then
-    echo "usage: control-detsim.sh macro [events] [run]"
+    echo "usage: detsim-control macro [events] [run]"
     captain-error "The macro file must be passed as the first argument."
 fi
 
