@@ -7,5 +7,9 @@
 #
 ############################################################
 
-/Captain/Cryostat/Drift/apothem 50 cm
-/Captain/Cryostat/Drift/driftLength 32 cm
+/Captain/Cryostat/innerDiameter 1497 mm
+/Captain/Cryostat/innerHeight 1080 mm
+/Captain/Cryostat/argonDepth 845 mm
+
+/Captain/Cryostat/Drift/apothem 500 mm
+/Captain/Cryostat/Drift/driftLength 320 mm
