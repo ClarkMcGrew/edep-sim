@@ -19,6 +19,7 @@ private:
     CaptCryostatBuilder* fBuilder;
     G4UIcmdWithADoubleAndUnit* fInnerDiameterCMD;
     G4UIcmdWithADoubleAndUnit* fInnerHeightCMD;
+    G4UIcmdWithADoubleAndUnit* fInnerBottomCMD;
     G4UIcmdWithADoubleAndUnit* fWallThicknessCMD;
     G4UIcmdWithADoubleAndUnit* fArgonDepthCMD;
 
@@ -43,6 +44,13 @@ public:
         fInnerHeightCMD->SetParameterName("height",false);
         fInnerHeightCMD->SetUnitCategory("Length");
 
+        fInnerBottomCMD 
+            = new G4UIcmdWithADoubleAndUnit(CommandName("innerBottom"),this);
+        fInnerBottomCMD->SetGuidance(
+            "Set space between the bottom of the drift and the cold volume.");
+        fInnerBottomCMD->SetParameterName("distance",false);
+        fInnerBottomCMD->SetUnitCategory("Length");
+
         fWallThicknessCMD
             = new G4UIcmdWithADoubleAndUnit(CommandName("wallThickness"),this);
         fWallThicknessCMD->SetGuidance(
@@ -62,6 +70,7 @@ public:
     virtual ~CaptCryostatMessenger() {
         delete fInnerDiameterCMD;
         delete fInnerHeightCMD;
+        delete fInnerBottomCMD;
         delete fWallThicknessCMD;
         delete fArgonDepthCMD;
     };
@@ -74,6 +83,10 @@ public:
         else if (cmd==fInnerHeightCMD) {
             fBuilder->SetInnerHeight(
                 fInnerHeightCMD->GetNewDoubleValue(val));
+        }
+        else if (cmd==fInnerBottomCMD) {
+            fBuilder->SetBottomSpace(
+                fInnerBottomCMD->GetNewDoubleValue(val));
         }
         else if (cmd==fWallThicknessCMD) {
             fBuilder->SetWallThickness(
