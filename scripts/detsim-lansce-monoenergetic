@@ -47,10 +47,15 @@ captain-run-type ${ENERGY}-MeV
 
 DETSIM_MACRO=$(mktemp)
 cat >> ${DETSIM_MACRO} <<EOF
-/dsim/control baseline 1.0
+# Make sure to use a new seed.
+/dsim/random/timeRandomSeed
+
+# Run this in mini-captain
+/dsim/control mini-captain 1.0
 
 # This needs to be more than twice the target to CAPTAIN distance.
 /Captain/length 60 m
+
 /dsim/update
 
 # Create the particle source.  This source will be used to specify the
@@ -63,7 +68,7 @@ cat >> ${DETSIM_MACRO} <<EOF
 # relative to the CAPTAIN detector (i.e. it's 25 m from the detector
 # in the negative X direction).  This means that the neutron time of
 # flight will be right.  The neutrons come from a 1 cm diameter sphere.
-/gps/position -2500.0 0.0 -50.0 cm
+/gps/position -2500.0 0.0 -15.0 cm
 
 # The beam spot is 1 cm in diameter.
 /gps/pos/type Volume
