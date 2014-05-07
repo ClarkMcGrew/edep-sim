@@ -95,6 +95,8 @@ void DSimUserRunAction::SetTimeSeed() {
     // Make sure the seed is odd and not zero.
     seed += (seed % 2) + 1;
     SetSeed(long(seed));
+    // Condition the seed.
+    for (int i=0; i<10000000; ++i) G4UniformRand();
 }
 
 void DSimUserRunAction::SetDetSimRunId(int v) {
