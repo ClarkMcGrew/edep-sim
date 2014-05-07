@@ -29,21 +29,24 @@ if [ ${#3} != 0 ]; then
     captain-run-number ${3}
 fi
 
-DETSIM_MACRO=$(mktemp)
+DETSIM_MACRO=$(captain-file g4in)
 cat >> ${DETSIM_MACRO} < ${1}
 
 # Check if the number of events to generate should be added to the file.
-if grep beamOn ${DETSIM_MACRO} >> /dev/null; then
+if ! grep beamOn ${DETSIM_MACRO} >> /dev/null; then
     if [ ${#2} != 0 ]; then
+	captain-log Generating ${2} events.
 	cat >> ${DETSIM_MACRO} <<EOF
 /run/beamOn ${2}
 EOF
     else
-	echo "usage: control-detsim.sh macro [run] [events]"
+	echo "usage: control-detsim.sh macro [events] [run]"
 	captain-error "Macro file must contain a /run/beamOn directive," \
 	    "or the number of events to generate must be specified as" \
 	    "the third argument on the command line."
     fi
+else
+    captain-warning "Input macro contained a beam on directive."
 fi
 
 #####################################################
