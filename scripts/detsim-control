@@ -33,7 +33,7 @@ DETSIM_MACRO=$(captain-file g4in)
 cat >> ${DETSIM_MACRO} < ${1}
 
 # Check if the number of events to generate should be added to the file.
-if ! grep beamOn ${DETSIM_MACRO} >> /dev/null; then
+if ! grep "^/run/beamOn" ${DETSIM_MACRO} >> /dev/null; then
     if [ ${#2} != 0 ]; then
 	captain-log Generating ${2} events.
 	cat >> ${DETSIM_MACRO} <<EOF
