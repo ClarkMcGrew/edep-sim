@@ -66,6 +66,7 @@ DSimRooTrackerKinematicsGenerator::DSimRooTrackerKinematicsGenerator(
     fTree->SetBranchAddress("EvtVtx",          fEvtVtx);
     fTree->SetBranchAddress("StdHepN",        &fStdHepN);
     fTree->SetBranchAddress("StdHepPdg",       fStdHepPdg);
+    fTree->SetBranchAddress("StdHepRescat",    fStdHepRescat);
     fTree->SetBranchAddress("StdHepStatus",    fStdHepStatus);
     fTree->SetBranchAddress("StdHepX4",        fStdHepX4);
     fTree->SetBranchAddress("StdHepP4",        fStdHepP4);

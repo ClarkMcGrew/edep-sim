@@ -110,7 +110,10 @@ private:
 
     /// The PDG codes for the particles to track.  This may include generator
     /// specific codes for pseudo particles.
-    int         fStdHepPdg[kNPmax]; //[fStdHepN]
+    int         fStdHepPdg[kNPmax];    //[fStdHepN]
+
+    /// The rescatter code.
+    int         fStdHepRescat[kNPmax]; //[fStdHepN]
 
     /// The a generator specific status for each particle.  Particles with a
     /// status equal to 1 will be tracked.
