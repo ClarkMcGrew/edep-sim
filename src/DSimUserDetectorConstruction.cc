@@ -186,6 +186,17 @@ void DSimUserDetectorConstruction::DefineMaterials() {
     wire->AddElement(elCu, natoms=1);
     geoMan->SetDrawAtt(wire,kOrange+1);
 
+    // Glass - 
+    G4Material* glass
+        = new G4Material(name="Glass", 
+                         density = 2.70*g/cm3,
+                         nel=4);
+    glass->AddElement(elO,30.7*perCent);
+    glass->AddElement(elSi,21.9*perCent);
+    glass->AddElement(elB,2.2*perCent);
+    glass->AddElement(elNa,2.2*perCent);
+    geoMan->SetDrawAtt(glass,kBlue+1);
+
     // G10 - by volume 57% glass, 43% epoxy (CH2)
     G4Material* g10
         = new G4Material(name="G10", 
@@ -214,7 +225,7 @@ void DSimUserDetectorConstruction::DefineMaterials() {
     geoMan->SetDrawAtt(fr4,kGreen+1);
 
     // FR4_Copper - Approximated by the composition of G10 plus copper.  The
-    // coper is from the cladding, but is approximated as spread through the
+    // copper is from the cladding, but is approximated as spread through the
     // FR4.  The density is from Wikipedia.
     G4Material* fr4Copper
         = new G4Material(name="FR4_Copper", 
