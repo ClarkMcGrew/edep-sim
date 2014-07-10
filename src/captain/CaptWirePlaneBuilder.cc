@@ -96,7 +96,7 @@ G4LogicalVolume *CaptWirePlaneBuilder::GetPiece(void) {
     double maxLength = 2*GetApothem()/std::cos(30*degree);
 
     // Determine the number of wires.  There is always at least one wire.
-    int wires = 2 * int (GetApothem()/GetSpacing());
+    int wires = int (2.0*GetApothem()/GetSpacing());
     if (wires<1) wires = 1;
 
     DSimLog("Construct " << GetName() 
