@@ -1,5 +1,6 @@
 #include "CaptCryostatBuilder.hh"
 #include "CaptDriftRegionBuilder.hh"
+#include "CaptPMTBuilder.hh"
 
 #include "DSimBuilder.hh"
 
@@ -114,6 +115,7 @@ void CaptCryostatBuilder::Init(void) {
     SetSensitiveDetector("cryo","segment");
 
     AddBuilder(new CaptDriftRegionBuilder("Drift",this));
+    AddBuilder(new CaptPMTBuilder("PMT",this));
 
 }
 
@@ -283,6 +285,90 @@ G4LogicalVolume *CaptCryostatBuilder::GetPiece(void) {
                       Check());                // Check overlaps.
 
 
+    ///////////////////////////////////////////////////////////
+    // Add the PMTS
+    ///////////////////////////////////////////////////////////
+    CaptPMTBuilder& pmt = Get<CaptPMTBuilder>("PMT");
+
+    // The first implementation just adds a few PMTs so that the downstream
+    // code can be tested. 
+
+    // One at the center.
+    G4LogicalVolume* logPMT = pmt.GetPiece();
+    new G4PVPlacement(NULL,                    // rotation.
+                      G4ThreeVector(0,0,       // position
+                                    - GetArgonDepth()/2
+                                    + GetBottomSpace()
+                                    - pmt.GetBaseLength()/2
+                                    - 25*mm),    
+                      logPMT,                // logical volume
+                      logPMT->GetName(),     // name
+                      logLAr,                  // mother  volume
+                      false,                   // (not used)
+                      0,                       // Copy number (zero)
+                      Check());                // Check overlaps.
+
+    logPMT = pmt.GetPiece();
+    new G4PVPlacement(NULL,                    // rotation.
+                      G4ThreeVector(500*mm,0,       // position
+                                    - GetArgonDepth()/2
+                                    + GetBottomSpace()
+                                    - pmt.GetBaseLength()/2
+                                    - 25*mm),    
+                      logPMT,                // logical volume
+                      logPMT->GetName(),     // name
+                      logLAr,                  // mother  volume
+                      false,                   // (not used)
+                      0,                       // Copy number (zero)
+                      Check());                // Check overlaps.
+
+    logPMT = pmt.GetPiece();
+    new G4PVPlacement(NULL,                    // rotation.
+                      G4ThreeVector(-500*mm,0,       // position
+                                    - GetArgonDepth()/2
+                                    + GetBottomSpace()
+                                    - pmt.GetBaseLength()/2
+                                    - 25*mm),    
+                      logPMT,                // logical volume
+                      logPMT->GetName(),     // name
+                      logLAr,                  // mother  volume
+                      false,                   // (not used)
+                      0,                       // Copy number (zero)
+                      Check());                // Check overlaps.
+
+    logPMT = pmt.GetPiece();
+    new G4PVPlacement(NULL,                    // rotation.
+                      G4ThreeVector(0,500*mm,       // position
+                                    - GetArgonDepth()/2
+                                    + GetBottomSpace()
+                                    - pmt.GetBaseLength()/2
+                                    - 25*mm),    
+                      logPMT,                // logical volume
+                      logPMT->GetName(),     // name
+                      logLAr,                  // mother  volume
+                      false,                   // (not used)
+                      0,                       // Copy number (zero)
+                      Check());                // Check overlaps.
+
+    logPMT = pmt.GetPiece();
+    new G4PVPlacement(NULL,                    // rotation.
+                      G4ThreeVector(0,-500*mm, // position
+                                    - GetArgonDepth()/2
+                                    + GetBottomSpace()
+                                    - pmt.GetBaseLength()/2
+                                    - 25*mm),    
+                      logPMT,                // logical volume
+                      logPMT->GetName(),     // name
+                      logLAr,                  // mother  volume
+                      false,                   // (not used)
+                      0,                       // Copy number (zero)
+                      Check());                // Check overlaps.
+
+    ///////////////////////////////////////////////////////////////////
+    // All of the PMTs are placed above this point.
+    ///////////////////////////////////////////////////////////////////
+
+    // Set the visibility
     logVolume->SetVisAttributes(G4VisAttributes::Invisible);
     logAr->SetVisAttributes(G4VisAttributes::Invisible);
     if (GetVisible()) {
