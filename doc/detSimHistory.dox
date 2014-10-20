@@ -766,4 +766,23 @@ New Features:
    primary generators are run.  If set to false, don't create the extra
    primary generator. [DEFAULT: true]
 
+
+\section detSim_v0r0p0_history Version 0.0.0
+
+Freeze information:
+   - Freeze Date: Mon Oct 20 12:07:28 2014
+   - Freeze User: mcgrew
+   - Freeze Host: boxer.physics.sunysb.edu boxer.local 
+
+
+Features:
+
+The first frozen version!  This MC is based on the ND280MC detector
+simulation, and has been adapted for the CAPTAIN experiment.  It's been
+developed for a while, but the first freeze has been instigated by
+mini-CAPTAIN data collection.  The freeze is specifically done to generate
+a geometry for processing the new mini-CAPTAIN cosmic ray running data.
+
+
+
 */
