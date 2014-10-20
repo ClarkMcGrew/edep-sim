@@ -1,0 +1,28 @@
+####################################################################
+#
+# Generate a 600 MeV electron along the X axis.
+#
+
+/dsim/control baseline 1.0
+/dsim/update
+
+# Create the first particle source.  This source will be used to
+# specify the position of the vertex.  The any of the GPS direction
+# and energy commands can be used.
+/gps/particle proton
+/gps/energy 300 MeV
+
+# This generates the position of the particle gun.  It can be
+# used for the other particle guns to create a multi particle event.  The
+# /gps/position command must come first.
+/gps/position 0.0 0.0 -50.0 cm
+/gps/pos/type Volume
+/gps/pos/shape Para
+/gps/pos/halfx 10 cm
+/gps/pos/halfy 10 cm
+/gps/pos/halfz 10 cm
+
+# This generates the direction of the particle gun. 
+/gps/ang/type iso
+
+# Do not include /run/beamOn here.
