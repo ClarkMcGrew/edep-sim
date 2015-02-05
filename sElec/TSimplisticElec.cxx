@@ -30,7 +30,11 @@ void SElec::TSimplisticElec::GenerateHits(CP::TEvent& event) {
     CP::THandle<CP::TG4HitContainer> g4Hits = 
         event.Get<CP::TG4HitContainer>("truth/g4Hits/"+fG4Hits);
 
-    if (!g4Hits) return;
+    if (!g4Hits) {
+        std::cout << "No hits in events" << std::endl;
+        return;
+    }
+        
 
     CP::TGeometryId geomId;
     std::map<CP::TGeometryId,CP::TWritableMCHit> mappedHits;
@@ -66,7 +70,7 @@ void SElec::TSimplisticElec::GenerateHits(CP::TEvent& event) {
             
             CP::TManager::Get().GeomId().GetGeometryId(x,y,z,geomId);
             std::string volumeName = geomId.GetName();
-            
+
             // Check that this is a sensitive volume (most relevant for the
             // TPC).
             bool goodVolume = true;
@@ -79,7 +83,7 @@ void SElec::TSimplisticElec::GenerateHits(CP::TEvent& event) {
                 }
             }
             if (!goodVolume) continue;
-            
+
             // Add this info to the TMCHit.
             CP::TWritableMCHit& mcHit = mappedHits[geomId];
             if (mcHit.GetGeomId() == CP::GeomId::Empty()) {
@@ -96,7 +100,10 @@ void SElec::TSimplisticElec::GenerateHits(CP::TEvent& event) {
             }
         }
     }
-    if (mappedHits.empty()) return;
+    if (mappedHits.empty()) {
+        std::cout << "empty hits" << std::endl;
+        return;
+    }
     
     CP::THitSelection* hits = new CP::THitSelection(fHits.c_str(),
                                                     "Truth Hits");
@@ -106,9 +113,12 @@ void SElec::TSimplisticElec::GenerateHits(CP::TEvent& event) {
          h != mappedHits.end();
          ++h) {
         hits->push_back(CP::THandle<CP::TMCHit>(new CP::TMCHit(h->second)));
+        double length = mappedLength[h->first];
+        double energy = h->second.GetCharge();
+        std::cout << " length " << length
+                  << "  energy " << energy
+                  << std::endl;
         if (fDepositHist) {
-            double length = mappedLength[h->first];
-            double energy = h->second.GetCharge();
             fDepositHist->Fill(length,energy);
         }
     }

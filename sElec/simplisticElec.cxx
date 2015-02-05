@@ -36,21 +36,12 @@ public:
     }
 
     bool operator () (CP::TEvent& event) {
-        SElec::TSimplisticElec tpc("tpc","tpc", 0.5*unit::mm);
-        tpc.AddVolumeName("TPC");
-        tpc.AddVolumeName("Pad_");
+        TH2* tpcHits = new TH2F("driftHits", "Energy deposited in TPC",
+                                100, 0.0, 1000.0,
+                                100, 0.0, 100.0);
+        SElec::TSimplisticElec tpc("drift","drift", 1.0*unit::mm, tpcHits);
+        tpc.AddVolumeName("Drift");
         tpc.GenerateHits(event);
-
-        SElec::TSimplisticElec p0d("p0d","p0d", 
-                                   1*unit::cm);
-        p0d.AddVolumeName("P0D_");
-        p0d.AddVolumeName("Bar_");
-        p0d.GenerateHits(event);
-
-        SElec::TSimplisticElec fgd("fgd","fgd");
-        fgd.AddVolumeName("FGD");
-        fgd.AddVolumeName("Bar_");
-        fgd.GenerateHits(event);
 
         return true;
     }

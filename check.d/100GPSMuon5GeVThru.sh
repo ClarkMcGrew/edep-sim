@@ -12,11 +12,11 @@ cat >> $MACRO <<EOF
 /gps/verbose 0
 /gps/particle mu-
 /gps/energy 5 GeV
-/gps/position 0.0 0.0 -50.0 cm
+/gps/position 0.0 0.0 10.0 cm
 /gps/pos/type Plane
 /gps/pos/shape Circle
 /gps/pos/radius 2 cm
-/gps/direction 0 0 1
+/gps/direction 0 0 -1
 /run/beamOn 10
 
 EOF
