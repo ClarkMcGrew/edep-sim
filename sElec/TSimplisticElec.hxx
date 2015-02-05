@@ -4,7 +4,7 @@
 #include <string>
 #include <vector>
 
-#include <TND280Event.hxx>
+#include <TEvent.hxx>
 #include <HEPUnits.hxx>
 
 class TH2;
@@ -25,7 +25,7 @@ public:
                     TH2* depositHist=NULL);
     virtual ~TSimplisticElec();
 
-    void GenerateHits(CP::TND280Event& event);
+    void GenerateHits(CP::TEvent& event);
 
     /// Add a volume name to the list of required sub-strings found in the
     /// geometry id path.  If any one of these sub-strings is missing, the

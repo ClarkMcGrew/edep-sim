@@ -34,10 +34,9 @@ document installer installer *.mac
 application DETSIM ../app/detSim.cc
 macro_append DETSIM_dependencies " detSim "
 
-# application detSimTUT -check ../test/detSimTUT.cxx ../test/tut*.cxx
-# application detSim-sElec ../sElec/*.cxx
-
 # Build this for the validation tests.
+application detSim-sElec ../sElec/*.cxx
+# application detSimTUT -check ../test/detSimTUT.cxx ../test/tut*.cxx
 # application detSimLayerEnergy ../test/detSimLayerEnergy.cxx
 # application detSimParticleRange ../test/detSimParticleRange.cxx
 # application detSimCalculateMass ../test/detSimCalculateMass.cxx

@@ -14,5 +14,5 @@ if [ -f $OUTPUT ]; then
     rm $OUTPUT
 fi
 
-detsim-sElec.exe -a -o $OUTPUT $INPUT
+detSim-sElec.exe -a -o $OUTPUT $INPUT
 

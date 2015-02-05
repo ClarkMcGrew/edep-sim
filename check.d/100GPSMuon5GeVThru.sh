@@ -12,12 +12,12 @@ cat >> $MACRO <<EOF
 /gps/verbose 0
 /gps/particle mu-
 /gps/energy 5 GeV
-/gps/position 0.0 0.0 -5 meter
+/gps/position 0.0 0.0 -50.0 cm
 /gps/pos/type Plane
 /gps/pos/shape Circle
-/gps/pos/radius 50 cm
+/gps/pos/radius 2 cm
 /gps/direction 0 0 1
-/run/beamOn 1000
+/run/beamOn 10
 
 EOF
 
@@ -27,6 +27,6 @@ if [ -f $OUTPUT.root ]; then
     rm $OUTPUT.root
 fi
 
-ND280MC.exe -o $OUTPUT $MACRO 
+DETSIM.exe -o $OUTPUT $MACRO 
 
 rm $MACRO

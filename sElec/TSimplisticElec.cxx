@@ -4,22 +4,16 @@
 #include <TVector3.h>
 #include <TH2F.h>
 
-#include <oaEvent_version.h>
-
-#include <TND280Event.hxx>
+#include <TEvent.hxx>
 #include <THandle.hxx>
 #include <TG4HitSegment.hxx>
 #include <TManager.hxx>
 #include <TMCHit.hxx>
-#include <TND280Log.hxx>
+#include <TCaptLog.hxx>
 
-#if oaEvent_MAJOR_VERSION > 6
 #include <TGeomIdManager.hxx>
-#include <ND280GeomId.hxx>
+#include <CaptGeomId.hxx>
 #include <TGeometryId.hxx>
-#else
-#warning Simplistic electronics simulator requires oaEvent version 7 or later.
-#endif
 
 #include "TSimplisticElec.hxx"
 
@@ -32,8 +26,7 @@ SElec::TSimplisticElec::TSimplisticElec(std::string g4Hits,
 
 SElec::TSimplisticElec::~TSimplisticElec() {}
 
-void SElec::TSimplisticElec::GenerateHits(CP::TND280Event& event) {
-#if oaEvent_MAJOR_VERSION > 6
+void SElec::TSimplisticElec::GenerateHits(CP::TEvent& event) {
     CP::THandle<CP::TG4HitContainer> g4Hits = 
         event.Get<CP::TG4HitContainer>("truth/g4Hits/"+fG4Hits);
 
@@ -120,9 +113,4 @@ void SElec::TSimplisticElec::GenerateHits(CP::TND280Event& event) {
         }
     }
     event.Get<CP::TDataVector>("hits")->push_back(hits);
-#else
-    ND280Error("Cannot run -- Requires oaEvent version 7 or later");
-    std::cout << "NOT RUN" << std::cout;
-    std::exit(0);
-#endif
 }
