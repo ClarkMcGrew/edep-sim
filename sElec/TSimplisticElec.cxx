@@ -2,7 +2,7 @@
 #include <cstdlib>
 
 #include <TVector3.h>
-#include <TH2F.h>
+#include <TH1.h>
 
 #include <TEvent.hxx>
 #include <THandle.hxx>
@@ -20,7 +20,7 @@
 SElec::TSimplisticElec::TSimplisticElec(std::string g4Hits, 
                                         std::string hits, 
                                         double maxStep,
-                                        TH2* depositHist)
+                                        TH1* depositHist)
     : fG4Hits(g4Hits), fHits(hits), fEnergyMultiplier(1.0),
       fMaxStep(maxStep), fDepositHist(depositHist) {}
 
@@ -70,7 +70,19 @@ void SElec::TSimplisticElec::GenerateHits(CP::TEvent& event) {
             
             CP::TManager::Get().GeomId().GetGeometryId(x,y,z,geomId);
             std::string volumeName = geomId.GetName();
-
+            
+            // Check if this volume should be skipped.
+            bool skipVolume = false;
+            for (std::vector<std::string>::iterator s = fSkipNames.begin();
+                 s != fSkipNames.end();
+                 ++s) {
+                if (volumeName.find(*s) != std::string::npos)  {
+                    skipVolume = true;
+                    break;
+                }
+            }
+            if (skipVolume) continue;
+            
             // Check that this is a sensitive volume (most relevant for the
             // TPC).
             bool goodVolume = true;
@@ -118,8 +130,9 @@ void SElec::TSimplisticElec::GenerateHits(CP::TEvent& event) {
         std::cout << " length " << length
                   << "  energy " << energy
                   << std::endl;
-        if (fDepositHist) {
-            fDepositHist->Fill(length,energy);
+        if (fDepositHist && length>0.0) {
+            double dEdX = energy/length;
+            fDepositHist->Fill(dEdX,length);
         }
     }
     event.Get<CP::TDataVector>("hits")->push_back(hits);
