@@ -5,7 +5,7 @@ set -e
 
 MACRO=`mktemp -t detsim.XXXXXXXXXX` || exit 1
 cat >> $MACRO <<EOF
-/dsim/control baseline 1.0
+/dsim/control mini-captain 1.0
 /dsim/validateGeometry
 /dsim/update
 
