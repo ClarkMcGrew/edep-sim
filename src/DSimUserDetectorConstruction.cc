@@ -19,7 +19,7 @@
 #include "DSimUserDetectorConstruction.hh"
 #include "DSimDetectorMessenger.hh"
 #include "DSimRootGeometryManager.hh"
-#include "DSimMagneticField.hh"
+#include "DSimEMField.hh"
 #include "captain/CaptWorldBuilder.hh"
 
 #include "G4RegionStore.hh"
@@ -31,9 +31,8 @@ DSimUserDetectorConstruction::DSimUserDetectorConstruction() {
     fDetectorMessenger = new DSimDetectorMessenger(this);
     fWorldBuilder = new CaptWorldBuilder("/Captain",this);
 
-    // Create the default magnetic field.
-    fFieldStrength = 0.18*tesla;
-    fMagneticField = new DSimMagneticField(fFieldStrength);
+    // Create the default electric field.
+    fEMField = new DSimEMField(-500.0*volt/cm);
 
     fDefaultMaterial = NULL;
 
@@ -42,13 +41,13 @@ DSimUserDetectorConstruction::DSimUserDetectorConstruction() {
  
 void DSimUserDetectorConstruction::SetFieldStrength(double f) {
     fFieldStrength = f;
-    fMagneticField->SetFieldStrength(f);
+    fEMField->SetFieldStrength(f);
 }
 
 DSimUserDetectorConstruction::~DSimUserDetectorConstruction() { 
     delete fDetectorMessenger;
     delete fWorldBuilder;
-    delete fMagneticField;
+    delete fEMField;
 }
  
 G4VPhysicalVolume* DSimUserDetectorConstruction::Construct() {

@@ -11,7 +11,7 @@ class G4VPhysicalVolume;
 #include "DSimDetectorMessenger.hh"
 
 class DSimBuilder; 
-class DSimMagneticField;
+class DSimEMField;
 
 /// Construct the DSim detector geometry.
 class DSimUserDetectorConstruction : public G4VUserDetectorConstruction {
@@ -64,7 +64,7 @@ private:
     G4double fFieldStrength;
 
     /// The magnetic field calculation object.
-    DSimMagneticField* fMagneticField;
+    DSimEMField* fEMField;
 
     /// The default material.
     G4Material* fDefaultMaterial;
