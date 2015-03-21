@@ -11,7 +11,6 @@ class G4VPhysicalVolume;
 #include "DSimDetectorMessenger.hh"
 
 class DSimBuilder; 
-class DSimEMField;
 
 /// Construct the DSim detector geometry.
 class DSimUserDetectorConstruction : public G4VUserDetectorConstruction {
@@ -30,12 +29,6 @@ public:
     /// Update the geometry information to match stuff read from the macro
     /// file.  
     void UpdateGeometry();
-
-    /// Set the magnetic field in the UA1 Magnet.
-    void SetFieldStrength(G4double);
-
-    /// Get the magnetic field in the UA1 Magnet.
-    G4double GetFieldStrength(void) {return fFieldStrength;}
 
     /// Set ValidateGeomtry to true
     void ValidateGeometry() {fValidateGeometry = true;}
@@ -59,12 +52,6 @@ protected:
     DSimBuilder* fWorldBuilder;
 
 private:
-
-    /// The magnetic field strength.
-    G4double fFieldStrength;
-
-    /// The magnetic field calculation object.
-    DSimEMField* fEMField;
 
     /// The default material.
     G4Material* fDefaultMaterial;
