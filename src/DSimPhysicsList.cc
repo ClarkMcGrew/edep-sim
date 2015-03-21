@@ -23,13 +23,10 @@
 
 #include <G4SystemOfUnits.hh>
 
-void DSimPhysicsList::SetPhysicsListName(G4String pName) {
-    DSimLog("Set the physics list name to '" << pName << "'");
-    fPhysicsListName = pName;
-}
- 
+#include <unistd.h>
+
 DSimPhysicsList::DSimPhysicsList(G4String physName) 
-    : G4VModularPhysicsList(), fPhysicsListName(physName) {
+    : G4VModularPhysicsList() {
     G4LossTableManager::Instance();
     defaultCutValue  = 1.*mm;
     fCutForGamma     = defaultCutValue;
@@ -43,20 +40,24 @@ DSimPhysicsList::DSimPhysicsList(G4String physName)
     G4PhysListFactory factory;
     G4VModularPhysicsList* phys = NULL;
     
-    if (fPhysicsListName.size()<1) {
-        DSimLog("Set the default physics list");
-        // fPhysicsListName = "Shielding";
-        fPhysicsListName = "QGSP_BERT";
-    }
-
-    if (factory.IsReferencePhysList(fPhysicsListName)) {
-        phys =factory.GetReferencePhysList(fPhysicsListName);
-    }
-
-    // A last resort.  The physics list might defined via environment variable
-    // PHYSLIST
-    if (!phys) {
+    // Check to see if the physics list has been over ridden from the
+    // environment variable PHYSLIST
+    char* list = getenv("PHYSLIST");
+    if (list) {
         phys = factory.ReferencePhysList();
+    }
+    
+    // Check if a list name was provided on the command line.  It usually is
+    // not provided.
+    if (!phys && physName.size() > 1
+        && factory.IsReferencePhysList(physName)) {
+        DSimLog("Set the default physics list");
+        phys =factory.GetReferencePhysList(physName);
+    }
+
+    // Use the default physics list.
+    if (!phys) {
+        phys =factory.GetReferencePhysList("QGSP_BERT");
     }
 
     if (!phys) {
