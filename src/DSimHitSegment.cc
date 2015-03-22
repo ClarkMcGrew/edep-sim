@@ -84,8 +84,8 @@ void DSimHitSegment::AddStep(G4Step* theStep, double start, double end) {
     double energyDeposit = theStep->GetTotalEnergyDeposit();
     double stepLength = (prePos-postPos).mag();
     double trackLength = theStep->GetStepLength();
-    double nonIonizing = theStep->GetNonIonizingEnergyDeposit();
-
+    double nonIonizingDeposit = theStep->GetNonIonizingEnergyDeposit();
+    
     if (trackLength < 0.75*stepLength || trackLength < stepLength - 1*mm) {
         DSimWarn("Track length shorter than step: " 
                   << trackLength/mm << " mm "
@@ -187,6 +187,7 @@ void DSimHitSegment::AddStep(G4Step* theStep, double start, double end) {
     }
 
     fEnergyDeposit += energyDeposit;
+    fSecondaryDeposit += nonIonizingDeposit;
     fTrackLength += trackLength;
 }
 

@@ -593,6 +593,20 @@ G4S1Light::PostStepDoIt(const G4Track& aTrack, const G4Step& aStep)
         //collected electrons are the "escape" (non-recombined) electrons
         G4int NumPhotons = NumExcitons + BinomFluct(NumIons,recombProb);
         G4int NumElectrons = NumQuanta - NumPhotons;
+
+#define DETSIM
+#ifdef DETSIM
+        // The number of photons and electrons for this step has been
+        // calculated using the Doke/Birk law version of recombination.  For
+        // DETSIM we are only looking at argon, and according the Matt both
+        // Doke-Birks and Thomas-Imel fit the data.  The rest of the code is
+        // short-circuited and we tally the energy that got turned into
+        // photons.
+        G4double nonIonizingEnergy = TotalEnergyDeposit;
+        nonIonizingEnergy *= 1.0*NumPhotons/NumQuanta;
+        aParticleChange.ProposeNonIonizingEnergyDeposit(nonIonizingEnergy);
+        return G4VRestDiscreteProcess::PostStepDoIt(aTrack, aStep);
+#endif
         
         // next section increments the numbers of excitons, ions, photons, and
         // electrons for the appropriate interaction site; it only appears to
