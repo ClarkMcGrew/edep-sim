@@ -159,8 +159,14 @@ void DSimUserDetectorConstruction::DefineMaterials() {
                                         kStateLiquid,
                                         temperature = 87.3*kelvin,
                                         pressure=1*atmosphere);
-
     LAr->AddElement(elAr, natoms=1);
+
+    // Set up liquid argon for NEST.
+    G4MaterialPropertiesTable *LArMatProps = new G4MaterialPropertiesTable();
+    LArMatProps->AddConstProperty("ELECTRICFIELD",500*volt/cm);
+    LArMatProps->AddConstProperty("TOTALNUM_INT_SITES",-1);
+    LAr->SetMaterialPropertiesTable(LArMatProps);
+
     geoMan->SetDrawAtt(LAr,kCyan-9,0.1);
 
     // The CAPTAIN TPC wire.

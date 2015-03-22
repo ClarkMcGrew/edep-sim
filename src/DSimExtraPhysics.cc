@@ -1,6 +1,10 @@
 #include "DSimExtraPhysics.hh"
 #include "DSimException.hh"
 
+// Include NEST
+#include "NESTVersion098/G4S1Light.hh"
+#include "NESTVersion098/G4ThermalElectron.hh"
+
 #include <DSimLog.hh>
 
 #include <globals.hh>
@@ -20,11 +24,16 @@ DSimExtraPhysics::DSimExtraPhysics()
 
 DSimExtraPhysics::~DSimExtraPhysics() { }
 
-void DSimExtraPhysics::ConstructParticle() { }
+void DSimExtraPhysics::ConstructParticle() {
+    G4ThermalElectron::Definition();
+}
 
 void DSimExtraPhysics::ConstructProcess() {
     DSimLog("DSimExtraPhysics:: Add Extra Physics Processes");
 
+    G4S1Light* nestProcess = new G4S1Light();
+    nestProcess->SetScintillationYieldFactor(1.0);
+    
     theParticleIterator->reset();
     while ((*theParticleIterator)()) {
         G4ParticleDefinition* particle = theParticleIterator->value();
@@ -45,5 +54,10 @@ void DSimExtraPhysics::ConstructProcess() {
         if (std::abs(charge) > 0.1) {
             pman->AddDiscreteProcess(new G4StepLimiter("Step Limit"));
         }
+
+        // Add nest to any applicable particle.
+        if (nestProcess->IsApplicable(*particle)) {
+            pman->AddProcess(nestProcess,ordDefault,ordInActive,ordDefault);
+        }            
     }
 }
