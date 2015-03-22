@@ -56,48 +56,14 @@ G4bool DSimSegmentSD::ProcessHits(G4Step* theStep,
 
     DSimHitSegment* currentHit = NULL;
 
+    // Check to see if the last hit in the vector of hits needs to be
+    // expanded.
     if (0<=fLastHit && fLastHit < fHits->entries()) {
         DSimHitSegment *tmpHit = (*fHits)[fLastHit];
         if (tmpHit->SameHit(theStep)) {
             currentHit = tmpHit;
         }
     }
-
-// #define COMBINE_STEPS
-#ifdef COMBINE_STEPS
-    // Look through the list of available hits and see the new hit should be
-    // added to an existing one.
-    do {
-        // We have already found a hit to add this one too, so short-circuit
-        // the search.
-        if (currentHit) break;
-        G4StepPoint* preStepPoint = theStep->GetPreStepPoint();
-        const G4VProcess* preProcess = preStepPoint->GetProcessDefinedStep();
-        G4ProcessType preProcessType = fNotDefined;
-        if (preProcess) preProcessType = preProcess->GetProcessType();
-#ifdef USE_postProcessType
-        G4StepPoint* postStepPoint = theStep->GetPostStepPoint();
-        const G4VProcess* postProcess = postStepPoint->GetProcessDefinedStep();
-        G4ProcessType postProcessType = fNotDefined;
-        if (postProcess) postProcessType = postProcess->GetProcessType();
-#endif
-        // If the prestep is of type fTransporation, then we need a new step
-        // since we are crossing a geometry boundary.
-        if (preProcessType == fTransportation) break;
-        // Try and find the hit in list of existing hits.
-        for (int hitNumber = fHits->entries()-1; 
-             0 <= hitNumber;
-             --hitNumber) {
-            DSimHitSegment *tmpHit = (*fHits)[hitNumber];
-            if (tmpHit->SameHit(theStep)) {
-                currentHit = tmpHit;
-                fLastHit = hitNumber;
-                DSimNamedVerbose("hit","Add step to " << hitNumber);
-                break;
-            }
-        }
-    } while (false);
-#endif
 
     // If a hit wasn't found, create one.
     if (!currentHit) {
@@ -110,6 +76,5 @@ G4bool DSimSegmentSD::ProcessHits(G4Step* theStep,
 
     return true;
 }
-
 
 void DSimSegmentSD::EndOfEvent(G4HCofThisEvent* HCE) { }
