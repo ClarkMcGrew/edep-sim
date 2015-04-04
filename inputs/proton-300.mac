@@ -1,6 +1,6 @@
 ####################################################################
 #
-# Generate a 600 MeV electron along the X axis.
+# Generate a 300 MeV electron along the X axis.
 #
 
 /dsim/control baseline 1.0
