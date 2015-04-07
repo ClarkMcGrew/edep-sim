@@ -19,7 +19,8 @@ document doxygen doxygen -group=documentation *.cc *.hh \
 # The library to build
 library detSim *.cc *.hh \
 	kinem/*.cc kinem/*.hh \
-	captain/*.cc captain/*.hh 
+	captain/*.cc captain/*.hh \
+	NESTVersion098/*.cc NESTVersion098/*.hh 
 
 # Build information used by packages that use this one.
 macro detSim_cppflags " -DDETSIM_USED -DG4VIS_USE"
@@ -34,10 +35,10 @@ document installer installer *.mac
 application DETSIM ../app/detSim.cc
 macro_append DETSIM_dependencies " detSim "
 
-# application detSimTUT -check ../test/detSimTUT.cxx ../test/tut*.cxx
-# application detSim-sElec ../sElec/*.cxx
-
 # Build this for the validation tests.
+application detSim-sElec ../sElec/*.cxx
+macro_append detSim-sElec_dependencies " detSim "
+# application detSimTUT -check ../test/detSimTUT.cxx ../test/tut*.cxx
 # application detSimLayerEnergy ../test/detSimLayerEnergy.cxx
 # application detSimParticleRange ../test/detSimParticleRange.cxx
 # application detSimCalculateMass ../test/detSimCalculateMass.cxx

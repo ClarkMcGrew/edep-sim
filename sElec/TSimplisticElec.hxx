@@ -4,10 +4,10 @@
 #include <string>
 #include <vector>
 
-#include <TND280Event.hxx>
+#include <TEvent.hxx>
 #include <HEPUnits.hxx>
 
-class TH2;
+class TH1;
 
 namespace SElec {
     class TSimplisticElec;
@@ -22,16 +22,23 @@ class SElec::TSimplisticElec {
 public:
     TSimplisticElec(std::string g4Hits, std::string hits, 
                     double maxStep=1*unit::cm,
-                    TH2* depositHist=NULL);
+                    TH1* depositHist=NULL);
     virtual ~TSimplisticElec();
 
-    void GenerateHits(CP::TND280Event& event);
+    void GenerateHits(CP::TEvent& event);
 
     /// Add a volume name to the list of required sub-strings found in the
     /// geometry id path.  If any one of these sub-strings is missing, the
     /// volume is skipped.
     void AddVolumeName(std::string name) {
         fVolumeNames.push_back(name);
+    }
+
+    /// Add a volume name to the list of excluded sub-strings found in the
+    /// geometry id path.  If any one of these sub-strings is found, the
+    /// volume is skipped.
+    void AddSkipName(std::string name) {
+        fSkipNames.push_back(name);
     }
 
     void SetMultiplier(double m) {
@@ -53,10 +60,13 @@ private:
 
     /// A histogram of energy deposited in a hit versus length of track making
     /// the deposit.
-    TH2* fDepositHist;
+    TH1* fDepositHist;
 
     /// Strings that must be part of the volume name for it to be considered
     /// valid.
     std::vector<std::string> fVolumeNames;
+
+    /// Strings that in the volume name that cause it to be skipped.
+    std::vector<std::string> fSkipNames;
 };
 #endif

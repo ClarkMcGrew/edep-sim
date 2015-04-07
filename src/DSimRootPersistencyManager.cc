@@ -12,7 +12,6 @@
 #include "DSimTrajectoryPoint.hh"
 #include "DSimHitSegment.hh"
 #include "DSimVertexInfo.hh"
-#include "DSimMagneticField.hh"
 #include "kinem/DSimPrimaryGenerator.hh"
 #include "kinem/DSimVCountGenerator.hh"
 

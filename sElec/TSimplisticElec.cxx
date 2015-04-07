@@ -2,42 +2,39 @@
 #include <cstdlib>
 
 #include <TVector3.h>
-#include <TH2F.h>
+#include <TH1.h>
 
-#include <oaEvent_version.h>
-
-#include <TND280Event.hxx>
+#include <TEvent.hxx>
 #include <THandle.hxx>
 #include <TG4HitSegment.hxx>
 #include <TManager.hxx>
 #include <TMCHit.hxx>
-#include <TND280Log.hxx>
+#include <TCaptLog.hxx>
 
-#if oaEvent_MAJOR_VERSION > 6
 #include <TGeomIdManager.hxx>
-#include <ND280GeomId.hxx>
+#include <CaptGeomId.hxx>
 #include <TGeometryId.hxx>
-#else
-#warning Simplistic electronics simulator requires oaEvent version 7 or later.
-#endif
 
 #include "TSimplisticElec.hxx"
 
 SElec::TSimplisticElec::TSimplisticElec(std::string g4Hits, 
                                         std::string hits, 
                                         double maxStep,
-                                        TH2* depositHist)
+                                        TH1* depositHist)
     : fG4Hits(g4Hits), fHits(hits), fEnergyMultiplier(1.0),
       fMaxStep(maxStep), fDepositHist(depositHist) {}
 
 SElec::TSimplisticElec::~TSimplisticElec() {}
 
-void SElec::TSimplisticElec::GenerateHits(CP::TND280Event& event) {
-#if oaEvent_MAJOR_VERSION > 6
+void SElec::TSimplisticElec::GenerateHits(CP::TEvent& event) {
     CP::THandle<CP::TG4HitContainer> g4Hits = 
         event.Get<CP::TG4HitContainer>("truth/g4Hits/"+fG4Hits);
 
-    if (!g4Hits) return;
+    if (!g4Hits) {
+        std::cout << "No hits in events" << std::endl;
+        return;
+    }
+        
 
     CP::TGeometryId geomId;
     std::map<CP::TGeometryId,CP::TWritableMCHit> mappedHits;
@@ -74,6 +71,18 @@ void SElec::TSimplisticElec::GenerateHits(CP::TND280Event& event) {
             CP::TManager::Get().GeomId().GetGeometryId(x,y,z,geomId);
             std::string volumeName = geomId.GetName();
             
+            // Check if this volume should be skipped.
+            bool skipVolume = false;
+            for (std::vector<std::string>::iterator s = fSkipNames.begin();
+                 s != fSkipNames.end();
+                 ++s) {
+                if (volumeName.find(*s) != std::string::npos)  {
+                    skipVolume = true;
+                    break;
+                }
+            }
+            if (skipVolume) continue;
+            
             // Check that this is a sensitive volume (most relevant for the
             // TPC).
             bool goodVolume = true;
@@ -86,7 +95,7 @@ void SElec::TSimplisticElec::GenerateHits(CP::TND280Event& event) {
                 }
             }
             if (!goodVolume) continue;
-            
+
             // Add this info to the TMCHit.
             CP::TWritableMCHit& mcHit = mappedHits[geomId];
             if (mcHit.GetGeomId() == CP::GeomId::Empty()) {
@@ -103,7 +112,10 @@ void SElec::TSimplisticElec::GenerateHits(CP::TND280Event& event) {
             }
         }
     }
-    if (mappedHits.empty()) return;
+    if (mappedHits.empty()) {
+        std::cout << "empty hits" << std::endl;
+        return;
+    }
     
     CP::THitSelection* hits = new CP::THitSelection(fHits.c_str(),
                                                     "Truth Hits");
@@ -113,16 +125,15 @@ void SElec::TSimplisticElec::GenerateHits(CP::TND280Event& event) {
          h != mappedHits.end();
          ++h) {
         hits->push_back(CP::THandle<CP::TMCHit>(new CP::TMCHit(h->second)));
-        if (fDepositHist) {
-            double length = mappedLength[h->first];
-            double energy = h->second.GetCharge();
-            fDepositHist->Fill(length,energy);
+        double length = mappedLength[h->first];
+        double energy = h->second.GetCharge();
+        std::cout << " length " << length
+                  << "  energy " << energy
+                  << std::endl;
+        if (fDepositHist && length>0.0) {
+            double dEdX = energy/length;
+            fDepositHist->Fill(dEdX,length);
         }
     }
     event.Get<CP::TDataVector>("hits")->push_back(hits);
-#else
-    ND280Error("Cannot run -- Requires oaEvent version 7 or later");
-    std::cout << "NOT RUN" << std::cout;
-    std::exit(0);
-#endif
 }

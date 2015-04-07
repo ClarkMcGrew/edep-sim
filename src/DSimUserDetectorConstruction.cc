@@ -19,7 +19,6 @@
 #include "DSimUserDetectorConstruction.hh"
 #include "DSimDetectorMessenger.hh"
 #include "DSimRootGeometryManager.hh"
-#include "DSimMagneticField.hh"
 #include "captain/CaptWorldBuilder.hh"
 
 #include "G4RegionStore.hh"
@@ -30,25 +29,13 @@ DSimUserDetectorConstruction::DSimUserDetectorConstruction() {
 
     fDetectorMessenger = new DSimDetectorMessenger(this);
     fWorldBuilder = new CaptWorldBuilder("/Captain",this);
-
-    // Create the default magnetic field.
-    fFieldStrength = 0.18*tesla;
-    fMagneticField = new DSimMagneticField(fFieldStrength);
-
     fDefaultMaterial = NULL;
-
     fValidateGeometry = false;
 }
  
-void DSimUserDetectorConstruction::SetFieldStrength(double f) {
-    fFieldStrength = f;
-    fMagneticField->SetFieldStrength(f);
-}
-
 DSimUserDetectorConstruction::~DSimUserDetectorConstruction() { 
     delete fDetectorMessenger;
     delete fWorldBuilder;
-    delete fMagneticField;
 }
  
 G4VPhysicalVolume* DSimUserDetectorConstruction::Construct() {
@@ -172,8 +159,14 @@ void DSimUserDetectorConstruction::DefineMaterials() {
                                         kStateLiquid,
                                         temperature = 87.3*kelvin,
                                         pressure=1*atmosphere);
-
     LAr->AddElement(elAr, natoms=1);
+
+    // Set up liquid argon for NEST.
+    G4MaterialPropertiesTable *LArMatProps = new G4MaterialPropertiesTable();
+    LArMatProps->AddConstProperty("ELECTRICFIELD",500*volt/cm);
+    LArMatProps->AddConstProperty("TOTALNUM_INT_SITES",-1);
+    LAr->SetMaterialPropertiesTable(LArMatProps);
+
     geoMan->SetDrawAtt(LAr,kCyan-9,0.1);
 
     // The CAPTAIN TPC wire.

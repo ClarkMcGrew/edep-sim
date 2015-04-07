@@ -91,10 +91,6 @@ void DSimDetectorMessenger::SetNewValue(G4UIcommand * cmd,
     else if (cmd == fExportCmd) {
         DSimRootGeometryManager::Get()->Export(newValue);
     }
-    else if (cmd == fMagneticFieldCmd) {
-        fConstruction->SetFieldStrength(
-            fMagneticFieldCmd->GetNewDoubleValue(newValue));
-    }
     else if (cmd == fControlCmd) {
         std::istringstream input((const char*)newValue);
         std::string name;

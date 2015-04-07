@@ -7,6 +7,7 @@
 /// DO NOT USE THIS TO GENERATE PHYSICS RESULTS.
 ///
 #include <TROOT.h>
+#include <TH1F.h>
 #include <TH2F.h>
 
 #include <eventLoop.hxx>
@@ -36,30 +37,22 @@ public:
     }
 
     bool operator () (CP::TEvent& event) {
-        SElec::TSimplisticElec tpc("tpc","tpc", 0.5*unit::mm);
-        tpc.AddVolumeName("TPC");
-        tpc.AddVolumeName("Pad_");
+        SElec::TSimplisticElec tpc("drift","drift", 1.0*unit::mm, fDriftHits);
+        tpc.AddVolumeName("Drift");
+        tpc.AddSkipName("Drift_0/");
         tpc.GenerateHits(event);
-
-        SElec::TSimplisticElec p0d("p0d","p0d", 
-                                   1*unit::cm);
-        p0d.AddVolumeName("P0D_");
-        p0d.AddVolumeName("Bar_");
-        p0d.GenerateHits(event);
-
-        SElec::TSimplisticElec fgd("fgd","fgd");
-        fgd.AddVolumeName("FGD");
-        fgd.AddVolumeName("Bar_");
-        fgd.GenerateHits(event);
 
         return true;
     }
 
-    void Initialize() {}
+    void Initialize() {
+        fDriftHits = new TH1F("driftHits", "Energy deposited in TPC",
+                              100, 0.15, 0.25);
+    }
 
 private:
     bool fQuiet;
-
+    TH1* fDriftHits;
 };
 
 int main(int argc, char **argv) {

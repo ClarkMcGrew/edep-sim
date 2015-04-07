@@ -27,5 +27,13 @@ DSimUserStackingAction::ClassifyNewTrack(const G4Track* aTrack) {
         if (aTrack->GetKineticEnergy() < 5.*keV) return fKill;
     }
 
+    if (particle->GetParticleName() == "opticalphoton") {
+        return fKill;
+    }
+
+    if (particle->GetParticleName() == "thermalelectron") {
+        return fKill;
+    }
+
     return G4UserStackingAction::ClassifyNewTrack(aTrack);
 }

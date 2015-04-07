@@ -40,7 +40,6 @@ public:
 
 private:
 
-    G4String fPhysicsListName;
     G4double fCutForGamma;
     G4double fCutForElectron;
     G4double fCutForPositron;
