@@ -785,4 +785,26 @@ a geometry for processing the new mini-CAPTAIN cosmic ray running data.
 
 
 
+
+\section detSim_v0r0p1_history Version 0.0.1
+
+Freeze information:
+   - Freeze Date: Tue Apr  7 14:47:09 2015
+   - Freeze User: mcgrew
+   - Freeze Host: boxer boxer 
+
+
+BUG FIXES:
+
+** TSimplisticElec: Fix some compilation problems.
+
+** Turn off magnetic field left over from T2K!!
+
+NEW FEATURES:
+
+** Validation Checks:  Add new validation checks for muon dE/dX
+
+** Use NEST to simulate generation of ionization and scintillation quanta.
+   The results are tabulated for later use by elecSim.
+
 */
