@@ -8,7 +8,8 @@ class G4LogicalVolume;
 /// Construct an unrotated wire plane.  In the local coordinate system, the
 /// wires are oriented along the Y axis, and the wire number increases from
 /// negative X to positive X.  The electric field points along the Z axis, or
-/// in other words, into the drift region.
+/// in other words, into the drift region, and electrons drift from positive Z
+/// toward the planes (i.e. in the negative Z direction).
 /// 
 /// The wires are not "tubes", but are boxes that represent the area overwhich
 /// the wire will measure charge.  The name of the wire planes is significant
@@ -30,20 +31,36 @@ public:
     /// Get the total height (thickness) of the drift region.
     /// @{
     void SetHeight(double v) {fHeight = v;}
-    double GetHeight() {return fHeight;}
+    double GetHeight() const {return fHeight;}
     /// @}
 
-    /// Set the radius of the largest circle that can be contained in the
-    /// drift region.  This is the maximum local Z dimension.
+    /// Set the radius of the largest cylinder that can be contained in the
+    /// hexagonal wire plane.  This is the maximum local X dimension. 
     /// @{
     void SetApothem(double v) {fApothem = v;}
-    double GetApothem() {return fApothem;}
+    double GetApothem() const {return fApothem;}
     /// @}
 
-    /// Get or set the wire spacing.
+    /// Set the radius of the smallest cylinder that contains the hexagonal
+    /// wire plane.  This is the maximum local Y dimension and is the apothem
+    /// divided by the cosine of 30 degrees.
+    /// @{
+    void SetRadius(double v) {fApothem = v*0.866025403784;}
+    double GetRadius() const {return fApothem/0.866025403784;}
+    /// @}
+
+    /// Get or set the distance between wires.  
     /// @{
     void SetSpacing(double v) {fSpacing = v;}
-    double GetSpacing() {return fSpacing;}
+    double GetSpacing() const {return fSpacing;}
+    /// @}
+
+    /// Get or set the maximum number of wires.  The default number of wires
+    /// is calculated based on the apothem and the wire spacing, but can be
+    /// limited by SetMaxWireCount().
+    /// @{
+    void SetMaxWireCount(int v) {fMaxWireCount = v;}
+    int GetMaxWireCount() const {return fMaxWireCount;}
     /// @}
 
 private:
@@ -57,5 +74,8 @@ private:
 
     /// The wire to wire spacing.
     double fSpacing;
+
+    /// The maximum number of wires in the plane. 
+    int fMaxWireCount;
 };
 #endif

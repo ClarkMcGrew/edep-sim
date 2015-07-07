@@ -22,7 +22,9 @@ private:
     CaptWirePlaneBuilder* fBuilder;
     G4UIcmdWithADoubleAndUnit* fApothemCMD;
     G4UIcmdWithADoubleAndUnit* fSpacingCMD;
-
+    G4UIcmdWithAnInteger* fMaxWireCountCMD;
+   
+    
 public:
     CaptWirePlaneMessenger(CaptWirePlaneBuilder* c) 
         : DSimBuilderMessenger(c,"Control the drift region geometry."),
@@ -40,11 +42,19 @@ public:
             "Set the wire spacing.");
         fSpacingCMD->SetParameterName("spacing",false);
         fSpacingCMD->SetUnitCategory("Length");
+
+        fMaxWireCountCMD = new G4UIcmdWithAnInteger(
+            CommandName("maxWireCount"),this);
+        fMaxWireCountCMD->SetGuidance(
+            "Set the maximum number of wires in a plane.");
+        fMaxWireCountCMD->SetParameterName("count",false);
+
     }
 
     virtual ~CaptWirePlaneMessenger() {
         delete fApothemCMD;
         delete fSpacingCMD;
+        delete fMaxWireCountCMD;
     }
 
     void SetNewValue(G4UIcommand *cmd, G4String val) {
@@ -53,6 +63,9 @@ public:
         }
         else if (cmd==fSpacingCMD) {
             fBuilder->SetSpacing(fSpacingCMD->GetNewDoubleValue(val));
+        }
+        else if (cmd==fMaxWireCountCMD) {
+            fBuilder->SetMaxWireCount(fMaxWireCountCMD->GetNewIntValue(val));
         }
         else {
             DSimBuilderMessenger::SetNewValue(cmd,val);
@@ -63,13 +76,13 @@ public:
 
 void CaptWirePlaneBuilder::Init(void) {
     SetMessenger(new CaptWirePlaneMessenger(this));
-    SetApothem(1000*mm);
+    SetApothem(1000*mm); 
     SetSpacing(3*mm);
     SetHeight(1*mm);
+    SetMaxWireCount(0);   // default value used to see if limit is set.
     SetSensitiveDetector("drift","segment");
     SetMaximumHitLength(1*mm);
     SetMaximumHitSagitta(0.5*mm);
-
 }
 
 CaptWirePlaneBuilder::~CaptWirePlaneBuilder() {};
@@ -99,9 +112,22 @@ G4LogicalVolume *CaptWirePlaneBuilder::GetPiece(void) {
     int wires = int (2.0*GetApothem()/GetSpacing());
     if (wires<1) wires = 1;
 
+    if (GetMaxWireCount()>0 && GetMaxWireCount()<wires) {
+        DSimLog("Reduce number of wires for " << GetName()
+                << " from " << wires
+                << " to " << GetMaxWireCount());
+        wires = GetMaxWireCount();
+    }
+
     DSimLog("Construct " << GetName() 
             << " with " << wires << " wires"
             << "  (spacing: " << GetSpacing()/mm << " mm)");
+
+    if (wires<GetMaxWireCount()) {
+        DSimWarn(GetName() << ": Wire count is less than expected:"
+                    << "  " << wires
+                    << " < " << GetMaxWireCount());
+    }
 
     G4RotationMatrix* wireRotation = NULL;
 
