@@ -70,9 +70,11 @@ public:
     /// @}
 
     /// Return the offset of the cryostat from the center of the world so that
-    /// the center of the wire planes are at the origin.  The bottom of the V
-    /// wire plane is at the origin.  This means that the wires for the V
-    /// plane are at a (very) small z coordinate.
+    /// the center of the wire planes are at the origin.  The bottom of the
+    /// wire plane assembly is at the origin (a decision will be made in the
+    /// future as to whether this is the bottom of the grid, or the bottom of
+    /// the V plane.  This means that the wires for the V plane are at a
+    /// (very) small positive z coordinate.
     G4ThreeVector GetOffset();
 
 private:

@@ -136,9 +136,9 @@ double CaptCryostatBuilder::GetHeight() {
 G4ThreeVector CaptCryostatBuilder::GetOffset() {
     CaptDriftRegionBuilder& drift = Get<CaptDriftRegionBuilder>("Drift");
     double zCenter = - GetInnerHeight()/2;
-    zCenter += drift.GetHeight();
     zCenter += GetBottomSpace();
-    zCenter -= drift.GetGridPlaneOffset();
+    zCenter += drift.GetHeight()/2;
+    zCenter += drift.GetOffset().z();
     return G4ThreeVector(0,0,-zCenter);
 }
 
