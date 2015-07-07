@@ -26,11 +26,19 @@ public:
     /// Get the total height of the drift region.
     double GetHeight();
 
-    /// Set the radius of the largest circle that can be contained in the
+    /// Set the radius of the largest cylinder that can be contained in the
     /// drift region.
     /// @{
     void SetApothem(double v) {fApothem = v;}
     double GetApothem() {return fApothem;}
+    /// @}
+
+    /// Set the radius of the smallest cylinder that contains the drift
+    /// region.  This is the maximum local Y dimension and is the apothem
+    /// divided by the cosine of 30 degrees.
+    /// @{
+    void SetRadius(double v) {fApothem = v*0.866025403784;}
+    double GetRadius() const {return fApothem/0.866025403784;}
     /// @}
 
     /// Set the length of the drift region from the cathode to the first wire
@@ -45,6 +53,11 @@ public:
     double GetWirePlaneSpacing() {return fWirePlaneSpacing;}
     /// @}
 
+    /// Return the offset of the drift region from the top off the drift
+    /// volume.  This is used so that the "center" of the bottom of the wire
+    /// planes is at the global origin.
+    G4ThreeVector GetOffset();
+    
     /// Get the offset of the X plane from the top of the drift region.
     double GetXPlaneOffset();
 

@@ -76,7 +76,7 @@ void CaptDriftRegionBuilder::Init(void) {
     SetDriftLength(1000*mm);
     SetWirePlaneSpacing(3.18*mm);
     SetSensitiveDetector("drift","segment");
-    SetMaximumHitLength(1*mm);
+    SetMaximumHitLength(1.0*mm);
     SetMaximumHitSagitta(0.25*mm);
 
     AddBuilder(new CaptWirePlaneBuilder("XPlane",this));
@@ -92,6 +92,12 @@ double CaptDriftRegionBuilder::GetHeight() {
     return GetDriftLength() + 3*GetWirePlaneSpacing() + wires.GetHeight();
 }
 
+G4ThreeVector CaptDriftRegionBuilder::GetOffset() {
+    double zOffset = GetHeight()/2.0;
+    zOffset -= GetGridPlaneOffset();
+    return G4ThreeVector(0.0, 0.0, zOffset);
+}
+
 double CaptDriftRegionBuilder::GetXPlaneOffset() {
     CaptWirePlaneBuilder& wires = Get<CaptWirePlaneBuilder>("XPlane");
     return wires.GetHeight()/2;
@@ -99,17 +105,17 @@ double CaptDriftRegionBuilder::GetXPlaneOffset() {
 
 double CaptDriftRegionBuilder::GetVPlaneOffset() {
     CaptWirePlaneBuilder& wires = Get<CaptWirePlaneBuilder>("XPlane");
-    return 1*GetWirePlaneSpacing() + wires.GetHeight()/2;
+    return 1.0*GetWirePlaneSpacing() + wires.GetHeight()/2;
 }
 
 double CaptDriftRegionBuilder::GetUPlaneOffset() {
     CaptWirePlaneBuilder& wires = Get<CaptWirePlaneBuilder>("XPlane");
-    return 2*GetWirePlaneSpacing() + wires.GetHeight()/2;
+    return 2.0*GetWirePlaneSpacing() + wires.GetHeight()/2;
 }
 
 double CaptDriftRegionBuilder::GetGridPlaneOffset() {
     CaptWirePlaneBuilder& wires = Get<CaptWirePlaneBuilder>("XPlane");
-    return 3*GetWirePlaneSpacing() + wires.GetHeight()/2;
+    return 3.0*GetWirePlaneSpacing() + wires.GetHeight()/2;
 }
 
 G4LogicalVolume *CaptDriftRegionBuilder::GetPiece(void) {
