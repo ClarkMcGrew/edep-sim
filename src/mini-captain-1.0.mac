@@ -16,6 +16,8 @@
 /Captain/Cryostat/Drift/apothem 503 mm
 /Captain/Cryostat/Drift/driftLength 320 mm
 
+/Captain/Cryostat/Drift/GridPlane/maxWireCount 332
 /Captain/Cryostat/Drift/UPlane/maxWireCount 332
 /Captain/Cryostat/Drift/VPlane/maxWireCount 332
 /Captain/Cryostat/Drift/XPlane/maxWireCount 332
+/Captain/Cryostat/Drift/GroundPlane/maxWireCount 332

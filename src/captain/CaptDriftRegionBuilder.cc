@@ -83,13 +83,14 @@ void CaptDriftRegionBuilder::Init(void) {
     AddBuilder(new CaptWirePlaneBuilder("VPlane",this));
     AddBuilder(new CaptWirePlaneBuilder("UPlane",this));
     AddBuilder(new CaptWirePlaneBuilder("GridPlane",this));
+    AddBuilder(new CaptWirePlaneBuilder("GroundPlane",this));
 }
 
 CaptDriftRegionBuilder::~CaptDriftRegionBuilder() {};
 
 double CaptDriftRegionBuilder::GetHeight() {
-    CaptWirePlaneBuilder& wires = Get<CaptWirePlaneBuilder>("UPlane");
-    return GetDriftLength() + 3*GetWirePlaneSpacing() + wires.GetHeight();
+    CaptWirePlaneBuilder& wires = Get<CaptWirePlaneBuilder>("XPlane");
+    return GetDriftLength() + GetGridPlaneOffset() + wires.GetHeight();
 }
 
 G4ThreeVector CaptDriftRegionBuilder::GetOffset() {
@@ -98,24 +99,29 @@ G4ThreeVector CaptDriftRegionBuilder::GetOffset() {
     return G4ThreeVector(0.0, 0.0, zOffset);
 }
 
-double CaptDriftRegionBuilder::GetXPlaneOffset() {
+double CaptDriftRegionBuilder::GetGroundPlaneOffset() {
     CaptWirePlaneBuilder& wires = Get<CaptWirePlaneBuilder>("XPlane");
-    return wires.GetHeight()/2;
+    return 0.0*GetWirePlaneSpacing() + wires.GetHeight()/2;
 }
 
-double CaptDriftRegionBuilder::GetVPlaneOffset() {
+double CaptDriftRegionBuilder::GetXPlaneOffset() {
     CaptWirePlaneBuilder& wires = Get<CaptWirePlaneBuilder>("XPlane");
     return 1.0*GetWirePlaneSpacing() + wires.GetHeight()/2;
 }
 
-double CaptDriftRegionBuilder::GetUPlaneOffset() {
+double CaptDriftRegionBuilder::GetVPlaneOffset() {
     CaptWirePlaneBuilder& wires = Get<CaptWirePlaneBuilder>("XPlane");
     return 2.0*GetWirePlaneSpacing() + wires.GetHeight()/2;
 }
 
-double CaptDriftRegionBuilder::GetGridPlaneOffset() {
+double CaptDriftRegionBuilder::GetUPlaneOffset() {
     CaptWirePlaneBuilder& wires = Get<CaptWirePlaneBuilder>("XPlane");
     return 3.0*GetWirePlaneSpacing() + wires.GetHeight()/2;
+}
+
+double CaptDriftRegionBuilder::GetGridPlaneOffset() {
+    CaptWirePlaneBuilder& wires = Get<CaptWirePlaneBuilder>("XPlane");
+    return 4.0*GetWirePlaneSpacing() + wires.GetHeight()/2;
 }
 
 G4LogicalVolume *CaptDriftRegionBuilder::GetPiece(void) {
@@ -204,6 +210,19 @@ G4LogicalVolume *CaptDriftRegionBuilder::GetPiece(void) {
                                     (GetHeight()/2 - GetGridPlaneOffset())),
                       logGrid,                     // logical volume
                       logGrid->GetName(),          // name
+                      logVolume,                // mother  volume
+                      false,                    // (not used)
+                      0,                        // Copy number (zero)
+                      Check());                 // Check overlaps.
+    
+    CaptWirePlaneBuilder& grndPlane = Get<CaptWirePlaneBuilder>("GroundPlane");
+    grndPlane.SetApothem(GetApothem());
+    G4LogicalVolume *logGrnd = grndPlane.GetPiece();
+    new G4PVPlacement(xRotation,                // rotation.
+                      G4ThreeVector(0,0,
+                                    (GetHeight()/2 - GetGroundPlaneOffset())),
+                      logGrnd,                     // logical volume
+                      logGrnd->GetName(),          // name
                       logVolume,                // mother  volume
                       false,                    // (not used)
                       0,                        // Copy number (zero)

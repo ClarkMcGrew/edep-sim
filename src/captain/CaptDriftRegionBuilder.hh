@@ -70,6 +70,9 @@ public:
     /// Get the offset of the grid from the top of the drift region.
     double GetGridPlaneOffset();
 
+    /// Get the offset of the ground from the top of the drift region.
+    double GetGroundPlaneOffset();
+
 private:
     void Init(void);
 
