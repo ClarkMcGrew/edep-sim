@@ -807,4 +807,32 @@ NEW FEATURES:
 ** Use NEST to simulate generation of ionization and scintillation quanta.
    The results are tabulated for later use by elecSim.
 
+
+\section detSim_v0r0p2_history Version 0.0.2
+
+Freeze information:
+   - Freeze Date: Fri Jul 10 15:11:46 2015
+   - Freeze User: mcgrew
+   - Freeze Host: boxer 
+
+
+GEOMETRY UPDATE:
+
+There has been a pretty detailed audit of the wire mapping and geometry or
+mini-CAPTAIN.  Based on that, assembly information, checking the as-built
+drawings, log book notes, and looking at data, it's clear that the geometry
+needs to be fixed.  This changes the number of wires per plane from 335 to
+332. It also adds the grid plane and ground plane.
+
+NEW FEATURES:
+
+** Allow the maximum number of wires on a plane to be explicitly set.  This
+   causes an error message if there isn't space for the requested number of
+   wires.
+
+** Add builders for the grid and ground planes.
+
+** Improve the calculation of the offset of the drift region inside the
+   cryostat.  
+
 */
