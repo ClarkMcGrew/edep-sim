@@ -1,14 +1,16 @@
 // There isn't any standard interface to remove particles from the vertex,
 // or vertices from the event.  This has to grunge around in the G4
 // internals.  This depends on an evil hack.
+#if __GNUC__ < 5
 #define private public
 #include <G4PrimaryParticle.hh>
 #include <G4PrimaryVertex.hh>
 #include <G4Event.hh>
 #undef private
+#endif
 
-#include <DSimLog.hh>
-
+#include "DSimLog.hh"
+#include "DSimException.hh"
 #include "DSimCombinationGenerator.hh"
 
 DSimCombinationGenerator::DSimCombinationGenerator() {}
@@ -16,6 +18,9 @@ DSimCombinationGenerator::DSimCombinationGenerator() {}
 DSimCombinationGenerator::~DSimCombinationGenerator(void) {}
 
 void DSimCombinationGenerator::GeneratePrimaryVertex(G4Event* evt) {
+#if __GNUC__ > 4
+    DSimThrow("DSimCombinationGenerator is not supported");
+#else
     DSimInfo("# Combine previous two vertices");
 
     // Find the second to last vertex.
@@ -57,7 +62,7 @@ void DSimCombinationGenerator::GeneratePrimaryVertex(G4Event* evt) {
     lastVtx->tailVertex = NULL;
     delete lastVtx;
     --evt->numberOfPrimaryVertex;
-
+#endif
 }
 
 G4String DSimCombinationGenerator::GetName() {
