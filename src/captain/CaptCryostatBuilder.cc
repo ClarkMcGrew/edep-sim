@@ -293,10 +293,14 @@ G4LogicalVolume *CaptCryostatBuilder::GetPiece(void) {
     // The first implementation just adds a few PMTs so that the downstream
     // code can be tested. 
 
+    // The drawing is in inchs, so make the conversion.
+    const double inch = 25.4*mm;
+    const double xOffset = 1*inch;
+    
     // One at the center.
     G4LogicalVolume* logPMT = pmt.GetPiece();
     new G4PVPlacement(NULL,                    // rotation.
-                      G4ThreeVector(0,0,       // position
+                      G4ThreeVector(-8.9*inch+xOffset,0,   // position
                                     - GetArgonDepth()/2
                                     + GetBottomSpace()
                                     - pmt.GetBaseLength()/2
@@ -310,7 +314,7 @@ G4LogicalVolume *CaptCryostatBuilder::GetPiece(void) {
 
     logPMT = pmt.GetPiece();
     new G4PVPlacement(NULL,                    // rotation.
-                      G4ThreeVector(500*mm,0,       // position
+                      G4ThreeVector(-4.0*inch+xOffset,-11.42*inch,  // position
                                     - GetArgonDepth()/2
                                     + GetBottomSpace()
                                     - pmt.GetBaseLength()/2
@@ -324,7 +328,7 @@ G4LogicalVolume *CaptCryostatBuilder::GetPiece(void) {
 
     logPMT = pmt.GetPiece();
     new G4PVPlacement(NULL,                    // rotation.
-                      G4ThreeVector(-500*mm,0,       // position
+                      G4ThreeVector(-10.9*inch+xOffset,-11.42*inch, // position
                                     - GetArgonDepth()/2
                                     + GetBottomSpace()
                                     - pmt.GetBaseLength()/2
@@ -338,7 +342,7 @@ G4LogicalVolume *CaptCryostatBuilder::GetPiece(void) {
 
     logPMT = pmt.GetPiece();
     new G4PVPlacement(NULL,                    // rotation.
-                      G4ThreeVector(0,500*mm,       // position
+                      G4ThreeVector(-16.79*inch+xOffset,-7.0*inch, // position
                                     - GetArgonDepth()/2
                                     + GetBottomSpace()
                                     - pmt.GetBaseLength()/2
@@ -352,7 +356,162 @@ G4LogicalVolume *CaptCryostatBuilder::GetPiece(void) {
 
     logPMT = pmt.GetPiece();
     new G4PVPlacement(NULL,                    // rotation.
-                      G4ThreeVector(0,-500*mm, // position
+                      G4ThreeVector(-16.79*inch+xOffset,0.0*inch, // position
+                                    - GetArgonDepth()/2
+                                    + GetBottomSpace()
+                                    - pmt.GetBaseLength()/2
+                                    - 25*mm),    
+                      logPMT,                // logical volume
+                      logPMT->GetName(),     // name
+                      logLAr,                  // mother  volume
+                      false,                   // (not used)
+                      0,                       // Copy number (zero)
+                      Check());                // Check overlaps.
+
+    logPMT = pmt.GetPiece();
+    new G4PVPlacement(NULL,                    // rotation.
+                      G4ThreeVector(-16.79*inch+xOffset,7.0*inch, // position
+                                    - GetArgonDepth()/2
+                                    + GetBottomSpace()
+                                    - pmt.GetBaseLength()/2
+                                    - 25*mm),    
+                      logPMT,                // logical volume
+                      logPMT->GetName(),     // name
+                      logLAr,                  // mother  volume
+                      false,                   // (not used)
+                      0,                       // Copy number (zero)
+                      Check());                // Check overlaps.
+
+    logPMT = pmt.GetPiece();
+    new G4PVPlacement(NULL,                    // rotation.
+                      G4ThreeVector(-10.9*inch+xOffset,11.42*inch, // position
+                                    - GetArgonDepth()/2
+                                    + GetBottomSpace()
+                                    - pmt.GetBaseLength()/2
+                                    - 25*mm),    
+                      logPMT,                // logical volume
+                      logPMT->GetName(),     // name
+                      logLAr,                  // mother  volume
+                      false,                   // (not used)
+                      0,                       // Copy number (zero)
+                      Check());                // Check overlaps.
+
+    logPMT = pmt.GetPiece();
+    new G4PVPlacement(NULL,                    // rotation.
+                      G4ThreeVector(-4.0*inch+xOffset,11.42*inch, // position
+                                    - GetArgonDepth()/2
+                                    + GetBottomSpace()
+                                    - pmt.GetBaseLength()/2
+                                    - 25*mm),    
+                      logPMT,                // logical volume
+                      logPMT->GetName(),     // name
+                      logLAr,                  // mother  volume
+                      false,                   // (not used)
+                      0,                       // Copy number (zero)
+                      Check());                // Check overlaps.
+
+    // One at the center.
+    logPMT = pmt.GetPiece();
+    new G4PVPlacement(NULL,                    // rotation.
+                      G4ThreeVector(8.9*inch-xOffset,0,       // position
+                                    - GetArgonDepth()/2
+                                    + GetBottomSpace()
+                                    - pmt.GetBaseLength()/2
+                                    - 25*mm),    
+                      logPMT,                // logical volume
+                      logPMT->GetName(),     // name
+                      logLAr,                  // mother  volume
+                      false,                   // (not used)
+                      0,                       // Copy number (zero)
+                      Check());                // Check overlaps.
+
+    logPMT = pmt.GetPiece();
+    new G4PVPlacement(NULL,                    // rotation.
+                      G4ThreeVector(4.0*inch-xOffset,-11.42*inch, // position
+                                    - GetArgonDepth()/2
+                                    + GetBottomSpace()
+                                    - pmt.GetBaseLength()/2
+                                    - 25*mm),    
+                      logPMT,                // logical volume
+                      logPMT->GetName(),     // name
+                      logLAr,                  // mother  volume
+                      false,                   // (not used)
+                      0,                       // Copy number (zero)
+                      Check());                // Check overlaps.
+
+    logPMT = pmt.GetPiece();
+    new G4PVPlacement(NULL,                    // rotation.
+                      G4ThreeVector(10.9*inch-xOffset,-11.42*inch, // position
+                                    - GetArgonDepth()/2
+                                    + GetBottomSpace()
+                                    - pmt.GetBaseLength()/2
+                                    - 25*mm),    
+                      logPMT,                // logical volume
+                      logPMT->GetName(),     // name
+                      logLAr,                  // mother  volume
+                      false,                   // (not used)
+                      0,                       // Copy number (zero)
+                      Check());                // Check overlaps.
+
+    logPMT = pmt.GetPiece();
+    new G4PVPlacement(NULL,                    // rotation.
+                      G4ThreeVector(16.79*inch-xOffset,-7.0*inch, // position
+                                    - GetArgonDepth()/2
+                                    + GetBottomSpace()
+                                    - pmt.GetBaseLength()/2
+                                    - 25*mm),    
+                      logPMT,                // logical volume
+                      logPMT->GetName(),     // name
+                      logLAr,                  // mother  volume
+                      false,                   // (not used)
+                      0,                       // Copy number (zero)
+                      Check());                // Check overlaps.
+
+    logPMT = pmt.GetPiece();
+    new G4PVPlacement(NULL,                    // rotation.
+                      G4ThreeVector(16.79*inch-xOffset,0.0*inch, // position
+                                    - GetArgonDepth()/2
+                                    + GetBottomSpace()
+                                    - pmt.GetBaseLength()/2
+                                    - 25*mm),    
+                      logPMT,                // logical volume
+                      logPMT->GetName(),     // name
+                      logLAr,                  // mother  volume
+                      false,                   // (not used)
+                      0,                       // Copy number (zero)
+                      Check());                // Check overlaps.
+
+    logPMT = pmt.GetPiece();
+    new G4PVPlacement(NULL,                    // rotation.
+                      G4ThreeVector(16.79*inch-xOffset,7.0*inch, // position
+                                    - GetArgonDepth()/2
+                                    + GetBottomSpace()
+                                    - pmt.GetBaseLength()/2
+                                    - 25*mm),    
+                      logPMT,                // logical volume
+                      logPMT->GetName(),     // name
+                      logLAr,                  // mother  volume
+                      false,                   // (not used)
+                      0,                       // Copy number (zero)
+                      Check());                // Check overlaps.
+
+    logPMT = pmt.GetPiece();
+    new G4PVPlacement(NULL,                    // rotation.
+                      G4ThreeVector(10.9*inch-xOffset,11.42*inch, // position
+                                    - GetArgonDepth()/2
+                                    + GetBottomSpace()
+                                    - pmt.GetBaseLength()/2
+                                    - 25*mm),    
+                      logPMT,                // logical volume
+                      logPMT->GetName(),     // name
+                      logLAr,                  // mother  volume
+                      false,                   // (not used)
+                      0,                       // Copy number (zero)
+                      Check());                // Check overlaps.
+
+    logPMT = pmt.GetPiece();
+    new G4PVPlacement(NULL,                    // rotation.
+                      G4ThreeVector(4.0*inch-xOffset,11.42*inch, // position
                                     - GetArgonDepth()/2
                                     + GetBottomSpace()
                                     - pmt.GetBaseLength()/2
