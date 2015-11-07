@@ -29,8 +29,8 @@ class DSimDokeBirks : public G4VRestDiscreteProcess //class definition
 private:
 public: // constructor and destructor
 
-    DSimDokeBirks(const G4String& processName = "S1",
-               G4ProcessType type = fElectromagnetic);
+    DSimDokeBirks(const G4String& processName = "Doke-Birks",
+                  G4ProcessType type = fElectromagnetic);
     ~DSimDokeBirks();
 
 public: // methods, with descriptions

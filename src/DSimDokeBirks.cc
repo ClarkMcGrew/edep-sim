@@ -10,7 +10,7 @@
 // physics described in NEST paper".
 
 DSimDokeBirks::DSimDokeBirks(const G4String& processName,
-                       G4ProcessType type)
+                             G4ProcessType type)
     : G4VRestDiscreteProcess(processName, type)
 {
     SetProcessSubType(fScintillation);
