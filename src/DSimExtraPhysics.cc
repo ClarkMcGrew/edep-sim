@@ -5,7 +5,8 @@
 #include "NESTVersion098/G4S1Light.hh"
 #include "NESTVersion098/G4ThermalElectron.hh"
 
-#include <DSimLog.hh>
+#include "DSimDokeBirks.hh"
+#include "DSimLog.hh"
 
 #include <globals.hh>
 #include <G4ParticleTypes.hh>
@@ -20,7 +21,7 @@
 #include <G4StepLimiter.hh>
 
 DSimExtraPhysics::DSimExtraPhysics() 
-    : G4VPhysicsConstructor("DSim Extra") { }
+    : G4VPhysicsConstructor("DSim Extra"), fIonizationModel(1) { }
 
 DSimExtraPhysics::~DSimExtraPhysics() { }
 
@@ -31,9 +32,6 @@ void DSimExtraPhysics::ConstructParticle() {
 void DSimExtraPhysics::ConstructProcess() {
     DSimLog("DSimExtraPhysics:: Add Extra Physics Processes");
 
-    G4S1Light* nestProcess = new G4S1Light();
-    nestProcess->SetScintillationYieldFactor(1.0);
-    
     theParticleIterator->reset();
     while ((*theParticleIterator)()) {
         G4ParticleDefinition* particle = theParticleIterator->value();
@@ -48,16 +46,31 @@ void DSimExtraPhysics::ConstructProcess() {
                       << " without a Process Manager.");
             DSimThrow("Particle without a Process Manager.");
         }
-
+        
         // All charged particles should have a step limiter to make sure that
         // the steps do not get too long.
         if (std::abs(charge) > 0.1) {
             pman->AddDiscreteProcess(new G4StepLimiter("Step Limit"));
         }
-
-        // Add nest to any applicable particle.
-        if (nestProcess->IsApplicable(*particle)) {
-            pman->AddProcess(nestProcess,ordDefault,ordInActive,ordDefault);
-        }            
-    }
+        
+        switch (fIonizationModel) {
+        case 0: {
+            // Add nest to any applicable particle.
+            G4S1Light* scintProcess = new G4S1Light();
+            scintProcess->SetScintillationYieldFactor(1.0);
+            if (scintProcess->IsApplicable(*particle)) {
+                pman->AddProcess(scintProcess,ordDefault,
+                                 ordInActive,ordDefault);
+            }
+        }
+        case 1: default: {
+            // Add DSimDokeBirks to any applicable particle.
+            DSimDokeBirks* scintProcess = new DSimDokeBirks();
+            if (scintProcess->IsApplicable(*particle)) {
+                pman->AddProcess(scintProcess,ordDefault,
+                                 ordInActive,ordDefault);
+            }
+        }
+        }
+    } 
 }

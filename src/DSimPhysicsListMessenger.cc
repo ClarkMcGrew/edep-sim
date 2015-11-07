@@ -2,11 +2,13 @@
 
 #include "DSimPhysicsListMessenger.hh"
 #include "DSimPhysicsList.hh"
+#include "DSimExtraPhysics.hh"
 
 #include <G4UIdirectory.hh>
 #include <G4UIcmdWithAString.hh>
 #include <G4UIcmdWithoutParameter.hh>
 #include <G4UIcmdWithADoubleAndUnit.hh>
+#include <G4UIcmdWithABool.hh>
 
 #include "G4ParticleTable.hh"
 #include "G4ParticleDefinition.hh"
@@ -49,6 +51,12 @@ DSimPhysicsListMessenger::DSimPhysicsListMessenger(DSimPhysicsList* pPhys)
     fAllCutCMD->SetRange("cut>0.0");
     fAllCutCMD->SetDefaultUnit("mm");
     fAllCutCMD->AvailableForStates(G4State_PreInit,G4State_Idle);
+
+    fIonizationModelCMD = new G4UIcmdWithABool("/dsim/phys/ionizationModel",
+                                                    this);
+    fIonizationModelCMD->SetGuidance("Set ionization model in the LAr");
+    fIonizationModelCMD->SetParameterName("fraction",false);
+    fIonizationModelCMD->AvailableForStates(G4State_PreInit,G4State_Idle);
 }
 
 DSimPhysicsListMessenger::~DSimPhysicsListMessenger() {
@@ -56,6 +64,7 @@ DSimPhysicsListMessenger::~DSimPhysicsListMessenger() {
     delete fElectCutCMD;
     delete fPosCutCMD;
     delete fAllCutCMD;
+    delete fIonizationModelCMD;
 }
 
 void DSimPhysicsListMessenger::SetNewValue(G4UIcommand* command,
@@ -77,5 +86,9 @@ void DSimPhysicsListMessenger::SetNewValue(G4UIcommand* command,
         fPhysicsList->SetCutForGamma(cut);
         fPhysicsList->SetCutForElectron(cut);
         fPhysicsList->SetCutForPositron(cut);
+    }
+    else if (command == fIonizationModelCMD) {
+        G4double cut = fIonizationModelCMD->GetNewBoolValue(newValue);
+        fPhysicsList->SetIonizationModel(cut);
     }
 }

@@ -37,3 +37,8 @@
 ##############################################
 # Set any physics limits.
 ##############################################
+
+# Set the default ionization model.  The choices are 0) NEST which is slow,
+# general, and accurate, 1) DSimDokeBirks which is about 200 times faster
+# than NEST, but only applicable to LAr (code stolen from NEST).
+/dsim/phys/ionizationModel 1

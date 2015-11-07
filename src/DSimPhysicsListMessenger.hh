@@ -8,6 +8,7 @@ class DSimPhysicsList;
 
 class G4UIdirectory;
 class G4UIcmdWithADoubleAndUnit;
+class G4UIcmdWithABool;
 class G4UIcmdWithAString;
 class G4UIcmdWithoutParameter;
 
@@ -32,6 +33,7 @@ private:
     G4UIcmdWithADoubleAndUnit* fElectCutCMD;
     G4UIcmdWithADoubleAndUnit* fPosCutCMD;
     G4UIcmdWithADoubleAndUnit* fAllCutCMD;
+    G4UIcmdWithABool*          fIonizationModelCMD;
 
 };
 #endif

@@ -32,7 +32,7 @@ DSimPhysicsList::DSimPhysicsList(G4String physName)
     fCutForGamma     = defaultCutValue;
     fCutForElectron  = defaultCutValue;
     fCutForPositron  = defaultCutValue;
-
+    
     fMessenger = new DSimPhysicsListMessenger(this);
 
     SetVerboseLevel(1);
@@ -74,7 +74,8 @@ DSimPhysicsList::DSimPhysicsList(G4String physName)
     }
 
     // Add our specific lists.
-    RegisterPhysics(new DSimExtraPhysics());
+    fExtra = new DSimExtraPhysics();
+    RegisterPhysics(fExtra);
     RegisterPhysics(new G4OpticalPhysics());
 
 }
@@ -112,5 +113,9 @@ void DSimPhysicsList::SetCutForElectron(G4double cut) {
 void DSimPhysicsList::SetCutForPositron(G4double cut) {
     fCutForPositron = cut;
     SetParticleCuts(fCutForPositron, G4Positron::Positron());
+}
+
+void DSimPhysicsList::SetIonizationModel(bool b) {
+    fExtra->SetIonizationModel(b);
 }
 

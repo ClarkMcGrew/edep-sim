@@ -19,11 +19,24 @@
 class DSimExtraPhysics: public G4VPhysicsConstructor {
 public:
 
-    DSimExtraPhysics();
+    /// Construct the extra physics lists.  The argument is the default
+    /// recombination for argon.  If the value is negative, then use NEST.
+    explicit DSimExtraPhysics();
     virtual ~DSimExtraPhysics();
 
     virtual void ConstructParticle();
     virtual void ConstructProcess();
 
+    /// Set the ionization model to be use.  The ionization model calculates
+    /// the amount of total deposited energy that will be visible as
+    /// ionization.  Because of how G4 works, the total energy deposited and
+    /// the non-ionization energy are tabulated.  The implemented models are:
+    /// 0) Use NEST to make a detailed calculation.  1) Use
+    /// DSimSimpleScintillation to make a quick calculation.
+    void SetIonizationModel(int m) {fIonizationModel=m;}
+    
+private:
+
+    int fIonizationModel;
 };
 #endif

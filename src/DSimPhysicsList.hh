@@ -6,6 +6,7 @@
 
 class G4VPhysicsConstructor;
 class DSimPhysicsListMessenger;
+class DSimExtraPhysics;
 
 /// Use the G4PhysListFactory to select a physics list for this run.  The
 /// physics list can be set from the PHYSLIST environment variable, or a macro
@@ -38,14 +39,27 @@ public:
     /// Set the range cut for positrons.
     void SetCutForPositron(G4double);
 
+    /// Set the recombination fraction for liquid argon (negative for using
+    /// nest).
+    void SetIonizationModel(bool);
+    
 private:
 
+    /// The gamma-ray range cut.
     G4double fCutForGamma;
+
+    /// The electron range cut.
     G4double fCutForElectron;
+
+    /// The positron range cut.
     G4double fCutForPositron;
 
+    /// The extra physics list
+    DSimExtraPhysics* fExtra;
+    
     /// The messenger to control this class.
     DSimPhysicsListMessenger* fMessenger;
+
 };
 
 #endif
