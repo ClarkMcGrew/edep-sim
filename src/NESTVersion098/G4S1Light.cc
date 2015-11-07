@@ -134,12 +134,12 @@ G4S1Light::PostStepDoIt(const G4Track& aTrack, const G4Step& aStep)
         // return if no valid scintillators are found on this step, which is
         // protection against G4Exception or seg. fault/violation
         G4Element *ElementA = NULL, *ElementB = NULL;
-        if (aMaterial) {
+        if (aMaterial && aMaterial->GetMaterialPropertiesTable()) {
           const G4ElementVector* theElementVector1 =
             aMaterial->GetElementVector();
           ElementA = (*theElementVector1)[0];
         }
-        if (bMaterial) {
+        if (bMaterial && bMaterial->GetMaterialPropertiesTable()) {
           const G4ElementVector* theElementVector2 =
             bMaterial->GetElementVector();
           ElementB = (*theElementVector2)[0];
@@ -189,6 +189,7 @@ G4S1Light::PostStepDoIt(const G4Track& aTrack, const G4Step& aStep)
         if ( NobleNow && !NobleLater ) outside = true;
         if ( !NobleNow && NobleLater ) {
           aMaterial = bMaterial; inside = true; z1 = z2;
+          ElementA = ElementB;
           aMaterialPropertiesTable = bMaterial->GetMaterialPropertiesTable();
         }
         if ( NobleNow && NobleLater && 
