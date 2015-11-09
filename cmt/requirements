@@ -38,6 +38,10 @@ macro_append DETSIM_dependencies " detSim "
 # Build this for the validation tests.
 application detSim-sElec ../sElec/*.cxx
 macro_append detSim-sElec_dependencies " detSim "
+
+application testEnergyDeposit ../test/testEnergyDeposit.cxx
+macro_append testEnergyDeposit_dependencies " detSim "
+
 # application detSimTUT -check ../test/detSimTUT.cxx ../test/tut*.cxx
 # application detSimLayerEnergy ../test/detSimLayerEnergy.cxx
 # application detSimParticleRange ../test/detSimParticleRange.cxx

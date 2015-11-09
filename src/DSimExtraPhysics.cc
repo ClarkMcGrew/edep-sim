@@ -62,6 +62,7 @@ void DSimExtraPhysics::ConstructProcess() {
                 pman->AddProcess(scintProcess,ordDefault,
                                  ordInActive,ordDefault);
             }
+            break; 
         }
         case 1: default: {
             // Add DSimDokeBirks to any applicable particle.
@@ -70,6 +71,7 @@ void DSimExtraPhysics::ConstructProcess() {
                 pman->AddProcess(scintProcess,ordDefault,
                                  ordInActive,ordDefault);
             }
+            break;
         }
         }
     } 
