@@ -154,11 +154,11 @@ void DSimUserDetectorConstruction::DefineMaterials() {
 
     // Liquid Argon
     G4Material* LAr =  new G4Material(name="Argon_Liquid",
-                                        density = 1.4*g/cm3,
-                                        nel=1,
-                                        kStateLiquid,
-                                        temperature = 87.3*kelvin,
-                                        pressure=1*atmosphere);
+                                      density = 1.3954*g/cm3,
+                                      nel=1,
+                                      kStateLiquid,
+                                      temperature = 87.3*kelvin,
+                                      pressure=1*atmosphere);
     LAr->AddElement(elAr, natoms=1);
 
     // Set up liquid argon for NEST.
