@@ -276,14 +276,14 @@ void DSimPersistencyManager::SelectTrajectoryPoints(
     selected.push_back(lastIndex);
 
     //////////////////////////////////////////////
-    // Short out trajectories that don't deposit any energy. 
-    //
-    // This eliminates neutrals, and we may need to add some special handling
-    // for photons and possibly neutrons.
-    // 
+    // Short out trajectories that don't create any energy deposit in a
+    // sensitive detector.  These are trajectories that disappear from the
+    // detector, so we don't need to record the extra trajectory points.  The
+    // starting and stopping point of the particle are recorded in the
+    // trajectory.
     //////////////////////////////////////////////
     DSimTrajectory* ndTraj = dynamic_cast<DSimTrajectory*>(g4Traj);    
-    if (ndTraj->GetSDEnergyDeposit() < 1*eV) return;
+    if (ndTraj->GetSDTotalEnergyDeposit() < 1*eV) return;
 
     // Find the trajectory points where particles are entering and leaving the
     // detectors.
@@ -293,17 +293,39 @@ void DSimPersistencyManager::SelectTrajectoryPoints(
     for (int tp = 1; tp < lastIndex; ++tp) {
         dsimPoint = dynamic_cast<DSimTrajectoryPoint*>(g4Traj->GetPoint(tp));
         G4String volumeName = dsimPoint->GetPhysVolName();
-
         // Save the point on a boundary crossing for volumes where we are
         // saving the entry and exit points.
         if (SaveTrajectoryBoundary(g4Traj,dsimPoint->GetStepStatus(),
                                    volumeName,prevVolumeName)) {
             selected.push_back(tp);
         }
-
         prevVolumeName = volumeName;
     }
 
+    // Save trajectory points where there is a "big" interaction.
+    for (int tp = 1; tp < lastIndex; ++tp) {
+        dsimPoint = dynamic_cast<DSimTrajectoryPoint*>(g4Traj->GetPoint(tp));
+        // Not much energy deposit...
+        if (dsimPoint->GetProcessDeposit() < 1.0*MeV) continue;
+        // Just navigation....
+        if (dsimPoint->GetProcessType() == fTransportation) continue;
+        // Don't save optical photons...
+        if (dsimPoint->GetProcessType() == fOptical) continue;
+        // Usually a step limit...
+        if (dsimPoint->GetProcessType() == fGeneral) continue;
+        if (dsimPoint->GetProcessType() == fUserDefined) continue;
+        // Don't save continuous ionization steps.
+        if (dsimPoint->GetProcessName().find("Ioni")!=G4String::npos) continue;
+        // Don't save multiple scattering.
+        if (dsimPoint->GetProcessName().find("msc")!=G4String::npos) continue;
+        selected.push_back(tp);
+    }
+
+    // Make sure there aren't any accidental duplicates in selected.
+    std::sort(selected.begin(), selected.end());
+    selected.erase(std::unique(selected.begin(), selected.end()), 
+                   selected.end());
+    
     double desiredAccuracy = GetTrajectoryPointAccuracy();
     // Make sure that the trajectory accuracy stays in tolerance.
     for (int throttle = 0; throttle < 1000; ++throttle) {

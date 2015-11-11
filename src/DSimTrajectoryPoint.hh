@@ -6,6 +6,7 @@
 #include <G4ThreeVector.hh>
 #include <G4Allocator.hh>
 #include <G4StepStatus.hh>
+#include <G4ProcessType.hh>
 
 class G4Track;
 class G4Step;
@@ -37,6 +38,19 @@ public:
     /// trajectory point.
     G4StepStatus GetStepStatus() const { return fStepStatus; }
 
+    /// Get the process type for this point (the process types are defined in
+    /// G4ProcessType.hh).
+    G4ProcessType GetProcessType() const { return fProcessType; }
+
+    /// Get the process name for this point.
+    G4String GetProcessName() const { return fProcessName; }
+
+    /// Get the energy deposit by this process for this point.  This is NOT
+    /// enough information to calculate the total energy deposit for the
+    /// track, but can be used to help decide which trajectory points are
+    /// interesting to save to the output file.
+    G4double GetProcessDeposit() const { return fProcessDeposit; }
+
     /// The name of the physical volume containing the stopping point of the
     /// current step.  This may (often) be a different volume than the volume
     /// referenced by GetVolumeNode().
@@ -61,6 +75,9 @@ public:
     G4double fTime;
     G4ThreeVector fMomentum;
     G4StepStatus fStepStatus;
+    G4ProcessType fProcessType;
+    G4String fProcessName;
+    G4double fProcessDeposit;
     G4String fPhysVolName;
     G4ThreeVector fPrevPosition;
 };

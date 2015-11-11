@@ -5,6 +5,7 @@
 #include <G4Step.hh>
 #include <G4VProcess.hh>
 #include <G4StepStatus.hh>
+#include <G4ProcessType.hh>
 
 #include <G4AttDefStore.hh>
 #include <G4AttDef.hh>
@@ -19,8 +20,9 @@ G4Allocator<DSimTrajectoryPoint> aDSimTrajPointAllocator;
 
 DSimTrajectoryPoint::DSimTrajectoryPoint()
     : fTime(0.), fMomentum(0.,0.,0.),
-      fStepStatus(fUndefined), 
-      fPhysVolName("OutofWorld"), fPrevPosition(0,0,0) { }
+      fStepStatus(fUndefined), fProcessType(fNotDefined),
+      fProcessName("NotDefined"), fPhysVolName("OutofWorld"),
+      fPrevPosition(0,0,0) { }
 
 DSimTrajectoryPoint::DSimTrajectoryPoint(const G4Step* aStep)
     : G4TrajectoryPoint(aStep->GetPostStepPoint()->GetPosition()) {
@@ -35,6 +37,16 @@ DSimTrajectoryPoint::DSimTrajectoryPoint(const G4Step* aStep)
         fPhysVolName == "OutOfWorld";
     }
     fPrevPosition = aStep->GetPreStepPoint()->GetPosition();
+    // Check if the G4VProcess for the defining process is available.  It
+    // isn't available for steps defined by the user, step limits, or some
+    // other "bookkeeping" pseudo interactions.
+    if (aStep->GetPostStepPoint()->GetProcessDefinedStep()) {
+        fProcessType = aStep->GetPostStepPoint()->
+            GetProcessDefinedStep()->GetProcessType();
+        fProcessName = aStep->GetPostStepPoint()->
+            GetProcessDefinedStep()->GetProcessName();
+        fProcessDeposit =  aStep->GetTotalEnergyDeposit();
+    }
 }
 
 DSimTrajectoryPoint::DSimTrajectoryPoint(const G4Track* aTrack)
@@ -56,6 +68,9 @@ DSimTrajectoryPoint::DSimTrajectoryPoint(const DSimTrajectoryPoint &right)
     fTime = right.fTime;
     fMomentum = right.fMomentum;
     fStepStatus = right.fStepStatus;
+    fProcessType = right.fProcessType;
+    fProcessName = right.fProcessName;
+    fProcessDeposit = right.fProcessDeposit;
     fPhysVolName = right.fPhysVolName;
     fPrevPosition = right.fPrevPosition;
 }
