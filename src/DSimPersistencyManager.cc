@@ -326,6 +326,8 @@ void DSimPersistencyManager::SelectTrajectoryPoints(
     selected.erase(std::unique(selected.begin(), selected.end()), 
                    selected.end());
     
+    if (ndTraj->GetSDEnergyDeposit() < 1*eV) return;
+
     double desiredAccuracy = GetTrajectoryPointAccuracy();
     // Make sure that the trajectory accuracy stays in tolerance.
     for (int throttle = 0; throttle < 1000; ++throttle) {
