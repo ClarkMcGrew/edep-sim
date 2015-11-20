@@ -1,0 +1,68 @@
+// Inner boundary of the CAPTAIN cryostat outer vessel hand digitized using
+// engauge on Nov 20, 2015 by Clark McGrew.  The coordinates are measured in
+// millimeters with the top of the cryostat at -X, the bottom at +X, and the
+// diameter located along the Y axis.  The X coordinate is measured from the
+// top of the flange with the nominal LAr surface located 24 inches (609.6 mm)
+// below the flange.  The first point is at the approximate top of the outer
+// vessel which is located right below the flange.
+//
+// COMMENT: This assumes that the lid and the flange are part of the inner
+// vessel.  The outer vessel stops when it reaches the lower edge of the
+// flange.
+//
+// COMMENT: The makePolycone.py script will use this to produce a "close"
+// volume.  The output needs to be edited by hand to remove the top point so
+// that the outer volume is open on top.
+
+40.1021	-661.769	0
+1843.63	-663.613	1
+1865.87	-665.489	2
+1899.23	-672.937	3
+1919.61	-682.226	4
+1956.65	-708.214	5
+1988.12	-749.025	6
+2008.47	-789.825	7
+2032.52	-838.042	8
+2069.51	-915.93	9
+2106.49	-1006.79	10
+2141.61	-1101.36	11
+2174.88	-1195.93	12
+2195.19	-1268.24	13
+2221.05	-1357.24	14
+2241.34	-1453.64	15
+2256.1	-1520.39	16
+2267.15	-1594.54	17
+2280.03	-1689.09	18
+2292.89	-1798.46	19
+2300.17	-1930.07	20
+2301.93	-2020.9	21
+2298.13	-2111.72	22
+2292.47	-2215.52	23
+2283.08	-2334.14	24
+2268.14	-2439.78	25
+2247.64	-2545.41	26
+2232.73	-2625.1	27
+2219.7	-2678.84	28
+2201.1	-2747.4	29
+2184.35	-2804.84	30
+2162.05	-2869.7	31
+2139.73	-2940.11	32
+2113.72	-3003.11	33
+2091.41	-3060.54	34
+2076.55	-3097.6	35
+2057.97	-3140.21	36
+2039.39	-3180.97	37
+2020.82	-3219.88	38
+2004.11	-3247.67	39
+1991.1	-3277.31	40
+1979.96	-3295.83	41
+1968.82	-3312.5	42
+1953.98	-3329.17	43
+1939.14	-3340.28	44
+1920.59	-3351.38	45
+1900.19	-3360.63	46
+1876.08	-3369.87	47
+1864.96	-3371.71	48
+1848.28	-3373.55	49
+1835.3	-3373.54	50
+37.3312	-3371.7	51

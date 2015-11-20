@@ -42,8 +42,8 @@ if len(args)<2:
     sys.exit(1)
 
 # Define the default values for the options.
-vectorName = "fCaptainShape"
-boundaryStep = 3
+vectorName = "polyconeShape"
+boundaryStep = 0.1
 precision = 0.3
 
 # Parse the command line options.
@@ -59,13 +59,18 @@ for o, a in options:
         sys.exit(1)
 
 # Read the points from an input file.  The file should be defined as
-# X, Y, index Where +x is the top of the cryostat, -x is the bottom,
-# and the Y direction is for the sides.
+# X, Y where the symetry axis is along X, and the radius is along Y.
+# This only uses the first two numbers on a line.
 def ReadPoints(fileName):
+    print "// Filename: ", fileName
     points = []
     for line in open(fileName):
-        x = [float(val) for val in line.split()]
-        points.append([x[0],x[1]])
+        if line[0] == "/":
+            print line.rstrip()
+            continue
+        if len(line) < 5: continue
+        spl = line.split()
+        points.append([float(spl[0]),float(spl[1])])
     return points
 
 # Find the radius of the cryostat at a particular vertical position.
@@ -110,36 +115,11 @@ def SegmentIsOK(p1,p2,middle,thres):
         if abs(r2-p[2]) > thres: return False
     return True
 
-innerPoints = ReadPoints(args[0])
-outerPoints = ReadPoints(args[1])
-
-boundary = []
-for iZ in FindRange(innerPoints,outerPoints,boundaryStep):
-    z = boundaryStep*iZ
-    innerRadius = FindRadius(z,innerPoints)
-    outerRadius = FindRadius(z,outerPoints)
-    boundary.append([z,innerRadius,outerRadius])
-
-savedPoints = [boundary[0]]
-runningPoints = []
-for p in boundary[1:]:
-    if len(runningPoints) < 1:
-        runningPoints.append(p)
-        continue
-    if SegmentIsOK(savedPoints[-1],p,runningPoints,precision):
-        runningPoints.append(p)
-        continue
-    savedPoints.append(runningPoints[-1])
-    runningPoints = []
-if savedPoints[-1] != boundary[-1]: savedPoints.append(boundary[-1])
-                                                       
 print """
 ////////////////////////////////////////////////////////////////////////
 // This is an auto-generated built using makePolycone.py.  It defines
-// points to be used to build a G4Polycone. It is built from the input
-// files %s and %s.
-// Prior to including this file, the vector %s must
-// be define in a way equivalent to
+// points to be used to build a G4Polycone. Prior to including this file,
+// the vector %s must be define in a way equivalent to
 // 
 // class Point {
 //  public:
@@ -152,8 +132,40 @@ print """
 // std::vector<Point> %s;
 //
 ////////////////////////////////////////////////////////////////////////
-""" % (args[0], args[1], vectorName, vectorName)
+""" % (vectorName, vectorName)
     
+innerPoints = ReadPoints(args[0])
+print ""
+outerPoints = ReadPoints(args[1])
+print ""
+
+# Build up the boundary of the polycone using fixed steps in Z.  The digitized
+# boundaries are interpolated to fill in missing points.
+boundary = []
+for iZ in FindRange(innerPoints,outerPoints,boundaryStep):
+    z = boundaryStep*iZ
+    inner = FindRadius(z,innerPoints)
+    outer = FindRadius(z,outerPoints)
+    if outer < inner: inner, outer = outer, inner
+    boundary.append([z,inner,outer])
+
+# Figure out which boundary points should be used to define the segments in
+# G4Polycone.  This scans through the boundary points and finds out where
+# the interpolated line gets to far from the expected line.
+savedPoints = [boundary[0]]
+runningPoints = []
+for p in boundary[1:]:
+    if len(runningPoints) < 1:
+        runningPoints.append(p)
+        continue
+    if SegmentIsOK(savedPoints[-1],p,runningPoints,precision):
+        runningPoints.append(p)
+        continue
+    savedPoints.append(runningPoints[-1])
+    runningPoints = []
+if savedPoints[-1] != boundary[-1]: savedPoints.append(boundary[-1])
+
+# Dump all of the saved points to the output as a line of "c++" code.
 for p in savedPoints:
     print "%s.push_back(Point(%f,%f,%f));" % (vectorName,p[0],p[1],p[2])
 
