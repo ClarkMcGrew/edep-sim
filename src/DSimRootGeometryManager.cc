@@ -215,9 +215,9 @@ TGeoShape* DSimRootGeometryManager::CreateShape(const G4VSolid* theSolid,
         double dPhi = polycone->GetEndPhi() - phi;
         if (dPhi>2*M_PI) dPhi -= 2*M_PI;
         if (dPhi<0) dPhi += 2*M_PI;
+#ifdef USE_POLYCONE_CORNERS
         int numZ = polycone->GetNumRZCorner()/2;
         TGeoPcon* pcon = new TGeoPcon(phi/degree, dPhi/degree, numZ);
-#ifdef USE_POLYCONE_CORNERS
         // This depends on the (mostly) undocumented order of the corners in
         // the G4Polycone internals.  It's a little unstable...
         for (int i = 0; i< numZ; ++i) {
@@ -227,9 +227,11 @@ TGeoShape* DSimRootGeometryManager::CreateShape(const G4VSolid* theSolid,
                                 polycone->GetCorner(numZ+i).r/mm);
         }
 #else
+        const G4PolyconeHistorical* param = polycone->GetOriginalParameters();
+        int numZ = param->Num_z_planes;
+        TGeoPcon* pcon = new TGeoPcon(phi/degree, dPhi/degree, numZ);
         // This depends on the older interface.  It's not marked as
         // deprecated, but the documentation discourages it's use.
-        const G4PolyconeHistorical* param = polycone->GetOriginalParameters();
         for (int i = 0; i< numZ; ++i) {
             pcon->DefineSection(i,
                                 param->Z_values[i]/mm,

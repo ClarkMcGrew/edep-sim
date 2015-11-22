@@ -1,0 +1,41 @@
+// Inner boundary of the miniCAPTAIN cryostat inner vessel hand digitized
+// using engauge on Nov 22, 2015 by Clark McGrew.  The coordinates are
+// measured in millimeters with the top of the cryostat at -X, the bottom at
+// +X, and the diameter located along the Y axis.  The X coordinate is
+// measured from the top of the flange with the nominal LAr surface located 9
+// inches (609.6 mm) below the top surface of flange.
+//
+// COMMENT: This includes the lid and the flange as part of the inner vessel.
+// The outer vessel is assumed to stop when it reaches the lower edge of the
+// flange.
+
+-19.0815	1665.03
+-1.58727	1665.04
+0.36101	1780.3
+803.04	1780.04
+835.977	1772.86
+859.656	1762.6
+882.311	1746.15
+919.398	1704
+954.445	1642.28
+987.455	1558.96
+1017.4	1453
+1034.97	1368.63
+1044.33	1266.76
+1057.89	1083.6
+1048.75	947.749
+1037.56	817.046
+1011.94	705.881
+1001.7	652.36
+982.205	589.567
+961.671	539.123
+940.101	496.91
+913.384	455.722
+884.6	424.822
+858.893	404.216
+832.148	391.842
+812.6	387.707
+804.367	387.699
+-1.39891	387.96
+-1.50486	499.1
+-20.0311	502.17
