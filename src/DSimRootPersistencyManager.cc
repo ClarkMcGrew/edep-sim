@@ -55,8 +55,6 @@
 #include <cmath>
 #include <algorithm>
 
-TROOT root("ROOT","Root of Everything");
-
 DSimRootPersistencyManager::DSimRootPersistencyManager() 
     : DSimPersistencyManager(), fOutput(NULL),
       fEventTree(NULL), fEvent(NULL), fEventsNotSaved(0) {}
