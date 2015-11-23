@@ -1,3 +1,19 @@
+// Outer boundary of the miniCAPTAIN cryostat outer vessel hand digitized
+// using engauge on Nov 22, 2015 by Clark McGrew.  The coordinates are
+// measured in millimeters with the top of the cryostat at -X, the bottom at
+// +X, and the diameter located along the Y axis.  The X coordinate is
+// measured from the top of the flange with the nominal LAr surface located 9
+// inches (609.6 mm) below the flange.  The first point is at the approximate
+// top of the outer vessel which is located right below the flange.
+//
+// COMMENT: This assumes that the lid and the flange are part of the inner
+// vessel.  The outer vessel stops when it reaches the lower edge of the
+// flange.
+//
+// COMMENT: The makePolycone.py script will use this to produce a "close"
+// volume.  The output needs to be edited by hand to remove the top point so
+// that the outer volume is open on top.
+
 -29.6058	1909.94
 26.9933	1909.99
 31.1646	1852.37
