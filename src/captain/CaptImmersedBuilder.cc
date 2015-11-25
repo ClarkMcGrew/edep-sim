@@ -111,7 +111,7 @@ G4LogicalVolume *CaptImmersedBuilder::GetPiece(void) {
                                               fieldInner, fieldOuter),
                               FindMaterial("FR4_Copper"),
                               GetName()+"/FieldCage");
-    logVolume->SetVisAttributes(GetColor(logVolume));
+    logFieldCage->SetVisAttributes(GetColor(logFieldCage));
 
     new G4PVPlacement(NULL,                    // rotation.
                       center,                  // position

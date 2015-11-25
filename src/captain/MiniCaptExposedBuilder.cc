@@ -47,6 +47,7 @@ double MiniCaptExposedBuilder::GetHeight() {
 
 G4LogicalVolume *MiniCaptExposedBuilder::GetPiece(void) {
 
+#ifdef MAKE_EMPTY_EXPOSED
     G4LogicalVolume* logVolume 
         = new G4LogicalVolume(new G4Tubs(GetName(),
                                          0.0, GetRadius(), GetHeight()/2, 
@@ -60,6 +61,9 @@ G4LogicalVolume *MiniCaptExposedBuilder::GetPiece(void) {
     
     /// All the space above the drift region.
     center += G4ThreeVector(0.0,0.0,0.0);
-
+#else
+    G4LogicalVolume* logVolume = NULL;
+#endif
+    
     return logVolume;
 }

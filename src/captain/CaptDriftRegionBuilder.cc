@@ -143,6 +143,7 @@ G4LogicalVolume *CaptDriftRegionBuilder::GetPiece(void) {
                                               zPlane, rInner, rOuter),
                               FindMaterial("Argon_Liquid"),
                               GetName());
+    logVolume->SetVisAttributes(GetColor(logVolume));
 
     if (GetSensitiveDetector()) {
         logVolume->SetSensitiveDetector(GetSensitiveDetector());
@@ -229,8 +230,6 @@ G4LogicalVolume *CaptDriftRegionBuilder::GetPiece(void) {
                       false,                    // (not used)
                       0,                        // Copy number (zero)
                       Check());                 // Check overlaps.
-    
-    logVolume->SetVisAttributes(GetColor(logVolume));
     
     return logVolume;
 }

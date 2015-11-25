@@ -87,6 +87,7 @@ G4LogicalVolume *CaptPMTBuilder::GetPiece(void) {
                                          0*degree, 360*degree),
                               FindMaterial("Glass"),
                               GetName());
+    logVolume->SetVisAttributes(GetColor(logVolume));
 
     // Construct the photo cathode volume.
     std::string namePhotoCathode = GetName() + "/PhotoCathode";
@@ -97,6 +98,7 @@ G4LogicalVolume *CaptPMTBuilder::GetPiece(void) {
                                          0*degree, 360*degree),
                               FindMaterial("Glass"),
                               namePhotoCathode);
+    logPhotoCathode->SetVisAttributes(GetColor(logPhotoCathode));
 
     // Place the vessel components.
     new G4PVPlacement(NULL,                     // rotation.
@@ -118,6 +120,7 @@ G4LogicalVolume *CaptPMTBuilder::GetPiece(void) {
                                          0*degree, 360*degree),
                               FindMaterial("Air"),  // should be vacuum...
                               namePMTVoid);
+    logPMTVoid->SetVisAttributes(GetColor(logPMTVoid));
 
     // Place the vessel components.
     new G4PVPlacement(NULL,                     // rotation.

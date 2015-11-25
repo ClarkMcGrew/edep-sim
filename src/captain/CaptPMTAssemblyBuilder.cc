@@ -86,6 +86,7 @@ G4LogicalVolume *CaptPMTAssemblyBuilder::GetPiece(void) {
                                               zPlane, rInner, rOuter),
                               FindMaterial("Argon_Liquid"),
                               GetName());
+    logVolume->SetVisAttributes(GetColor(logVolume));
 
     if (GetSensitiveDetector()) {
         logVolume->SetSensitiveDetector(GetSensitiveDetector());
@@ -152,6 +153,7 @@ G4LogicalVolume *CaptPMTAssemblyBuilder::GetPiece(void) {
                                             GetTPBThickness()/2),
                                   FindMaterial("Acrylic"),
                                   GetName()+"/TPB");
+        logTPB->SetVisAttributes(GetColor(logTPB));
         new G4PVPlacement(NULL,                    // rotation.
                           *p + G4ThreeVector(0.0, 0.0,  // position
                                              (GetHeight()-GetTPBThickness())/2),

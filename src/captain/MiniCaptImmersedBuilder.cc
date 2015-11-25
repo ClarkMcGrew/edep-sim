@@ -113,7 +113,7 @@ G4LogicalVolume *MiniCaptImmersedBuilder::GetPiece(void) {
                                               fieldInner, fieldOuter),
                               FindMaterial("FR4_Copper"),
                               GetName()+"/FieldCage");
-    logVolume->SetVisAttributes(GetColor(logVolume));
+    logFieldCage->SetVisAttributes(GetColor(logFieldCage));
 
     new G4PVPlacement(NULL,                    // rotation.
                       center,                  // position
@@ -130,7 +130,11 @@ G4LogicalVolume *MiniCaptImmersedBuilder::GetPiece(void) {
     center -= G4ThreeVector(0.0,0.0,drift.GetHeight()/2);
     center -= G4ThreeVector(0.0,0.0,pmts.GetHeight()/2);
     G4LogicalVolume* logPMTS = pmts.GetPiece();
-    new G4PVPlacement(NULL,                    // rotation.
+
+    G4RotationMatrix* rotation = new G4RotationMatrix(); 
+    rotation->rotateZ(60*degree);
+
+    new G4PVPlacement(rotation,                    // rotation.
                       center,                  // position
                       logPMTS,            // logical volume
                       logPMTS->GetName(), // name

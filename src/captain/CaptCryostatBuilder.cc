@@ -378,16 +378,18 @@ G4LogicalVolume *CaptCryostatBuilder::GetPiece(void) {
         MiniCaptExposedBuilder& exposed
             = Get<MiniCaptExposedBuilder>("mExposed");
         G4LogicalVolume* logExposed = exposed.GetPiece();
-        G4ThreeVector p(0.0,0.0,-GetArgonDepth());
-        p -= exposed.GetOffset();
-        new G4PVPlacement(NULL,                   // rotation.
-                          p,                      // position
-                          logExposed,            // logical volume
-                          logExposed->GetName(), // name
-                          fUllageVolume,          // mother  volume
-                          false,                  // (not used)
-                          0,                      // Copy number (zero)
-                          Check());               // Check overlaps.
+        if (logExposed) {
+            G4ThreeVector p(0.0,0.0,-GetArgonDepth());
+            p -= exposed.GetOffset();
+            new G4PVPlacement(NULL,                   // rotation.
+                              p,                      // position
+                              logExposed,            // logical volume
+                              logExposed->GetName(), // name
+                              fUllageVolume,          // mother  volume
+                              false,                  // (not used)
+                              0,                      // Copy number (zero)
+                              Check());               // Check overlaps.
+        }
     }
     else {
         std::cout << "Undefined exposed volume" << std::endl;

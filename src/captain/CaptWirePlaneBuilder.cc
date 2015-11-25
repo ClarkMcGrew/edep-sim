@@ -100,6 +100,7 @@ G4LogicalVolume *CaptWirePlaneBuilder::GetPiece(void) {
                                               zPlane, rInner, rOuter),
                               FindMaterial("Argon_Liquid"),
                               GetName());
+    logVolume->SetVisAttributes(GetColor(FindMaterial("Captain_Wire"), 0.2));
 
     if (GetSensitiveDetector()) {
         logVolume->SetSensitiveDetector(GetSensitiveDetector());
@@ -155,6 +156,7 @@ G4LogicalVolume *CaptWirePlaneBuilder::GetPiece(void) {
                                             GetHeight()/2),
                                   FindMaterial("Argon_Liquid"),
                                   GetName()+"/Wire");
+        logWire->SetVisAttributes(G4VisAttributes::Invisible);
 
         if (GetSensitiveDetector()) {
             logWire->SetSensitiveDetector(GetSensitiveDetector());
@@ -176,6 +178,9 @@ G4LogicalVolume *CaptWirePlaneBuilder::GetPiece(void) {
                                              0*degree, 360*degree),
                                   FindMaterial("Captain_Wire"),
                                   GetName()+"/Wire/Core");
+        // Draw this as if it was a wire plane.
+        logCore->SetVisAttributes(GetColor(logCore));
+    
         new G4PVPlacement(coreRotation,         // rotation.
                           G4ThreeVector(0,0,0), // position
                           logCore,              // logical volume
@@ -189,8 +194,5 @@ G4LogicalVolume *CaptWirePlaneBuilder::GetPiece(void) {
 
     }
 
-    // Draw this as if it was a wire plane.
-    logVolume->SetVisAttributes(GetColor(FindMaterial("Captain_Wire")));
-    
     return logVolume;
 }

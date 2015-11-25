@@ -20,6 +20,6 @@
 /vis/rayTracer/target 0 0 0 mm
 /vis/rayTracer/eyePosition -5 0 0 m
 /vis/rayTracer/headAngle 90 deg
-/vis/rayTracer/span 10 deg
+/vis/rayTracer/span 5 deg
 /vis/rayTracer/trace mini-captain.jpg
 
