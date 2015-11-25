@@ -53,9 +53,12 @@ public:
     double GetWirePlaneSpacing() {return fWirePlaneSpacing;}
     /// @}
 
-    /// Return the offset of the drift region from the top off the drift
-    /// volume.  This is used so that the "center" of the bottom of the wire
-    /// planes is at the global origin.
+    /// Return the offset of the intended origin of the volume relative to the
+    /// center of the logical volume.  To get the intended origin at the right
+    /// location (say originPosition), the logical volume should be positioned
+    /// at originPosition-GetOffset().  For the drift region, the intended
+    /// origin is at the "center" of the bottom of the wire planes is at the
+    /// global origin.
     G4ThreeVector GetOffset();
     
     /// Get the offset of the X plane from the top of the drift region.
@@ -70,7 +73,9 @@ public:
     /// Get the offset of the grid from the top of the drift region.
     double GetGridPlaneOffset();
 
-    /// Get the offset of the ground from the top of the drift region.
+    /// Get the offset of the ground from the top of the drift region.  The
+    /// distance between the grid and the ground defines the drift distance
+    /// for the electrons.
     double GetGroundPlaneOffset();
 
 private:

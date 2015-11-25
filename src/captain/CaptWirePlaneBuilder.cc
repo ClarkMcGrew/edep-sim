@@ -189,13 +189,8 @@ G4LogicalVolume *CaptWirePlaneBuilder::GetPiece(void) {
 
     }
 
-    if (GetVisible()) {
-        // Draw this as if it was a wire plane.
-        logVolume->SetVisAttributes(GetColor(FindMaterial("Captain_Wire")));
-    } 
-    else {
-        logVolume->SetVisAttributes(G4VisAttributes::Invisible);
-    }
+    // Draw this as if it was a wire plane.
+    logVolume->SetVisAttributes(GetColor(FindMaterial("Captain_Wire")));
     
     return logVolume;
 }

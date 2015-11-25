@@ -60,14 +60,14 @@ public:
     /// Set the base name of the logical volume that this builds.
     void SetLocalName(const G4String& name);
 
-    /// Set the visibility of the constructed object.
-    void SetVisible(bool v);
+    /// Set the relative opacity of the constructed object.
+    void SetOpacity(double v);
     
-    /// Get the visibility of the constructed object.
-    bool GetVisible(void) const {return fVisible;}
+    /// Get the relative opacity of the constructed object.
+    double GetOpacity(void) const {return fOpacity;}
 
-    /// Set the visibility of the object daughters
-    void SetVisibleDaughters(bool v);
+    /// Set the relative opacity of the object daughters
+    void SetDaughterOpacity(double v);
     
     /// Return the detector construction that is building this piece.
     DSimUserDetectorConstruction* GetConstruction(void) {
@@ -167,11 +167,24 @@ public:
 protected:
     G4Material* FindMaterial(G4String m);
 
-    /// Takes logical volume and returns the attributes. 
-    G4VisAttributes GetColor(G4LogicalVolume* volume);
+    /// Takes logical volume and returns the visual attributes.  The optional
+    /// argument specifies the log of the relative opacity used for this
+    /// specific set of attributes.  If the relative opacity is 0, then the
+    /// default alpha is used.  If the relative opacity is positive, then the
+    /// alpha is increased, and if it's negative, the alpha is decreased.  If
+    /// the relative opacity is 10, then the object will have an alpha of 1.0.
+    /// If it's -10, then the object will have an alpha of zero
+    /// (i.e. invisible).
+    G4VisAttributes GetColor(G4LogicalVolume* volume, double opacity = 0.0);
 
-    /// Takes a material and returns the attributes.
-    G4VisAttributes GetColor(G4Material* volume);
+    /// Takes a material and returns the attributes.  The optional argument
+    /// specifies the log of the relative opacity used for this specific set
+    /// of attributes.  If the relative opacity is 0, then the default alpha
+    /// is used.  If the relative opacity is positive, then the alpha is
+    /// increased, and if it's negative, the alpha is decreased.  If the
+    /// relative opacity is 10, then the object will have an alpha of 1.0.  If
+    /// it's -10, then the object will have an alpha of zero (i.e. invisible).
+    G4VisAttributes GetColor(G4Material* volume, double opacity = 0.0);
 
 private:
     /// The short local name of the constructor.
@@ -192,8 +205,8 @@ private:
     /// The sensitive detector for this tracking component.
     G4VSensitiveDetector* fSensitiveDetector;
 
-    /// If this is true, then draw constructed object.
-    bool fVisible;
+    /// The relative opacity of the constructed object.
+    double fOpacity;
 
     /// If this is true, then check the constructed object for overlaps.
     bool fCheck;
@@ -213,8 +226,8 @@ private:
     /// The directory name for this messenger
     G4String fDirName;
 
-    G4UIcmdWithABool*          fVisibleCMD;
-    G4UIcmdWithABool*          fVisibleDaughtersCMD;
+    G4UIcmdWithADouble*        fOpacityCMD;
+    G4UIcmdWithADouble*        fDaughterOpacityCMD;
     G4UIcmdWithABool*          fCheckCMD;
     G4UIcommand*               fSensitiveCMD;
     G4UIcmdWithADoubleAndUnit* fMaximumHitSagittaCMD;

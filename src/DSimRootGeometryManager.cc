@@ -745,9 +745,12 @@ G4Color DSimRootGeometryManager::GetG4Color(G4Material* material) {
         alpha = colorPair->second.alpha;
     }
 
-    TColor* color = gROOT->GetColor(index);
+#include "rootColorToG4ColorMap.hxx"
 
-    return G4Color(color->GetRed(),color->GetGreen(),color->GetBlue(),alpha);
+    G4Color color = sRootColorToG4ColorMap[index];
+
+    return G4Color(color.GetRed(),color.GetGreen(),color.GetBlue(),
+                   color.GetAlpha()*alpha);
 }
 
 int DSimRootGeometryManager::GetColor(const G4VPhysicalVolume* vol) {

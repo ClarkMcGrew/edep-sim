@@ -140,7 +140,7 @@ void DSimUserDetectorConstruction::DefineMaterials() {
     SS_304->AddElement(elC,  fractionmass =  4*perCent);
     SS_304->AddElement(elFe, fractionmass = 88*perCent);
     SS_304->AddElement(elCo, fractionmass =  8*perCent);
-    geoMan->SetDrawAtt(SS_304,kBlue-10);
+    geoMan->SetDrawAtt(SS_304,kBlue-10,0.05);
 
     // Argon Gas
     G4Material* argon =  new G4Material(name="Argon_Gas",
@@ -177,18 +177,18 @@ void DSimUserDetectorConstruction::DefineMaterials() {
                                       temperature = 87.3*kelvin,
                                       pressure=1*atmosphere);
     wire->AddElement(elCu, natoms=1);
-    geoMan->SetDrawAtt(wire,kOrange+1);
+    geoMan->SetDrawAtt(wire,kOrange+1,1.0);
 
     // Glass - 
     G4Material* glass
         = new G4Material(name="Glass", 
                          density = 2.70*g/cm3,
                          nel=4);
-    glass->AddElement(elO,30.7*perCent);
-    glass->AddElement(elSi,21.9*perCent);
-    glass->AddElement(elB,2.2*perCent);
-    glass->AddElement(elNa,2.2*perCent);
-    geoMan->SetDrawAtt(glass,kBlue+1);
+    glass->AddElement(elO,53.9*perCent);
+    glass->AddElement(elSi,38.4*perCent);
+    glass->AddElement(elB,3.8*perCent);
+    glass->AddElement(elNa,3.8*perCent);
+    geoMan->SetDrawAtt(glass,kBlue+1,0.3);
 
     // G10 - by volume 57% glass, 43% epoxy (CH2)
     G4Material* g10
@@ -201,7 +201,7 @@ void DSimUserDetectorConstruction::DefineMaterials() {
     g10->AddElement(elSi,21.9*perCent);
     g10->AddElement(elB,2.2*perCent);
     g10->AddElement(elNa,2.2*perCent);
-    geoMan->SetDrawAtt(g10,kGreen+1);
+    geoMan->SetDrawAtt(g10,kGreen+1,0.75);
 
     // FR4 - Approximated by the composition of G10.  The density is from
     // Wikipedia.
@@ -215,7 +215,7 @@ void DSimUserDetectorConstruction::DefineMaterials() {
     fr4->AddElement(elSi,21.9*perCent);
     fr4->AddElement(elB,2.2*perCent);
     fr4->AddElement(elNa,2.2*perCent);
-    geoMan->SetDrawAtt(fr4,kGreen+1);
+    geoMan->SetDrawAtt(fr4,kGreen+1,0.75);
 
     // FR4_Copper - Approximated by the composition of G10 plus copper.  The
     // copper is from the cladding, but is approximated as spread through the
@@ -233,7 +233,18 @@ void DSimUserDetectorConstruction::DefineMaterials() {
     fr4Copper->AddElement(elB,2.2*perCent*fr4Frac);
     fr4Copper->AddElement(elNa,2.2*perCent*fr4Frac);
     fr4Copper->AddElement(elCu,cuFrac);
-    geoMan->SetDrawAtt(fr4Copper,kOrange);
+    geoMan->SetDrawAtt(fr4Copper,kYellow-6,0.9);
+
+    // Acrylic - Approximated by the composition of the Acrylic used to hold
+    // the TPB..  The density is from Wikipedia.
+    G4Material* acrylic
+        = new G4Material(name="Acrylic", 
+                         density = 1189*kg/m3,
+                         nel=3);
+    acrylic->AddElement(elH,53.4*perCent*fr4Frac);
+    acrylic->AddElement(elO,13.3*perCent*fr4Frac);
+    acrylic->AddElement(elC,33.3*perCent);
+    geoMan->SetDrawAtt(acrylic,kAzure+6,0.9);
 
     // Print all the materials defined.
     DSimLog(*(G4Material::GetMaterialTable()));

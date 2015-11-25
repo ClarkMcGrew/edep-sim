@@ -8,6 +8,7 @@
 #include <G4VPhysicalVolume.hh>
 #include <G4PVPlacement.hh>
 #include <G4VisAttributes.hh>
+#include <G4VisExtent.hh>
 
 #include <G4Box.hh>
 #include <G4Tubs.hh>
@@ -91,6 +92,7 @@ G4LogicalVolume *CaptWorldBuilder::GetPiece(void) {
                                         fHeight/2), 
                               FindMaterial("Air"),
                               GetName());
+    logVolume->SetVisAttributes(G4VisAttributes::Invisible);
     
     double floorThickness = 10*cm;
     G4LogicalVolume *logFloor
@@ -100,22 +102,29 @@ G4LogicalVolume *CaptWorldBuilder::GetPiece(void) {
                                         floorThickness/2), 
                               FindMaterial("Cement"),
                               GetName()+"/Floor");
+    logFloor->SetVisAttributes(G4VisAttributes::Invisible);
 
     CaptCryostatBuilder& cryo
         = Get<CaptCryostatBuilder>("Cryostat");
     G4LogicalVolume* logCryostat = cryo.GetPiece();
+    
+    G4ThreeVector cryoCenter = G4ThreeVector(0,0,0)
+        - cryo.GetOffset() - cryo.GetTPCOffset();
 
     new G4PVPlacement(NULL,                   // rotation.
-                      cryo.GetOffset(),       // position
+                      cryoCenter,             // position
                       logCryostat,            // logical volume
                       logCryostat->GetName(), // name
                       logVolume,              // mother  volume
                       false,                  // overlapping volume (not used)
                       0,                      // Copy number (zero)
                       Check());               // Check overlaps.
-    
-    G4ThreeVector centerFloor(0,0,-cryo.GetHeight()/2.0-50*cm-floorThickness/2);
-    centerFloor = centerFloor + cryo.GetOffset();
+
+#ifdef SHOW_FLOOR
+    G4VisExtent cryoExtent = logCryostat->GetSolid()->GetExtent();
+    G4ThreeVector centerFloor(0.0, 0.0,
+                              cryoCenter.z() + cryoExtent.GetZmin()
+                              - floorThickness/2 - 50*cm);
 
     new G4PVPlacement(NULL,                // rotation.
                       centerFloor,         // position
@@ -128,12 +137,8 @@ G4LogicalVolume *CaptWorldBuilder::GetPiece(void) {
 
     if (GetVisible()) {
         logFloor->SetVisAttributes(GetColor(logFloor));
-        logVolume->SetVisAttributes(G4VisAttributes::Invisible);
-    } 
-    else {
-        logFloor->SetVisAttributes(G4VisAttributes::Invisible);
-        logVolume->SetVisAttributes(G4VisAttributes::Invisible);
     }
-    
+#endif
+
     return logVolume;
 }

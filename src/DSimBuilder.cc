@@ -12,14 +12,14 @@ DSimBuilder::DSimBuilder(G4String n,
                          DSimUserDetectorConstruction* c) 
     : fLocalName(n), fName(n), fConstruction(c), fParent(NULL),
       fMessenger(NULL), fSensitiveDetector(NULL), 
-      fVisible(false), fCheck(false) {
+      fOpacity(0.0), fCheck(false) {
     fMessenger = fConstruction->GetMessenger();
 }
 
 DSimBuilder::DSimBuilder(G4String n, DSimBuilder* p) 
     : fLocalName(n), fName(n), fConstruction(NULL), fParent(p),
       fMessenger(NULL), fSensitiveDetector(NULL), 
-      fVisible(false), fCheck(false) {
+      fOpacity(0.0), fCheck(false) {
     fName = fParent->GetName() + "/" + fLocalName;
     fConstruction = fParent->GetConstruction();
     // Provide a reasonable default.  This will (hopefully) be overridden in
@@ -53,28 +53,22 @@ void DSimBuilder::SetLocalName(const G4String& name) {
 
 
 /// Set the visibility of the constructed object.
-void DSimBuilder::SetVisible(bool v) {
-    if (fVisible != v) {
-        DSimVerbose("Set Visibility for " << GetName()
-                    << " from " << fVisible << " to " << v);
+void DSimBuilder::SetOpacity(double v) {
+    if (fOpacity != v) {
+        DSimLog("Set relative opacity for " << GetName()
+                    << " from " << fOpacity << " to " << v);
     }
-    fVisible = v;
+    fOpacity = v;
 }
 
 /// Set the visibility of the constructed object.
-void DSimBuilder::SetVisibleDaughters(bool v) {
-    if (fVisible != v) {
-        DSimVerbose("Set daughter visibility for " << GetName()
-                    << " to " << v);
-    }
-
-    SetVisible(false);
-
+void DSimBuilder::SetDaughterOpacity(double v) {
     for (std::map<G4String,DSimBuilder*>::iterator p 
              = fSubBuilders.begin();
          p!=fSubBuilders.end();
          ++p) {
-        (*p).second->SetVisible(v);
+        (*p).second->SetOpacity(v);
+        (*p).second->SetDaughterOpacity(v);
     }
 }
 
@@ -91,15 +85,18 @@ DSimBuilderMessenger::DSimBuilderMessenger(DSimBuilder* c,
         fDirectory->SetGuidance(guidance.c_str());
     }
     
-    fVisibleCMD = new G4UIcmdWithABool(CommandName("visible"),this);
-    fVisibleCMD->SetGuidance("The object is drawn if this is true.");
-    fVisibleCMD->SetParameterName("visibility",false);
+    fOpacityCMD = new G4UIcmdWithADouble(CommandName("opacity"),this);
+    fOpacityCMD->SetGuidance("Set the log of the relative opacity."
+                             " Useful values are between [-0.5, 0.5], and"
+                             " +/-10 makes the object opague or transparent."
+                             " A value of 0 leaves the opacity unchanged.");
+    fOpacityCMD->SetParameterName("opacity",false);
     
-    fVisibleDaughtersCMD = new G4UIcmdWithABool(
-        CommandName("visibleDaughters"),this);
-    fVisibleDaughtersCMD->SetGuidance(
-        "The daughters of this object are drawn if this is true.");
-    fVisibleDaughtersCMD->SetParameterName("visibility",false);
+    fDaughterOpacityCMD = new G4UIcmdWithADouble(
+        CommandName("daughterOpacity"),this);
+    fDaughterOpacityCMD->SetGuidance(
+        "Set the log of the relative opacity of the daughters.");
+    fDaughterOpacityCMD->SetParameterName("opacity",false);
 
     fCheckCMD = new G4UIcmdWithABool(CommandName("check"),this);
     fCheckCMD->SetGuidance("If this is true then check for overlaps");
@@ -128,12 +125,12 @@ DSimBuilderMessenger::DSimBuilderMessenger(DSimBuilder* c,
 }
 
 void DSimBuilderMessenger::SetNewValue(G4UIcommand *cmd, G4String val) {
-    if (cmd == fVisibleCMD) {
-        fBuilder->SetVisible(fVisibleCMD->GetNewBoolValue(val));
+    if (cmd == fOpacityCMD) {
+        fBuilder->SetOpacity(fOpacityCMD->GetNewDoubleValue(val));
     }
-    else if (cmd == fVisibleDaughtersCMD) {
-        fBuilder->SetVisibleDaughters(
-            fVisibleDaughtersCMD->GetNewBoolValue(val));
+    else if (cmd == fDaughterOpacityCMD) {
+        fBuilder->SetDaughterOpacity(
+            fDaughterOpacityCMD->GetNewDoubleValue(val));
     }
     else if (cmd == fCheckCMD) {
         fBuilder->SetCheck(fCheckCMD->GetNewBoolValue(val));
@@ -159,23 +156,35 @@ void DSimBuilderMessenger::SetNewValue(G4UIcommand *cmd, G4String val) {
 
 DSimBuilderMessenger::~DSimBuilderMessenger() {
     delete fDirectory;
-    delete fVisibleCMD;
-    delete fVisibleDaughtersCMD;
+    delete fOpacityCMD;
+    delete fDaughterOpacityCMD;
     delete fCheckCMD;
     delete fSensitiveCMD;
     delete fMaximumHitSagittaCMD;
     delete fMaximumHitLengthCMD;
 }
 
-G4VisAttributes DSimBuilder::GetColor(G4Material* mat) {
+G4VisAttributes DSimBuilder::GetColor(G4Material* mat, double opacity) {
     DSimRootGeometryManager* geoMan = DSimRootGeometryManager::Get();
-    return G4VisAttributes(geoMan->GetG4Color(mat));
+    // Check if the opacity has been over-ruled by the macro...
+    if (fOpacity < -9.9) return G4VisAttributes::Invisible;
+    opacity += fOpacity;
+    if (opacity < -9.9) return G4VisAttributes::Invisible;
+    G4Color color = geoMan->GetG4Color(mat);
+    double r = color.GetRed();
+    double g = color.GetGreen();
+    double b = color.GetBlue();
+    double a = std::max(0.0,color.GetAlpha());
+    if (opacity > 9.9) a = 1.0;
+    else if (fOpacity > 9.9) a = 1.0;
+    else a = std::min(1.0, a*std::exp(opacity));
+    return G4VisAttributes(G4Color(r,g,b,a));
 }
 
-G4VisAttributes DSimBuilder::GetColor(G4LogicalVolume* vol) {
+G4VisAttributes DSimBuilder::GetColor(G4LogicalVolume* vol, double opacity) {
     DSimRootGeometryManager* geoMan = DSimRootGeometryManager::Get();
     G4Material* mat = vol->GetMaterial();
-    return G4VisAttributes(geoMan->GetG4Color(mat));
+    return GetColor(mat,opacity);
 }
 
 /// Set the sensitive detector for this component by name.

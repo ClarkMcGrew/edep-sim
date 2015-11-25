@@ -1,0 +1,25 @@
+############################################################
+# Draw the active components of the detector.
+#
+
+# Get the default values for the MC.
+/dsim/control baseline 1.0
+/dsim/control mini-captain 1.0
+
+# Update the geometry so that the MC geometry is self consistent.
+/dsim/update
+
+/vis/open RayTracer 600x600
+
+# Culled objects should not be drawn.
+# /vis/viewer/set/culling invisible false
+
+# Uncomment the next line to cull regions filled with gas.
+# /vis/viewer/set/culling density true
+
+/vis/rayTracer/target 0 0 0 mm
+/vis/rayTracer/eyePosition -5 0 0 m
+/vis/rayTracer/headAngle 90 deg
+/vis/rayTracer/span 10 deg
+/vis/rayTracer/trace mini-captain.jpg
+

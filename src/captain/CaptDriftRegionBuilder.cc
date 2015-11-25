@@ -9,6 +9,7 @@
 #include <G4LogicalVolume.hh>
 #include <G4VPhysicalVolume.hh>
 #include <G4PVPlacement.hh>
+#include <G4RotationMatrix.hh>
 #include <G4VisAttributes.hh>
 #include <G4UserLimits.hh>
 
@@ -51,6 +52,7 @@ public:
     virtual ~CaptDriftRegionMessenger() {
         delete fApothemCMD;
         delete fDriftLengthCMD;
+        delete fWirePlaneSpacingCMD;
     };
 
     void SetNewValue(G4UIcommand *cmd, G4String val) {
@@ -228,12 +230,7 @@ G4LogicalVolume *CaptDriftRegionBuilder::GetPiece(void) {
                       0,                        // Copy number (zero)
                       Check());                 // Check overlaps.
     
-    if (GetVisible()) {
-        logVolume->SetVisAttributes(GetColor(logVolume));
-    } 
-    else {
-        logVolume->SetVisAttributes(G4VisAttributes::Invisible);
-    }
+    logVolume->SetVisAttributes(GetColor(logVolume));
     
     return logVolume;
 }

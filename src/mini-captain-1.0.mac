@@ -9,18 +9,13 @@
 #
 ############################################################
 
-/Captain/Cryostat/innerDiameter 1497 mm
-/Captain/Cryostat/innerHeight 1080 mm
-/Captain/Cryostat/argonDepth 845 mm
+/Captain/Cryostat/vessel mCAPTAIN
 
-/Captain/Cryostat/Drift/apothem 503 mm
-/Captain/Cryostat/Drift/driftLength 320 mm
-
-/Captain/Cryostat/Drift/GridPlane/maxWireCount 332
-/Captain/Cryostat/Drift/UPlane/maxWireCount 332
-/Captain/Cryostat/Drift/VPlane/maxWireCount 332
-/Captain/Cryostat/Drift/XPlane/maxWireCount 332
-/Captain/Cryostat/Drift/GroundPlane/maxWireCount 332
+/Captain/Cryostat/mImmersed/Drift/GridPlane/maxWireCount 332
+/Captain/Cryostat/mImmersed/Drift/UPlane/maxWireCount 332
+/Captain/Cryostat/mImmersed/Drift/VPlane/maxWireCount 332
+/Captain/Cryostat/mImmersed/Drift/XPlane/maxWireCount 332
+/Captain/Cryostat/mImmersed/Drift/GroundPlane/maxWireCount 332
 
 ##############################################
 # Define which volumes will have trajectory points saved as 

@@ -31,6 +31,7 @@ try:
                                       ["vector-name=",
                                        "precision=",
                                        "step=",
+                                       "minimum-segment=",
                                        "help"])
 except:
     usage()
@@ -43,8 +44,9 @@ if len(args)<2:
 
 # Define the default values for the options.
 vectorName = "polyconeShape"
-boundaryStep = 0.1
+boundaryStep = 0.3
 precision = 0.3
+minimumSegment = 0.5
 
 # Parse the command line options.
 for o, a in options:
@@ -54,6 +56,8 @@ for o, a in options:
         precision=float(a)
     elif o == "--step":
         boundaryStep=float(a)
+    elif o == "--minimum-segment":
+        minimumSegment=float(a)
     else:
         usage()
         sys.exit(1)
@@ -108,11 +112,14 @@ def FindRange(inner,outer,step):
 
 # Check to see if a new polycone segment needs to be started.
 def SegmentIsOK(p1,p2,middle,thres):
+    if abs(p1[0]-p2[0]) < minimumSegment: return True;
+    maxThres = 0.0
     for p in middle:
-        r1 = (p1[1]-p2[1])/(p1[0]-p2[0])*(p[0]-p2[0]) + p2[1]
-        r2 = (p1[2]-p2[2])/(p1[0]-p2[0])*(p[0]-p2[0]) + p2[2]
-        if abs(r1-p[1]) > thres: return False
-        if abs(r2-p[2]) > thres: return False
+        r1 = (p[0]-p2[0])*(p1[1]-p2[1])/(p1[0]-p2[0]) + p2[1]
+        r2 = (p[0]-p2[0])*(p1[2]-p2[2])/(p1[0]-p2[0]) + p2[2]
+        maxThres = max(maxThres, abs(r1-p[1]))
+        maxThres = max(maxThres, abs(r2-p[2]))
+        if maxThres > thres: return False;
     return True
 
 print """

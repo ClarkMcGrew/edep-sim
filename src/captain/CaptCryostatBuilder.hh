@@ -2,8 +2,9 @@
 #define CaptCryostatBuilder_hh_Seen
 
 #include "DSimBuilder.hh"
-
 class G4LogicalVolume;
+
+#include <string>
 
 /// Construct the cryostat.  This builds the vessel, as well as the argon gas
 /// and liquid inside.  This builds the vessel directly and fills it with
@@ -27,73 +28,87 @@ public:
     /// the Z axis.
     virtual G4LogicalVolume *GetPiece(void);
 
-    /// Get the total height of the cryostat.  This is used to position the
-    /// cryostat in the world volume and is calculated from the cryostat
-    /// dimensions.
-    double GetHeight();
-
-    /// Get the total diameter of the cryostat.  This is used to position the
-    /// cryostat in the world volume and is calculated from the cryostat
-    /// dimensions.
-    double GetDiameter();
-
-    /// Get (or set) the inner diameter of the cryostat.  This is the diameter
-    /// of the cold volume.
-    /// @{
-    double GetInnerDiameter() const {return fInnerDiameter;}
-    void SetInnerDiameter(double v) {fInnerDiameter = v;}
-    /// @}
-
-    /// Get (or set) the inner height of the cryostat.  This is the diameter
-    /// of the cold volume.
-    /// @{
-    double GetInnerHeight() const {return fInnerHeight;}
-    void SetInnerHeight(double v) {fInnerHeight = v;}
-    /// @}
-
-    /// Get (or set) the steel thickness for the cryostat.  
-    /// @{
-    double GetWallThickness() const {return fWallThickness;}
-    void SetWallThickness(double v) {fWallThickness = v;}
-    /// @}
-
-    /// Get (or set) the depth of the liquid argon for the cryostat.  
+    /// Get (or set) the distance from the flange to the top of the liquid
+    /// argon.
     /// @{
     double GetArgonDepth() const {return fArgonDepth;}
     void SetArgonDepth(double v) {fArgonDepth = v;}
     /// @}
 
-    /// Get (or set) distance from the bottom of the cryostat to the bottom of
-    /// the drift region.  @{
-    double GetBottomSpace() const {return fBottomSpace;}
-    void SetBottomSpace(double v) {fBottomSpace = v;}
+    /// Get (or set) the distance from the flange to the TPC center.
+    /// @{
+    double GetTPCDepth() const {return fTPCDepth;}
+    void SetTPCDepth(double v) {fTPCDepth = v;}
     /// @}
 
-    /// Return the offset of the cryostat from the center of the world so that
-    /// the center of the wire planes are at the origin.  The bottom of the
-    /// wire plane assembly is at the origin (a decision will be made in the
-    /// future as to whether this is the bottom of the grid, or the bottom of
-    /// the V plane.  This means that the wires for the V plane are at a
-    /// (very) small positive z coordinate.
+    /// Get (or set) the type of vessel that should be built.
+    /// @{
+    std::string GetVesselType() const {return fVesselType;}
+    void SetVesselType(std::string v) {fVesselType=v;}
+    /// @}
+    
+    /// Return the offset of the intended origin of the volume relative to the
+    /// center of the logical volume.  To get the origin at the right location
+    /// (say originPosition), the logical volume should be positioned at
+    /// originPosition-GetOffset().  The origin of the cryostat is chosen so
+    /// that it's at the center of flange (the top of the "bucket" flange"
+    /// defines the Z origin of the cryostat).  The bottom of the wire plane
+    /// assembly is at the origin (a decision will be made in the future as to
+    /// whether this is the bottom of the grid, or the bottom of the V plane.
+    /// This means that the wires for the V plane are at a (very) small
+    /// positive z coordinate.
     G4ThreeVector GetOffset();
+
+    /// The position of the TPC origin (center of the grid plane defining the
+    /// drift region) relative to the center of the Cryostat flange.  The TPC
+    /// origin should be arranged so that it will be at center of the global
+    /// coordinate system.
+    G4ThreeVector GetTPCOffset();
 
 private:
     void Init(void);
 
-    /// The diameter of the cold volume.
-    double fInnerDiameter;
+    /// The volume for the ullage.  This is set when the cryostat vessel is
+    /// constructed and fills the gas part of the inner void.  It can be
+    /// passed to daughter volumes to define the shape of the ullage.
+    G4LogicalVolume* fUllageVolume;
 
-    /// The height of the cold volume.
-    double fInnerHeight;
+    /// The volume for the liquid argon.  This is set when the cryostat vessel
+    /// is constructed and fills the liquid part of the inner void.  It can be
+    /// passed to the daughter volumes to define the shape of the liquid.
+    G4LogicalVolume* fLiquidVolume;
+    
+    /// The name of the vessel to be built (currently CAPTAIN or mCAPTAIN).
+    std::string fVesselType;
 
-    /// The wall thickness for the cryostat.
-    double fWallThickness;
-
-    /// The liquid argon depth
+    /// The distance from the top of the flange to the liquid argon.
     double fArgonDepth;
 
-    /// The space between the bottom of the drift region and the cryostat wall.
-    double fBottomSpace;
+    /// The distance from the top of the flange to the TPC.
+    double fTPCDepth;
+    
+    class Point {
+    public:
+        Point(double z, double i, double o): fZ(z), fInner(i), fOuter(o) {}
+        double fZ;
+        double fInner;
+        double fOuter;
+    };
+    typedef std::vector<Point> Shape;
 
+    /// The inner vessel polycone points.
+    Shape fInnerVessel;
+    /// The outer vessel polycone points.
+    Shape fOuterVessel;
+    /// The vessel envelop.
+    Shape fVesselEnvelope;
+
+    /// Fill the vessel definition with values for CAPTAIN
+    void DefineCAPTAINVessel();
+
+    /// Fill the vessel definition with values for miniCAPTAIN
+    void DefineMiniCAPTAINVessel();
+    
 };
 #endif
+

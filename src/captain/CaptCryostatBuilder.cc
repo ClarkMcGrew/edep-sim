@@ -1,6 +1,8 @@
 #include "CaptCryostatBuilder.hh"
-#include "CaptDriftRegionBuilder.hh"
-#include "CaptPMTBuilder.hh"
+#include "CaptImmersedBuilder.hh"
+#include "CaptExposedBuilder.hh"
+#include "MiniCaptImmersedBuilder.hh"
+#include "MiniCaptExposedBuilder.hh"
 
 #include "DSimBuilder.hh"
 
@@ -13,89 +15,59 @@
 #include <G4PVPlacement.hh>
 #include <G4VisAttributes.hh>
 #include <G4Tubs.hh>
+#include <G4Polycone.hh>
 
 class CaptCryostatMessenger
     : public DSimBuilderMessenger {
 private:
     CaptCryostatBuilder* fBuilder;
-    G4UIcmdWithADoubleAndUnit* fInnerDiameterCMD;
-    G4UIcmdWithADoubleAndUnit* fInnerHeightCMD;
-    G4UIcmdWithADoubleAndUnit* fInnerBottomCMD;
-    G4UIcmdWithADoubleAndUnit* fWallThicknessCMD;
     G4UIcmdWithADoubleAndUnit* fArgonDepthCMD;
+    G4UIcmdWithADoubleAndUnit* fTPCDepthCMD;
+    G4UIcmdWithAString* fVesselTypeCMD;
 
 public:
     CaptCryostatMessenger(CaptCryostatBuilder* c) 
         : DSimBuilderMessenger(c,"Control the driftRegion geometry."),
           fBuilder(c) {
 
-        fInnerDiameterCMD
-            = new G4UIcmdWithADoubleAndUnit(CommandName("innerDiameter"),this);
-        fInnerDiameterCMD->SetGuidance(
-            "Set the inner diameter of the cryostat.  This is the\n"
-            "diameter of the cold volume.");
-        fInnerDiameterCMD->SetParameterName("diameter",false);
-        fInnerDiameterCMD->SetUnitCategory("Length");
-
-        fInnerHeightCMD 
-            = new G4UIcmdWithADoubleAndUnit(CommandName("innerHeight"),this);
-        fInnerHeightCMD->SetGuidance(
-            "Set the inner height of the cryostat.  This is the height\n"
-            "of the cold volume.");
-        fInnerHeightCMD->SetParameterName("height",false);
-        fInnerHeightCMD->SetUnitCategory("Length");
-
-        fInnerBottomCMD 
-            = new G4UIcmdWithADoubleAndUnit(CommandName("innerBottom"),this);
-        fInnerBottomCMD->SetGuidance(
-            "Set space between the bottom of the drift and the cold volume.");
-        fInnerBottomCMD->SetParameterName("distance",false);
-        fInnerBottomCMD->SetUnitCategory("Length");
-
-        fWallThicknessCMD
-            = new G4UIcmdWithADoubleAndUnit(CommandName("wallThickness"),this);
-        fWallThicknessCMD->SetGuidance(
-            "Set the thickness of the SS wall of the cryostat.");
-        fWallThicknessCMD->SetParameterName("thickness",false);
-        fWallThicknessCMD->SetUnitCategory("Length");
-
         fArgonDepthCMD
             = new G4UIcmdWithADoubleAndUnit(CommandName("argonDepth"),this);
         fArgonDepthCMD->SetGuidance(
-            "Set the depth of the liquid argon.");
+            "Set the distance between the flange and the liquid argon.");
         fArgonDepthCMD->SetParameterName("depth",false);
         fArgonDepthCMD->SetUnitCategory("Length");
- 
+
+        fTPCDepthCMD
+            = new G4UIcmdWithADoubleAndUnit(CommandName("tpcDepth"),this);
+        fTPCDepthCMD->SetGuidance(
+            "Set the distance between the flange and TPC origin.");
+        fTPCDepthCMD->SetParameterName("depth",false);
+        fTPCDepthCMD->SetUnitCategory("Length");
+
+        fVesselTypeCMD
+            = new G4UIcmdWithAString(CommandName("vessel"),this);
+        fVesselTypeCMD->SetGuidance(
+            "Set the type of vessel to be built.");
+        fVesselTypeCMD->SetCandidates("CAPTAIN mCAPTAIN");
     };
 
     virtual ~CaptCryostatMessenger() {
-        delete fInnerDiameterCMD;
-        delete fInnerHeightCMD;
-        delete fInnerBottomCMD;
-        delete fWallThicknessCMD;
         delete fArgonDepthCMD;
+        delete fTPCDepthCMD;
+        delete fVesselTypeCMD;
     };
 
     void SetNewValue(G4UIcommand *cmd, G4String val) {
-        if (cmd==fInnerDiameterCMD) {
-            fBuilder->SetInnerDiameter(
-                fInnerDiameterCMD->GetNewDoubleValue(val));
-        }
-        else if (cmd==fInnerHeightCMD) {
-            fBuilder->SetInnerHeight(
-                fInnerHeightCMD->GetNewDoubleValue(val));
-        }
-        else if (cmd==fInnerBottomCMD) {
-            fBuilder->SetBottomSpace(
-                fInnerBottomCMD->GetNewDoubleValue(val));
-        }
-        else if (cmd==fWallThicknessCMD) {
-            fBuilder->SetWallThickness(
-                fWallThicknessCMD->GetNewDoubleValue(val));
-        }
-        else if (cmd==fArgonDepthCMD) {
+        if (cmd==fArgonDepthCMD) {
             fBuilder->SetArgonDepth(
                 fArgonDepthCMD->GetNewDoubleValue(val));
+        }
+        else if (cmd==fTPCDepthCMD) {
+            fBuilder->SetTPCDepth(
+                fTPCDepthCMD->GetNewDoubleValue(val));
+        }
+        else if (cmd==fVesselTypeCMD) {
+            fBuilder->SetVesselType(val);
         }
         else {
             DSimBuilderMessenger::SetNewValue(cmd,val);
@@ -106,442 +78,321 @@ public:
 void CaptCryostatBuilder::Init(void) {
     SetMessenger(new CaptCryostatMessenger(this));
 
-    SetInnerDiameter(2800*mm);
-    SetInnerHeight(2000*mm);
-    SetWallThickness(15*mm);
-    SetArgonDepth(1500*mm);
-    SetBottomSpace(100*mm);
-
+    SetVesselType("CAPTAIN");
+    
     SetSensitiveDetector("cryo","segment");
 
-    AddBuilder(new CaptDriftRegionBuilder("Drift",this));
-    AddBuilder(new CaptPMTBuilder("PMT",this));
-
+    AddBuilder(new CaptImmersedBuilder("Immersed",this));
+    AddBuilder(new CaptExposedBuilder("Exposed",this));
+    AddBuilder(new MiniCaptImmersedBuilder("mImmersed",this));
+    AddBuilder(new MiniCaptExposedBuilder("mExposed",this));
 }
 
 CaptCryostatBuilder::~CaptCryostatBuilder() {};
 
-double CaptCryostatBuilder::GetDiameter() {
-    // Calculate the total diameter of the cryostat based on it's other
-    // dimensions.
-    return GetInnerDiameter() + 2*GetWallThickness();
-}
-
-double CaptCryostatBuilder::GetHeight() {
-    // Calculate the total height of the cryostat based on it's other
-    // dimensions.
-    return GetInnerHeight() + 2*GetWallThickness();
-}
-
 G4ThreeVector CaptCryostatBuilder::GetOffset() {
-    CaptDriftRegionBuilder& drift = Get<CaptDriftRegionBuilder>("Drift");
-    double zCenter = - GetInnerHeight()/2;
-    zCenter += GetBottomSpace();
-    zCenter += drift.GetHeight()/2;
-    zCenter += drift.GetOffset().z();
-    return G4ThreeVector(0,0,-zCenter);
+    return G4ThreeVector(0,0,0);
+}
+
+G4ThreeVector CaptCryostatBuilder::GetTPCOffset() {
+    return G4ThreeVector(0,0,-GetTPCDepth());
+}
+
+void CaptCryostatBuilder::DefineCAPTAINVessel() {
+    SetArgonDepth(24*25.4*mm);  // The design spec for CAPTAIN (24 inch).
+    SetTPCDepth(GetArgonDepth()+25*mm);   // I made this one up...
+
+    fInnerVessel.clear();
+#include "captainInnerVessel.hxx"
+    
+    fOuterVessel.clear();
+#include "captainOuterVessel.hxx"
+
+    for (Shape::reverse_iterator p = fOuterVessel.rbegin();
+         p != fOuterVessel.rend(); ++p) {
+        fVesselEnvelope.push_back(*p);
+    }
+    for (Shape::reverse_iterator p = fInnerVessel.rbegin();
+         p != fInnerVessel.rend(); ++p) {
+        if (p->fZ >= fVesselEnvelope.back().fZ) continue;
+        fVesselEnvelope.push_back(*p);
+    }
+    std::reverse(fVesselEnvelope.begin(), fVesselEnvelope.end());
+    
+}
+
+void CaptCryostatBuilder::DefineMiniCAPTAINVessel() {
+    SetArgonDepth(9*25.4*mm);  // The design spec for CAPTAIN (24 inch).
+    SetTPCDepth(GetArgonDepth()+25*mm);   // I made this one up...
+
+    fInnerVessel.clear();
+#include "miniCaptainInnerVessel.hxx"
+    
+    fOuterVessel.clear();
+#include "miniCaptainOuterVessel.hxx"
+
+    for (Shape::reverse_iterator p = fOuterVessel.rbegin();
+         p != fOuterVessel.rend(); ++p) {
+        fVesselEnvelope.push_back(*p);
+    }
+    for (Shape::reverse_iterator p = fInnerVessel.rbegin();
+         p != fInnerVessel.rend(); ++p) {
+        if (p->fZ >= fVesselEnvelope.back().fZ) continue;
+        fVesselEnvelope.push_back(*p);
+    }
+    std::reverse(fVesselEnvelope.begin(), fVesselEnvelope.end());
+    
 }
 
 G4LogicalVolume *CaptCryostatBuilder::GetPiece(void) {
 
-    G4LogicalVolume* logVolume 
-        = new G4LogicalVolume(new G4Tubs(GetName(),
-                                         0.0, GetDiameter()/2.0, GetHeight()/2, 
-                                         0*degree, 360*degree),
-                              FindMaterial("Air"),
-                              GetName());
+    if (fVesselType == "CAPTAIN") {
+        DefineCAPTAINVessel();
+    }
+    else if (fVesselType == "mCAPTAIN") {
+        DefineMiniCAPTAINVessel();
+    }
+    else {
+        std::cout << "Undefine vessel type: " << fVesselType << std::endl;
+        std::exit(0);
+    }
+
+    std::vector<double> conePlanes;
+    std::vector<double> coneMax;
+    std::vector<double> coneMin;
+
+    ////////////////////////////////////////////////////////
+    // Define the envelope to contain the vessel.
+    ////////////////////////////////////////////////////////
+    for (Shape::reverse_iterator p = fVesselEnvelope.rbegin();
+         p != fVesselEnvelope.rend();
+         ++p) {
+        conePlanes.push_back(- p->fZ);
+        coneMax.push_back(p->fOuter+10*cm);
+        coneMin.push_back(0.0);
+    }
     
-    // Construct the vessel.  The vessel name is not used for anything, so you
-    // have (almost) complete freedom in how it's constructed.  The only
-    // constraint is that it needs to be hollow so that it can contain a
-    // volume of gas, and the liquid argon.
-    std::string nameVessel = GetName()+"/VesselSide";
-    G4LogicalVolume* logVesselSide
-        = new G4LogicalVolume(new G4Tubs(nameVessel,
-                                         GetInnerDiameter()/2,
-                                         (GetWallThickness() 
-                                          + GetInnerDiameter()/2),
-                                         GetInnerHeight()/2, 
-                                         0*degree, 360*degree),
-                              FindMaterial("SS_304"),
-                              nameVessel);
+    G4LogicalVolume* logVolume 
+        = new G4LogicalVolume(
+            new G4Polycone(GetName(),
+                           0*degree, 360*degree, conePlanes.size(),
+                           conePlanes.data(),
+                           coneMin.data(), coneMax.data()),
+            FindMaterial("Air"),
+            GetName());
+    logVolume->SetVisAttributes(G4VisAttributes::Invisible);
+    
+    ////////////////////////////////////////////////////////
+    // Define the outer vessel.
+    ////////////////////////////////////////////////////////
+    conePlanes.clear();
+    coneMax.clear();
+    coneMin.clear();
+    for (Shape::reverse_iterator p = fOuterVessel.rbegin();
+         p != fOuterVessel.rend();
+         ++p) {
+        conePlanes.push_back(- p->fZ);
+        coneMin.push_back(p->fInner);
+        coneMax.push_back(p->fOuter);
+    }
 
-    nameVessel = GetName()+"/VesselTop";
-    G4LogicalVolume* logVesselTop
-        = new G4LogicalVolume(new G4Tubs(nameVessel,
-                                         0, 
-                                         (GetWallThickness() 
-                                          + GetInnerDiameter()/2),
-                                         GetWallThickness()/2, 
-                                         0*degree, 360*degree),
-                              FindMaterial("SS_304"),
-                              nameVessel);
-
-    nameVessel = GetName()+"/VesselBottom";
-    G4LogicalVolume* logVesselBottom
-        = new G4LogicalVolume(new G4Tubs(nameVessel,
-                                         0, 
-                                         (GetWallThickness() 
-                                          + GetInnerDiameter()/2),
-                                         GetWallThickness()/2, 
-                                         0*degree, 360*degree),
-                              FindMaterial("SS_304"),
-                              nameVessel);
-
-    // Place the vessel components.
-    new G4PVPlacement(NULL,                     // rotation.
-                      G4ThreeVector(0,0,0),     // position
-                      logVesselSide,            // logical volume
-                      logVesselSide->GetName(), // name
+    G4LogicalVolume* logOuterVessel
+        = new G4LogicalVolume(
+            new G4Polycone(GetName()+"/OuterVessel",
+                           0*degree, 360*degree, conePlanes.size(),
+                           conePlanes.data(),
+                           coneMin.data(), coneMax.data()),
+            FindMaterial("SS_304"),
+            GetName()+"/OuterVessel");
+    logOuterVessel->SetVisAttributes(GetColor(logOuterVessel));
+    
+    new G4PVPlacement(NULL,                // rotation.
+                      G4ThreeVector(0,0,0),
+                      logOuterVessel,           // logical volume
+                      logOuterVessel->GetName(), // name
                       logVolume,                // mother  volume
                       false,                    // (not used)
                       0,                        // Copy number (zero)
                       Check());                 // Check overlaps.
 
-    new G4PVPlacement(NULL,                    // rotation.
-                      G4ThreeVector(0,0,       // position
-                                    GetInnerHeight()/2
-                                    +GetWallThickness()/2),    
-                      logVesselTop,            // logical volume
-                      logVesselTop->GetName(), // name
-                      logVolume,               // mother  volume
-                      false,                   // (not used)
-                      0,                       // Copy number (zero)
-                      Check());                // Check overlaps.
-
-    new G4PVPlacement(NULL,                       // rotation.
-                      G4ThreeVector(0,0,       // position
-                                    - GetInnerHeight()/2
-                                    - GetWallThickness()/2),    
-                      logVesselBottom,            // logical volume
-                      logVesselBottom->GetName(), // name
-                      logVolume,                  // mother  volume
-                      false,                      // (not used)
-                      0,                          // Copy number (zero)
-                      Check());                   // Check overlaps.
-
-    // Make the argon gas volume at the top.  The important part is that this
-    // needs to match the inside shape of the vessel.
-    double gasThickness = GetInnerHeight() - GetArgonDepth();
-    G4LogicalVolume* logAr
-        = new G4LogicalVolume(new G4Tubs(GetName()+"/Gas",
-                                         0.0,
-                                         GetInnerDiameter()/2,
-                                         gasThickness/2, 
-                                         0*degree, 360*degree),
-                              FindMaterial("Argon_Gas"),
-                              GetName()+"/Gas");
     
-    new G4PVPlacement(NULL,                    // rotation.
-                      G4ThreeVector(0,0,       // position
-                                    GetInnerHeight()/2
-                                    -gasThickness/2),    
-                      logAr,                   // logical volume
-                      logAr->GetName(),        // name
-                      logVolume,               // mother  volume
-                      false,                   // (not used)
-                      0,                       // Copy number (zero)
-                      Check());                // Check overlaps.
-
-    // Make the argon liquid volume at the bottom.  The important part is that
-    // this needs to match the inside shape of the vessel.
-    G4LogicalVolume* logLAr
-        = new G4LogicalVolume(new G4Tubs(GetName()+"/Liquid",
-                                         0.0, 
-                                         GetInnerDiameter()/2,
-                                         GetArgonDepth()/2, 
-                                         0*degree, 360*degree),
-                              FindMaterial("Argon_Liquid"),
-                              GetName()+"/Liquid");
-
-    if (GetSensitiveDetector()) {
-        logLAr->SetSensitiveDetector(GetSensitiveDetector());
+    ////////////////////////////////////////////////////////
+    // Define the inner vessel.
+    ////////////////////////////////////////////////////////
+    conePlanes.clear();
+    coneMax.clear();
+    coneMin.clear();
+    for (Shape::reverse_iterator p = fInnerVessel.rbegin();
+         p != fInnerVessel.rend();
+         ++p) {
+        conePlanes.push_back(- p->fZ);
+        coneMin.push_back(p->fInner);
+        coneMax.push_back(p->fOuter);
     }
 
-    new G4PVPlacement(NULL,                    // rotation.
-                      G4ThreeVector(0,0,       // position
-                                    -GetInnerHeight()/2
-                                    + GetArgonDepth()/2),    
-                      logLAr,                   // logical volume
-                      logLAr->GetName(),        // name
-                      logVolume,               // mother  volume
-                      false,                   // (not used)
-                      0,                       // Copy number (zero)
-                      Check());                // Check overlaps.
-
-    CaptDriftRegionBuilder& drift = Get<CaptDriftRegionBuilder>("Drift");
-    G4LogicalVolume* logDrift = drift.GetPiece();
-
-    new G4PVPlacement(NULL,                    // rotation.
-                      G4ThreeVector(0,0,       // position
-                                    - GetArgonDepth()/2
-                                    + drift.GetHeight()/2
-                                    + GetBottomSpace()),    
-                      logDrift,                // logical volume
-                      logDrift->GetName(),     // name
-                      logLAr,                  // mother  volume
-                      false,                   // (not used)
-                      0,                       // Copy number (zero)
-                      Check());                // Check overlaps.
-
-
-    ///////////////////////////////////////////////////////////
-    // Add the PMTS
-    ///////////////////////////////////////////////////////////
-    CaptPMTBuilder& pmt = Get<CaptPMTBuilder>("PMT");
-
-    // The first implementation just adds a few PMTs so that the downstream
-    // code can be tested. 
-
-    // The drawing is in inchs, so make the conversion.
-    const double inch = 25.4*mm;
-    const double xOffset = 1*inch;
+    G4LogicalVolume* logInnerVessel
+        = new G4LogicalVolume(
+            new G4Polycone(GetName()+"/InnerVessel",
+                           0*degree, 360*degree, conePlanes.size(),
+                           conePlanes.data(),
+                           coneMin.data(), coneMax.data()),
+            FindMaterial("SS_304"),
+            GetName()+"/InnerVessel");
+    logInnerVessel->SetVisAttributes(GetColor(logInnerVessel));
     
-    // One at the center.
-    G4LogicalVolume* logPMT = pmt.GetPiece();
-    new G4PVPlacement(NULL,                    // rotation.
-                      G4ThreeVector(-8.9*inch+xOffset,0,   // position
-                                    - GetArgonDepth()/2
-                                    + GetBottomSpace()
-                                    - pmt.GetBaseLength()/2
-                                    - 25*mm),    
-                      logPMT,                // logical volume
-                      logPMT->GetName(),     // name
-                      logLAr,                  // mother  volume
-                      false,                   // (not used)
-                      0,                       // Copy number (zero)
-                      Check());                // Check overlaps.
+    new G4PVPlacement(NULL,                // rotation.
+                      G4ThreeVector(0,0,0),
+                      logInnerVessel,           // logical volume
+                      logInnerVessel->GetName(), // name
+                      logVolume,                // mother  volume
+                      false,                    // (not used)
+                      0,                        // Copy number (zero)
+                      Check());                 // Check overlaps.
 
-    logPMT = pmt.GetPiece();
-    new G4PVPlacement(NULL,                    // rotation.
-                      G4ThreeVector(-4.0*inch+xOffset,-11.42*inch,  // position
-                                    - GetArgonDepth()/2
-                                    + GetBottomSpace()
-                                    - pmt.GetBaseLength()/2
-                                    - 25*mm),    
-                      logPMT,                // logical volume
-                      logPMT->GetName(),     // name
-                      logLAr,                  // mother  volume
-                      false,                   // (not used)
-                      0,                       // Copy number (zero)
-                      Check());                // Check overlaps.
+    ////////////////////////////////////////////////////////
+    // Define the liquid volume.
+    ////////////////////////////////////////////////////////
+    conePlanes.clear();
+    coneMax.clear();
+    coneMin.clear();
+    for (Shape::reverse_iterator p = fInnerVessel.rbegin();
+         p != fInnerVessel.rend();
+         ++p) {
+        if (p->fZ < GetArgonDepth()) continue;
+        conePlanes.push_back(- p->fZ);
+        coneMin.push_back(0.0);
+        coneMax.push_back(p->fInner);
+    }
+    if (conePlanes.back() < -GetArgonDepth()) {
+        conePlanes.push_back(- GetArgonDepth());
+        coneMin.push_back(0.0);
+        coneMax.push_back(coneMax.back());
+    }
+        
+    fLiquidVolume
+        = new G4LogicalVolume(
+            new G4Polycone(GetName()+"/Liquid",
+                           0*degree, 360*degree, conePlanes.size(),
+                           conePlanes.data(),
+                           coneMin.data(), coneMax.data()),
+            FindMaterial("Argon_Liquid"),
+            GetName()+"/Liquid");
+    fLiquidVolume->SetVisAttributes(GetColor(fLiquidVolume));
+    
+    new G4PVPlacement(NULL,                // rotation.
+                      G4ThreeVector(0,0,0),
+                      fLiquidVolume,           // logical volume
+                      fLiquidVolume->GetName()+"/Liquid", // name
+                      logVolume,                // mother  volume
+                      false,                    // (not used)
+                      0,                        // Copy number (zero)
+                      Check());                 // Check overlaps.
 
-    logPMT = pmt.GetPiece();
-    new G4PVPlacement(NULL,                    // rotation.
-                      G4ThreeVector(-10.9*inch+xOffset,-11.42*inch, // position
-                                    - GetArgonDepth()/2
-                                    + GetBottomSpace()
-                                    - pmt.GetBaseLength()/2
-                                    - 25*mm),    
-                      logPMT,                // logical volume
-                      logPMT->GetName(),     // name
-                      logLAr,                  // mother  volume
-                      false,                   // (not used)
-                      0,                       // Copy number (zero)
-                      Check());                // Check overlaps.
-
-    logPMT = pmt.GetPiece();
-    new G4PVPlacement(NULL,                    // rotation.
-                      G4ThreeVector(-16.79*inch+xOffset,-7.0*inch, // position
-                                    - GetArgonDepth()/2
-                                    + GetBottomSpace()
-                                    - pmt.GetBaseLength()/2
-                                    - 25*mm),    
-                      logPMT,                // logical volume
-                      logPMT->GetName(),     // name
-                      logLAr,                  // mother  volume
-                      false,                   // (not used)
-                      0,                       // Copy number (zero)
-                      Check());                // Check overlaps.
-
-    logPMT = pmt.GetPiece();
-    new G4PVPlacement(NULL,                    // rotation.
-                      G4ThreeVector(-16.79*inch+xOffset,0.0*inch, // position
-                                    - GetArgonDepth()/2
-                                    + GetBottomSpace()
-                                    - pmt.GetBaseLength()/2
-                                    - 25*mm),    
-                      logPMT,                // logical volume
-                      logPMT->GetName(),     // name
-                      logLAr,                  // mother  volume
-                      false,                   // (not used)
-                      0,                       // Copy number (zero)
-                      Check());                // Check overlaps.
-
-    logPMT = pmt.GetPiece();
-    new G4PVPlacement(NULL,                    // rotation.
-                      G4ThreeVector(-16.79*inch+xOffset,7.0*inch, // position
-                                    - GetArgonDepth()/2
-                                    + GetBottomSpace()
-                                    - pmt.GetBaseLength()/2
-                                    - 25*mm),    
-                      logPMT,                // logical volume
-                      logPMT->GetName(),     // name
-                      logLAr,                  // mother  volume
-                      false,                   // (not used)
-                      0,                       // Copy number (zero)
-                      Check());                // Check overlaps.
-
-    logPMT = pmt.GetPiece();
-    new G4PVPlacement(NULL,                    // rotation.
-                      G4ThreeVector(-10.9*inch+xOffset,11.42*inch, // position
-                                    - GetArgonDepth()/2
-                                    + GetBottomSpace()
-                                    - pmt.GetBaseLength()/2
-                                    - 25*mm),    
-                      logPMT,                // logical volume
-                      logPMT->GetName(),     // name
-                      logLAr,                  // mother  volume
-                      false,                   // (not used)
-                      0,                       // Copy number (zero)
-                      Check());                // Check overlaps.
-
-    logPMT = pmt.GetPiece();
-    new G4PVPlacement(NULL,                    // rotation.
-                      G4ThreeVector(-4.0*inch+xOffset,11.42*inch, // position
-                                    - GetArgonDepth()/2
-                                    + GetBottomSpace()
-                                    - pmt.GetBaseLength()/2
-                                    - 25*mm),    
-                      logPMT,                // logical volume
-                      logPMT->GetName(),     // name
-                      logLAr,                  // mother  volume
-                      false,                   // (not used)
-                      0,                       // Copy number (zero)
-                      Check());                // Check overlaps.
-
-    // One at the center.
-    logPMT = pmt.GetPiece();
-    new G4PVPlacement(NULL,                    // rotation.
-                      G4ThreeVector(8.9*inch-xOffset,0,       // position
-                                    - GetArgonDepth()/2
-                                    + GetBottomSpace()
-                                    - pmt.GetBaseLength()/2
-                                    - 25*mm),    
-                      logPMT,                // logical volume
-                      logPMT->GetName(),     // name
-                      logLAr,                  // mother  volume
-                      false,                   // (not used)
-                      0,                       // Copy number (zero)
-                      Check());                // Check overlaps.
-
-    logPMT = pmt.GetPiece();
-    new G4PVPlacement(NULL,                    // rotation.
-                      G4ThreeVector(4.0*inch-xOffset,-11.42*inch, // position
-                                    - GetArgonDepth()/2
-                                    + GetBottomSpace()
-                                    - pmt.GetBaseLength()/2
-                                    - 25*mm),    
-                      logPMT,                // logical volume
-                      logPMT->GetName(),     // name
-                      logLAr,                  // mother  volume
-                      false,                   // (not used)
-                      0,                       // Copy number (zero)
-                      Check());                // Check overlaps.
-
-    logPMT = pmt.GetPiece();
-    new G4PVPlacement(NULL,                    // rotation.
-                      G4ThreeVector(10.9*inch-xOffset,-11.42*inch, // position
-                                    - GetArgonDepth()/2
-                                    + GetBottomSpace()
-                                    - pmt.GetBaseLength()/2
-                                    - 25*mm),    
-                      logPMT,                // logical volume
-                      logPMT->GetName(),     // name
-                      logLAr,                  // mother  volume
-                      false,                   // (not used)
-                      0,                       // Copy number (zero)
-                      Check());                // Check overlaps.
-
-    logPMT = pmt.GetPiece();
-    new G4PVPlacement(NULL,                    // rotation.
-                      G4ThreeVector(16.79*inch-xOffset,-7.0*inch, // position
-                                    - GetArgonDepth()/2
-                                    + GetBottomSpace()
-                                    - pmt.GetBaseLength()/2
-                                    - 25*mm),    
-                      logPMT,                // logical volume
-                      logPMT->GetName(),     // name
-                      logLAr,                  // mother  volume
-                      false,                   // (not used)
-                      0,                       // Copy number (zero)
-                      Check());                // Check overlaps.
-
-    logPMT = pmt.GetPiece();
-    new G4PVPlacement(NULL,                    // rotation.
-                      G4ThreeVector(16.79*inch-xOffset,0.0*inch, // position
-                                    - GetArgonDepth()/2
-                                    + GetBottomSpace()
-                                    - pmt.GetBaseLength()/2
-                                    - 25*mm),    
-                      logPMT,                // logical volume
-                      logPMT->GetName(),     // name
-                      logLAr,                  // mother  volume
-                      false,                   // (not used)
-                      0,                       // Copy number (zero)
-                      Check());                // Check overlaps.
-
-    logPMT = pmt.GetPiece();
-    new G4PVPlacement(NULL,                    // rotation.
-                      G4ThreeVector(16.79*inch-xOffset,7.0*inch, // position
-                                    - GetArgonDepth()/2
-                                    + GetBottomSpace()
-                                    - pmt.GetBaseLength()/2
-                                    - 25*mm),    
-                      logPMT,                // logical volume
-                      logPMT->GetName(),     // name
-                      logLAr,                  // mother  volume
-                      false,                   // (not used)
-                      0,                       // Copy number (zero)
-                      Check());                // Check overlaps.
-
-    logPMT = pmt.GetPiece();
-    new G4PVPlacement(NULL,                    // rotation.
-                      G4ThreeVector(10.9*inch-xOffset,11.42*inch, // position
-                                    - GetArgonDepth()/2
-                                    + GetBottomSpace()
-                                    - pmt.GetBaseLength()/2
-                                    - 25*mm),    
-                      logPMT,                // logical volume
-                      logPMT->GetName(),     // name
-                      logLAr,                  // mother  volume
-                      false,                   // (not used)
-                      0,                       // Copy number (zero)
-                      Check());                // Check overlaps.
-
-    logPMT = pmt.GetPiece();
-    new G4PVPlacement(NULL,                    // rotation.
-                      G4ThreeVector(4.0*inch-xOffset,11.42*inch, // position
-                                    - GetArgonDepth()/2
-                                    + GetBottomSpace()
-                                    - pmt.GetBaseLength()/2
-                                    - 25*mm),    
-                      logPMT,                // logical volume
-                      logPMT->GetName(),     // name
-                      logLAr,                  // mother  volume
-                      false,                   // (not used)
-                      0,                       // Copy number (zero)
-                      Check());                // Check overlaps.
-
-    ///////////////////////////////////////////////////////////////////
-    // All of the PMTs are placed above this point.
-    ///////////////////////////////////////////////////////////////////
-
-    // Set the visibility
-    logVolume->SetVisAttributes(G4VisAttributes::Invisible);
-    logAr->SetVisAttributes(G4VisAttributes::Invisible);
-    if (GetVisible()) {
-        logVesselSide->SetVisAttributes(GetColor(logVesselSide));
-        logVesselTop->SetVisAttributes(GetColor(logVesselSide));
-        logVesselBottom->SetVisAttributes(GetColor(logVesselBottom));
-        logLAr->SetVisAttributes(GetColor(logLAr));
-    } 
+    if (fVesselType == "CAPTAIN") {
+        CaptImmersedBuilder& immersed = Get<CaptImmersedBuilder>("Immersed");
+        G4LogicalVolume* logImmersed = immersed.GetPiece();
+        G4ThreeVector p = GetTPCOffset() - immersed.GetOffset();
+        new G4PVPlacement(NULL,                   // rotation.
+                          p,                      // position
+                          logImmersed,            // logical volume
+                          logImmersed->GetName(), // name
+                          fLiquidVolume,          // mother  volume
+                          false,                  // (not used)
+                          0,                      // Copy number (zero)
+                          Check());               // Check overlaps.
+    }
+    else if (fVesselType == "mCAPTAIN") {
+        MiniCaptImmersedBuilder& immersed
+            = Get<MiniCaptImmersedBuilder>("mImmersed");
+        G4LogicalVolume* logImmersed = immersed.GetPiece();
+        G4ThreeVector p = GetTPCOffset() - immersed.GetOffset();
+        new G4PVPlacement(NULL,                   // rotation.
+                          p,                      // position
+                          logImmersed,            // logical volume
+                          logImmersed->GetName(), // name
+                          fLiquidVolume,          // mother  volume
+                          false,                  // (not used)
+                          0,                      // Copy number (zero)
+                          Check());               // Check overlaps.
+    }
     else {
-        logVesselSide->SetVisAttributes(G4VisAttributes::Invisible);
-        logVesselTop->SetVisAttributes(G4VisAttributes::Invisible);
-        logVesselBottom->SetVisAttributes(G4VisAttributes::Invisible);
-        logLAr->SetVisAttributes(G4VisAttributes::Invisible);
+        std::cout << "Undefined immersed volume" << std::endl;
+        std::exit(0);
     }
+
     
+    ////////////////////////////////////////////////////////
+    // Define the ullage volume.
+    ////////////////////////////////////////////////////////
+    conePlanes.clear();
+    coneMax.clear();
+    coneMin.clear();
+    for (Shape::reverse_iterator p = fInnerVessel.rbegin();
+         p != fInnerVessel.rend();
+         ++p) {
+        if (p->fZ >= GetArgonDepth()-1*mm) continue;
+        if (conePlanes.empty() ) {
+            conePlanes.push_back(-GetArgonDepth()+1*um);
+            coneMin.push_back(0.0);
+            coneMax.push_back(p->fInner);
+        }
+        conePlanes.push_back(- p->fZ);
+        coneMin.push_back(0.0);
+        coneMax.push_back(p->fInner);
+    }
+        
+    fUllageVolume
+        = new G4LogicalVolume(
+            new G4Polycone(GetName()+"/Ullage",
+                           0*degree, 360*degree, conePlanes.size(),
+                           conePlanes.data(),
+                           coneMin.data(), coneMax.data()),
+            FindMaterial("Argon_Gas"),
+            GetName()+"/Ullage");
+    fUllageVolume->SetVisAttributes(GetColor(fUllageVolume));
+    
+    new G4PVPlacement(NULL,                // rotation.
+                      G4ThreeVector(0,0,0),
+                      fUllageVolume,           // logical volume
+                      fUllageVolume->GetName(), // name
+                      logVolume,                // mother  volume
+                      false,                    // (not used)
+                      0,                        // Copy number (zero)
+                      Check());                 // Check overlaps.
+
+    if (fVesselType == "CAPTAIN") {
+        CaptExposedBuilder& exposed = Get<CaptExposedBuilder>("Exposed");
+        G4LogicalVolume* logExposed = exposed.GetPiece();
+        G4ThreeVector p(0.0,0.0,-GetArgonDepth());
+        p -= exposed.GetOffset();
+        new G4PVPlacement(NULL,                   // rotation.
+                          p,                      // position
+                          logExposed,            // logical volume
+                          logExposed->GetName(), // name
+                          fUllageVolume,          // mother  volume
+                          false,                  // (not used)
+                          0,                      // Copy number (zero)
+                          Check());               // Check overlaps.
+    }
+    else if (fVesselType == "mCAPTAIN") {
+        MiniCaptExposedBuilder& exposed
+            = Get<MiniCaptExposedBuilder>("mExposed");
+        G4LogicalVolume* logExposed = exposed.GetPiece();
+        G4ThreeVector p(0.0,0.0,-GetArgonDepth());
+        p -= exposed.GetOffset();
+        new G4PVPlacement(NULL,                   // rotation.
+                          p,                      // position
+                          logExposed,            // logical volume
+                          logExposed->GetName(), // name
+                          fUllageVolume,          // mother  volume
+                          false,                  // (not used)
+                          0,                      // Copy number (zero)
+                          Check());               // Check overlaps.
+    }
+    else {
+        std::cout << "Undefined exposed volume" << std::endl;
+        std::exit(0);
+    }
+
     return logVolume;
 }

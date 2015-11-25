@@ -3052,6 +3052,7 @@ Control the physics lists
    electronCut * Set electron cut
    positronCut * Set positron cut
    allCuts * Set cut for all
+   ionizationModel * Set ionization model in the LAr
 
 
 Command /dsim/phys/gammaCut
@@ -3120,6 +3121,16 @@ Parameter : Unit
  Default value   : mm
  Candidates      : pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
 
+
+
+Command /dsim/phys/ionizationModel
+Guidance :
+Set ionization model in the LAr
+
+Parameter : fraction
+ Parameter type  : b
+ Omittable       : False
+
 Command directory path : /dsim/random/
 
 
@@ -3162,8 +3173,8 @@ Control the world geometry.
  Sub-directories : 
    /Captain/Cryostat/   Control the driftRegion geometry.
  Commands : 
-   visible * The object is drawn if this is true.
-   visibleDaughters * The daughters of this object are drawn if this is true.
+   opacity * Set the log of the relative opacity. Useful values are between [-0.5, 0.5], and +/-10 makes the object opague or transparent. A value of 0 leaves the opacity unchanged.
+   daughterOpacity * Set the log of the relative opacity of the daughters.
    check * If this is true then check for overlaps
    sensitive * Set the name of the sensitive detector
    maxHitSagitta * Set the maximum sagitta for a hit.
@@ -3173,22 +3184,22 @@ Control the world geometry.
    height * Set the height of the world.
 
 
-Command /Captain/visible
+Command /Captain/opacity
 Guidance :
-The object is drawn if this is true.
+Set the log of the relative opacity. Useful values are between [-0.5, 0.5], and +/-10 makes the object opague or transparent. A value of 0 leaves the opacity unchanged.
 
-Parameter : visibility
- Parameter type  : b
+Parameter : opacity
+ Parameter type  : d
  Omittable       : False
 
 
 
-Command /Captain/visibleDaughters
+Command /Captain/daughterOpacity
 Guidance :
-The daughters of this object are drawn if this is true.
+Set the log of the relative opacity of the daughters.
 
-Parameter : visibility
- Parameter type  : b
+Parameter : opacity
+ Parameter type  : d
  Omittable       : False
 
 
@@ -3297,38 +3308,38 @@ Guidance :
 Control the driftRegion geometry.
 
  Sub-directories : 
-   /Captain/Cryostat/Drift/   Control the drift region geometry.
+   /Captain/Cryostat/Immersed/   Control the immersed geometry.
+   /Captain/Cryostat/Exposed/   Control the exposed geometry.
+   /Captain/Cryostat/mImmersed/   Control the immersed geometry.
+   /Captain/Cryostat/mExposed/   Control the exposed geometry.
  Commands : 
-   visible * The object is drawn if this is true.
-   visibleDaughters * The daughters of this object are drawn if this is true.
+   opacity * Set the log of the relative opacity. Useful values are between [-0.5, 0.5], and +/-10 makes the object opague or transparent. A value of 0 leaves the opacity unchanged.
+   daughterOpacity * Set the log of the relative opacity of the daughters.
    check * If this is true then check for overlaps
    sensitive * Set the name of the sensitive detector
    maxHitSagitta * Set the maximum sagitta for a hit.
    maxHitLength * Set the maximum length for a hit.
-   innerDiameter * Set the inner diameter of the cryostat.  This is the
-diameter of the cold volume.
-   innerHeight * Set the inner height of the cryostat.  This is the height
-of the cold volume.
-   wallThickness * Set the thickness of the SS wall of the cryostat.
-   argonDepth * Set the depth of the liquid argon.
+   argonDepth * Set the distance between the flange and the liquid argon.
+   tpcDepth * Set the distance between the flange and TPC origin.
+   vessel * Set the type of vessel to be built.
 
 
-Command /Captain/Cryostat/visible
+Command /Captain/Cryostat/opacity
 Guidance :
-The object is drawn if this is true.
+Set the log of the relative opacity. Useful values are between [-0.5, 0.5], and +/-10 makes the object opague or transparent. A value of 0 leaves the opacity unchanged.
 
-Parameter : visibility
- Parameter type  : b
+Parameter : opacity
+ Parameter type  : d
  Omittable       : False
 
 
 
-Command /Captain/Cryostat/visibleDaughters
+Command /Captain/Cryostat/daughterOpacity
 Guidance :
-The daughters of this object are drawn if this is true.
+Set the log of the relative opacity of the daughters.
 
-Parameter : visibility
- Parameter type  : b
+Parameter : opacity
+ Parameter type  : d
  Omittable       : False
 
 
@@ -3387,56 +3398,9 @@ Parameter : Unit
 
 
 
-Command /Captain/Cryostat/innerDiameter
-Guidance :
-Set the inner diameter of the cryostat.  This is the
-diameter of the cold volume.
-
-Parameter : diameter
- Parameter type  : d
- Omittable       : False
-
-Parameter : Unit
- Parameter type  : s
- Omittable       : False
- Candidates      : pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
-
-
-
-Command /Captain/Cryostat/innerHeight
-Guidance :
-Set the inner height of the cryostat.  This is the height
-of the cold volume.
-
-Parameter : height
- Parameter type  : d
- Omittable       : False
-
-Parameter : Unit
- Parameter type  : s
- Omittable       : False
- Candidates      : pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
-
-
-
-Command /Captain/Cryostat/wallThickness
-Guidance :
-Set the thickness of the SS wall of the cryostat.
-
-Parameter : thickness
- Parameter type  : d
- Omittable       : False
-
-Parameter : Unit
- Parameter type  : s
- Omittable       : False
- Candidates      : pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
-
-
-
 Command /Captain/Cryostat/argonDepth
 Guidance :
-Set the depth of the liquid argon.
+Set the distance between the flange and the liquid argon.
 
 Parameter : depth
  Parameter type  : d
@@ -3447,50 +3411,71 @@ Parameter : Unit
  Omittable       : False
  Candidates      : pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
 
-Command directory path : /Captain/Cryostat/Drift/
+
+
+Command /Captain/Cryostat/tpcDepth
+Guidance :
+Set the distance between the flange and TPC origin.
+
+Parameter : depth
+ Parameter type  : d
+ Omittable       : False
+
+Parameter : Unit
+ Parameter type  : s
+ Omittable       : False
+ Candidates      : pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
+
+
+
+Command /Captain/Cryostat/vessel
+Guidance :
+Set the type of vessel to be built.
+
+Parameter : 
+ Parameter type  : s
+ Omittable       : False
+ Candidates      : CAPTAIN mCAPTAIN
+
+Command directory path : /Captain/Cryostat/Immersed/
 
 
 Guidance :
-Control the drift region geometry.
+Control the immersed geometry.
 
  Sub-directories : 
-   /Captain/Cryostat/Drift/XPlane/   Control the drift region geometry.
-   /Captain/Cryostat/Drift/VPlane/   Control the drift region geometry.
-   /Captain/Cryostat/Drift/UPlane/   Control the drift region geometry.
-   /Captain/Cryostat/Drift/GridPlane/   Control the drift region geometry.
+   /Captain/Cryostat/Immersed/Drift/   Control the drift region geometry.
+   /Captain/Cryostat/Immersed/PMTAssembly/   Control the drift region geometry.
  Commands : 
-   visible * The object is drawn if this is true.
-   visibleDaughters * The daughters of this object are drawn if this is true.
+   opacity * Set the log of the relative opacity. Useful values are between [-0.5, 0.5], and +/-10 makes the object opague or transparent. A value of 0 leaves the opacity unchanged.
+   daughterOpacity * Set the log of the relative opacity of the daughters.
    check * If this is true then check for overlaps
    sensitive * Set the name of the sensitive detector
    maxHitSagitta * Set the maximum sagitta for a hit.
    maxHitLength * Set the maximum length for a hit.
-   apothem * Set the apothem of the drift region.
-   driftLength * Set the drift length from cathode to wires.
-   wirePlaneSpacing * Set spacing between the wires.
 
 
-Command /Captain/Cryostat/Drift/visible
+Command /Captain/Cryostat/Immersed/opacity
 Guidance :
-The object is drawn if this is true.
+Set the log of the relative opacity. Useful values are between [-0.5, 0.5], and +/-10 makes the object opague or transparent. A value of 0 leaves the opacity unchanged.
 
-Parameter : visibility
- Parameter type  : b
+Parameter : opacity
+ Parameter type  : d
  Omittable       : False
 
 
 
-Command /Captain/Cryostat/Drift/visibleDaughters
+Command /Captain/Cryostat/Immersed/daughterOpacity
 Guidance :
-The daughters of this object are drawn if this is true.
+Set the log of the relative opacity of the daughters.
 
-Parameter : visibility
- Parameter type  : b
+Parameter : opacity
+ Parameter type  : d
  Omittable       : False
 
 
 
-Command /Captain/Cryostat/Drift/check
+Command /Captain/Cryostat/Immersed/check
 Guidance :
 If this is true then check for overlaps
 
@@ -3500,7 +3485,7 @@ Parameter : check
 
 
 
-Command /Captain/Cryostat/Drift/sensitive
+Command /Captain/Cryostat/Immersed/sensitive
 Guidance :
 Set the name of the sensitive detector
 
@@ -3514,7 +3499,7 @@ Parameter : Type
 
 
 
-Command /Captain/Cryostat/Drift/maxHitSagitta
+Command /Captain/Cryostat/Immersed/maxHitSagitta
 Guidance :
 Set the maximum sagitta for a hit.
 
@@ -3529,7 +3514,103 @@ Parameter : Unit
 
 
 
-Command /Captain/Cryostat/Drift/maxHitLength
+Command /Captain/Cryostat/Immersed/maxHitLength
+Guidance :
+Set the maximum length for a hit.
+
+Parameter : HitLength
+ Parameter type  : d
+ Omittable       : False
+
+Parameter : Unit
+ Parameter type  : s
+ Omittable       : False
+ Candidates      : pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
+
+Command directory path : /Captain/Cryostat/Immersed/Drift/
+
+
+Guidance :
+Control the drift region geometry.
+
+ Sub-directories : 
+   /Captain/Cryostat/Immersed/Drift/XPlane/   Control the drift region geometry.
+   /Captain/Cryostat/Immersed/Drift/VPlane/   Control the drift region geometry.
+   /Captain/Cryostat/Immersed/Drift/UPlane/   Control the drift region geometry.
+   /Captain/Cryostat/Immersed/Drift/GridPlane/   Control the drift region geometry.
+   /Captain/Cryostat/Immersed/Drift/GroundPlane/   Control the drift region geometry.
+ Commands : 
+   opacity * Set the log of the relative opacity. Useful values are between [-0.5, 0.5], and +/-10 makes the object opague or transparent. A value of 0 leaves the opacity unchanged.
+   daughterOpacity * Set the log of the relative opacity of the daughters.
+   check * If this is true then check for overlaps
+   sensitive * Set the name of the sensitive detector
+   maxHitSagitta * Set the maximum sagitta for a hit.
+   maxHitLength * Set the maximum length for a hit.
+   apothem * Set the apothem of the drift region.
+   driftLength * Set the drift length from cathode to wires.
+   wirePlaneSpacing * Set spacing between the wires.
+
+
+Command /Captain/Cryostat/Immersed/Drift/opacity
+Guidance :
+Set the log of the relative opacity. Useful values are between [-0.5, 0.5], and +/-10 makes the object opague or transparent. A value of 0 leaves the opacity unchanged.
+
+Parameter : opacity
+ Parameter type  : d
+ Omittable       : False
+
+
+
+Command /Captain/Cryostat/Immersed/Drift/daughterOpacity
+Guidance :
+Set the log of the relative opacity of the daughters.
+
+Parameter : opacity
+ Parameter type  : d
+ Omittable       : False
+
+
+
+Command /Captain/Cryostat/Immersed/Drift/check
+Guidance :
+If this is true then check for overlaps
+
+Parameter : check
+ Parameter type  : b
+ Omittable       : False
+
+
+
+Command /Captain/Cryostat/Immersed/Drift/sensitive
+Guidance :
+Set the name of the sensitive detector
+
+Parameter : Name
+ Parameter type  : s
+ Omittable       : False
+
+Parameter : Type
+ Parameter type  : s
+ Omittable       : False
+
+
+
+Command /Captain/Cryostat/Immersed/Drift/maxHitSagitta
+Guidance :
+Set the maximum sagitta for a hit.
+
+Parameter : Sagitta
+ Parameter type  : d
+ Omittable       : False
+
+Parameter : Unit
+ Parameter type  : s
+ Omittable       : False
+ Candidates      : pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
+
+
+
+Command /Captain/Cryostat/Immersed/Drift/maxHitLength
 Guidance :
 Set the maximum length for a hit.
 
@@ -3544,7 +3625,7 @@ Parameter : Unit
 
 
 
-Command /Captain/Cryostat/Drift/apothem
+Command /Captain/Cryostat/Immersed/Drift/apothem
 Guidance :
 Set the apothem of the drift region.
 
@@ -3559,7 +3640,7 @@ Parameter : Unit
 
 
 
-Command /Captain/Cryostat/Drift/driftLength
+Command /Captain/Cryostat/Immersed/Drift/driftLength
 Guidance :
 Set the drift length from cathode to wires.
 
@@ -3574,7 +3655,7 @@ Parameter : Unit
 
 
 
-Command /Captain/Cryostat/Drift/wirePlaneSpacing
+Command /Captain/Cryostat/Immersed/Drift/wirePlaneSpacing
 Guidance :
 Set spacing between the wires.
 
@@ -3587,7 +3668,7 @@ Parameter : Unit
  Omittable       : False
  Candidates      : pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
 
-Command directory path : /Captain/Cryostat/Drift/XPlane/
+Command directory path : /Captain/Cryostat/Immersed/Drift/XPlane/
 
 
 Guidance :
@@ -3595,37 +3676,38 @@ Control the drift region geometry.
 
  Sub-directories : 
  Commands : 
-   visible * The object is drawn if this is true.
-   visibleDaughters * The daughters of this object are drawn if this is true.
+   opacity * Set the log of the relative opacity. Useful values are between [-0.5, 0.5], and +/-10 makes the object opague or transparent. A value of 0 leaves the opacity unchanged.
+   daughterOpacity * Set the log of the relative opacity of the daughters.
    check * If this is true then check for overlaps
    sensitive * Set the name of the sensitive detector
    maxHitSagitta * Set the maximum sagitta for a hit.
    maxHitLength * Set the maximum length for a hit.
    apothem * Set the apothem of the drift region.
    wireSpacing * Set the wire spacing.
+   maxWireCount * Set the maximum number of wires in a plane.
 
 
-Command /Captain/Cryostat/Drift/XPlane/visible
+Command /Captain/Cryostat/Immersed/Drift/XPlane/opacity
 Guidance :
-The object is drawn if this is true.
+Set the log of the relative opacity. Useful values are between [-0.5, 0.5], and +/-10 makes the object opague or transparent. A value of 0 leaves the opacity unchanged.
 
-Parameter : visibility
- Parameter type  : b
+Parameter : opacity
+ Parameter type  : d
  Omittable       : False
 
 
 
-Command /Captain/Cryostat/Drift/XPlane/visibleDaughters
+Command /Captain/Cryostat/Immersed/Drift/XPlane/daughterOpacity
 Guidance :
-The daughters of this object are drawn if this is true.
+Set the log of the relative opacity of the daughters.
 
-Parameter : visibility
- Parameter type  : b
+Parameter : opacity
+ Parameter type  : d
  Omittable       : False
 
 
 
-Command /Captain/Cryostat/Drift/XPlane/check
+Command /Captain/Cryostat/Immersed/Drift/XPlane/check
 Guidance :
 If this is true then check for overlaps
 
@@ -3635,7 +3717,7 @@ Parameter : check
 
 
 
-Command /Captain/Cryostat/Drift/XPlane/sensitive
+Command /Captain/Cryostat/Immersed/Drift/XPlane/sensitive
 Guidance :
 Set the name of the sensitive detector
 
@@ -3649,7 +3731,7 @@ Parameter : Type
 
 
 
-Command /Captain/Cryostat/Drift/XPlane/maxHitSagitta
+Command /Captain/Cryostat/Immersed/Drift/XPlane/maxHitSagitta
 Guidance :
 Set the maximum sagitta for a hit.
 
@@ -3664,7 +3746,7 @@ Parameter : Unit
 
 
 
-Command /Captain/Cryostat/Drift/XPlane/maxHitLength
+Command /Captain/Cryostat/Immersed/Drift/XPlane/maxHitLength
 Guidance :
 Set the maximum length for a hit.
 
@@ -3679,7 +3761,7 @@ Parameter : Unit
 
 
 
-Command /Captain/Cryostat/Drift/XPlane/apothem
+Command /Captain/Cryostat/Immersed/Drift/XPlane/apothem
 Guidance :
 Set the apothem of the drift region.
 
@@ -3694,7 +3776,7 @@ Parameter : Unit
 
 
 
-Command /Captain/Cryostat/Drift/XPlane/wireSpacing
+Command /Captain/Cryostat/Immersed/Drift/XPlane/wireSpacing
 Guidance :
 Set the wire spacing.
 
@@ -3707,7 +3789,17 @@ Parameter : Unit
  Omittable       : False
  Candidates      : pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
 
-Command directory path : /Captain/Cryostat/Drift/VPlane/
+
+
+Command /Captain/Cryostat/Immersed/Drift/XPlane/maxWireCount
+Guidance :
+Set the maximum number of wires in a plane.
+
+Parameter : count
+ Parameter type  : i
+ Omittable       : False
+
+Command directory path : /Captain/Cryostat/Immersed/Drift/VPlane/
 
 
 Guidance :
@@ -3715,37 +3807,38 @@ Control the drift region geometry.
 
  Sub-directories : 
  Commands : 
-   visible * The object is drawn if this is true.
-   visibleDaughters * The daughters of this object are drawn if this is true.
+   opacity * Set the log of the relative opacity. Useful values are between [-0.5, 0.5], and +/-10 makes the object opague or transparent. A value of 0 leaves the opacity unchanged.
+   daughterOpacity * Set the log of the relative opacity of the daughters.
    check * If this is true then check for overlaps
    sensitive * Set the name of the sensitive detector
    maxHitSagitta * Set the maximum sagitta for a hit.
    maxHitLength * Set the maximum length for a hit.
    apothem * Set the apothem of the drift region.
    wireSpacing * Set the wire spacing.
+   maxWireCount * Set the maximum number of wires in a plane.
 
 
-Command /Captain/Cryostat/Drift/VPlane/visible
+Command /Captain/Cryostat/Immersed/Drift/VPlane/opacity
 Guidance :
-The object is drawn if this is true.
+Set the log of the relative opacity. Useful values are between [-0.5, 0.5], and +/-10 makes the object opague or transparent. A value of 0 leaves the opacity unchanged.
 
-Parameter : visibility
- Parameter type  : b
+Parameter : opacity
+ Parameter type  : d
  Omittable       : False
 
 
 
-Command /Captain/Cryostat/Drift/VPlane/visibleDaughters
+Command /Captain/Cryostat/Immersed/Drift/VPlane/daughterOpacity
 Guidance :
-The daughters of this object are drawn if this is true.
+Set the log of the relative opacity of the daughters.
 
-Parameter : visibility
- Parameter type  : b
+Parameter : opacity
+ Parameter type  : d
  Omittable       : False
 
 
 
-Command /Captain/Cryostat/Drift/VPlane/check
+Command /Captain/Cryostat/Immersed/Drift/VPlane/check
 Guidance :
 If this is true then check for overlaps
 
@@ -3755,7 +3848,7 @@ Parameter : check
 
 
 
-Command /Captain/Cryostat/Drift/VPlane/sensitive
+Command /Captain/Cryostat/Immersed/Drift/VPlane/sensitive
 Guidance :
 Set the name of the sensitive detector
 
@@ -3769,7 +3862,7 @@ Parameter : Type
 
 
 
-Command /Captain/Cryostat/Drift/VPlane/maxHitSagitta
+Command /Captain/Cryostat/Immersed/Drift/VPlane/maxHitSagitta
 Guidance :
 Set the maximum sagitta for a hit.
 
@@ -3784,7 +3877,7 @@ Parameter : Unit
 
 
 
-Command /Captain/Cryostat/Drift/VPlane/maxHitLength
+Command /Captain/Cryostat/Immersed/Drift/VPlane/maxHitLength
 Guidance :
 Set the maximum length for a hit.
 
@@ -3799,7 +3892,7 @@ Parameter : Unit
 
 
 
-Command /Captain/Cryostat/Drift/VPlane/apothem
+Command /Captain/Cryostat/Immersed/Drift/VPlane/apothem
 Guidance :
 Set the apothem of the drift region.
 
@@ -3814,7 +3907,7 @@ Parameter : Unit
 
 
 
-Command /Captain/Cryostat/Drift/VPlane/wireSpacing
+Command /Captain/Cryostat/Immersed/Drift/VPlane/wireSpacing
 Guidance :
 Set the wire spacing.
 
@@ -3827,7 +3920,17 @@ Parameter : Unit
  Omittable       : False
  Candidates      : pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
 
-Command directory path : /Captain/Cryostat/Drift/UPlane/
+
+
+Command /Captain/Cryostat/Immersed/Drift/VPlane/maxWireCount
+Guidance :
+Set the maximum number of wires in a plane.
+
+Parameter : count
+ Parameter type  : i
+ Omittable       : False
+
+Command directory path : /Captain/Cryostat/Immersed/Drift/UPlane/
 
 
 Guidance :
@@ -3835,37 +3938,38 @@ Control the drift region geometry.
 
  Sub-directories : 
  Commands : 
-   visible * The object is drawn if this is true.
-   visibleDaughters * The daughters of this object are drawn if this is true.
+   opacity * Set the log of the relative opacity. Useful values are between [-0.5, 0.5], and +/-10 makes the object opague or transparent. A value of 0 leaves the opacity unchanged.
+   daughterOpacity * Set the log of the relative opacity of the daughters.
    check * If this is true then check for overlaps
    sensitive * Set the name of the sensitive detector
    maxHitSagitta * Set the maximum sagitta for a hit.
    maxHitLength * Set the maximum length for a hit.
    apothem * Set the apothem of the drift region.
    wireSpacing * Set the wire spacing.
+   maxWireCount * Set the maximum number of wires in a plane.
 
 
-Command /Captain/Cryostat/Drift/UPlane/visible
+Command /Captain/Cryostat/Immersed/Drift/UPlane/opacity
 Guidance :
-The object is drawn if this is true.
+Set the log of the relative opacity. Useful values are between [-0.5, 0.5], and +/-10 makes the object opague or transparent. A value of 0 leaves the opacity unchanged.
 
-Parameter : visibility
- Parameter type  : b
+Parameter : opacity
+ Parameter type  : d
  Omittable       : False
 
 
 
-Command /Captain/Cryostat/Drift/UPlane/visibleDaughters
+Command /Captain/Cryostat/Immersed/Drift/UPlane/daughterOpacity
 Guidance :
-The daughters of this object are drawn if this is true.
+Set the log of the relative opacity of the daughters.
 
-Parameter : visibility
- Parameter type  : b
+Parameter : opacity
+ Parameter type  : d
  Omittable       : False
 
 
 
-Command /Captain/Cryostat/Drift/UPlane/check
+Command /Captain/Cryostat/Immersed/Drift/UPlane/check
 Guidance :
 If this is true then check for overlaps
 
@@ -3875,7 +3979,7 @@ Parameter : check
 
 
 
-Command /Captain/Cryostat/Drift/UPlane/sensitive
+Command /Captain/Cryostat/Immersed/Drift/UPlane/sensitive
 Guidance :
 Set the name of the sensitive detector
 
@@ -3889,7 +3993,7 @@ Parameter : Type
 
 
 
-Command /Captain/Cryostat/Drift/UPlane/maxHitSagitta
+Command /Captain/Cryostat/Immersed/Drift/UPlane/maxHitSagitta
 Guidance :
 Set the maximum sagitta for a hit.
 
@@ -3904,7 +4008,7 @@ Parameter : Unit
 
 
 
-Command /Captain/Cryostat/Drift/UPlane/maxHitLength
+Command /Captain/Cryostat/Immersed/Drift/UPlane/maxHitLength
 Guidance :
 Set the maximum length for a hit.
 
@@ -3919,7 +4023,7 @@ Parameter : Unit
 
 
 
-Command /Captain/Cryostat/Drift/UPlane/apothem
+Command /Captain/Cryostat/Immersed/Drift/UPlane/apothem
 Guidance :
 Set the apothem of the drift region.
 
@@ -3934,7 +4038,7 @@ Parameter : Unit
 
 
 
-Command /Captain/Cryostat/Drift/UPlane/wireSpacing
+Command /Captain/Cryostat/Immersed/Drift/UPlane/wireSpacing
 Guidance :
 Set the wire spacing.
 
@@ -3947,7 +4051,17 @@ Parameter : Unit
  Omittable       : False
  Candidates      : pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
 
-Command directory path : /Captain/Cryostat/Drift/GridPlane/
+
+
+Command /Captain/Cryostat/Immersed/Drift/UPlane/maxWireCount
+Guidance :
+Set the maximum number of wires in a plane.
+
+Parameter : count
+ Parameter type  : i
+ Omittable       : False
+
+Command directory path : /Captain/Cryostat/Immersed/Drift/GridPlane/
 
 
 Guidance :
@@ -3955,37 +4069,38 @@ Control the drift region geometry.
 
  Sub-directories : 
  Commands : 
-   visible * The object is drawn if this is true.
-   visibleDaughters * The daughters of this object are drawn if this is true.
+   opacity * Set the log of the relative opacity. Useful values are between [-0.5, 0.5], and +/-10 makes the object opague or transparent. A value of 0 leaves the opacity unchanged.
+   daughterOpacity * Set the log of the relative opacity of the daughters.
    check * If this is true then check for overlaps
    sensitive * Set the name of the sensitive detector
    maxHitSagitta * Set the maximum sagitta for a hit.
    maxHitLength * Set the maximum length for a hit.
    apothem * Set the apothem of the drift region.
    wireSpacing * Set the wire spacing.
+   maxWireCount * Set the maximum number of wires in a plane.
 
 
-Command /Captain/Cryostat/Drift/GridPlane/visible
+Command /Captain/Cryostat/Immersed/Drift/GridPlane/opacity
 Guidance :
-The object is drawn if this is true.
+Set the log of the relative opacity. Useful values are between [-0.5, 0.5], and +/-10 makes the object opague or transparent. A value of 0 leaves the opacity unchanged.
 
-Parameter : visibility
- Parameter type  : b
+Parameter : opacity
+ Parameter type  : d
  Omittable       : False
 
 
 
-Command /Captain/Cryostat/Drift/GridPlane/visibleDaughters
+Command /Captain/Cryostat/Immersed/Drift/GridPlane/daughterOpacity
 Guidance :
-The daughters of this object are drawn if this is true.
+Set the log of the relative opacity of the daughters.
 
-Parameter : visibility
- Parameter type  : b
+Parameter : opacity
+ Parameter type  : d
  Omittable       : False
 
 
 
-Command /Captain/Cryostat/Drift/GridPlane/check
+Command /Captain/Cryostat/Immersed/Drift/GridPlane/check
 Guidance :
 If this is true then check for overlaps
 
@@ -3995,7 +4110,7 @@ Parameter : check
 
 
 
-Command /Captain/Cryostat/Drift/GridPlane/sensitive
+Command /Captain/Cryostat/Immersed/Drift/GridPlane/sensitive
 Guidance :
 Set the name of the sensitive detector
 
@@ -4009,7 +4124,7 @@ Parameter : Type
 
 
 
-Command /Captain/Cryostat/Drift/GridPlane/maxHitSagitta
+Command /Captain/Cryostat/Immersed/Drift/GridPlane/maxHitSagitta
 Guidance :
 Set the maximum sagitta for a hit.
 
@@ -4024,7 +4139,7 @@ Parameter : Unit
 
 
 
-Command /Captain/Cryostat/Drift/GridPlane/maxHitLength
+Command /Captain/Cryostat/Immersed/Drift/GridPlane/maxHitLength
 Guidance :
 Set the maximum length for a hit.
 
@@ -4039,7 +4154,7 @@ Parameter : Unit
 
 
 
-Command /Captain/Cryostat/Drift/GridPlane/apothem
+Command /Captain/Cryostat/Immersed/Drift/GridPlane/apothem
 Guidance :
 Set the apothem of the drift region.
 
@@ -4054,11 +4169,1923 @@ Parameter : Unit
 
 
 
-Command /Captain/Cryostat/Drift/GridPlane/wireSpacing
+Command /Captain/Cryostat/Immersed/Drift/GridPlane/wireSpacing
 Guidance :
 Set the wire spacing.
 
 Parameter : spacing
+ Parameter type  : d
+ Omittable       : False
+
+Parameter : Unit
+ Parameter type  : s
+ Omittable       : False
+ Candidates      : pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
+
+
+
+Command /Captain/Cryostat/Immersed/Drift/GridPlane/maxWireCount
+Guidance :
+Set the maximum number of wires in a plane.
+
+Parameter : count
+ Parameter type  : i
+ Omittable       : False
+
+Command directory path : /Captain/Cryostat/Immersed/Drift/GroundPlane/
+
+
+Guidance :
+Control the drift region geometry.
+
+ Sub-directories : 
+ Commands : 
+   opacity * Set the log of the relative opacity. Useful values are between [-0.5, 0.5], and +/-10 makes the object opague or transparent. A value of 0 leaves the opacity unchanged.
+   daughterOpacity * Set the log of the relative opacity of the daughters.
+   check * If this is true then check for overlaps
+   sensitive * Set the name of the sensitive detector
+   maxHitSagitta * Set the maximum sagitta for a hit.
+   maxHitLength * Set the maximum length for a hit.
+   apothem * Set the apothem of the drift region.
+   wireSpacing * Set the wire spacing.
+   maxWireCount * Set the maximum number of wires in a plane.
+
+
+Command /Captain/Cryostat/Immersed/Drift/GroundPlane/opacity
+Guidance :
+Set the log of the relative opacity. Useful values are between [-0.5, 0.5], and +/-10 makes the object opague or transparent. A value of 0 leaves the opacity unchanged.
+
+Parameter : opacity
+ Parameter type  : d
+ Omittable       : False
+
+
+
+Command /Captain/Cryostat/Immersed/Drift/GroundPlane/daughterOpacity
+Guidance :
+Set the log of the relative opacity of the daughters.
+
+Parameter : opacity
+ Parameter type  : d
+ Omittable       : False
+
+
+
+Command /Captain/Cryostat/Immersed/Drift/GroundPlane/check
+Guidance :
+If this is true then check for overlaps
+
+Parameter : check
+ Parameter type  : b
+ Omittable       : False
+
+
+
+Command /Captain/Cryostat/Immersed/Drift/GroundPlane/sensitive
+Guidance :
+Set the name of the sensitive detector
+
+Parameter : Name
+ Parameter type  : s
+ Omittable       : False
+
+Parameter : Type
+ Parameter type  : s
+ Omittable       : False
+
+
+
+Command /Captain/Cryostat/Immersed/Drift/GroundPlane/maxHitSagitta
+Guidance :
+Set the maximum sagitta for a hit.
+
+Parameter : Sagitta
+ Parameter type  : d
+ Omittable       : False
+
+Parameter : Unit
+ Parameter type  : s
+ Omittable       : False
+ Candidates      : pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
+
+
+
+Command /Captain/Cryostat/Immersed/Drift/GroundPlane/maxHitLength
+Guidance :
+Set the maximum length for a hit.
+
+Parameter : HitLength
+ Parameter type  : d
+ Omittable       : False
+
+Parameter : Unit
+ Parameter type  : s
+ Omittable       : False
+ Candidates      : pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
+
+
+
+Command /Captain/Cryostat/Immersed/Drift/GroundPlane/apothem
+Guidance :
+Set the apothem of the drift region.
+
+Parameter : apothem
+ Parameter type  : d
+ Omittable       : False
+
+Parameter : Unit
+ Parameter type  : s
+ Omittable       : False
+ Candidates      : pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
+
+
+
+Command /Captain/Cryostat/Immersed/Drift/GroundPlane/wireSpacing
+Guidance :
+Set the wire spacing.
+
+Parameter : spacing
+ Parameter type  : d
+ Omittable       : False
+
+Parameter : Unit
+ Parameter type  : s
+ Omittable       : False
+ Candidates      : pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
+
+
+
+Command /Captain/Cryostat/Immersed/Drift/GroundPlane/maxWireCount
+Guidance :
+Set the maximum number of wires in a plane.
+
+Parameter : count
+ Parameter type  : i
+ Omittable       : False
+
+Command directory path : /Captain/Cryostat/Immersed/PMTAssembly/
+
+
+Guidance :
+Control the drift region geometry.
+
+ Sub-directories : 
+   /Captain/Cryostat/Immersed/PMTAssembly/PMT/   Control the PMT construction.
+ Commands : 
+   opacity * Set the log of the relative opacity. Useful values are between [-0.5, 0.5], and +/-10 makes the object opague or transparent. A value of 0 leaves the opacity unchanged.
+   daughterOpacity * Set the log of the relative opacity of the daughters.
+   check * If this is true then check for overlaps
+   sensitive * Set the name of the sensitive detector
+   maxHitSagitta * Set the maximum sagitta for a hit.
+   maxHitLength * Set the maximum length for a hit.
+   apothem * Set the apothem of the PMT assembly.
+
+
+Command /Captain/Cryostat/Immersed/PMTAssembly/opacity
+Guidance :
+Set the log of the relative opacity. Useful values are between [-0.5, 0.5], and +/-10 makes the object opague or transparent. A value of 0 leaves the opacity unchanged.
+
+Parameter : opacity
+ Parameter type  : d
+ Omittable       : False
+
+
+
+Command /Captain/Cryostat/Immersed/PMTAssembly/daughterOpacity
+Guidance :
+Set the log of the relative opacity of the daughters.
+
+Parameter : opacity
+ Parameter type  : d
+ Omittable       : False
+
+
+
+Command /Captain/Cryostat/Immersed/PMTAssembly/check
+Guidance :
+If this is true then check for overlaps
+
+Parameter : check
+ Parameter type  : b
+ Omittable       : False
+
+
+
+Command /Captain/Cryostat/Immersed/PMTAssembly/sensitive
+Guidance :
+Set the name of the sensitive detector
+
+Parameter : Name
+ Parameter type  : s
+ Omittable       : False
+
+Parameter : Type
+ Parameter type  : s
+ Omittable       : False
+
+
+
+Command /Captain/Cryostat/Immersed/PMTAssembly/maxHitSagitta
+Guidance :
+Set the maximum sagitta for a hit.
+
+Parameter : Sagitta
+ Parameter type  : d
+ Omittable       : False
+
+Parameter : Unit
+ Parameter type  : s
+ Omittable       : False
+ Candidates      : pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
+
+
+
+Command /Captain/Cryostat/Immersed/PMTAssembly/maxHitLength
+Guidance :
+Set the maximum length for a hit.
+
+Parameter : HitLength
+ Parameter type  : d
+ Omittable       : False
+
+Parameter : Unit
+ Parameter type  : s
+ Omittable       : False
+ Candidates      : pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
+
+
+
+Command /Captain/Cryostat/Immersed/PMTAssembly/apothem
+Guidance :
+Set the apothem of the PMT assembly.
+
+Parameter : apothem
+ Parameter type  : d
+ Omittable       : False
+
+Parameter : Unit
+ Parameter type  : s
+ Omittable       : False
+ Candidates      : pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
+
+Command directory path : /Captain/Cryostat/Immersed/PMTAssembly/PMT/
+
+
+Guidance :
+Control the PMT construction.
+
+ Sub-directories : 
+ Commands : 
+   opacity * Set the log of the relative opacity. Useful values are between [-0.5, 0.5], and +/-10 makes the object opague or transparent. A value of 0 leaves the opacity unchanged.
+   daughterOpacity * Set the log of the relative opacity of the daughters.
+   check * If this is true then check for overlaps
+   sensitive * Set the name of the sensitive detector
+   maxHitSagitta * Set the maximum sagitta for a hit.
+   maxHitLength * Set the maximum length for a hit.
+   size * Set the PMT size.
+   baseLength * Set the PMT base length.
+   round * Flag that the PMT is round.
+
+
+Command /Captain/Cryostat/Immersed/PMTAssembly/PMT/opacity
+Guidance :
+Set the log of the relative opacity. Useful values are between [-0.5, 0.5], and +/-10 makes the object opague or transparent. A value of 0 leaves the opacity unchanged.
+
+Parameter : opacity
+ Parameter type  : d
+ Omittable       : False
+
+
+
+Command /Captain/Cryostat/Immersed/PMTAssembly/PMT/daughterOpacity
+Guidance :
+Set the log of the relative opacity of the daughters.
+
+Parameter : opacity
+ Parameter type  : d
+ Omittable       : False
+
+
+
+Command /Captain/Cryostat/Immersed/PMTAssembly/PMT/check
+Guidance :
+If this is true then check for overlaps
+
+Parameter : check
+ Parameter type  : b
+ Omittable       : False
+
+
+
+Command /Captain/Cryostat/Immersed/PMTAssembly/PMT/sensitive
+Guidance :
+Set the name of the sensitive detector
+
+Parameter : Name
+ Parameter type  : s
+ Omittable       : False
+
+Parameter : Type
+ Parameter type  : s
+ Omittable       : False
+
+
+
+Command /Captain/Cryostat/Immersed/PMTAssembly/PMT/maxHitSagitta
+Guidance :
+Set the maximum sagitta for a hit.
+
+Parameter : Sagitta
+ Parameter type  : d
+ Omittable       : False
+
+Parameter : Unit
+ Parameter type  : s
+ Omittable       : False
+ Candidates      : pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
+
+
+
+Command /Captain/Cryostat/Immersed/PMTAssembly/PMT/maxHitLength
+Guidance :
+Set the maximum length for a hit.
+
+Parameter : HitLength
+ Parameter type  : d
+ Omittable       : False
+
+Parameter : Unit
+ Parameter type  : s
+ Omittable       : False
+ Candidates      : pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
+
+
+
+Command /Captain/Cryostat/Immersed/PMTAssembly/PMT/size
+Guidance :
+Set the PMT size.
+
+Parameter : size
+ Parameter type  : d
+ Omittable       : False
+
+Parameter : Unit
+ Parameter type  : s
+ Omittable       : False
+ Candidates      : pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
+
+
+
+Command /Captain/Cryostat/Immersed/PMTAssembly/PMT/baseLength
+Guidance :
+Set the PMT base length.
+
+Parameter : length
+ Parameter type  : d
+ Omittable       : False
+
+Parameter : Unit
+ Parameter type  : s
+ Omittable       : False
+ Candidates      : pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
+
+
+
+Command /Captain/Cryostat/Immersed/PMTAssembly/PMT/round
+Guidance :
+Flag that the PMT is round.
+
+Parameter : 
+ Parameter type  : b
+ Omittable       : False
+
+Command directory path : /Captain/Cryostat/Exposed/
+
+
+Guidance :
+Control the exposed geometry.
+
+ Sub-directories : 
+   /Captain/Cryostat/Exposed/PMTAssembly/   Control the drift region geometry.
+ Commands : 
+   opacity * Set the log of the relative opacity. Useful values are between [-0.5, 0.5], and +/-10 makes the object opague or transparent. A value of 0 leaves the opacity unchanged.
+   daughterOpacity * Set the log of the relative opacity of the daughters.
+   check * If this is true then check for overlaps
+   sensitive * Set the name of the sensitive detector
+   maxHitSagitta * Set the maximum sagitta for a hit.
+   maxHitLength * Set the maximum length for a hit.
+
+
+Command /Captain/Cryostat/Exposed/opacity
+Guidance :
+Set the log of the relative opacity. Useful values are between [-0.5, 0.5], and +/-10 makes the object opague or transparent. A value of 0 leaves the opacity unchanged.
+
+Parameter : opacity
+ Parameter type  : d
+ Omittable       : False
+
+
+
+Command /Captain/Cryostat/Exposed/daughterOpacity
+Guidance :
+Set the log of the relative opacity of the daughters.
+
+Parameter : opacity
+ Parameter type  : d
+ Omittable       : False
+
+
+
+Command /Captain/Cryostat/Exposed/check
+Guidance :
+If this is true then check for overlaps
+
+Parameter : check
+ Parameter type  : b
+ Omittable       : False
+
+
+
+Command /Captain/Cryostat/Exposed/sensitive
+Guidance :
+Set the name of the sensitive detector
+
+Parameter : Name
+ Parameter type  : s
+ Omittable       : False
+
+Parameter : Type
+ Parameter type  : s
+ Omittable       : False
+
+
+
+Command /Captain/Cryostat/Exposed/maxHitSagitta
+Guidance :
+Set the maximum sagitta for a hit.
+
+Parameter : Sagitta
+ Parameter type  : d
+ Omittable       : False
+
+Parameter : Unit
+ Parameter type  : s
+ Omittable       : False
+ Candidates      : pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
+
+
+
+Command /Captain/Cryostat/Exposed/maxHitLength
+Guidance :
+Set the maximum length for a hit.
+
+Parameter : HitLength
+ Parameter type  : d
+ Omittable       : False
+
+Parameter : Unit
+ Parameter type  : s
+ Omittable       : False
+ Candidates      : pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
+
+Command directory path : /Captain/Cryostat/Exposed/PMTAssembly/
+
+
+Guidance :
+Control the drift region geometry.
+
+ Sub-directories : 
+   /Captain/Cryostat/Exposed/PMTAssembly/PMT/   Control the PMT construction.
+ Commands : 
+   opacity * Set the log of the relative opacity. Useful values are between [-0.5, 0.5], and +/-10 makes the object opague or transparent. A value of 0 leaves the opacity unchanged.
+   daughterOpacity * Set the log of the relative opacity of the daughters.
+   check * If this is true then check for overlaps
+   sensitive * Set the name of the sensitive detector
+   maxHitSagitta * Set the maximum sagitta for a hit.
+   maxHitLength * Set the maximum length for a hit.
+   apothem * Set the apothem of the PMT assembly.
+
+
+Command /Captain/Cryostat/Exposed/PMTAssembly/opacity
+Guidance :
+Set the log of the relative opacity. Useful values are between [-0.5, 0.5], and +/-10 makes the object opague or transparent. A value of 0 leaves the opacity unchanged.
+
+Parameter : opacity
+ Parameter type  : d
+ Omittable       : False
+
+
+
+Command /Captain/Cryostat/Exposed/PMTAssembly/daughterOpacity
+Guidance :
+Set the log of the relative opacity of the daughters.
+
+Parameter : opacity
+ Parameter type  : d
+ Omittable       : False
+
+
+
+Command /Captain/Cryostat/Exposed/PMTAssembly/check
+Guidance :
+If this is true then check for overlaps
+
+Parameter : check
+ Parameter type  : b
+ Omittable       : False
+
+
+
+Command /Captain/Cryostat/Exposed/PMTAssembly/sensitive
+Guidance :
+Set the name of the sensitive detector
+
+Parameter : Name
+ Parameter type  : s
+ Omittable       : False
+
+Parameter : Type
+ Parameter type  : s
+ Omittable       : False
+
+
+
+Command /Captain/Cryostat/Exposed/PMTAssembly/maxHitSagitta
+Guidance :
+Set the maximum sagitta for a hit.
+
+Parameter : Sagitta
+ Parameter type  : d
+ Omittable       : False
+
+Parameter : Unit
+ Parameter type  : s
+ Omittable       : False
+ Candidates      : pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
+
+
+
+Command /Captain/Cryostat/Exposed/PMTAssembly/maxHitLength
+Guidance :
+Set the maximum length for a hit.
+
+Parameter : HitLength
+ Parameter type  : d
+ Omittable       : False
+
+Parameter : Unit
+ Parameter type  : s
+ Omittable       : False
+ Candidates      : pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
+
+
+
+Command /Captain/Cryostat/Exposed/PMTAssembly/apothem
+Guidance :
+Set the apothem of the PMT assembly.
+
+Parameter : apothem
+ Parameter type  : d
+ Omittable       : False
+
+Parameter : Unit
+ Parameter type  : s
+ Omittable       : False
+ Candidates      : pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
+
+Command directory path : /Captain/Cryostat/Exposed/PMTAssembly/PMT/
+
+
+Guidance :
+Control the PMT construction.
+
+ Sub-directories : 
+ Commands : 
+   opacity * Set the log of the relative opacity. Useful values are between [-0.5, 0.5], and +/-10 makes the object opague or transparent. A value of 0 leaves the opacity unchanged.
+   daughterOpacity * Set the log of the relative opacity of the daughters.
+   check * If this is true then check for overlaps
+   sensitive * Set the name of the sensitive detector
+   maxHitSagitta * Set the maximum sagitta for a hit.
+   maxHitLength * Set the maximum length for a hit.
+   size * Set the PMT size.
+   baseLength * Set the PMT base length.
+   round * Flag that the PMT is round.
+
+
+Command /Captain/Cryostat/Exposed/PMTAssembly/PMT/opacity
+Guidance :
+Set the log of the relative opacity. Useful values are between [-0.5, 0.5], and +/-10 makes the object opague or transparent. A value of 0 leaves the opacity unchanged.
+
+Parameter : opacity
+ Parameter type  : d
+ Omittable       : False
+
+
+
+Command /Captain/Cryostat/Exposed/PMTAssembly/PMT/daughterOpacity
+Guidance :
+Set the log of the relative opacity of the daughters.
+
+Parameter : opacity
+ Parameter type  : d
+ Omittable       : False
+
+
+
+Command /Captain/Cryostat/Exposed/PMTAssembly/PMT/check
+Guidance :
+If this is true then check for overlaps
+
+Parameter : check
+ Parameter type  : b
+ Omittable       : False
+
+
+
+Command /Captain/Cryostat/Exposed/PMTAssembly/PMT/sensitive
+Guidance :
+Set the name of the sensitive detector
+
+Parameter : Name
+ Parameter type  : s
+ Omittable       : False
+
+Parameter : Type
+ Parameter type  : s
+ Omittable       : False
+
+
+
+Command /Captain/Cryostat/Exposed/PMTAssembly/PMT/maxHitSagitta
+Guidance :
+Set the maximum sagitta for a hit.
+
+Parameter : Sagitta
+ Parameter type  : d
+ Omittable       : False
+
+Parameter : Unit
+ Parameter type  : s
+ Omittable       : False
+ Candidates      : pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
+
+
+
+Command /Captain/Cryostat/Exposed/PMTAssembly/PMT/maxHitLength
+Guidance :
+Set the maximum length for a hit.
+
+Parameter : HitLength
+ Parameter type  : d
+ Omittable       : False
+
+Parameter : Unit
+ Parameter type  : s
+ Omittable       : False
+ Candidates      : pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
+
+
+
+Command /Captain/Cryostat/Exposed/PMTAssembly/PMT/size
+Guidance :
+Set the PMT size.
+
+Parameter : size
+ Parameter type  : d
+ Omittable       : False
+
+Parameter : Unit
+ Parameter type  : s
+ Omittable       : False
+ Candidates      : pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
+
+
+
+Command /Captain/Cryostat/Exposed/PMTAssembly/PMT/baseLength
+Guidance :
+Set the PMT base length.
+
+Parameter : length
+ Parameter type  : d
+ Omittable       : False
+
+Parameter : Unit
+ Parameter type  : s
+ Omittable       : False
+ Candidates      : pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
+
+
+
+Command /Captain/Cryostat/Exposed/PMTAssembly/PMT/round
+Guidance :
+Flag that the PMT is round.
+
+Parameter : 
+ Parameter type  : b
+ Omittable       : False
+
+Command directory path : /Captain/Cryostat/mImmersed/
+
+
+Guidance :
+Control the immersed geometry.
+
+ Sub-directories : 
+   /Captain/Cryostat/mImmersed/Drift/   Control the drift region geometry.
+   /Captain/Cryostat/mImmersed/PMTAssembly/   Control the drift region geometry.
+ Commands : 
+   opacity * Set the log of the relative opacity. Useful values are between [-0.5, 0.5], and +/-10 makes the object opague or transparent. A value of 0 leaves the opacity unchanged.
+   daughterOpacity * Set the log of the relative opacity of the daughters.
+   check * If this is true then check for overlaps
+   sensitive * Set the name of the sensitive detector
+   maxHitSagitta * Set the maximum sagitta for a hit.
+   maxHitLength * Set the maximum length for a hit.
+
+
+Command /Captain/Cryostat/mImmersed/opacity
+Guidance :
+Set the log of the relative opacity. Useful values are between [-0.5, 0.5], and +/-10 makes the object opague or transparent. A value of 0 leaves the opacity unchanged.
+
+Parameter : opacity
+ Parameter type  : d
+ Omittable       : False
+
+
+
+Command /Captain/Cryostat/mImmersed/daughterOpacity
+Guidance :
+Set the log of the relative opacity of the daughters.
+
+Parameter : opacity
+ Parameter type  : d
+ Omittable       : False
+
+
+
+Command /Captain/Cryostat/mImmersed/check
+Guidance :
+If this is true then check for overlaps
+
+Parameter : check
+ Parameter type  : b
+ Omittable       : False
+
+
+
+Command /Captain/Cryostat/mImmersed/sensitive
+Guidance :
+Set the name of the sensitive detector
+
+Parameter : Name
+ Parameter type  : s
+ Omittable       : False
+
+Parameter : Type
+ Parameter type  : s
+ Omittable       : False
+
+
+
+Command /Captain/Cryostat/mImmersed/maxHitSagitta
+Guidance :
+Set the maximum sagitta for a hit.
+
+Parameter : Sagitta
+ Parameter type  : d
+ Omittable       : False
+
+Parameter : Unit
+ Parameter type  : s
+ Omittable       : False
+ Candidates      : pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
+
+
+
+Command /Captain/Cryostat/mImmersed/maxHitLength
+Guidance :
+Set the maximum length for a hit.
+
+Parameter : HitLength
+ Parameter type  : d
+ Omittable       : False
+
+Parameter : Unit
+ Parameter type  : s
+ Omittable       : False
+ Candidates      : pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
+
+Command directory path : /Captain/Cryostat/mImmersed/Drift/
+
+
+Guidance :
+Control the drift region geometry.
+
+ Sub-directories : 
+   /Captain/Cryostat/mImmersed/Drift/XPlane/   Control the drift region geometry.
+   /Captain/Cryostat/mImmersed/Drift/VPlane/   Control the drift region geometry.
+   /Captain/Cryostat/mImmersed/Drift/UPlane/   Control the drift region geometry.
+   /Captain/Cryostat/mImmersed/Drift/GridPlane/   Control the drift region geometry.
+   /Captain/Cryostat/mImmersed/Drift/GroundPlane/   Control the drift region geometry.
+ Commands : 
+   opacity * Set the log of the relative opacity. Useful values are between [-0.5, 0.5], and +/-10 makes the object opague or transparent. A value of 0 leaves the opacity unchanged.
+   daughterOpacity * Set the log of the relative opacity of the daughters.
+   check * If this is true then check for overlaps
+   sensitive * Set the name of the sensitive detector
+   maxHitSagitta * Set the maximum sagitta for a hit.
+   maxHitLength * Set the maximum length for a hit.
+   apothem * Set the apothem of the drift region.
+   driftLength * Set the drift length from cathode to wires.
+   wirePlaneSpacing * Set spacing between the wires.
+
+
+Command /Captain/Cryostat/mImmersed/Drift/opacity
+Guidance :
+Set the log of the relative opacity. Useful values are between [-0.5, 0.5], and +/-10 makes the object opague or transparent. A value of 0 leaves the opacity unchanged.
+
+Parameter : opacity
+ Parameter type  : d
+ Omittable       : False
+
+
+
+Command /Captain/Cryostat/mImmersed/Drift/daughterOpacity
+Guidance :
+Set the log of the relative opacity of the daughters.
+
+Parameter : opacity
+ Parameter type  : d
+ Omittable       : False
+
+
+
+Command /Captain/Cryostat/mImmersed/Drift/check
+Guidance :
+If this is true then check for overlaps
+
+Parameter : check
+ Parameter type  : b
+ Omittable       : False
+
+
+
+Command /Captain/Cryostat/mImmersed/Drift/sensitive
+Guidance :
+Set the name of the sensitive detector
+
+Parameter : Name
+ Parameter type  : s
+ Omittable       : False
+
+Parameter : Type
+ Parameter type  : s
+ Omittable       : False
+
+
+
+Command /Captain/Cryostat/mImmersed/Drift/maxHitSagitta
+Guidance :
+Set the maximum sagitta for a hit.
+
+Parameter : Sagitta
+ Parameter type  : d
+ Omittable       : False
+
+Parameter : Unit
+ Parameter type  : s
+ Omittable       : False
+ Candidates      : pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
+
+
+
+Command /Captain/Cryostat/mImmersed/Drift/maxHitLength
+Guidance :
+Set the maximum length for a hit.
+
+Parameter : HitLength
+ Parameter type  : d
+ Omittable       : False
+
+Parameter : Unit
+ Parameter type  : s
+ Omittable       : False
+ Candidates      : pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
+
+
+
+Command /Captain/Cryostat/mImmersed/Drift/apothem
+Guidance :
+Set the apothem of the drift region.
+
+Parameter : apothem
+ Parameter type  : d
+ Omittable       : False
+
+Parameter : Unit
+ Parameter type  : s
+ Omittable       : False
+ Candidates      : pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
+
+
+
+Command /Captain/Cryostat/mImmersed/Drift/driftLength
+Guidance :
+Set the drift length from cathode to wires.
+
+Parameter : drift
+ Parameter type  : d
+ Omittable       : False
+
+Parameter : Unit
+ Parameter type  : s
+ Omittable       : False
+ Candidates      : pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
+
+
+
+Command /Captain/Cryostat/mImmersed/Drift/wirePlaneSpacing
+Guidance :
+Set spacing between the wires.
+
+Parameter : space
+ Parameter type  : d
+ Omittable       : False
+
+Parameter : Unit
+ Parameter type  : s
+ Omittable       : False
+ Candidates      : pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
+
+Command directory path : /Captain/Cryostat/mImmersed/Drift/XPlane/
+
+
+Guidance :
+Control the drift region geometry.
+
+ Sub-directories : 
+ Commands : 
+   opacity * Set the log of the relative opacity. Useful values are between [-0.5, 0.5], and +/-10 makes the object opague or transparent. A value of 0 leaves the opacity unchanged.
+   daughterOpacity * Set the log of the relative opacity of the daughters.
+   check * If this is true then check for overlaps
+   sensitive * Set the name of the sensitive detector
+   maxHitSagitta * Set the maximum sagitta for a hit.
+   maxHitLength * Set the maximum length for a hit.
+   apothem * Set the apothem of the drift region.
+   wireSpacing * Set the wire spacing.
+   maxWireCount * Set the maximum number of wires in a plane.
+
+
+Command /Captain/Cryostat/mImmersed/Drift/XPlane/opacity
+Guidance :
+Set the log of the relative opacity. Useful values are between [-0.5, 0.5], and +/-10 makes the object opague or transparent. A value of 0 leaves the opacity unchanged.
+
+Parameter : opacity
+ Parameter type  : d
+ Omittable       : False
+
+
+
+Command /Captain/Cryostat/mImmersed/Drift/XPlane/daughterOpacity
+Guidance :
+Set the log of the relative opacity of the daughters.
+
+Parameter : opacity
+ Parameter type  : d
+ Omittable       : False
+
+
+
+Command /Captain/Cryostat/mImmersed/Drift/XPlane/check
+Guidance :
+If this is true then check for overlaps
+
+Parameter : check
+ Parameter type  : b
+ Omittable       : False
+
+
+
+Command /Captain/Cryostat/mImmersed/Drift/XPlane/sensitive
+Guidance :
+Set the name of the sensitive detector
+
+Parameter : Name
+ Parameter type  : s
+ Omittable       : False
+
+Parameter : Type
+ Parameter type  : s
+ Omittable       : False
+
+
+
+Command /Captain/Cryostat/mImmersed/Drift/XPlane/maxHitSagitta
+Guidance :
+Set the maximum sagitta for a hit.
+
+Parameter : Sagitta
+ Parameter type  : d
+ Omittable       : False
+
+Parameter : Unit
+ Parameter type  : s
+ Omittable       : False
+ Candidates      : pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
+
+
+
+Command /Captain/Cryostat/mImmersed/Drift/XPlane/maxHitLength
+Guidance :
+Set the maximum length for a hit.
+
+Parameter : HitLength
+ Parameter type  : d
+ Omittable       : False
+
+Parameter : Unit
+ Parameter type  : s
+ Omittable       : False
+ Candidates      : pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
+
+
+
+Command /Captain/Cryostat/mImmersed/Drift/XPlane/apothem
+Guidance :
+Set the apothem of the drift region.
+
+Parameter : apothem
+ Parameter type  : d
+ Omittable       : False
+
+Parameter : Unit
+ Parameter type  : s
+ Omittable       : False
+ Candidates      : pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
+
+
+
+Command /Captain/Cryostat/mImmersed/Drift/XPlane/wireSpacing
+Guidance :
+Set the wire spacing.
+
+Parameter : spacing
+ Parameter type  : d
+ Omittable       : False
+
+Parameter : Unit
+ Parameter type  : s
+ Omittable       : False
+ Candidates      : pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
+
+
+
+Command /Captain/Cryostat/mImmersed/Drift/XPlane/maxWireCount
+Guidance :
+Set the maximum number of wires in a plane.
+
+Parameter : count
+ Parameter type  : i
+ Omittable       : False
+
+Command directory path : /Captain/Cryostat/mImmersed/Drift/VPlane/
+
+
+Guidance :
+Control the drift region geometry.
+
+ Sub-directories : 
+ Commands : 
+   opacity * Set the log of the relative opacity. Useful values are between [-0.5, 0.5], and +/-10 makes the object opague or transparent. A value of 0 leaves the opacity unchanged.
+   daughterOpacity * Set the log of the relative opacity of the daughters.
+   check * If this is true then check for overlaps
+   sensitive * Set the name of the sensitive detector
+   maxHitSagitta * Set the maximum sagitta for a hit.
+   maxHitLength * Set the maximum length for a hit.
+   apothem * Set the apothem of the drift region.
+   wireSpacing * Set the wire spacing.
+   maxWireCount * Set the maximum number of wires in a plane.
+
+
+Command /Captain/Cryostat/mImmersed/Drift/VPlane/opacity
+Guidance :
+Set the log of the relative opacity. Useful values are between [-0.5, 0.5], and +/-10 makes the object opague or transparent. A value of 0 leaves the opacity unchanged.
+
+Parameter : opacity
+ Parameter type  : d
+ Omittable       : False
+
+
+
+Command /Captain/Cryostat/mImmersed/Drift/VPlane/daughterOpacity
+Guidance :
+Set the log of the relative opacity of the daughters.
+
+Parameter : opacity
+ Parameter type  : d
+ Omittable       : False
+
+
+
+Command /Captain/Cryostat/mImmersed/Drift/VPlane/check
+Guidance :
+If this is true then check for overlaps
+
+Parameter : check
+ Parameter type  : b
+ Omittable       : False
+
+
+
+Command /Captain/Cryostat/mImmersed/Drift/VPlane/sensitive
+Guidance :
+Set the name of the sensitive detector
+
+Parameter : Name
+ Parameter type  : s
+ Omittable       : False
+
+Parameter : Type
+ Parameter type  : s
+ Omittable       : False
+
+
+
+Command /Captain/Cryostat/mImmersed/Drift/VPlane/maxHitSagitta
+Guidance :
+Set the maximum sagitta for a hit.
+
+Parameter : Sagitta
+ Parameter type  : d
+ Omittable       : False
+
+Parameter : Unit
+ Parameter type  : s
+ Omittable       : False
+ Candidates      : pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
+
+
+
+Command /Captain/Cryostat/mImmersed/Drift/VPlane/maxHitLength
+Guidance :
+Set the maximum length for a hit.
+
+Parameter : HitLength
+ Parameter type  : d
+ Omittable       : False
+
+Parameter : Unit
+ Parameter type  : s
+ Omittable       : False
+ Candidates      : pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
+
+
+
+Command /Captain/Cryostat/mImmersed/Drift/VPlane/apothem
+Guidance :
+Set the apothem of the drift region.
+
+Parameter : apothem
+ Parameter type  : d
+ Omittable       : False
+
+Parameter : Unit
+ Parameter type  : s
+ Omittable       : False
+ Candidates      : pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
+
+
+
+Command /Captain/Cryostat/mImmersed/Drift/VPlane/wireSpacing
+Guidance :
+Set the wire spacing.
+
+Parameter : spacing
+ Parameter type  : d
+ Omittable       : False
+
+Parameter : Unit
+ Parameter type  : s
+ Omittable       : False
+ Candidates      : pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
+
+
+
+Command /Captain/Cryostat/mImmersed/Drift/VPlane/maxWireCount
+Guidance :
+Set the maximum number of wires in a plane.
+
+Parameter : count
+ Parameter type  : i
+ Omittable       : False
+
+Command directory path : /Captain/Cryostat/mImmersed/Drift/UPlane/
+
+
+Guidance :
+Control the drift region geometry.
+
+ Sub-directories : 
+ Commands : 
+   opacity * Set the log of the relative opacity. Useful values are between [-0.5, 0.5], and +/-10 makes the object opague or transparent. A value of 0 leaves the opacity unchanged.
+   daughterOpacity * Set the log of the relative opacity of the daughters.
+   check * If this is true then check for overlaps
+   sensitive * Set the name of the sensitive detector
+   maxHitSagitta * Set the maximum sagitta for a hit.
+   maxHitLength * Set the maximum length for a hit.
+   apothem * Set the apothem of the drift region.
+   wireSpacing * Set the wire spacing.
+   maxWireCount * Set the maximum number of wires in a plane.
+
+
+Command /Captain/Cryostat/mImmersed/Drift/UPlane/opacity
+Guidance :
+Set the log of the relative opacity. Useful values are between [-0.5, 0.5], and +/-10 makes the object opague or transparent. A value of 0 leaves the opacity unchanged.
+
+Parameter : opacity
+ Parameter type  : d
+ Omittable       : False
+
+
+
+Command /Captain/Cryostat/mImmersed/Drift/UPlane/daughterOpacity
+Guidance :
+Set the log of the relative opacity of the daughters.
+
+Parameter : opacity
+ Parameter type  : d
+ Omittable       : False
+
+
+
+Command /Captain/Cryostat/mImmersed/Drift/UPlane/check
+Guidance :
+If this is true then check for overlaps
+
+Parameter : check
+ Parameter type  : b
+ Omittable       : False
+
+
+
+Command /Captain/Cryostat/mImmersed/Drift/UPlane/sensitive
+Guidance :
+Set the name of the sensitive detector
+
+Parameter : Name
+ Parameter type  : s
+ Omittable       : False
+
+Parameter : Type
+ Parameter type  : s
+ Omittable       : False
+
+
+
+Command /Captain/Cryostat/mImmersed/Drift/UPlane/maxHitSagitta
+Guidance :
+Set the maximum sagitta for a hit.
+
+Parameter : Sagitta
+ Parameter type  : d
+ Omittable       : False
+
+Parameter : Unit
+ Parameter type  : s
+ Omittable       : False
+ Candidates      : pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
+
+
+
+Command /Captain/Cryostat/mImmersed/Drift/UPlane/maxHitLength
+Guidance :
+Set the maximum length for a hit.
+
+Parameter : HitLength
+ Parameter type  : d
+ Omittable       : False
+
+Parameter : Unit
+ Parameter type  : s
+ Omittable       : False
+ Candidates      : pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
+
+
+
+Command /Captain/Cryostat/mImmersed/Drift/UPlane/apothem
+Guidance :
+Set the apothem of the drift region.
+
+Parameter : apothem
+ Parameter type  : d
+ Omittable       : False
+
+Parameter : Unit
+ Parameter type  : s
+ Omittable       : False
+ Candidates      : pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
+
+
+
+Command /Captain/Cryostat/mImmersed/Drift/UPlane/wireSpacing
+Guidance :
+Set the wire spacing.
+
+Parameter : spacing
+ Parameter type  : d
+ Omittable       : False
+
+Parameter : Unit
+ Parameter type  : s
+ Omittable       : False
+ Candidates      : pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
+
+
+
+Command /Captain/Cryostat/mImmersed/Drift/UPlane/maxWireCount
+Guidance :
+Set the maximum number of wires in a plane.
+
+Parameter : count
+ Parameter type  : i
+ Omittable       : False
+
+Command directory path : /Captain/Cryostat/mImmersed/Drift/GridPlane/
+
+
+Guidance :
+Control the drift region geometry.
+
+ Sub-directories : 
+ Commands : 
+   opacity * Set the log of the relative opacity. Useful values are between [-0.5, 0.5], and +/-10 makes the object opague or transparent. A value of 0 leaves the opacity unchanged.
+   daughterOpacity * Set the log of the relative opacity of the daughters.
+   check * If this is true then check for overlaps
+   sensitive * Set the name of the sensitive detector
+   maxHitSagitta * Set the maximum sagitta for a hit.
+   maxHitLength * Set the maximum length for a hit.
+   apothem * Set the apothem of the drift region.
+   wireSpacing * Set the wire spacing.
+   maxWireCount * Set the maximum number of wires in a plane.
+
+
+Command /Captain/Cryostat/mImmersed/Drift/GridPlane/opacity
+Guidance :
+Set the log of the relative opacity. Useful values are between [-0.5, 0.5], and +/-10 makes the object opague or transparent. A value of 0 leaves the opacity unchanged.
+
+Parameter : opacity
+ Parameter type  : d
+ Omittable       : False
+
+
+
+Command /Captain/Cryostat/mImmersed/Drift/GridPlane/daughterOpacity
+Guidance :
+Set the log of the relative opacity of the daughters.
+
+Parameter : opacity
+ Parameter type  : d
+ Omittable       : False
+
+
+
+Command /Captain/Cryostat/mImmersed/Drift/GridPlane/check
+Guidance :
+If this is true then check for overlaps
+
+Parameter : check
+ Parameter type  : b
+ Omittable       : False
+
+
+
+Command /Captain/Cryostat/mImmersed/Drift/GridPlane/sensitive
+Guidance :
+Set the name of the sensitive detector
+
+Parameter : Name
+ Parameter type  : s
+ Omittable       : False
+
+Parameter : Type
+ Parameter type  : s
+ Omittable       : False
+
+
+
+Command /Captain/Cryostat/mImmersed/Drift/GridPlane/maxHitSagitta
+Guidance :
+Set the maximum sagitta for a hit.
+
+Parameter : Sagitta
+ Parameter type  : d
+ Omittable       : False
+
+Parameter : Unit
+ Parameter type  : s
+ Omittable       : False
+ Candidates      : pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
+
+
+
+Command /Captain/Cryostat/mImmersed/Drift/GridPlane/maxHitLength
+Guidance :
+Set the maximum length for a hit.
+
+Parameter : HitLength
+ Parameter type  : d
+ Omittable       : False
+
+Parameter : Unit
+ Parameter type  : s
+ Omittable       : False
+ Candidates      : pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
+
+
+
+Command /Captain/Cryostat/mImmersed/Drift/GridPlane/apothem
+Guidance :
+Set the apothem of the drift region.
+
+Parameter : apothem
+ Parameter type  : d
+ Omittable       : False
+
+Parameter : Unit
+ Parameter type  : s
+ Omittable       : False
+ Candidates      : pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
+
+
+
+Command /Captain/Cryostat/mImmersed/Drift/GridPlane/wireSpacing
+Guidance :
+Set the wire spacing.
+
+Parameter : spacing
+ Parameter type  : d
+ Omittable       : False
+
+Parameter : Unit
+ Parameter type  : s
+ Omittable       : False
+ Candidates      : pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
+
+
+
+Command /Captain/Cryostat/mImmersed/Drift/GridPlane/maxWireCount
+Guidance :
+Set the maximum number of wires in a plane.
+
+Parameter : count
+ Parameter type  : i
+ Omittable       : False
+
+Command directory path : /Captain/Cryostat/mImmersed/Drift/GroundPlane/
+
+
+Guidance :
+Control the drift region geometry.
+
+ Sub-directories : 
+ Commands : 
+   opacity * Set the log of the relative opacity. Useful values are between [-0.5, 0.5], and +/-10 makes the object opague or transparent. A value of 0 leaves the opacity unchanged.
+   daughterOpacity * Set the log of the relative opacity of the daughters.
+   check * If this is true then check for overlaps
+   sensitive * Set the name of the sensitive detector
+   maxHitSagitta * Set the maximum sagitta for a hit.
+   maxHitLength * Set the maximum length for a hit.
+   apothem * Set the apothem of the drift region.
+   wireSpacing * Set the wire spacing.
+   maxWireCount * Set the maximum number of wires in a plane.
+
+
+Command /Captain/Cryostat/mImmersed/Drift/GroundPlane/opacity
+Guidance :
+Set the log of the relative opacity. Useful values are between [-0.5, 0.5], and +/-10 makes the object opague or transparent. A value of 0 leaves the opacity unchanged.
+
+Parameter : opacity
+ Parameter type  : d
+ Omittable       : False
+
+
+
+Command /Captain/Cryostat/mImmersed/Drift/GroundPlane/daughterOpacity
+Guidance :
+Set the log of the relative opacity of the daughters.
+
+Parameter : opacity
+ Parameter type  : d
+ Omittable       : False
+
+
+
+Command /Captain/Cryostat/mImmersed/Drift/GroundPlane/check
+Guidance :
+If this is true then check for overlaps
+
+Parameter : check
+ Parameter type  : b
+ Omittable       : False
+
+
+
+Command /Captain/Cryostat/mImmersed/Drift/GroundPlane/sensitive
+Guidance :
+Set the name of the sensitive detector
+
+Parameter : Name
+ Parameter type  : s
+ Omittable       : False
+
+Parameter : Type
+ Parameter type  : s
+ Omittable       : False
+
+
+
+Command /Captain/Cryostat/mImmersed/Drift/GroundPlane/maxHitSagitta
+Guidance :
+Set the maximum sagitta for a hit.
+
+Parameter : Sagitta
+ Parameter type  : d
+ Omittable       : False
+
+Parameter : Unit
+ Parameter type  : s
+ Omittable       : False
+ Candidates      : pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
+
+
+
+Command /Captain/Cryostat/mImmersed/Drift/GroundPlane/maxHitLength
+Guidance :
+Set the maximum length for a hit.
+
+Parameter : HitLength
+ Parameter type  : d
+ Omittable       : False
+
+Parameter : Unit
+ Parameter type  : s
+ Omittable       : False
+ Candidates      : pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
+
+
+
+Command /Captain/Cryostat/mImmersed/Drift/GroundPlane/apothem
+Guidance :
+Set the apothem of the drift region.
+
+Parameter : apothem
+ Parameter type  : d
+ Omittable       : False
+
+Parameter : Unit
+ Parameter type  : s
+ Omittable       : False
+ Candidates      : pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
+
+
+
+Command /Captain/Cryostat/mImmersed/Drift/GroundPlane/wireSpacing
+Guidance :
+Set the wire spacing.
+
+Parameter : spacing
+ Parameter type  : d
+ Omittable       : False
+
+Parameter : Unit
+ Parameter type  : s
+ Omittable       : False
+ Candidates      : pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
+
+
+
+Command /Captain/Cryostat/mImmersed/Drift/GroundPlane/maxWireCount
+Guidance :
+Set the maximum number of wires in a plane.
+
+Parameter : count
+ Parameter type  : i
+ Omittable       : False
+
+Command directory path : /Captain/Cryostat/mImmersed/PMTAssembly/
+
+
+Guidance :
+Control the drift region geometry.
+
+ Sub-directories : 
+   /Captain/Cryostat/mImmersed/PMTAssembly/PMT/   Control the PMT construction.
+ Commands : 
+   opacity * Set the log of the relative opacity. Useful values are between [-0.5, 0.5], and +/-10 makes the object opague or transparent. A value of 0 leaves the opacity unchanged.
+   daughterOpacity * Set the log of the relative opacity of the daughters.
+   check * If this is true then check for overlaps
+   sensitive * Set the name of the sensitive detector
+   maxHitSagitta * Set the maximum sagitta for a hit.
+   maxHitLength * Set the maximum length for a hit.
+   apothem * Set the apothem of the PMT assembly.
+
+
+Command /Captain/Cryostat/mImmersed/PMTAssembly/opacity
+Guidance :
+Set the log of the relative opacity. Useful values are between [-0.5, 0.5], and +/-10 makes the object opague or transparent. A value of 0 leaves the opacity unchanged.
+
+Parameter : opacity
+ Parameter type  : d
+ Omittable       : False
+
+
+
+Command /Captain/Cryostat/mImmersed/PMTAssembly/daughterOpacity
+Guidance :
+Set the log of the relative opacity of the daughters.
+
+Parameter : opacity
+ Parameter type  : d
+ Omittable       : False
+
+
+
+Command /Captain/Cryostat/mImmersed/PMTAssembly/check
+Guidance :
+If this is true then check for overlaps
+
+Parameter : check
+ Parameter type  : b
+ Omittable       : False
+
+
+
+Command /Captain/Cryostat/mImmersed/PMTAssembly/sensitive
+Guidance :
+Set the name of the sensitive detector
+
+Parameter : Name
+ Parameter type  : s
+ Omittable       : False
+
+Parameter : Type
+ Parameter type  : s
+ Omittable       : False
+
+
+
+Command /Captain/Cryostat/mImmersed/PMTAssembly/maxHitSagitta
+Guidance :
+Set the maximum sagitta for a hit.
+
+Parameter : Sagitta
+ Parameter type  : d
+ Omittable       : False
+
+Parameter : Unit
+ Parameter type  : s
+ Omittable       : False
+ Candidates      : pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
+
+
+
+Command /Captain/Cryostat/mImmersed/PMTAssembly/maxHitLength
+Guidance :
+Set the maximum length for a hit.
+
+Parameter : HitLength
+ Parameter type  : d
+ Omittable       : False
+
+Parameter : Unit
+ Parameter type  : s
+ Omittable       : False
+ Candidates      : pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
+
+
+
+Command /Captain/Cryostat/mImmersed/PMTAssembly/apothem
+Guidance :
+Set the apothem of the PMT assembly.
+
+Parameter : apothem
+ Parameter type  : d
+ Omittable       : False
+
+Parameter : Unit
+ Parameter type  : s
+ Omittable       : False
+ Candidates      : pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
+
+Command directory path : /Captain/Cryostat/mImmersed/PMTAssembly/PMT/
+
+
+Guidance :
+Control the PMT construction.
+
+ Sub-directories : 
+ Commands : 
+   opacity * Set the log of the relative opacity. Useful values are between [-0.5, 0.5], and +/-10 makes the object opague or transparent. A value of 0 leaves the opacity unchanged.
+   daughterOpacity * Set the log of the relative opacity of the daughters.
+   check * If this is true then check for overlaps
+   sensitive * Set the name of the sensitive detector
+   maxHitSagitta * Set the maximum sagitta for a hit.
+   maxHitLength * Set the maximum length for a hit.
+   size * Set the PMT size.
+   baseLength * Set the PMT base length.
+   round * Flag that the PMT is round.
+
+
+Command /Captain/Cryostat/mImmersed/PMTAssembly/PMT/opacity
+Guidance :
+Set the log of the relative opacity. Useful values are between [-0.5, 0.5], and +/-10 makes the object opague or transparent. A value of 0 leaves the opacity unchanged.
+
+Parameter : opacity
+ Parameter type  : d
+ Omittable       : False
+
+
+
+Command /Captain/Cryostat/mImmersed/PMTAssembly/PMT/daughterOpacity
+Guidance :
+Set the log of the relative opacity of the daughters.
+
+Parameter : opacity
+ Parameter type  : d
+ Omittable       : False
+
+
+
+Command /Captain/Cryostat/mImmersed/PMTAssembly/PMT/check
+Guidance :
+If this is true then check for overlaps
+
+Parameter : check
+ Parameter type  : b
+ Omittable       : False
+
+
+
+Command /Captain/Cryostat/mImmersed/PMTAssembly/PMT/sensitive
+Guidance :
+Set the name of the sensitive detector
+
+Parameter : Name
+ Parameter type  : s
+ Omittable       : False
+
+Parameter : Type
+ Parameter type  : s
+ Omittable       : False
+
+
+
+Command /Captain/Cryostat/mImmersed/PMTAssembly/PMT/maxHitSagitta
+Guidance :
+Set the maximum sagitta for a hit.
+
+Parameter : Sagitta
+ Parameter type  : d
+ Omittable       : False
+
+Parameter : Unit
+ Parameter type  : s
+ Omittable       : False
+ Candidates      : pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
+
+
+
+Command /Captain/Cryostat/mImmersed/PMTAssembly/PMT/maxHitLength
+Guidance :
+Set the maximum length for a hit.
+
+Parameter : HitLength
+ Parameter type  : d
+ Omittable       : False
+
+Parameter : Unit
+ Parameter type  : s
+ Omittable       : False
+ Candidates      : pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
+
+
+
+Command /Captain/Cryostat/mImmersed/PMTAssembly/PMT/size
+Guidance :
+Set the PMT size.
+
+Parameter : size
+ Parameter type  : d
+ Omittable       : False
+
+Parameter : Unit
+ Parameter type  : s
+ Omittable       : False
+ Candidates      : pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
+
+
+
+Command /Captain/Cryostat/mImmersed/PMTAssembly/PMT/baseLength
+Guidance :
+Set the PMT base length.
+
+Parameter : length
+ Parameter type  : d
+ Omittable       : False
+
+Parameter : Unit
+ Parameter type  : s
+ Omittable       : False
+ Candidates      : pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
+
+
+
+Command /Captain/Cryostat/mImmersed/PMTAssembly/PMT/round
+Guidance :
+Flag that the PMT is round.
+
+Parameter : 
+ Parameter type  : b
+ Omittable       : False
+
+Command directory path : /Captain/Cryostat/mExposed/
+
+
+Guidance :
+Control the exposed geometry.
+
+ Sub-directories : 
+ Commands : 
+   opacity * Set the log of the relative opacity. Useful values are between [-0.5, 0.5], and +/-10 makes the object opague or transparent. A value of 0 leaves the opacity unchanged.
+   daughterOpacity * Set the log of the relative opacity of the daughters.
+   check * If this is true then check for overlaps
+   sensitive * Set the name of the sensitive detector
+   maxHitSagitta * Set the maximum sagitta for a hit.
+   maxHitLength * Set the maximum length for a hit.
+
+
+Command /Captain/Cryostat/mExposed/opacity
+Guidance :
+Set the log of the relative opacity. Useful values are between [-0.5, 0.5], and +/-10 makes the object opague or transparent. A value of 0 leaves the opacity unchanged.
+
+Parameter : opacity
+ Parameter type  : d
+ Omittable       : False
+
+
+
+Command /Captain/Cryostat/mExposed/daughterOpacity
+Guidance :
+Set the log of the relative opacity of the daughters.
+
+Parameter : opacity
+ Parameter type  : d
+ Omittable       : False
+
+
+
+Command /Captain/Cryostat/mExposed/check
+Guidance :
+If this is true then check for overlaps
+
+Parameter : check
+ Parameter type  : b
+ Omittable       : False
+
+
+
+Command /Captain/Cryostat/mExposed/sensitive
+Guidance :
+Set the name of the sensitive detector
+
+Parameter : Name
+ Parameter type  : s
+ Omittable       : False
+
+Parameter : Type
+ Parameter type  : s
+ Omittable       : False
+
+
+
+Command /Captain/Cryostat/mExposed/maxHitSagitta
+Guidance :
+Set the maximum sagitta for a hit.
+
+Parameter : Sagitta
+ Parameter type  : d
+ Omittable       : False
+
+Parameter : Unit
+ Parameter type  : s
+ Omittable       : False
+ Candidates      : pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
+
+
+
+Command /Captain/Cryostat/mExposed/maxHitLength
+Guidance :
+Set the maximum length for a hit.
+
+Parameter : HitLength
  Parameter type  : d
  Omittable       : False
 
@@ -5308,7 +7335,7 @@ Parameter : particleName
  Parameter type  : s
  Omittable       : True
  Default value   : geantino
- Candidates      : B+ B- B0 Bc+ Bc- Bs0 D+ D- D0 Ds+ Ds- GenericIon He3 J/psi N(1440)+ N(1440)0 N(1520)+ N(1520)0 N(1535)+ N(1535)0 N(1650)+ N(1650)0 N(1675)+ N(1675)0 N(1680)+ N(1680)0 N(1700)+ N(1700)0 N(1710)+ N(1710)0 N(1720)+ N(1720)0 N(1900)+ N(1900)0 N(1990)+ N(1990)0 N(2090)+ N(2090)0 N(2190)+ N(2190)0 N(2220)+ N(2220)0 N(2250)+ N(2250)0 Upsiron a0(1450)+ a0(1450)- a0(1450)0 a0(980)+ a0(980)- a0(980)0 a1(1260)+ a1(1260)- a1(1260)0 a2(1320)+ a2(1320)- a2(1320)0 alpha anti_B0 anti_Bs0 anti_D0 anti_He3 anti_N(1440)+ anti_N(1440)0 anti_N(1520)+ anti_N(1520)0 anti_N(1535)+ anti_N(1535)0 anti_N(1650)+ anti_N(1650)0 anti_N(1675)+ anti_N(1675)0 anti_N(1680)+ anti_N(1680)0 anti_N(1700)+ anti_N(1700)0 anti_N(1710)+ anti_N(1710)0 anti_N(1720)+ anti_N(1720)0 anti_N(1900)+ anti_N(1900)0 anti_N(1990)+ anti_N(1990)0 anti_N(2090)+ anti_N(2090)0 anti_N(2190)+ anti_N(2190)0 anti_N(2220)+ anti_N(2220)0 anti_N(2250)+ anti_N(2250)0 anti_alpha anti_b_quark anti_c_quark anti_d_quark anti_dd1_diquark anti_delta(1600)+ anti_delta(1600)++ anti_delta(1600)- anti_delta(1600)0 anti_delta(1620)+ anti_delta(1620)++ anti_delta(1620)- anti_delta(1620)0 anti_delta(1700)+ anti_delta(1700)++ anti_delta(1700)- anti_delta(1700)0 anti_delta(1900)+ anti_delta(1900)++ anti_delta(1900)- anti_delta(1900)0 anti_delta(1905)+ anti_delta(1905)++ anti_delta(1905)- anti_delta(1905)0 anti_delta(1910)+ anti_delta(1910)++ anti_delta(1910)- anti_delta(1910)0 anti_delta(1920)+ anti_delta(1920)++ anti_delta(1920)- anti_delta(1920)0 anti_delta(1930)+ anti_delta(1930)++ anti_delta(1930)- anti_delta(1930)0 anti_delta(1950)+ anti_delta(1950)++ anti_delta(1950)- anti_delta(1950)0 anti_delta+ anti_delta++ anti_delta- anti_delta0 anti_deuteron anti_k(1460)0 anti_k0_star(1430)0 anti_k1(1270)0 anti_k1(1400)0 anti_k2(1770)0 anti_k2_star(1430)0 anti_k2_star(1980)0 anti_k3_star(1780)0 anti_k_star(1410)0 anti_k_star(1680)0 anti_k_star0 anti_kaon0 anti_lambda anti_lambda(1405) anti_lambda(1520) anti_lambda(1600) anti_lambda(1670) anti_lambda(1690) anti_lambda(1800) anti_lambda(1810) anti_lambda(1820) anti_lambda(1830) anti_lambda(1890) anti_lambda(2100) anti_lambda(2110) anti_lambda_b anti_lambda_c+ anti_neutron anti_nu_e anti_nu_mu anti_nu_tau anti_omega- anti_omega_b- anti_omega_c0 anti_proton anti_s_quark anti_sd0_diquark anti_sd1_diquark anti_sigma(1385)+ anti_sigma(1385)- anti_sigma(1385)0 anti_sigma(1660)+ anti_sigma(1660)- anti_sigma(1660)0 anti_sigma(1670)+ anti_sigma(1670)- anti_sigma(1670)0 anti_sigma(1750)+ anti_sigma(1750)- anti_sigma(1750)0 anti_sigma(1775)+ anti_sigma(1775)- anti_sigma(1775)0 anti_sigma(1915)+ anti_sigma(1915)- anti_sigma(1915)0 anti_sigma(1940)+ anti_sigma(1940)- anti_sigma(1940)0 anti_sigma(2030)+ anti_sigma(2030)- anti_sigma(2030)0 anti_sigma+ anti_sigma- anti_sigma0 anti_sigma_b+ anti_sigma_b- anti_sigma_b0 anti_sigma_c+ anti_sigma_c++ anti_sigma_c0 anti_ss1_diquark anti_su0_diquark anti_su1_diquark anti_t_quark anti_triton anti_u_quark anti_ud0_diquark anti_ud1_diquark anti_uu1_diquark anti_xi(1530)- anti_xi(1530)0 anti_xi(1690)- anti_xi(1690)0 anti_xi(1820)- anti_xi(1820)0 anti_xi(1950)- anti_xi(1950)0 anti_xi(2030)- anti_xi(2030)0 anti_xi- anti_xi0 anti_xi_b- anti_xi_b0 anti_xi_c+ anti_xi_c0 b1(1235)+ b1(1235)- b1(1235)0 b_quark c_quark chargedgeantino d_quark dd1_diquark delta(1600)+ delta(1600)++ delta(1600)- delta(1600)0 delta(1620)+ delta(1620)++ delta(1620)- delta(1620)0 delta(1700)+ delta(1700)++ delta(1700)- delta(1700)0 delta(1900)+ delta(1900)++ delta(1900)- delta(1900)0 delta(1905)+ delta(1905)++ delta(1905)- delta(1905)0 delta(1910)+ delta(1910)++ delta(1910)- delta(1910)0 delta(1920)+ delta(1920)++ delta(1920)- delta(1920)0 delta(1930)+ delta(1930)++ delta(1930)- delta(1930)0 delta(1950)+ delta(1950)++ delta(1950)- delta(1950)0 delta+ delta++ delta- delta0 deuteron e+ e- eta eta(1295) eta(1405) eta(1475) eta2(1645) eta2(1870) eta_prime etac f0(1370) f0(1500) f0(1710) f0(600) f0(980) f1(1285) f1(1420) f2(1270) f2(1810) f2(2010) f2_prime(1525) gamma geantino gluon h1(1170) h1(1380) k(1460)+ k(1460)- k(1460)0 k0_star(1430)+ k0_star(1430)- k0_star(1430)0 k1(1270)+ k1(1270)- k1(1270)0 k1(1400)+ k1(1400)- k1(1400)0 k2(1770)+ k2(1770)- k2(1770)0 k2_star(1430)+ k2_star(1430)- k2_star(1430)0 k2_star(1980)+ k2_star(1980)- k2_star(1980)0 k3_star(1780)+ k3_star(1780)- k3_star(1780)0 k_star(1410)+ k_star(1410)- k_star(1410)0 k_star(1680)+ k_star(1680)- k_star(1680)0 k_star+ k_star- k_star0 kaon+ kaon- kaon0 kaon0L kaon0S lambda lambda(1405) lambda(1520) lambda(1600) lambda(1670) lambda(1690) lambda(1800) lambda(1810) lambda(1820) lambda(1830) lambda(1890) lambda(2100) lambda(2110) lambda_b lambda_c+ mu+ mu- neutron nu_e nu_mu nu_tau omega omega(1420) omega(1650) omega- omega3(1670) omega_b- omega_c0 opticalphoton phi phi(1680) phi3(1850) pi(1300)+ pi(1300)- pi(1300)0 pi+ pi- pi0 pi2(1670)+ pi2(1670)- pi2(1670)0 proton rho(1450)+ rho(1450)- rho(1450)0 rho(1700)+ rho(1700)- rho(1700)0 rho+ rho- rho0 rho3(1690)+ rho3(1690)- rho3(1690)0 s_quark sd0_diquark sd1_diquark sigma(1385)+ sigma(1385)- sigma(1385)0 sigma(1660)+ sigma(1660)- sigma(1660)0 sigma(1670)+ sigma(1670)- sigma(1670)0 sigma(1750)+ sigma(1750)- sigma(1750)0 sigma(1775)+ sigma(1775)- sigma(1775)0 sigma(1915)+ sigma(1915)- sigma(1915)0 sigma(1940)+ sigma(1940)- sigma(1940)0 sigma(2030)+ sigma(2030)- sigma(2030)0 sigma+ sigma- sigma0 sigma_b+ sigma_b- sigma_b0 sigma_c+ sigma_c++ sigma_c0 ss1_diquark su0_diquark su1_diquark t_quark tau+ tau- triton u_quark ud0_diquark ud1_diquark uu1_diquark xi(1530)- xi(1530)0 xi(1690)- xi(1690)0 xi(1820)- xi(1820)0 xi(1950)- xi(1950)0 xi(2030)- xi(2030)0 xi- xi0 xi_b- xi_b0 xi_c+ xi_c0 ion 
+ Candidates      : B+ B- B0 Bc+ Bc- Bs0 D+ D- D0 Ds+ Ds- GenericIon He3 J/psi N(1440)+ N(1440)0 N(1520)+ N(1520)0 N(1535)+ N(1535)0 N(1650)+ N(1650)0 N(1675)+ N(1675)0 N(1680)+ N(1680)0 N(1700)+ N(1700)0 N(1710)+ N(1710)0 N(1720)+ N(1720)0 N(1900)+ N(1900)0 N(1990)+ N(1990)0 N(2090)+ N(2090)0 N(2190)+ N(2190)0 N(2220)+ N(2220)0 N(2250)+ N(2250)0 Upsiron a0(1450)+ a0(1450)- a0(1450)0 a0(980)+ a0(980)- a0(980)0 a1(1260)+ a1(1260)- a1(1260)0 a2(1320)+ a2(1320)- a2(1320)0 alpha anti_B0 anti_Bs0 anti_D0 anti_He3 anti_N(1440)+ anti_N(1440)0 anti_N(1520)+ anti_N(1520)0 anti_N(1535)+ anti_N(1535)0 anti_N(1650)+ anti_N(1650)0 anti_N(1675)+ anti_N(1675)0 anti_N(1680)+ anti_N(1680)0 anti_N(1700)+ anti_N(1700)0 anti_N(1710)+ anti_N(1710)0 anti_N(1720)+ anti_N(1720)0 anti_N(1900)+ anti_N(1900)0 anti_N(1990)+ anti_N(1990)0 anti_N(2090)+ anti_N(2090)0 anti_N(2190)+ anti_N(2190)0 anti_N(2220)+ anti_N(2220)0 anti_N(2250)+ anti_N(2250)0 anti_alpha anti_b_quark anti_c_quark anti_d_quark anti_dd1_diquark anti_delta(1600)+ anti_delta(1600)++ anti_delta(1600)- anti_delta(1600)0 anti_delta(1620)+ anti_delta(1620)++ anti_delta(1620)- anti_delta(1620)0 anti_delta(1700)+ anti_delta(1700)++ anti_delta(1700)- anti_delta(1700)0 anti_delta(1900)+ anti_delta(1900)++ anti_delta(1900)- anti_delta(1900)0 anti_delta(1905)+ anti_delta(1905)++ anti_delta(1905)- anti_delta(1905)0 anti_delta(1910)+ anti_delta(1910)++ anti_delta(1910)- anti_delta(1910)0 anti_delta(1920)+ anti_delta(1920)++ anti_delta(1920)- anti_delta(1920)0 anti_delta(1930)+ anti_delta(1930)++ anti_delta(1930)- anti_delta(1930)0 anti_delta(1950)+ anti_delta(1950)++ anti_delta(1950)- anti_delta(1950)0 anti_delta+ anti_delta++ anti_delta- anti_delta0 anti_deuteron anti_k(1460)0 anti_k0_star(1430)0 anti_k1(1270)0 anti_k1(1400)0 anti_k2(1770)0 anti_k2_star(1430)0 anti_k2_star(1980)0 anti_k3_star(1780)0 anti_k_star(1410)0 anti_k_star(1680)0 anti_k_star0 anti_kaon0 anti_lambda anti_lambda(1405) anti_lambda(1520) anti_lambda(1600) anti_lambda(1670) anti_lambda(1690) anti_lambda(1800) anti_lambda(1810) anti_lambda(1820) anti_lambda(1830) anti_lambda(1890) anti_lambda(2100) anti_lambda(2110) anti_lambda_b anti_lambda_c+ anti_neutron anti_nu_e anti_nu_mu anti_nu_tau anti_omega- anti_omega_b- anti_omega_c0 anti_proton anti_s_quark anti_sd0_diquark anti_sd1_diquark anti_sigma(1385)+ anti_sigma(1385)- anti_sigma(1385)0 anti_sigma(1660)+ anti_sigma(1660)- anti_sigma(1660)0 anti_sigma(1670)+ anti_sigma(1670)- anti_sigma(1670)0 anti_sigma(1750)+ anti_sigma(1750)- anti_sigma(1750)0 anti_sigma(1775)+ anti_sigma(1775)- anti_sigma(1775)0 anti_sigma(1915)+ anti_sigma(1915)- anti_sigma(1915)0 anti_sigma(1940)+ anti_sigma(1940)- anti_sigma(1940)0 anti_sigma(2030)+ anti_sigma(2030)- anti_sigma(2030)0 anti_sigma+ anti_sigma- anti_sigma0 anti_sigma_b+ anti_sigma_b- anti_sigma_b0 anti_sigma_c+ anti_sigma_c++ anti_sigma_c0 anti_ss1_diquark anti_su0_diquark anti_su1_diquark anti_t_quark anti_triton anti_u_quark anti_ud0_diquark anti_ud1_diquark anti_uu1_diquark anti_xi(1530)- anti_xi(1530)0 anti_xi(1690)- anti_xi(1690)0 anti_xi(1820)- anti_xi(1820)0 anti_xi(1950)- anti_xi(1950)0 anti_xi(2030)- anti_xi(2030)0 anti_xi- anti_xi0 anti_xi_b- anti_xi_b0 anti_xi_c+ anti_xi_c0 b1(1235)+ b1(1235)- b1(1235)0 b_quark c_quark chargedgeantino d_quark dd1_diquark delta(1600)+ delta(1600)++ delta(1600)- delta(1600)0 delta(1620)+ delta(1620)++ delta(1620)- delta(1620)0 delta(1700)+ delta(1700)++ delta(1700)- delta(1700)0 delta(1900)+ delta(1900)++ delta(1900)- delta(1900)0 delta(1905)+ delta(1905)++ delta(1905)- delta(1905)0 delta(1910)+ delta(1910)++ delta(1910)- delta(1910)0 delta(1920)+ delta(1920)++ delta(1920)- delta(1920)0 delta(1930)+ delta(1930)++ delta(1930)- delta(1930)0 delta(1950)+ delta(1950)++ delta(1950)- delta(1950)0 delta+ delta++ delta- delta0 deuteron e+ e- eta eta(1295) eta(1405) eta(1475) eta2(1645) eta2(1870) eta_prime etac f0(1370) f0(1500) f0(1710) f0(600) f0(980) f1(1285) f1(1420) f2(1270) f2(1810) f2(2010) f2_prime(1525) gamma geantino gluon h1(1170) h1(1380) k(1460)+ k(1460)- k(1460)0 k0_star(1430)+ k0_star(1430)- k0_star(1430)0 k1(1270)+ k1(1270)- k1(1270)0 k1(1400)+ k1(1400)- k1(1400)0 k2(1770)+ k2(1770)- k2(1770)0 k2_star(1430)+ k2_star(1430)- k2_star(1430)0 k2_star(1980)+ k2_star(1980)- k2_star(1980)0 k3_star(1780)+ k3_star(1780)- k3_star(1780)0 k_star(1410)+ k_star(1410)- k_star(1410)0 k_star(1680)+ k_star(1680)- k_star(1680)0 k_star+ k_star- k_star0 kaon+ kaon- kaon0 kaon0L kaon0S lambda lambda(1405) lambda(1520) lambda(1600) lambda(1670) lambda(1690) lambda(1800) lambda(1810) lambda(1820) lambda(1830) lambda(1890) lambda(2100) lambda(2110) lambda_b lambda_c+ mu+ mu- neutron nu_e nu_mu nu_tau omega omega(1420) omega(1650) omega- omega3(1670) omega_b- omega_c0 opticalphoton phi phi(1680) phi3(1850) pi(1300)+ pi(1300)- pi(1300)0 pi+ pi- pi0 pi2(1670)+ pi2(1670)- pi2(1670)0 proton rho(1450)+ rho(1450)- rho(1450)0 rho(1700)+ rho(1700)- rho(1700)0 rho+ rho- rho0 rho3(1690)+ rho3(1690)- rho3(1690)0 s_quark sd0_diquark sd1_diquark sigma(1385)+ sigma(1385)- sigma(1385)0 sigma(1660)+ sigma(1660)- sigma(1660)0 sigma(1670)+ sigma(1670)- sigma(1670)0 sigma(1750)+ sigma(1750)- sigma(1750)0 sigma(1775)+ sigma(1775)- sigma(1775)0 sigma(1915)+ sigma(1915)- sigma(1915)0 sigma(1940)+ sigma(1940)- sigma(1940)0 sigma(2030)+ sigma(2030)- sigma(2030)0 sigma+ sigma- sigma0 sigma_b+ sigma_b- sigma_b0 sigma_c+ sigma_c++ sigma_c0 ss1_diquark su0_diquark su1_diquark t_quark tau+ tau- thermalelectron triton u_quark ud0_diquark ud1_diquark uu1_diquark xi(1530)- xi(1530)0 xi(1690)- xi(1690)0 xi(1820)- xi(1820)0 xi(1950)- xi(1950)0 xi(2030)- xi(2030)0 xi- xi0 xi_b- xi_b0 xi_c+ xi_c0 ion 
 
 
 
@@ -7064,7 +9091,6 @@ Visualization commands.
    /vis/heprep/   HepRep commands.
    /vis/rayTracer/   RayTracer commands.
    /vis/gMocren/   gMocren commands.
-   /vis/ogl/   G4OpenGLViewer commands.
    /vis/modeling/   Modeling commands.
    /vis/filtering/   Filtering commands.
    /vis/geometry/   Operations on vis attributes of Geant4 geometry.
@@ -7264,7 +9290,7 @@ The scene handler becomes current (the name is auto-generated).
 Parameter : graphics-system-name
  Parameter type  : s
  Omittable       : False
- Candidates      : ATree DAWNFILE HepRepXML HepRepFile RayTracer VRML1FILE VRML2FILE gMocrenFile OGL OGLI OGLS OGL_FALLBACK OGLI_FALLBACK OGLS_FALLBACK OGLIX OGLSX OGLIQt OGLSQt OGLIQt_FALLBACK OGLSQt_FALLBACK RayTracerX
+ Candidates      : ATree DAWNFILE HepRepXML HepRepFile RayTracer VRML1FILE VRML2FILE gMocrenFile
 
 Parameter : window-size-hint
 integer (pixels) for square window placed by window manager or X-Windows-type geometry string, e.g. 600x600-100+100
@@ -7922,307 +9948,6 @@ Parameter : kDrawVolumeGrid
  Parameter type  : b
  Omittable       : False
  Default value   : 0
-
-Command directory path : /vis/ogl/
-
-
-Guidance :
-G4OpenGLViewer commands.
-
- Sub-directories : 
-   /vis/ogl/set/   G4OpenGLViewer set commands.
- Commands : 
-   printEPS * Print Encapsulated PostScript file.
-
-
-Command /vis/ogl/printEPS
-Guidance :
-Print Encapsulated PostScript file.
-Generates files with names G4OpenGL_n.eps, where n is a sequence
-number, starting at 0.
-Can be "vectored" or "pixmap" - see "/vis/ogl/set/printMode".
-
-Command directory path : /vis/ogl/set/
-
-
-Guidance :
-G4OpenGLViewer set commands.
-
- Sub-directories : 
- Commands : 
-   displayHeadTime * Display head time of range in 2D text.
-   displayLightFront * Display the light front at head time.
-   displayListLimit * Set/reset display list limit (to avoid memory exhaustion).
-   endTime * Set end and range of track time.
-   eventsDrawInterval * Set number of events allowed in drawing pipeline - speeds drawing
-   fade * 0: no fade; 1: maximum fade with time within range.
-   printFilename * Set print filename
-   printMode * Set print mode
-   printSize * Set print size
-   startTime * Set start and range of track time.
-   transparency * True/false to enable/disable rendering of transparent objects.
-
-
-Command /vis/ogl/set/displayHeadTime
-Guidance :
-Display head time of range in 2D text.
-
-Parameter : displayHeadTime
- Parameter type  : b
- Omittable       : False
- Default value   : 0
-
-Parameter : screenX
--1 < screenX < 1
- Parameter type  : d
- Omittable       : True
- Default value   : -0.9
- Parameter range : screenX >= -1. && screenX <= 1.
-
-Parameter : screenY
--1 < screenY < 1
- Parameter type  : d
- Omittable       : True
- Default value   : -0.9
- Parameter range : screenY >= -1. && screenY <= 1.
-
-Parameter : screenSize
- Parameter type  : d
- Omittable       : True
- Default value   : 24
-
-Parameter : red
- Parameter type  : d
- Omittable       : True
- Default value   : 0
- Parameter range : red >= 0. && red <= 1.
-
-Parameter : green
- Parameter type  : d
- Omittable       : True
- Default value   : 1
- Parameter range : green >= 0. && green <= 1.
-
-Parameter : blue
- Parameter type  : d
- Omittable       : True
- Default value   : 1
- Parameter range : blue >= 0. && blue <= 1.
-
-
-
-Command /vis/ogl/set/displayLightFront
-Guidance :
-Display the light front at head time.
-Tip: The trajectories can appear of jump ahead of the light front
-because their time range overlaps the viewer's time range.  To
-average out this discrete time effect, advance the light front by
-half the trajectories interval. E.g., if the trajectory time slice
-interval is 0.01 ns:
-  /vis/ogl/set/displayLightFront true -90 0 0 mm -0.005 ns
-To prevent them beating the light front at all:
-  /vis/ogl/set/displayLightFront true -90 0 0 mm -0.01 ns
-
-Parameter : displayLightFront
- Parameter type  : b
- Omittable       : False
- Default value   : 0
-
-Parameter : originX
- Parameter type  : d
- Omittable       : True
- Default value   : 0
-
-Parameter : originY
- Parameter type  : d
- Omittable       : True
- Default value   : 0
-
-Parameter : originZ
- Parameter type  : d
- Omittable       : True
- Default value   : 0
-
-Parameter : space_unit
- Parameter type  : s
- Omittable       : True
- Default value   : m
-
-Parameter : originT
- Parameter type  : d
- Omittable       : True
- Default value   : 0
-
-Parameter : time_unit
- Parameter type  : s
- Omittable       : True
- Default value   : s
-
-Parameter : red
- Parameter type  : d
- Omittable       : True
- Default value   : 0
- Parameter range : red >= 0. && red <= 1.
-
-Parameter : green
- Parameter type  : d
- Omittable       : True
- Default value   : 1
- Parameter range : green >= 0. && green <= 1.
-
-Parameter : blue
- Parameter type  : d
- Omittable       : True
- Default value   : 0
- Parameter range : blue >= 0. && blue <= 1.
-
-
-
-Command /vis/ogl/set/displayListLimit
-Guidance :
-Set/reset display list limit (to avoid memory exhaustion).
- Range of parameters : limit>=10000
-
-Parameter : limit
- Parameter type  : i
- Omittable       : True
- Default value   : 50000
-
-
-
-Command /vis/ogl/set/endTime
-Guidance :
-Set end and range of track time.
-
-Parameter : end-time
- Parameter type  : d
- Omittable       : False
- Default value   : 1.79769e+308
-
-Parameter : end-time-unit
- Parameter type  : s
- Omittable       : False
- Default value   : ns
-
-Parameter : time-range
- Parameter type  : d
- Omittable       : True
- Default value   : -1
-
-Parameter : time-range-unit
- Parameter type  : s
- Omittable       : True
- Default value   : ns
-
-
-
-Command /vis/ogl/set/eventsDrawInterval
-Guidance :
-Set number of events allowed in drawing pipeline - speeds drawing
-By default, the screen is updated at the end of every event.
-Allowing OpenGL to buffer several events can make a big improvement
-in drawing speed.
-
-Parameter : interval
- Parameter type  : i
- Omittable       : True
- Default value   : 1
-
-
-
-Command /vis/ogl/set/fade
-Guidance :
-0: no fade; 1: maximum fade with time within range.
- Range of parameters : fadefactor>=0.&&fadefactor<=1.
-
-Parameter : fadefactor
- Parameter type  : d
- Omittable       : False
- Default value   : 0
-
-
-
-Command /vis/ogl/set/printFilename
-Guidance :
-Set print filename
-Setting 'incremental' will increment filename by one at each new print, starting at 0
-
-Parameter : name
- Parameter type  : s
- Omittable       : True
- Default value   : G4OpenGL
-
-Parameter : incremental
- Parameter type  : b
- Omittable       : True
- Default value   : 1
-
-
-
-Command /vis/ogl/set/printMode
-Guidance :
-Set print mode
-
-Parameter : print_mode
- Parameter type  : s
- Omittable       : True
- Default value   : vectored
- Candidates      : vectored pixmap
-
-
-
-Command /vis/ogl/set/printSize
-Guidance :
-Set print size
-Tip : -1 will mean 'print size' = 'window size'
-       Setting size greatter than your maximum graphic card capacity , will set the size to maximum  size.
-
-Parameter : width
- Parameter type  : d
- Omittable       : False
- Default value   : -1
-
-Parameter : height
- Parameter type  : d
- Omittable       : False
- Default value   : -1
-
-
-
-Command /vis/ogl/set/startTime
-Guidance :
-Set start and range of track time.
-
-Parameter : start-time
- Parameter type  : d
- Omittable       : False
- Default value   : -1.79769e+308
-
-Parameter : start-time-unit
- Parameter type  : s
- Omittable       : False
- Default value   : ns
-
-Parameter : time-range
- Parameter type  : d
- Omittable       : True
- Default value   : -1
-
-Parameter : time-range-unit
- Parameter type  : s
- Omittable       : True
- Default value   : ns
-
-
-
-Command /vis/ogl/set/transparency
-Guidance :
-True/false to enable/disable rendering of transparent objects.
-
-Parameter : transparency-enabled
- Parameter type  : b
- Omittable       : True
- Default value   : 1
 
 Command directory path : /vis/modeling/
 
@@ -9869,7 +11594,7 @@ supplied.  This scene handler becomes current.
 Parameter : graphics-system-name
  Parameter type  : s
  Omittable       : False
- Candidates      : ATree DAWNFILE HepRepXML HepRepFile RayTracer VRML1FILE VRML2FILE gMocrenFile OGL OGLI OGLS OGL_FALLBACK OGLI_FALLBACK OGLS_FALLBACK OGLIX OGLSX OGLIQt OGLSQt OGLIQt_FALLBACK OGLSQt_FALLBACK RayTracerX
+ Candidates      : ATree DAWNFILE HepRepXML HepRepFile RayTracer VRML1FILE VRML2FILE gMocrenFile
 
 Parameter : scene-handler-name
  Parameter type  : s
@@ -11329,4 +13054,4 @@ Remove all of the boundaries for trajectory points.
 
 Graphics systems deleted.
 Visualization Manager deleting...
-ERROR: ../src/DSimRootPersistencyManager.cc:108: DSimRootPersistencyManager::Close -- No Output File
+ERROR: ../src/DSimRootPersistencyManager.cc:104: DSimRootPersistencyManager::Close -- No Output File
