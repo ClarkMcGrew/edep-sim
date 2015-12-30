@@ -71,7 +71,7 @@ int main(int argc,char** argv) {
             break;
         }
         case 'u': {
-            // Don't use a tcsh-style command line interface
+            // Use a tcsh-style command line interface
             useUI = true;
             break;
         }
