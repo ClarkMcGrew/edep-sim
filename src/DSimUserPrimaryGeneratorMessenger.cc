@@ -158,7 +158,8 @@ void DSimUserPrimaryGeneratorMessenger::SetNewValue(G4UIcommand* command,
         fAction->AddGenerator(generator);
     }
     else if (command == fCombineCMD) {
-        DSimCombinationGenerator* generator = new DSimCombinationGenerator();
+        DSimCombinationGenerator* generator
+            = new DSimCombinationGenerator(0,1,false);
         fAction->AddGenerator(generator);
     }
     else if (command == fSetKinematicsCMD) {

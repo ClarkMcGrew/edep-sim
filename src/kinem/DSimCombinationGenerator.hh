@@ -4,14 +4,17 @@
 class G4Event;
 #include <G4VPrimaryGenerator.hh>
 
-/// Combine the two most recent G4PrimaryVertex objects into a single vertex.
-/// The particles from the most recent G4PrimaryVertex (last on the list) are
-/// added to the previous G4PrimaryVertex using the time and position from the
-/// previous vertex.  If there are fewer than two primary vertices, then this
-/// doesn't do anything.
+/// Copy the vertex position from the source to the destination
+/// G4PrimaryVertex object.  This has the effect of making the particles in
+/// the vertices come from the same location (or vertex).  This also has an
+/// option to set the position of the destination vertex relative to the
+/// source vertex.  When this option is used, the source vertex position is
+/// added to the destination vertex (i.e. if the source vertex is [10,10,10]
+/// and the destination vertex is originally [1,1,1] the destination vertex
+/// becomes [11,11,11].
 class DSimCombinationGenerator: public G4VPrimaryGenerator {
 public:
-    DSimCombinationGenerator();
+    DSimCombinationGenerator(int src, int dest, bool relative);
     virtual ~DSimCombinationGenerator();
 
     /// A pure virtual method to generate the actual primary particles which

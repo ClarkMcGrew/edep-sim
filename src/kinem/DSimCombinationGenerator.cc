@@ -13,7 +13,8 @@
 #include "DSimException.hh"
 #include "DSimCombinationGenerator.hh"
 
-DSimCombinationGenerator::DSimCombinationGenerator() {}
+DSimCombinationGenerator::DSimCombinationGenerator(int src, int dest,
+                                                   bool relative) {}
 
 DSimCombinationGenerator::~DSimCombinationGenerator(void) {}
 
