@@ -106,7 +106,7 @@ private:
 
     G4UIcmdWithoutParameter* fClearCMD;
     G4UIcmdWithoutParameter* fAddCMD;
-    G4UIcmdWithoutParameter* fCombineCMD;
+    G4UIcommand* fCombineCMD;
     G4UIcmdWithAString* fSetKinematicsCMD;
     G4UIcmdWithAString* fSetCountCMD;
     G4UIcmdWithAString* fSetPositionCMD;

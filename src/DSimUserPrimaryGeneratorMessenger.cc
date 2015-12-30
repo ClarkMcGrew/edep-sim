@@ -31,6 +31,7 @@
 #include <G4UIcmdWithABool.hh>
 #include <G4UIcmdWithAString.hh>
 #include <G4UIcmdWithAnInteger.hh>
+#include <G4UIcommand.hh>
 
 #include <DSimLog.hh>
 
@@ -85,9 +86,13 @@ DSimUserPrimaryGeneratorMessenger::DSimUserPrimaryGeneratorMessenger(
     fAddCMD = new G4UIcmdWithoutParameter("/generator/add",this);
     fAddCMD->SetGuidance("Add a generator using the current factories.");
 
-    fCombineCMD = new G4UIcmdWithoutParameter("/generator/combine",this);
+    fCombineCMD = new G4UIcommand("/generator/combine",this);
     fCombineCMD->SetGuidance("Combine the previous two vertices into one.");
-
+    fCombineCMD->SetParameter(new G4UIparameter("src",'i',false));
+    fCombineCMD->SetParameter(new G4UIparameter("dest",'i',false));
+    fCombineCMD->SetParameter(new G4UIparameter("relative",'b',true));
+    fCombineCMD->GetParameter(2)->SetDefaultValue("false");
+    
     fSetKinematicsCMD 
         = new G4UIcmdWithAString("/generator/kinematics/set",this);
     fSetKinematicsCMD->SetGuidance("Set the current kinematics factory.");
@@ -149,7 +154,7 @@ DSimUserPrimaryGeneratorMessenger::~DSimUserPrimaryGeneratorMessenger() {
 }
 
 void DSimUserPrimaryGeneratorMessenger::SetNewValue(G4UIcommand* command, 
-                                                     G4String newValue) { 
+                                                    G4String newValue) { 
     if (command == fClearCMD) {
         fAction->ClearGenerators();
     }
@@ -158,8 +163,13 @@ void DSimUserPrimaryGeneratorMessenger::SetNewValue(G4UIcommand* command,
         fAction->AddGenerator(generator);
     }
     else if (command == fCombineCMD) {
+        int src, dest;
+        std::string relative;
+        std::istringstream is(newValue);
+        is >> src >> dest >> relative; 
         DSimCombinationGenerator* generator
-            = new DSimCombinationGenerator(0,1,false);
+            = new DSimCombinationGenerator(
+                src,dest,G4UIcommand::ConvertToBool(relative.c_str()));
         fAction->AddGenerator(generator);
     }
     else if (command == fSetKinematicsCMD) {
