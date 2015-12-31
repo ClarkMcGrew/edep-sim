@@ -23,5 +23,16 @@ public:
     
     /// Return the name of this generator.
     G4String GetName();
+
+private:
+    /// The index of the source vertex to copy from.
+    int fSource;
+
+    /// The index of the destination vertex to copy to.
+    int fDestination;
+
+    /// A flag to indicate if the new vertex position is a direct copy of the
+    /// source, or simply relative to the source.
+    bool fRelative;
 };
 #endif
