@@ -1,6 +1,6 @@
-# Example of generating an event with three particles at a common
-# vertex. In particular, this creates three muons with common vertex
-# point near the center of the detector.
+################################################################## 
+# A macro that uses the G4 particle gun to create three particles per event.
+##################################################################
 
 /dsim/control baseline 1.0
 /dsim/update
@@ -18,56 +18,54 @@
 
 # This source will be used to specify the position of the vertex.  The
 # any of the GPS direction and energy commands can be used.
-/gps/particle mu+
+/gps/particle mu-
 /gps/energy 600 MeV
 
 # This generates the position of the first particle gun.  It will be
 # used for the other particle guns.  The /gps/position command must
 # come first.
-/gps/position 0.0 0.0 -280.0 cm
+/gps/position 0.0 0.0 -50.0 cm
 /gps/pos/type Volume
 /gps/pos/shape Para
-/gps/pos/halfx 50 cm
-/gps/pos/halfy 50 cm
-/gps/pos/halfz 10 cm
+/gps/pos/halfx 1 cm
+/gps/pos/halfy 1 cm
+/gps/pos/halfz 1 cm
 
 # This generates the direction of the first particle gun.  This aims
 # the particle downstream with the directions uniformly distributed in
-# a 45 deg cone.
+# a 10 deg cone around the X axis.
 /gps/ang/type iso
-/gps/ang/maxtheta 45 deg
-/gps/ang/rot1 -1 0 0 
-/gps/ang/rot2  0 1 0
+/gps/ang/maxtheta 10 deg
+/gps/ang/rot1 0 -1 0 
+/gps/ang/rot2 0 0 1
 
 #########################################
 # Create the second particle source.
 #########################################
 /gps/source/add 2
-/gps/particle mu-
-/gps/energy 500 MeV
+/gps/particle proton
+/gps/energy 300 MeV
 
 # This generates the direction of the second particle gun.  This aims
 # the particle downstream with the directions uniformly distributed in
-# a 45 deg cone.
+# a 25 deg cone.
 /gps/ang/type iso
-/gps/ang/maxtheta 45 deg
-/gps/ang/rot1 -1 0 0 
-/gps/ang/rot2  0 1 0
+/gps/ang/maxtheta 25 deg
+/gps/ang/rot1 0 -1 0 
+/gps/ang/rot2 0 0 1
 
 #########################################
 # Create the third particle source.
 #########################################
 /gps/source/add 3
-/gps/particle mu-
-/gps/energy 1000 MeV
+/gps/particle mu+
+/gps/energy 300 MeV
 
-# This generates the direction of the second particle gun.  This aims
-# the particle downstream with the directions uniformly distributed in
-# a 20 deg cone.
+# This generates the direction of the third particle gun.
 /gps/ang/type iso
-/gps/ang/maxtheta 20 deg
-/gps/ang/rot1 -1 0 0 
-/gps/ang/rot2  0 1 0
+/gps/ang/maxtheta 25 deg
+/gps/ang/rot1 0 -1 0 
+/gps/ang/rot2 0 0 1
 
 # Create the GPS particle generator so it exists.  This isn't necessary for a
 # single particle generator since DETSIM will create it by default,
@@ -75,10 +73,8 @@
 # particles
 /generator/add
 
+# Copy the vertex position of the first particle into the second particle.
+/generator/combine 0 1
 
-# The GPS particles will be created like a "stack".  The combine
-# command takes the last two particles and combines them into a single
-# vertex.  If you have more than two particles, you can use multiple
-# combine commands until you get a single vertex.
-/generator/combine
-/generator/combine
+# Copy the vertex position of the first particle into the third particle.
+/generator/combine 0 2
