@@ -67,26 +67,8 @@ by setting
 /gps/pos/shape Rectangle
 /gps/pos/halfx 1 cm
 /gps/pos/halfy 1 cm
-/gps/pos/rot1 0 -1 0 
-/gps/pos/rot2 0 0 1 
-\endcode
-
-It's important that the /gps/position command comes first, and this creates
-the vertices in a 100 by 100 cm rectangle.  The X axis of the rectangle is
-defined by the /gps/pos/rot1 command, and the XY plane is determined by the
-/gps/pos/rot2 command.  Neither of the axes need to be unit vectors, and
-the rot2 vector doesn't need to be perpendicular to rot1 (the normal will
-be determined by rot1 cross rot2).
-
-The vertices can be distributed over a circle using 
-
-\code
-/gps/position 0 0 -50 cm
-/gps/pos/type Plane
-/gps/pos/shape Circle
-/gps/pos/radius 1 cm
-/gps/pos/rot1 0 -1 0 
-/gps/pos/rot2 0 0 1 
+/gps/pos/rot1 0 0 -1 
+/gps/pos/rot2 0 1 0 
 \endcode
 
 \subsection gpsPositionVolume Making a volume source
@@ -150,13 +132,15 @@ The directions will then be distributed around the negative Z axis in the
 rotated coordinate system.  This means that 
 
 \code
-/gps/ang/rot1 0 -1 0
-/gps/ang/rot2 0 0 1
+/gps/ang/rot1 0 0 1
+/gps/ang/rot2 0 1 0
 \endcode
 
 will rotate the direction coordinate system so that the local Z axis points
-along to global X axis.  This will cause the generated particles
-to travel along the positive X axis.
+along to global negative X axis.  This will cause the generated particles
+to travel along the positive X axis (i.e. along the local negative Z axis).
+Note: The default for /gps/ang/rot2 is [0 1 0], so it doesn't need to be
+specified.
 
 \subsection gpsDirectionFixed Setting a fixed particle direction
 
@@ -182,7 +166,7 @@ divergence (sigma) the following commands would be used.
 \code
 /gps/ang/type beam1d
 /gps/ang/sigma_r 10 deg
-/gps/ang/rot1 -1 0 0
+/gps/ang/rot1 0 0 1
 /gps/ang/rot2 0 1 0
 \endcode
 
@@ -221,7 +205,7 @@ or alternatively
 \code
 /gps/ang/type iso
 /gps/ang/maxtheta 10 deg
-/gps/ang/rot1 -1 0 0
+/gps/ang/rot1 0 0 1
 /gps/ang/rot2 0 1 0
 \endcode
 

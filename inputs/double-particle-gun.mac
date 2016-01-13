@@ -36,8 +36,8 @@
 # a 10 deg cone around the X axis.
 /gps/ang/type iso
 /gps/ang/maxtheta 10 deg
-/gps/ang/rot1 0 -1 0 
-/gps/ang/rot2 0 0 1
+/gps/ang/rot1 0 0 1 
+/gps/ang/rot2 0 1 0
 
 #########################################
 # Create the second particle source.
@@ -51,8 +51,8 @@
 # a 25 deg cone.
 /gps/ang/type iso
 /gps/ang/maxtheta 25 deg
-/gps/ang/rot1 0 -1 0 
-/gps/ang/rot2 0 0 1
+/gps/ang/rot1 0 0 1
+/gps/ang/rot2 0 1 0
 
 # Create the GPS particle generator so it exists.  This isn't necessary for a
 # single particle generator since DETSIM will create it by default,
