@@ -1,3 +1,5 @@
+#include "DSimRootPersistencyManager.hh"
+
 #include "CaptCryostatBuilder.hh"
 #include "CaptImmersedBuilder.hh"
 #include "CaptExposedBuilder.hh"
@@ -16,6 +18,8 @@
 #include <G4VisAttributes.hh>
 #include <G4Tubs.hh>
 #include <G4Polycone.hh>
+
+#include <TEventContext.hxx>
 
 class CaptCryostatMessenger
     : public DSimBuilderMessenger {
@@ -148,9 +152,13 @@ G4LogicalVolume *CaptCryostatBuilder::GetPiece(void) {
 
     if (fVesselType == "CAPTAIN") {
         DefineCAPTAINVessel();
+        DSimRootPersistencyManager::GetInstance()->SetDetectorPartition(
+            CP::TEventContext::kCAPTAIN);
     }
     else if (fVesselType == "mCAPTAIN") {
         DefineMiniCAPTAINVessel();
+        DSimRootPersistencyManager::GetInstance()->SetDetectorPartition(
+            CP::TEventContext::kmCAPTAIN);
     }
     else {
         std::cout << "Undefine vessel type: " << fVesselType << std::endl;

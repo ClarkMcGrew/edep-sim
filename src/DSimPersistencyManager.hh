@@ -125,6 +125,12 @@ public:
     /// point to be saved.
     virtual void ClearTrajectoryBoundaries();
 
+    /// Set the detector mask.
+    void SetDetectorPartition(int partition) {fDetectorPartition = partition;}
+
+    /// Get the detector partition.
+    int GetDetectorPartition() const {return fDetectorPartition;}
+    
 protected:
     /// This is protected so that it doesn't get called outside of the class
     /// implementation.  Use GetPersistencyManager instead.
@@ -194,6 +200,9 @@ private:
     /// particles enter and exit.
     std::vector<TPRegexp*> fTrajectoryBoundaries;
 
+    /// The detector partition
+    int fDetectorPartition;
+    
     // A pointer to the messenger.
     DSimPersistencyMessenger* fPersistencyMessenger;
 };

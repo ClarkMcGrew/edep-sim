@@ -154,7 +154,8 @@ bool DSimRootPersistencyManager::Store(const G4Event* anEvent) {
     context.SetRun(runId);
     if (subId >= 0) context.SetSubRun(subId);
     context.SetEvent(eventId);
-    context.SetPartition(CP::TEventContext::kMCData);
+    int partition = GetDetectorPartition() | CP::TEventContext::kMCData;
+    context.SetPartition(partition);
 
     // The event is constructed using an auto ptr since we must delete it
     // before leaving this method.
