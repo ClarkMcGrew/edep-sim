@@ -835,4 +835,37 @@ NEW FEATURES:
 ** Improve the calculation of the offset of the drift region inside the
    cryostat.  
 
+
+\section detSim_v0r1p0_history Version 0.1.0
+
+Freeze information:
+   - Freeze Date: Thu Feb 25 13:58:17 2016
+   - Freeze User: mcgrew
+   - Freeze Host: boxer boxer 
+
+
+GEOMETRY/MATERIAL CHANGES:
+
+* Add all 16 miniCAPTAIN PMTs
+
+* Fix the density of liquid argon to the density at the boiling point.
+
+* Use the digitized shapes for the CAPTAIN and miniCAPTAIN cryostats.
+
+FEATURES:
+
+* Add faster implementation of Doke-Birks quenching.  This is "stolen" from
+  NEST and gives the same answer.  When using, you should still reference
+  NEST since this is a repackaging of that code.
+
+* Add new documentation for how to generate single, double and triple
+  particle vertices.
+
+BUG FIXES:
+
+* Fix the API for the combination generator so that it uses legal C++.
+
+* Mark the correct partition to differentiate between events generated in
+  CAPTAIN and events generated in miniCAPTAIN.
+
 */
