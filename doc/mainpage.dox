@@ -5,7 +5,7 @@
 
 /*! \mainpage The T2K 280m Off-Axis Detector Simulation
   
-\section detSim Introduction
+\section detSim detsim
 
 The ND280 off-axis detector simulation is intended to simulate all of the
 particle propagation and geometry related issues.  This MC is intended to
