@@ -30,9 +30,10 @@
 DSimRooTrackerKinematicsGenerator::DSimRooTrackerKinematicsGenerator(
     const G4String& name, const G4String& filename, 
     const G4String& treeName, const G4String& order,
-    int firstEvent) 
+    int firstEvent,
+    double energyCut) 
     : DSimVKinematicsGenerator(name), fInput(NULL), fTree(NULL), 
-      fNextEntry(0) {
+      fNextEntry(0), fEnergyCut(energyCut) {
 
     fInput = TFile::Open(filename,"OLD");
     if (!fInput->IsOpen()) {
@@ -146,18 +147,21 @@ bool DSimRooTrackerKinematicsGenerator::GeneratePrimaryVertex(
 
     fInput->cd();
 
-    int entry = fEntryVector.at(fNextEntry);
-    // Get current entry to be used as new vertex - see comment below.
-    fTree->GetEntry(entry);
+    int entry;
+    do {
+        entry = fEntryVector.at(fNextEntry);
+        // Get current entry to be used as new vertex - see comment below.
+        fTree->GetEntry(entry);
+        // Increment the next entry counter.
+        ++fNextEntry;
+    } while (fStdHepP4[0][3] > fEnergyCut/GeV);
+
     // Store current entry in the pass-through obj. N.B. To avoid mismatch 
     // and false results call DSimKinemPassThrough::AddEntry(fTreePtr, X)
     // where X is same as X in most recent call to fTreePtr->GetEntry(X).
     DSimKinemPassThrough::GetInstance()->AddEntry(fTree, entry);
     DSimVerbose("Use rooTracker event number " << fEvtNum 
                  << " (entry #" << entry << " in tree)");
-
-    // Increment the next entry counter.
-    ++fNextEntry;
 
     // Create a new vertex to add the new particles, and add the vertex to the
     // event.

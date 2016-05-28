@@ -26,10 +26,11 @@ public:
     ///  The current legal values are "consecutive", "stride", or
     ///  "random". The firstEvent is the first event to use in the file.
     DSimRooTrackerKinematicsGenerator(const G4String& name, 
-                                       const G4String& fileName,
-                                       const G4String& treeName,
-                                       const G4String& order,
-                                       int firstEvent);
+                                      const G4String& fileName,
+                                      const G4String& treeName,
+                                      const G4String& order,
+                                      int firstEvent,
+                                      double energyCut = 10*GeV);
     virtual ~DSimRooTrackerKinematicsGenerator();
 
     /// Add a primary vertex to the event.  
@@ -70,6 +71,10 @@ private:
     /// correlated energies.
     std::vector<int> fEntryVector;
 
+    /// A cut on the maximum neutrino energy that will be simulated.
+    double fEnergyCut;
+
+    
     //////////////////////////////////////////////////////////////
     // Declare the information to get from the ntuple.  This does not get all
     // of the information, only the stuff that is actually used.
