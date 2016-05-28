@@ -7,6 +7,7 @@
 #include "kinem/DSimVKinematicsFactory.hh"
 #include "kinem/DSimGPSKinematicsFactory.hh"
 #include "kinem/DSimRooTrackerKinematicsFactory.hh"
+#include "kinem/DSimNuMIRockKinematicsFactory.hh"
 
 #include "kinem/DSimVCountFactory.hh"
 #include "kinem/DSimFixedCountFactory.hh"
@@ -63,6 +64,7 @@ DSimUserPrimaryGeneratorMessenger::DSimUserPrimaryGeneratorMessenger(
     /////////////////////////////////////////
 
     AddKinematicsFactory(new DSimGPSKinematicsFactory(this));
+    AddKinematicsFactory(new DSimNuMIRockKinematicsFactory(this));
     AddKinematicsFactory(new DSimRooTrackerKinematicsFactory(this));
 
     AddCountFactory(new DSimFixedCountFactory(this));
