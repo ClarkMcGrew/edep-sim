@@ -15,6 +15,8 @@
 #include <G4PrimaryVertex.hh>
 #include <G4PrimaryParticle.hh>
 #include <G4StepStatus.hh>
+#include <G4ProcessType.hh>
+#include <G4EmProcessSubType.hh>
 
 #include <TPRegexp.h>
 
@@ -305,23 +307,25 @@ void DSimPersistencyManager::SelectTrajectoryPoints(
     // Save trajectory points where there is a "big" interaction.
     for (int tp = 1; tp < lastIndex; ++tp) {
         dsimPoint = dynamic_cast<DSimTrajectoryPoint*>(g4Traj->GetPoint(tp));
-        // Not much energy deposit...
-        if (dsimPoint->GetProcessDeposit() < 1.0*MeV) continue;
         // Just navigation....
         if (dsimPoint->GetProcessType() == fTransportation) continue;
+        // Not much energy deposit...
+        if (dsimPoint->GetProcessDeposit() < 0.5*MeV) continue;
         // Don't save optical photons...
         if (dsimPoint->GetProcessType() == fOptical) continue;
-        // Usually a step limit...
+        // Not a physics step...
         if (dsimPoint->GetProcessType() == fGeneral) continue;
         if (dsimPoint->GetProcessType() == fUserDefined) continue;
         // Don't save continuous ionization steps.
-        if (dsimPoint->GetProcessName().find("Ioni")!=G4String::npos) continue;
+        if (dsimPoint->GetProcessType() == fElectromagnetic
+            && dsimPoint->GetProcessSubType() == fIonisation) continue;
         // Don't save multiple scattering.
-        if (dsimPoint->GetProcessName().find("msc")!=G4String::npos) continue;
+        if (dsimPoint->GetProcessType() == fElectromagnetic
+            && dsimPoint->GetProcessSubType() == fMultipleScattering) continue;
         selected.push_back(tp);
     }
 
-    // Make sure there aren't any accidental duplicates in selected.
+    // Make sure there aren't any duplicates in the selected trajectory points.
     std::sort(selected.begin(), selected.end());
     selected.erase(std::unique(selected.begin(), selected.end()), 
                    selected.end());

@@ -42,6 +42,12 @@ public:
     /// G4ProcessType.hh).
     G4ProcessType GetProcessType() const { return fProcessType; }
 
+    /// Get the process sub type for this point.  The sub-types depend on the
+    /// specific processes and are defined in a few different include files.
+    /// For EM and hadronic interacitons, see G4EmProcessSubType.hh, and
+    /// G4HadronicProcessType.hh.
+    G4int GetProcessSubType() const { return fProcessSubType; }
+
     /// Get the process name for this point.
     G4String GetProcessName() const { return fProcessName; }
 
@@ -76,6 +82,7 @@ public:
     G4ThreeVector fMomentum;
     G4StepStatus fStepStatus;
     G4ProcessType fProcessType;
+    G4int fProcessSubType;
     G4String fProcessName;
     G4double fProcessDeposit;
     G4String fPhysVolName;

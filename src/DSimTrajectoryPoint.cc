@@ -20,7 +20,8 @@ G4Allocator<DSimTrajectoryPoint> aDSimTrajPointAllocator;
 
 DSimTrajectoryPoint::DSimTrajectoryPoint()
     : fTime(0.), fMomentum(0.,0.,0.),
-      fStepStatus(fUndefined), fProcessType(fNotDefined),
+      fStepStatus(fUndefined),
+      fProcessType(fNotDefined), fProcessSubType(0),
       fProcessName("NotDefined"), fPhysVolName("OutofWorld"),
       fPrevPosition(0,0,0) { }
 
@@ -43,6 +44,8 @@ DSimTrajectoryPoint::DSimTrajectoryPoint(const G4Step* aStep)
     if (aStep->GetPostStepPoint()->GetProcessDefinedStep()) {
         fProcessType = aStep->GetPostStepPoint()->
             GetProcessDefinedStep()->GetProcessType();
+        fProcessSubType = aStep->GetPostStepPoint()->
+            GetProcessDefinedStep()->GetProcessSubType();
         fProcessName = aStep->GetPostStepPoint()->
             GetProcessDefinedStep()->GetProcessName();
         fProcessDeposit =  aStep->GetTotalEnergyDeposit();
@@ -69,6 +72,7 @@ DSimTrajectoryPoint::DSimTrajectoryPoint(const DSimTrajectoryPoint &right)
     fMomentum = right.fMomentum;
     fStepStatus = right.fStepStatus;
     fProcessType = right.fProcessType;
+    fProcessSubType = right.fProcessSubType;
     fProcessName = right.fProcessName;
     fProcessDeposit = right.fProcessDeposit;
     fPhysVolName = right.fPhysVolName;
