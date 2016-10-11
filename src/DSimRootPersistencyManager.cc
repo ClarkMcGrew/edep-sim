@@ -456,6 +456,8 @@ void DSimRootPersistencyManager::CopyTrajectoryPoints(CP::TG4Trajectory& traj,
                           dsimPoint->GetMomentum().y(),
                           dsimPoint->GetMomentum().z());
         point.SetVolumeNode(dsimPoint->GetVolumeNode());
+        point.SetProcessType(dsimPoint->GetProcessType(),
+                             dsimPoint->GetProcessSubType());
         traj.GetTrajectoryPoints().push_back(point);
     }
 
