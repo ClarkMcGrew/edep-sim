@@ -3,6 +3,27 @@
 #include "DSimRootGeometryManager.hh"
 #include "DSimException.hh"
 
+#include "DSimLog.hh"
+
+#include <TROOT.h>
+#include <TMath.h>
+#include <TGeoManager.h>
+#include <TGeoVolume.h>
+#include <TGeoMedium.h>
+#include <TGeoElement.h>
+#include <TGeoTube.h>
+#include <TGeoTrd2.h>
+#include <TGeoSphere.h>
+#include <TGeoPgon.h>
+#include <TGeoArb8.h>
+#include <TGeoBoolNode.h>
+#include <TGeoCompositeShape.h>
+#include <TGeoMatrix.h>
+#include <TGeoOverlap.h>
+#include <TGeoXtru.h>
+#include <TGeoPcon.h>
+#include <TColor.h>
+
 #include <globals.hh>
 
 #include <G4LogicalVolume.hh>
@@ -25,28 +46,9 @@
 #include <G4UnionSolid.hh>
 #include <G4ExtrudedSolid.hh>
 
-#include <TROOT.h>
-#include <TMath.h>
-#include <TGeoManager.h>
-#include <TGeoVolume.h>
-#include <TGeoMedium.h>
-#include <TGeoElement.h>
-#include <TGeoTube.h>
-#include <TGeoTrd2.h>
-#include <TGeoSphere.h>
-#include <TGeoPgon.h>
-#include <TGeoArb8.h>
-#include <TGeoBoolNode.h>
-#include <TGeoCompositeShape.h>
-#include <TGeoMatrix.h>
-#include <TGeoOverlap.h>
-#include <TGeoXtru.h>
-#include <TGeoPcon.h>
-#include <TColor.h>
+#include <G4SystemOfUnits.hh>
+#include <G4PhysicalConstants.hh>
 
-#include <DSimLog.hh>
-#include <TManager.hxx>
-#include <TGeomIdManager.hxx>
 
 #include <memory>
 #include <cmath>
@@ -94,20 +96,21 @@ void DSimRootGeometryManager::Update(const G4VPhysicalVolume* aWorld,
         // Clear the cached isotopes.  This is a bit complicated since the
         // isotope pointers may be duplicated in the map.
         std::set<TGeoElement*> isotope;
-        for (std::map<G4String,TGeoElement*>::iterator m = fIsotope.begin();
-             m != fIsotope.end();
-             ++m) {
-            isotope.insert(m->second);
+        for (std::map<G4String,TGeoElement*>::iterator i = fIsotope.begin();
+             i != fIsotope.end();
+             ++i) {
+            isotope.insert(i->second);
         }
         fIsotope.clear();
-        for (std::set<TGeoElement*>::iterator m = isotope.begin();
-             m != isotope.end();
-             ++m) {
-            delete *m;
+        for (std::set<TGeoElement*>::iterator i = isotope.begin();
+             i != isotope.end();
+             ++i) {
+            delete *i;
         }
     }
     // Create the new geometry.
-    gGeoManager = new TGeoManager("CAPTAINGeometry","DSim Detector Geometry");
+    gGeoManager = new TGeoManager("EDepSimGeometry",
+                                  "Simulated Detector Geometry");
     // Create all of the materials.
     CreateMaterials(aWorld);
     // Create the ROOT geometry definitions.
@@ -119,7 +122,7 @@ void DSimRootGeometryManager::Update(const G4VPhysicalVolume* aWorld,
     if (!validateGeometry) return;
 
     // Check for overlaps at volume corners.  Look for overlaps at 0.1 mm size.
-    gGeoManager->CheckOverlaps(0.1*mm);
+    gGeoManager->CheckOverlaps(0.1*CLHEP::mm);
     {
         TIter next(gGeoManager->GetListOfOverlaps());
         int count = 0;
@@ -134,7 +137,7 @@ void DSimRootGeometryManager::Update(const G4VPhysicalVolume* aWorld,
     }
 
     // Check for overlaps with sampling.  Look for overlaps at 0.1 mm size.
-    gGeoManager->CheckOverlaps(0.1*mm,"s100000");
+    gGeoManager->CheckOverlaps(0.1*CLHEP::mm,"s100000");
     {
         TIter next(gGeoManager->GetListOfOverlaps());
         int count = 0;
@@ -157,19 +160,19 @@ TGeoShape* DSimRootGeometryManager::CreateShape(const G4VSolid* theSolid,
     if (geometryType == "G4Box") {
         // Create a box
         const G4Box* box = dynamic_cast<const G4Box*>(theSolid);
-        theShape = new TGeoBBox(box->GetXHalfLength()/mm,
-                                box->GetYHalfLength()/mm,
-                                box->GetZHalfLength()/mm);
+        theShape = new TGeoBBox(box->GetXHalfLength()/CLHEP::mm,
+                                box->GetYHalfLength()/CLHEP::mm,
+                                box->GetZHalfLength()/CLHEP::mm);
     }
     else if (geometryType == "G4Tubs") {
         const G4Tubs* tube = dynamic_cast<const G4Tubs*>(theSolid);
         // Root takes the angles in degrees so there is no extra
         // conversion.
-        double zhalf = tube->GetZHalfLength()/mm;
-        double rmin = tube->GetInnerRadius()/mm;
-        double rmax = tube->GetOuterRadius()/mm;
-        double minPhiDeg = tube->GetStartPhiAngle()/degree;
-        double maxPhiDeg = minPhiDeg + tube->GetDeltaPhiAngle()/degree;
+        double zhalf = tube->GetZHalfLength()/CLHEP::mm;
+        double rmin = tube->GetInnerRadius()/CLHEP::mm;
+        double rmax = tube->GetOuterRadius()/CLHEP::mm;
+        double minPhiDeg = tube->GetStartPhiAngle()/CLHEP::degree;
+        double maxPhiDeg = minPhiDeg + tube->GetDeltaPhiAngle()/CLHEP::degree;
         theShape = new TGeoTubeSeg(rmin, rmax,
                                    zhalf,
                                    minPhiDeg, maxPhiDeg);
@@ -178,12 +181,12 @@ TGeoShape* DSimRootGeometryManager::CreateShape(const G4VSolid* theSolid,
         const G4Sphere* sphere = dynamic_cast<const G4Sphere*>(theSolid);
         // Root takes the angles in degrees so there is no extra
         // conversion.
-        double minPhiDeg = sphere->GetStartPhiAngle()/degree;
-        double maxPhiDeg = minPhiDeg + sphere->GetDeltaPhiAngle()/degree;
-        double minThetaDeg = sphere->GetStartThetaAngle()/degree;
-        double maxThetaDeg = minThetaDeg + sphere->GetDeltaThetaAngle()/degree;
-        theShape = new TGeoSphere(sphere->GetInsideRadius()/mm,
-                                  sphere->GetOuterRadius()/mm,
+        double minPhiDeg = sphere->GetStartPhiAngle()/CLHEP::degree;
+        double maxPhiDeg = minPhiDeg + sphere->GetDeltaPhiAngle()/CLHEP::degree;
+        double minThetaDeg = sphere->GetStartThetaAngle()/CLHEP::degree;
+        double maxThetaDeg = minThetaDeg + sphere->GetDeltaThetaAngle()/CLHEP::degree;
+        theShape = new TGeoSphere(sphere->GetInsideRadius()/CLHEP::mm,
+                                  sphere->GetOuterRadius()/CLHEP::mm,
                                   minThetaDeg, maxThetaDeg,
                                   minPhiDeg, maxPhiDeg);
     }
@@ -199,12 +202,12 @@ TGeoShape* DSimRootGeometryManager::CreateShape(const G4VSolid* theSolid,
         // Factor to take into account that ROOT uses the circle that can be
         // inscribed inside the polygon, and G4 uses the corner
         double g4Factor = std::cos(0.5*dPhi/sides);
-        TGeoPgon* pgon = new TGeoPgon(phi/degree, dPhi/degree, sides, numZ);
+        TGeoPgon* pgon = new TGeoPgon(phi/CLHEP::degree, dPhi/CLHEP::degree, sides, numZ);
         for (int i = 0; i< numZ; ++i) {
             pgon->DefineSection(i,
-                                polyhedra->GetCorner(numZ-i-1).z/mm,
-                                g4Factor*polyhedra->GetCorner(numZ-i-1).r/mm,
-                                g4Factor*polyhedra->GetCorner(numZ+i).r/mm);
+                                polyhedra->GetCorner(numZ-i-1).z/CLHEP::mm,
+                                g4Factor*polyhedra->GetCorner(numZ-i-1).r/CLHEP::mm,
+                                g4Factor*polyhedra->GetCorner(numZ+i).r/CLHEP::mm);
         }
         theShape = pgon;
     }
@@ -217,26 +220,26 @@ TGeoShape* DSimRootGeometryManager::CreateShape(const G4VSolid* theSolid,
         if (dPhi<0) dPhi += 2*M_PI;
 #ifdef USE_POLYCONE_CORNERS
         int numZ = polycone->GetNumRZCorner()/2;
-        TGeoPcon* pcon = new TGeoPcon(phi/degree, dPhi/degree, numZ);
+        TGeoPcon* pcon = new TGeoPcon(phi/CLHEP::degree, dPhi/CLHEP::degree, numZ);
         // This depends on the (mostly) undocumented order of the corners in
         // the G4Polycone internals.  It's a little unstable...
         for (int i = 0; i< numZ; ++i) {
             pcon->DefineSection(i,
-                                polycone->GetCorner(numZ-i-1).z/mm,
-                                polycone->GetCorner(numZ-i-1).r/mm,
-                                polycone->GetCorner(numZ+i).r/mm);
+                                polycone->GetCorner(numZ-i-1).z/CLHEP::mm,
+                                polycone->GetCorner(numZ-i-1).r/CLHEP::mm,
+                                polycone->GetCorner(numZ+i).r/CLHEP::mm);
         }
 #else
         const G4PolyconeHistorical* param = polycone->GetOriginalParameters();
         int numZ = param->Num_z_planes;
-        TGeoPcon* pcon = new TGeoPcon(phi/degree, dPhi/degree, numZ);
+        TGeoPcon* pcon = new TGeoPcon(phi/CLHEP::degree, dPhi/CLHEP::degree, numZ);
         // This depends on the older interface.  It's not marked as
         // deprecated, but the documentation discourages it's use.
         for (int i = 0; i< numZ; ++i) {
             pcon->DefineSection(i,
-                                param->Z_values[i]/mm,
-                                param->Rmin[i]/mm,
-                                param->Rmax[i]/mm);
+                                param->Z_values[i]/CLHEP::mm,
+                                param->Rmin[i]/CLHEP::mm,
+                                param->Rmax[i]/CLHEP::mm);
         }
 #endif
         theShape = pcon;
@@ -244,17 +247,17 @@ TGeoShape* DSimRootGeometryManager::CreateShape(const G4VSolid* theSolid,
     else if (geometryType == "G4Trap") {
         const G4Trap* trap
             = dynamic_cast<const G4Trap*>(theSolid);
-        double dz = trap->GetZHalfLength()/mm;
+        double dz = trap->GetZHalfLength()/CLHEP::mm;
         double theta = 0;
         double phi = 0;
-        double h1 = trap->GetYHalfLength1()/mm;
-        double bl1 = trap->GetXHalfLength1()/mm;
-        double tl1 = trap->GetXHalfLength2()/mm;
-        double alpha1 = std::atan(trap->GetTanAlpha1())/degree;
-        double h2 = trap->GetYHalfLength2()/mm;
-        double bl2 = trap->GetXHalfLength3()/mm;
-        double tl2 = trap->GetXHalfLength4()/mm;
-        double alpha2 = std::atan(trap->GetTanAlpha2())/degree;
+        double h1 = trap->GetYHalfLength1()/CLHEP::mm;
+        double bl1 = trap->GetXHalfLength1()/CLHEP::mm;
+        double tl1 = trap->GetXHalfLength2()/CLHEP::mm;
+        double alpha1 = std::atan(trap->GetTanAlpha1())/CLHEP::degree;
+        double h2 = trap->GetYHalfLength2()/CLHEP::mm;
+        double bl2 = trap->GetXHalfLength3()/CLHEP::mm;
+        double tl2 = trap->GetXHalfLength4()/CLHEP::mm;
+        double alpha2 = std::atan(trap->GetTanAlpha2())/CLHEP::degree;
         theShape = new TGeoTrap(dz, theta, phi,
                                 h1, bl1, tl1, alpha1,
                                 h2, bl2, tl2, alpha2);
@@ -262,11 +265,11 @@ TGeoShape* DSimRootGeometryManager::CreateShape(const G4VSolid* theSolid,
     else if (geometryType == "G4Trd") {
         const G4Trd* trd
             = dynamic_cast<const G4Trd*>(theSolid);
-        double dz = trd->GetZHalfLength()/mm;
-        double dx1 = trd->GetXHalfLength1()/mm;
-        double dx2 = trd->GetXHalfLength2()/mm;
-        double dy1 = trd->GetYHalfLength1()/mm;
-        double dy2 = trd->GetYHalfLength2()/mm;
+        double dz = trd->GetZHalfLength()/CLHEP::mm;
+        double dx1 = trd->GetXHalfLength1()/CLHEP::mm;
+        double dx2 = trd->GetXHalfLength2()/CLHEP::mm;
+        double dy1 = trd->GetYHalfLength1()/CLHEP::mm;
+        double dy2 = trd->GetYHalfLength2()/CLHEP::mm;
         theShape = new TGeoTrd2(dx1,dx2,dy1,dy2,dz);
     }
     else if (geometryType == "G4SubtractionSolid") {
@@ -299,9 +302,9 @@ TGeoShape* DSimRootGeometryManager::CreateShape(const G4VSolid* theSolid,
                                    TMath::RadToDeg()*rotation.phiY(),
                                    TMath::RadToDeg()*rotation.thetaZ(),
                                    TMath::RadToDeg()*rotation.phiZ());
-            *returnMatrix = new TGeoCombiTrans(displacement.x()/mm,
-                                               displacement.y()/mm,
-                                               displacement.z()/mm,
+            *returnMatrix = new TGeoCombiTrans(displacement.x()/CLHEP::mm,
+                                               displacement.y()/CLHEP::mm,
+                                               displacement.z()/CLHEP::mm,
                                                rotate);
         }
     }
@@ -332,8 +335,13 @@ TGeoShape* DSimRootGeometryManager::CreateShape(const G4VSolid* theSolid,
         const G4int nV = extr->GetNofVertices();
         
         //define and pointers
-        double vertices_x[nV];
-        double vertices_y[nV];
+        const int maxVertices = 1000;
+        double vertices_x[maxVertices];
+        double vertices_y[maxVertices];
+        if (maxVertices < nV) {
+            DSimThrow("Polygon with more than maxVertices");
+        }
+        
         
         //define an intermediate extrusion constructor with nZ z planes.
         TGeoXtru *xtru = new TGeoXtru(nZ);
@@ -461,7 +469,7 @@ void DSimRootGeometryManager::CreateMaterials(
             for (unsigned j = 0; j < elem->GetNumberOfIsotopes(); ++j) {
                 const G4Isotope *iso = elem->GetIsotope(j);
                 theMix->DefineElement(ielement,
-                                      iso->GetA()/(g/mole),
+                                      iso->GetA()/(CLHEP::g/CLHEP::mole),
                                       iso->GetZ(),
                                       (mat->GetFractionVector()[i])*
                                       (elem->GetRelativeAbundanceVector()[j]));
@@ -474,7 +482,7 @@ void DSimRootGeometryManager::CreateMaterials(
                         = new TGeoElement(iso->GetName(),
                                           elem->GetSymbol(),
                                           iso->GetZ(),
-                                          iso->GetA()/(g/mole));
+                                          iso->GetA()/(CLHEP::g/CLHEP::mole));
                     fIsotope[iso->GetName()] = theEle;
                 }
                 ielement++;
@@ -533,7 +541,7 @@ bool DSimRootGeometryManager::CreateEnvelope(
     G4LogicalVolume* theLog = theG4PhysVol->GetLogicalVolume();
 
     if (PrintMass(theG4PhysVol)) {
-        DSimLog("%%% Mass: " << theLog->GetMass(true)/kg/1000.0 << " ton"
+        DSimLog("%%% Mass: " << theLog->GetMass(true)/CLHEP::kg/1000.0 << " ton"
                  << " Volume: " << theG4PhysVol->GetName());
     }
     
@@ -634,8 +642,8 @@ bool DSimRootGeometryManager::CreateEnvelope(
         double totalDensity = totalMass/totalVolume;
         DSimNamedDebug("ROOTGeom", "Skipping sub-volumes. Correct "
                         << theMedium->GetName() << " density "
-                        << theMedium->GetMaterial()->GetDensity()/(g/cm3)
-                        << " g/cm3 to " << totalDensity/(g/cm3) << " g/cm3");
+                        << theMedium->GetMaterial()->GetDensity()/(CLHEP::g/CLHEP::cm3)
+                        << " g/cm3 to " << totalDensity/(CLHEP::g/CLHEP::cm3) << " g/cm3");
         TGeoMedium *avgMedium = AverageMaterial(theG4PhysVol);
         if (avgMedium) theVolume->SetMedium(avgMedium);
     }
@@ -669,9 +677,9 @@ bool DSimRootGeometryManager::CreateEnvelope(
             for (int i=0; i<nRep; ++i) {
                 G4ThreeVector pos = axis*w*(i-0.5*(nRep-1));
                 TGeoCombiTrans* combi 
-                    = new TGeoCombiTrans(pos.x()/mm,
-                                         pos.y()/mm,
-                                         pos.z()/mm,
+                    = new TGeoCombiTrans(pos.x()/CLHEP::mm,
+                                         pos.y()/CLHEP::mm,
+                                         pos.z()/CLHEP::mm,
                                          rotate);
                 int index = HowManySimilarNodesInVolume(theMother, 
                                                         theVolume->GetName());
@@ -680,9 +688,9 @@ bool DSimRootGeometryManager::CreateEnvelope(
         }
         else {
             TGeoCombiTrans* combi 
-                = new TGeoCombiTrans(trans.x()/mm,
-                                     trans.y()/mm,
-                                     trans.z()/mm,
+                = new TGeoCombiTrans(trans.x()/CLHEP::mm,
+                                     trans.y()/CLHEP::mm,
+                                     trans.z()/CLHEP::mm,
                                      rotate);
             int index = HowManySimilarNodesInVolume(theMother, 
                                                     theVolume->GetName());
@@ -802,7 +810,7 @@ TGeoMedium* DSimRootGeometryManager::AverageMaterial(
     double totalDensity = totalMass/totalVolume;
     std::ostringstream nameStream;
     nameStream << MaterialName(thePhys) 
-               << "Avg" << totalDensity/(g/cm3);
+               << "Avg" << totalDensity/(CLHEP::g/CLHEP::cm3);
     std::string averageName = nameStream.str();
     TGeoMedium* avgMedium = fMedium[averageName];
     if (avgMedium) return avgMedium;
@@ -856,14 +864,15 @@ TGeoMedium* DSimRootGeometryManager::AverageMaterial(
     double radLen = 0;
     double intLen = 0;
     double massSum = 0;
-    for (std::map<const G4Material*,double>::iterator m = materialMass.begin();
-         m != materialMass.end(); 
-         ++m) {
-        const G4Material* mat = m->first;
-        double mass = m->second;
+    for (std::map<const G4Material*,double>::iterator
+             mat = materialMass.begin();
+         mat != materialMass.end(); 
+         ++mat) {
+        const G4Material* material = mat->first;
+        double mass = mat->second;
         massSum += mass;
-        radLen += mass/mat->GetRadlen();
-        intLen += mass/mat->GetNuclearInterLength();
+        radLen += mass/material->GetRadlen();
+        intLen += mass/material->GetNuclearInterLength();
     }
     if (massSum>0.0) {
         // The minus sign is to make sure this over-rides the approximate ROOT

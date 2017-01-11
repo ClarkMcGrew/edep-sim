@@ -17,58 +17,58 @@
 DSimPersistencyMessenger::DSimPersistencyMessenger(
     DSimPersistencyManager* persistencyMgr)
     : fPersistencyManager(persistencyMgr) {
-    fPersistencyDIR = new G4UIdirectory("/db/");
+    fPersistencyDIR = new G4UIdirectory("/dsim/db/");
     fPersistencyDIR->SetGuidance("Output file control commands.");
     
-    fOpenCMD = new G4UIcmdWithAString("/db/open",this);
+    fOpenCMD = new G4UIcmdWithAString("/dsim/db/open",this);
     fOpenCMD->SetGuidance("Set the name of the output file and open it.");
     fOpenCMD->SetParameterName("filename",true);
     fOpenCMD->SetDefaultValue("detsim-output.root");
     fOpenCMD->AvailableForStates(G4State_PreInit,G4State_Idle);
     
-    fCloseCMD = new G4UIcmdWithoutParameter("/db/close",this);
+    fCloseCMD = new G4UIcmdWithoutParameter("/dsim/db/close",this);
     fCloseCMD->SetGuidance("Close the output file.");
 
-    fPersistencySetDIR = new G4UIdirectory("/db/set/");
+    fPersistencySetDIR = new G4UIdirectory("/dsim/db/set/");
     fPersistencySetDIR->SetGuidance("Set various parameters");
     
     fGammaThresholdCMD 
-        = new G4UIcmdWithADoubleAndUnit("/db/set/gammaThreshold", this);
+        = new G4UIcmdWithADoubleAndUnit("/dsim/db/set/gammaThreshold", this);
     fGammaThresholdCMD->SetGuidance(
         "Set momentum threshold for writing out gamma-ray trajectories");
     fGammaThresholdCMD->SetParameterName("momentum", false, false);
     fGammaThresholdCMD->SetUnitCategory("Energy");
 
     fNeutronThresholdCMD 
-        = new G4UIcmdWithADoubleAndUnit("/db/set/neutronThreshold", this);
+        = new G4UIcmdWithADoubleAndUnit("/dsim/db/set/neutronThreshold", this);
     fNeutronThresholdCMD->SetGuidance(
         "Set momentum threshold for writing out neutron trajectories");
     fNeutronThresholdCMD->SetParameterName("momentum", false, false);
     fNeutronThresholdCMD->SetUnitCategory("Energy");
 
     fLengthThresholdCMD 
-        = new G4UIcmdWithADoubleAndUnit("/db/set/lengthThreshold", this);
+        = new G4UIcmdWithADoubleAndUnit("/dsim/db/set/lengthThreshold", this);
     fLengthThresholdCMD->SetGuidance(
         "Set length of track in an SD for writing out particle trajectories");
     fLengthThresholdCMD->SetParameterName("length", false, false);
     fLengthThresholdCMD->SetUnitCategory("Length");
 
     fSaveAllPrimaryTrajectoriesCMD 
-        = new G4UIcmdWithABool("/db/set/saveAllPrimTraj", this);
+        = new G4UIcmdWithABool("/dsim/db/set/saveAllPrimTraj", this);
     fSaveAllPrimaryTrajectoriesCMD->SetGuidance(
         "Control which primaries have saved trajectories.\n"
         "  True: Save all prim. part. trajectories.\n"
         "  False: Save prim. that ultimately deposit energy in SD.");
 
     fTrajectoryPointAccuracyCMD 
-        = new G4UIcmdWithADoubleAndUnit("/db/set/trajectoryAccuracy", this);
+        = new G4UIcmdWithADoubleAndUnit("/dsim/db/set/trajectoryAccuracy", this);
     fTrajectoryPointAccuracyCMD->SetGuidance(
         "Set the minimum accuracy of the trajectory.");
     fTrajectoryPointAccuracyCMD->SetParameterName("length", false, false);
     fTrajectoryPointAccuracyCMD->SetUnitCategory("Length");
 
     fTrajectoryBoundaryCMD 
-        = new G4UIcmdWithAString("/db/set/trajectoryBoundary",this);
+        = new G4UIcmdWithAString("/dsim/db/set/trajectoryBoundary",this);
     fTrajectoryBoundaryCMD->SetGuidance(
         "Add a Perl RegExp for a phys. vol. boundary where a\n"
         "    trajectory point is saved. The expression is compared to a\n"
@@ -79,7 +79,7 @@ DSimPersistencyMessenger::DSimPersistencyMessenger(
     fTrajectoryBoundaryCMD->AvailableForStates(G4State_PreInit,G4State_Idle);
 
     fClearBoundariesCMD 
-        = new G4UIcmdWithoutParameter("/db/set/clearBoundaries",this);
+        = new G4UIcmdWithoutParameter("/dsim/db/set/clearBoundaries",this);
     fClearBoundariesCMD->SetGuidance("Remove all of the boundaries for "
                                      "trajectory points.");
     

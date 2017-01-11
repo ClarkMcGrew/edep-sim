@@ -20,7 +20,7 @@
 # Define which volumes will have trajectory points saved as 
 # particles enter and exit.
 ##############################################
-/db/set/trajectoryBoundary :charged:.*/Drift
+/dsim/db/set/trajectoryBoundary :charged:.*/Drift
 
 ##############################################
 # Set the thresholds for saving trajectories into the output file.  All
@@ -28,11 +28,11 @@
 # particles.  Energy that is deposited by unsaved secondaries is "assigned"
 # to the "nearest" parent particle.
 ##############################################
-/db/set/saveAllPrimTraj true
-/db/set/lengthThreshold 3 mm
-/db/set/trajectoryAccuracy 1 mm
-/db/set/neutronThreshold 50 MeV
-/db/set/gammaThreshold 1 MeV
+/dsim/db/set/saveAllPrimTraj true
+/dsim/db/set/lengthThreshold 1 mm
+/dsim/db/set/trajectoryAccuracy 1 mm
+/dsim/db/set/neutronThreshold 50 MeV
+/dsim/db/set/gammaThreshold 10 MeV
 
 ##############################################
 # Set any physics limits.

@@ -10,6 +10,9 @@
 #include <G4VisAttributes.hh>
 #include <G4VisExtent.hh>
 
+#include <G4SystemOfUnits.hh>
+#include <G4PhysicalConstants.hh>
+
 #include <G4Box.hh>
 #include <G4Tubs.hh>
 #include <G4SubtractionSolid.hh>
@@ -69,7 +72,7 @@ public:
 
 void CaptWorldBuilder::Init(void) {
     SetMessenger(new CaptWorldMessenger(this));
-    fLength = 10*m;
+    fLength = 10*CLHEP::m;
     fWidth  = fLength;
     fHeight = fLength;
 
@@ -77,13 +80,13 @@ void CaptWorldBuilder::Init(void) {
 
 }
 
-CaptWorldBuilder::~CaptWorldBuilder() {};
+CaptWorldBuilder::~CaptWorldBuilder() {}
 
 G4LogicalVolume *CaptWorldBuilder::GetPiece(void) {
 
-    CaptLog("##############################################");
-    CaptLog("# CONSTRUCT THE WORLD GEOMETRY ");
-    CaptLog("##############################################");
+    DSimLog("##############################################");
+    DSimLog("# CONSTRUCT THE WORLD GEOMETRY ");
+    DSimLog("##############################################");
 
     G4LogicalVolume *logVolume
 	= new G4LogicalVolume(new G4Box(GetName(),
@@ -94,7 +97,7 @@ G4LogicalVolume *CaptWorldBuilder::GetPiece(void) {
                               GetName());
     logVolume->SetVisAttributes(G4VisAttributes::Invisible);
     
-    double floorThickness = 10*cm;
+    double floorThickness = 10*CLHEP::cm;
     G4LogicalVolume *logFloor
 	= new G4LogicalVolume(new G4Box(GetName()+"/Floor",
                                         fLength/2,
@@ -124,7 +127,7 @@ G4LogicalVolume *CaptWorldBuilder::GetPiece(void) {
     G4VisExtent cryoExtent = logCryostat->GetSolid()->GetExtent();
     G4ThreeVector centerFloor(0.0, 0.0,
                               cryoCenter.z() + cryoExtent.GetZmin()
-                              - floorThickness/2 - 50*cm);
+                              - floorThickness/2 - 50*CLHEP::cm);
 
     new G4PVPlacement(NULL,                // rotation.
                       centerFloor,         // position

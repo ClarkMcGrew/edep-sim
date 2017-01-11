@@ -23,6 +23,9 @@
 #include <G4Polyline.hh>
 #include <G4Color.hh>
 
+#include <G4SystemOfUnits.hh>
+#include <G4PhysicalConstants.hh>
+
 #include <cmath>
 #include <iostream>
 #include <map>
@@ -31,9 +34,21 @@
 G4Allocator<DSimHitSegment> DSimHitSegmentAllocator;
 
 DSimHitSegment::DSimHitSegment(double maxSagitta, double maxLength) 
-    : fMaxSagitta(maxSagitta), fMaxLength(maxLength) {
+    : fMaxSagitta(maxSagitta), fMaxLength(maxLength),
+      fPrimaryId(0), fEnergyDeposit(0), fSecondaryDeposit(0), fTrackLength(0), 
+      fStart(0,0,0,0), fStop(0,0,0,0) {
     fPath.reserve(500);
 }
+
+DSimHitSegment::DSimHitSegment(const DSimHitSegment& rhs)
+    : G4VHit(rhs), 
+      fMaxSagitta(rhs.fMaxSagitta), fMaxLength(rhs.fMaxLength),
+      fContributors(rhs.fContributors), fPrimaryId(rhs.fPrimaryId),
+      fEnergyDeposit(rhs.fEnergyDeposit),
+      fSecondaryDeposit(rhs.fSecondaryDeposit),
+      fTrackLength(rhs.fTrackLength), 
+      fStart(rhs.fStart), fStop(rhs.fStop) {}
+
 
 DSimHitSegment::~DSimHitSegment() { }
 
@@ -41,30 +56,42 @@ bool DSimHitSegment::SameHit(G4Step* theStep) {
     // Check that the hit and new step are in the same volume
     G4TouchableHandle touchable 
         = theStep->GetPreStepPoint()->GetTouchableHandle();
-    if (fHitVolume != touchable) return false;
+    if (fHitVolume != touchable) {
+        return false;
+    }
+
+    int trackId = theStep->GetTrack()->GetTrackID();
 
     // Check that the hit and new step are close together.
     double endToEnd
         = (theStep->GetPostStepPoint()->GetPosition() - fPath.front()).mag();
-    if (endToEnd > fMaxLength) return false;
+    if (endToEnd > fMaxLength) {
+        return false;
+    }
 
+    const double epsilon = 0.01;
     double deltaT = std::abs(theStep->GetPostStepPoint()->GetGlobalTime()
-                             - fStopT);
-    if (deltaT>1*ns) return false;
+                             - fStop.t());
+    if (deltaT>epsilon) {
+        return false;
+    }
 
-    int trackId = theStep->GetTrack()->GetTrackID();
     if (fContributors.front() == trackId) {
         // This is still the same track that initially created this hit.
         // Check to see if the hit should be extended, or if we should start a
         // new segment.
         double sagitta = FindSagitta(theStep);
-        if (sagitta > fMaxSagitta) return false;
+        if (sagitta > fMaxSagitta) {
+            return false;
+        }
     }
     else {
         // This is not the same track that started this hit, but check to see
         // if it is a delta-ray that should be added to this segment.
         double separation = FindSeparation(theStep);
-        if (separation > fMaxSagitta) return false;
+        if (separation > fMaxSagitta) {
+            return false;
+        }
     }
 
     return true;
@@ -74,7 +101,7 @@ int DSimHitSegment::FindPrimaryId(G4Track *theTrack) {
     return DSimTrajectoryMap::FindPrimaryId(theTrack->GetTrackID());
 }
 
-void DSimHitSegment::AddStep(G4Step* theStep, double start, double end) {
+void DSimHitSegment::AddStep(G4Step* theStep) {
     G4TouchableHandle touchable 
         = theStep->GetPreStepPoint()->GetTouchableHandle();
     G4ThreeVector prePos = theStep->GetPreStepPoint()->GetPosition();
@@ -88,12 +115,12 @@ void DSimHitSegment::AddStep(G4Step* theStep, double start, double end) {
     
     if (trackLength < 0.75*stepLength || trackLength < stepLength - 1*mm) {
         DSimWarn("Track length shorter than step: " 
-                  << trackLength/mm << " mm "
-                  << "<" << stepLength/mm << " mm");
+                 << trackLength/mm << " mm "
+                 << "<" << stepLength/mm << " mm");
         DSimWarn("    Volume: "
                   << theStep->GetTrack()->GetVolume()->GetName());
         DSimWarn("    Particle: " << particle->GetParticleName()
-                  << " Depositing " << energyDeposit/MeV << " MeV");
+                 << " Depositing " << energyDeposit/MeV << " MeV");
         DSimWarn("    Total Energy: " 
                   << theStep->GetTrack()->GetTotalEnergy());
     }
@@ -121,7 +148,7 @@ void DSimHitSegment::AddStep(G4Step* theStep, double start, double end) {
         stepLength = trackLength = std::min(0.5*mm,0.8*origStep);
         prePos = postPos - stepLength*mm*dir;
         DSimDebug("DSimHitSegment:: " << particle->GetParticleName()
-                   << " Deposited " << energyDeposit/MeV << " MeV");
+                  << " Deposited " << energyDeposit/MeV << " MeV");
         DSimDebug("    Original step: " << origStep/mm << " mm");
         DSimDebug("    New step: " << stepLength/mm << " mm");
     }
@@ -158,37 +185,38 @@ void DSimHitSegment::AddStep(G4Step* theStep, double start, double end) {
     if (!fHitVolume) {
         fHitVolume = touchable;
         fPrimaryId = FindPrimaryId(theStep->GetTrack());
-        fStartX = prePos.x();
-        fStartY = prePos.y();
-        fStartZ = prePos.z();
-        fStartT = theStep->GetPreStepPoint()->GetGlobalTime();
-        fPath.push_back(G4ThreeVector(fStartX,fStartY,fStartZ));
-        fStopX = postPos.x();
-        fStopY = postPos.y();
-        fStopZ = postPos.z();
-        fStopT = theStep->GetPostStepPoint()->GetGlobalTime();
-        fPath.push_back(G4ThreeVector(fStopX,fStopY,fStopZ));
+        fStart.set(prePos.x(),prePos.y(),prePos.z(),
+                   theStep->GetPreStepPoint()->GetGlobalTime());
+        fPath.push_back(fStart.vect());
+        fStop.set(postPos.x(),postPos.y(),postPos.z(),
+                      theStep->GetPostStepPoint()->GetGlobalTime());
+        fPath.push_back(fStop.vect());
         fContributors.push_back(theStep->GetTrack()->GetTrackID());
     }
     else {
         // Record the tracks that contribute to this hit.
         int trackId = theStep->GetTrack()->GetTrackID();
-        fContributors.push_back(trackId);
+        if (trackId != fContributors.front()) fContributors.push_back(trackId);
 
         // Check to see if we have a new stopping point.
         if (trackId == fContributors.front()
             && (fPath.back()-prePos).mag()<0.1*mm) {
-            fStopX = postPos.x();
-            fStopY = postPos.y();
-            fStopZ = postPos.z();
-            fStopT = theStep->GetPostStepPoint()->GetGlobalTime();
-            fPath.push_back(G4ThreeVector(fStopX,fStopY,fStopZ));
+            fStop.set(postPos.x(),postPos.y(),postPos.z(),
+                      theStep->GetPostStepPoint()->GetGlobalTime());
+            fPath.push_back(G4ThreeVector(fStop.x(),fStop.y(),fStop.z()));
         }
     }
 
     fEnergyDeposit += energyDeposit;
     fSecondaryDeposit += nonIonizingDeposit;
     fTrackLength += trackLength;
+
+    DSimDebug("DSimHitSegment:: Deposit " << particle->GetParticleName()
+              << " adds " << energyDeposit/MeV << " MeV"
+              << " to " << fContributors.front()
+              << " w/ " << fEnergyDeposit
+              << " L " << trackLength
+              << " " << fTrackLength);
 }
 
 double DSimHitSegment::FindSagitta(G4Step* theStep) {
@@ -214,8 +242,8 @@ double DSimHitSegment::FindSagitta(G4Step* theStep) {
          p != fPath.end();
          ++p) {
         G4ThreeVector delta = ((*p)-front);
-        double s = (delta*newDir);
-        maxSagitta = std::max(maxSagitta,(delta - s*newDir).mag());
+        double dist = (delta*newDir);
+        maxSagitta = std::max(maxSagitta,(delta - dist*newDir).mag());
         if (maxSagitta > fMaxSagitta) break;
     }
 
@@ -231,13 +259,13 @@ double DSimHitSegment::FindSeparation(G4Step* theStep) {
 
     // Check to make sure the beginning of the new step isn't after the
     // end of this segment.
-    if ((preStep-back)*dir>0.0) return 10*m;
+    if ((preStep-back)*dir>0.0) return 1000*m;
 
     // Check to make sure the beginning of the new step isn't before the
     // beginning of this segment.
     G4ThreeVector frontDelta = preStep-front;
     double cosDelta = frontDelta*dir;
-    if (cosDelta<0.0) return 10*m;
+    if (cosDelta<0.0) return 1000*m;
 
     // Find the distance from the segment center line to the initial point of
     // the new step.
@@ -257,8 +285,8 @@ void DSimHitSegment::Draw(void) {
     G4VVisManager* pVVisManager = G4VVisManager::GetConcreteInstance();
     if(pVVisManager) {
         G4Polyline line;
-        line.push_back(G4Point3D(fStartX, fStartY, fStartZ));
-        line.push_back(G4Point3D(fStopX, fStopY, fStopZ));
+        line.push_back(G4Point3D(fStart.x(), fStart.y(), fStart.z()));
+        line.push_back(G4Point3D(fStop.x(), fStop.y(), fStop.z()));
         G4Color color(1.,0.,1.);
         G4VisAttributes attribs(color);
         line.SetVisAttributes(attribs);
@@ -273,6 +301,5 @@ void DSimHitSegment::Print(void) {
 }
 
 double DSimHitSegment::GetLength() const {
-    return (G4Point3D(fStartX, fStartY, fStartZ)
-            - G4Point3D(fStopX, fStopY, fStopZ)).mag();
+    return (fStop.vect()- fStart.vect()).mag();
 }

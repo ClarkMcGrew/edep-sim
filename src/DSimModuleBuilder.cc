@@ -1,6 +1,8 @@
 #include "DSimModuleBuilder.hh"
 #include "DSimException.hh"
 
+#include "DSimLog.hh"
+
 #include <globals.hh>
 #include <G4Box.hh>
 #include <G4Material.hh>
@@ -9,7 +11,8 @@
 #include <G4PVPlacement.hh>
 #include <G4VisAttributes.hh>
 
-#include <DSimLog.hh>
+#include <G4SystemOfUnits.hh>
+#include <G4PhysicalConstants.hh>
 
 #include <cmath>
 
@@ -22,28 +25,28 @@ DSimModuleBuilder::~DSimModuleBuilder() {
         fTransList->clear();
         delete fTransList;
     }
-};
+}
 
 void DSimModuleBuilder::Init() {
-    fWidth = 250*cm;
-    fHeight = 250*cm;
-    fLength = 0*cm;
-    fTargetLength = 0*cm;
+    fWidth = 250*CLHEP::cm;
+    fHeight = 250*CLHEP::cm;
+    fLength = 0*CLHEP::cm;
+    fTargetLength = 0*CLHEP::cm;
     fFixLength = false;
-    xPosition = 0*cm;
-    yPosition = 0*cm;
+    xPosition = 0*CLHEP::cm;
+    yPosition = 0*CLHEP::cm;
 
     // Set default translation parameters as 0.
-    fPair.first = 0.0*mm;
-    fPair.second = 0.0*mm;
+    fPair.first = 0.0*CLHEP::mm;
+    fPair.second = 0.0*CLHEP::mm;
 
     SetMessenger(new DSimModuleBuilderMessenger(this));
 
     fPartsList = new PartsList();
     fTransList = new TransList();
 
-    xmax = xmin = ymax = ymin = 0.0*mm;
-};
+    xmax = xmin = ymax = ymin = 0.0*CLHEP::mm;
+}
 
 G4LogicalVolume *DSimModuleBuilder::GetPiece(void) {
 
@@ -68,12 +71,12 @@ G4LogicalVolume *DSimModuleBuilder::GetPiece(void) {
         fLength += componentLength;
     }
 
-    if (fLength<0.10*mm) return NULL;
+    if (fLength<0.10*CLHEP::mm) return NULL;
 
     if (GetLength()>GetTargetLength()) {
         DSimError(GetName());
-        DSimError(" Is " << GetLength()/cm << " cm long with "
-                   << GetTargetLength()/cm << " cm available");
+        DSimError(" Is " << GetLength()/CLHEP::cm << " cm long with "
+                   << GetTargetLength()/CLHEP::cm << " cm available");
         DSimThrow("DSimModuleBuilder::GetPiece(): Volume too long");
     }
 
@@ -172,16 +175,15 @@ void DSimModuleBuilder::SetRepetitions(int r, int c) {
 }
 
 // Method to translate each component in a module, so that misalignment is
-// simulated.  m is the module number, cPerM is the component interval (number
-// of components in a module).  c is the number of components to translate,
-// starting from the top of the list.  This was design to simulate FGD
-// scintillator module misalignments.  There is no translation parameter in z.
-void DSimModuleBuilder::SetModuleCompTrans(int m, int cPerM, int c,
-                                                double transX, double transY)
-{
-  for (int i = 0; i < c; i++)
-    {
-      fTransList->at(m*cPerM+i).first = transX;
-      fTransList->at(m*cPerM+i).second = transY;
+// simulated.  module is the module number, cPerM is the component interval
+// (number of components in a module).  c is the number of components to
+// translate, starting from the top of the list.  This was design to simulate
+// FGD scintillator module misalignments.  There is no translation parameter
+// in z.
+void DSimModuleBuilder::SetModuleCompTrans(int module, int cPerM, int c,
+                                           double transX, double transY) {
+    for (int i = 0; i < c; i++) {
+        fTransList->at(module*cPerM+i).first = transX;
+        fTransList->at(module*cPerM+i).second = transY;
     }
 }

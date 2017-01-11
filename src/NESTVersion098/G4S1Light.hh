@@ -16,20 +16,23 @@
 #include "G4PhysicsOrderedFreeVector.hh"
 #include "G4ThermalElectron.hh"
 
+#include <G4SystemOfUnits.hh>
+#include <G4PhysicalConstants.hh>
+
 //#include "LUXSimManager.hh"
 
 #define AVO 6.022e23 //Avogadro's number (#/mol)
-#define EMASS 9.109e-31*kg
+#define EMASS 9.109e-31*CLHEP::kg
 #define MillerDriftSpeed true
 
-#define GASGAP 0.25*cm //S2 generation region
-#define BORDER 0*cm //liquid-gas border z-coordinate
+#define GASGAP 0.25*CLHEP::cm //S2 generation region
+#define BORDER 0*CLHEP::cm //liquid-gas border z-coordinate
 
 #define QE_EFF 1 //a base or maximum quantum efficiency
 #define phe_per_e 1 //S2 gain for quick studies
 
 // different field regions, for gamma-X studies
-#define WIN 0*mm //top Cu block (also, quartz window)
+#define WIN 0*CLHEP::mm //top Cu block (also, quartz window)
 #define TOP 0 //top grid wires
 #define ANE 0 //anode mesh
 #define SRF 0 //liquid-gas interface

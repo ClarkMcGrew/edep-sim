@@ -145,7 +145,7 @@ public:
                         " Bad typecast");
         }
         return *c;
-    };
+    }
 
     /// Find a sub constructor by name and do the dynamic cast.  This returns
     /// a pointer that will be NULL if you request an undefined name.
@@ -155,7 +155,7 @@ public:
         if (p==fSubBuilders.end()) return NULL;
         T* c = dynamic_cast<T*>((*p).second);
         return c;
-    };
+    }
 
     /// This returns true if the interior objects should be checked for
     /// overlaps.

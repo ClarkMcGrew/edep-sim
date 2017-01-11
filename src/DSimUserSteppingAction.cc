@@ -11,6 +11,9 @@
 #include <G4Track.hh>
 #include <G4Step.hh>
 
+#include <G4SystemOfUnits.hh>
+#include <G4PhysicalConstants.hh>
+
 DSimUserSteppingAction::DSimUserSteppingAction()
     : fStenchAndRot(0) {}
 
@@ -43,9 +46,9 @@ void DSimUserSteppingAction::UserSteppingAction(const G4Step* theStep) {
         DSimSevere("DSimUserSteppingAction:: Excessive Steps "
                   << " " << steps 
                   << " " << theParticleName
-                  << " " << theTrack->GetTrackLength()/m << " m" 
-                  << " " << theTrack->GetGlobalTime()/ns << " ns"
-                  << " " << theTrack->GetTotalEnergy()/MeV << " MeV"
+                   << " " << theTrack->GetTrackLength()/CLHEP::m << " m" 
+                   << " " << theTrack->GetGlobalTime()/CLHEP::ns << " ns"
+                   << " " << theTrack->GetTotalEnergy()/CLHEP::MeV << " MeV"
                   << " " << theCurrentVolumeName);
         throttle *= 2;
         governor = 5;
@@ -53,13 +56,13 @@ void DSimUserSteppingAction::UserSteppingAction(const G4Step* theStep) {
     if (governor>0) {
         --governor;
         DSimDebug("    " << theCurrentVolumeName
-                   << ": " << theParticleName
-                   << " -- Step: " << theStep->GetStepLength()/mm << " mm"
-                   << " Energy Loss: "<< theStep->GetDeltaEnergy()/MeV 
-                   << " MeV");
+                  << ": " << theParticleName
+                  << " -- Step: " << theStep->GetStepLength()/CLHEP::mm << " mm"
+                  << " Energy Loss: "<< theStep->GetDeltaEnergy()/CLHEP::MeV 
+                  << " MeV");
     }
 
-    if (theStep->GetTrack()->GetTrackLength() > 100*m) {
+    if (theStep->GetTrack()->GetTrackLength() > 100*CLHEP::m) {
         theTrack->SetTrackStatus(fStopAndKill);
         DSimSevere("Stop and kill w/ track too long for " 
                     << theParticleName << " w/ " 
@@ -94,19 +97,19 @@ void DSimUserSteppingAction::UserSteppingAction(const G4Step* theStep) {
     }
 
     // Make sure the particle is someplace near the detector
-    if (theTrack->GetPosition().mag()>2000.0*meter) {
+    if (theTrack->GetPosition().mag()>2000.0*CLHEP::meter) {
         theTrack->SetTrackStatus(fStopAndKill);
         DSimError("Stop and kill track far from detector");
         fStenchAndRot = 0;
         return;
     }
 
-    if (theStep->GetStepLength()>1*nanometer) {
+    if (theStep->GetStepLength()>1*CLHEP::nanometer) {
         fStenchAndRot = 0;
         return;
     }
 
-    if (theStep->GetDeltaTime()>0.1*picosecond) {
+    if (theStep->GetDeltaTime()>0.1*CLHEP::picosecond) {
         fStenchAndRot = 0;
         return;
     }

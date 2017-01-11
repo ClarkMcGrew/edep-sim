@@ -15,6 +15,10 @@
 #include <G4Tubs.hh>
 #include <G4Polyhedra.hh>
 
+#include <G4SystemOfUnits.hh>
+#include <G4PhysicalConstants.hh>
+
+
 class CaptImmersedMessenger
     : public DSimBuilderMessenger {
 private:
@@ -44,16 +48,16 @@ void CaptImmersedBuilder::Init(void) {
 
     /// Set the drift region parameters for CAPTAIN.
     CaptDriftRegionBuilder& drift = Get<CaptDriftRegionBuilder>("Drift");
-    drift.SetApothem(1037.5*mm);
-    drift.SetDriftLength(1000*mm);
-    drift.SetWirePlaneSpacing(3.18*mm);
+    drift.SetApothem(1037.5*CLHEP::mm);
+    drift.SetDriftLength(1000*CLHEP::mm);
+    drift.SetWirePlaneSpacing(3.18*CLHEP::mm);
 }
 
-CaptImmersedBuilder::~CaptImmersedBuilder() {};
+CaptImmersedBuilder::~CaptImmersedBuilder() {}
 
 double CaptImmersedBuilder::GetRadius() {
     CaptDriftRegionBuilder& drift = Get<CaptDriftRegionBuilder>("Drift");
-    double radius = drift.GetRadius() + 2*cm;
+    double radius = drift.GetRadius() + 2*CLHEP::cm;
     return radius;
 }
 
@@ -69,7 +73,7 @@ G4LogicalVolume *CaptImmersedBuilder::GetPiece(void) {
     G4LogicalVolume* logVolume 
         = new G4LogicalVolume(new G4Tubs(GetName(),
                                          0.0, GetRadius(), GetHeight()/2, 
-                                         0*degree, 360*degree),
+                                         0*CLHEP::degree, 360*CLHEP::degree),
                               FindMaterial("Argon_Liquid"),
                               GetName());
     logVolume->SetVisAttributes(GetColor(logVolume));
@@ -98,14 +102,14 @@ G4LogicalVolume *CaptImmersedBuilder::GetPiece(void) {
 
     
     // Put in the field cage.
-    double fieldInner[] = {drift.GetApothem()+10*mm, drift.GetApothem()+10*mm};
-    double fieldOuter[] = {drift.GetApothem()+13*mm, drift.GetApothem()+13*mm};
+    double fieldInner[] = {drift.GetApothem()+10*CLHEP::mm, drift.GetApothem()+10*CLHEP::mm};
+    double fieldOuter[] = {drift.GetApothem()+13*CLHEP::mm, drift.GetApothem()+13*CLHEP::mm};
     double fieldPlane[] = {-drift.GetHeight()/2,
                            drift.GetHeight()/2-drift.GetGridPlaneOffset()};
 
     G4LogicalVolume *logFieldCage
 	= new G4LogicalVolume(new G4Polyhedra(GetName()+"/FieldCage",
-                                              90*degree, 450*degree,
+                                              90*CLHEP::degree, 450*CLHEP::degree,
                                               6, 2,
                                               fieldPlane,
                                               fieldInner, fieldOuter),

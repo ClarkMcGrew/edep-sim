@@ -10,6 +10,9 @@
 #include <G4PVPlacement.hh>
 #include <G4VisAttributes.hh>
 
+#include <G4SystemOfUnits.hh>
+#include <G4PhysicalConstants.hh>
+
 #include <G4Polyhedra.hh>
 #include <G4Box.hh>
 #include <G4Tubs.hh>
@@ -71,20 +74,20 @@ public:
 
 void CaptPMTBuilder::Init(void) {
     SetMessenger(new CaptPMTMessenger(this));
-    SetSize(25*mm);
-    SetBaseLength(25*mm);
+    SetSize(25*CLHEP::mm);
+    SetBaseLength(25*CLHEP::mm);
 }
 
-CaptPMTBuilder::~CaptPMTBuilder() {};
+CaptPMTBuilder::~CaptPMTBuilder() {}
 
 G4LogicalVolume *CaptPMTBuilder::GetPiece(void) {
-    const double glassThickness = 3*mm;
+    const double glassThickness = 3*CLHEP::mm;
 
     G4LogicalVolume* logVolume 
         = new G4LogicalVolume(new G4Tubs(GetName(),
                                          0.0, GetSize()/2.0, 
                                          GetBaseLength()/2, 
-                                         0*degree, 360*degree),
+                                         0*CLHEP::degree, 360*CLHEP::degree),
                               FindMaterial("Glass"),
                               GetName());
     logVolume->SetVisAttributes(GetColor(logVolume));
@@ -95,7 +98,7 @@ G4LogicalVolume *CaptPMTBuilder::GetPiece(void) {
         = new G4LogicalVolume(new G4Tubs(namePhotoCathode,
                                          0.0, GetSize()/2.0, 
                                          glassThickness/2.0, 
-                                         0*degree, 360*degree),
+                                         0*CLHEP::degree, 360*CLHEP::degree),
                               FindMaterial("Glass"),
                               namePhotoCathode);
     logPhotoCathode->SetVisAttributes(GetColor(logPhotoCathode));
@@ -117,7 +120,7 @@ G4LogicalVolume *CaptPMTBuilder::GetPiece(void) {
         = new G4LogicalVolume(new G4Tubs(namePMTVoid,
                                          0.0, GetSize()/2.0-glassThickness, 
                                          GetBaseLength()/2.0-glassThickness, 
-                                         0*degree, 360*degree),
+                                         0*CLHEP::degree, 360*CLHEP::degree),
                               FindMaterial("Air"),  // should be vacuum...
                               namePMTVoid);
     logPMTVoid->SetVisAttributes(GetColor(logPMTVoid));

@@ -13,6 +13,7 @@
 #include <G4UIcmdWith3Vector.hh>
 #include <G4UIcmdWithADoubleAndUnit.hh>
 #include <G4UIcmdWith3VectorAndUnit.hh>
+#include <G4SystemOfUnits.hh>
 
 #include "DSimUserPrimaryGeneratorMessenger.hh"
 

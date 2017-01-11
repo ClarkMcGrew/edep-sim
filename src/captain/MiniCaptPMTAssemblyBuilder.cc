@@ -2,7 +2,7 @@
 #include "CaptPMTBuilder.hh"
 #include "DSimBuilder.hh"
 
-#include <DSimLog.hh>
+#include "DSimLog.hh"
 
 #include <globals.hh>
 #include <G4Material.hh>
@@ -16,6 +16,9 @@
 #include <G4Tubs.hh>
 #include <G4Box.hh>
 #include <G4SubtractionSolid.hh>
+
+#include <G4SystemOfUnits.hh>
+#include <G4PhysicalConstants.hh>
 
 class MiniCaptPMTAssemblyMessenger
     : public DSimBuilderMessenger {
@@ -51,18 +54,18 @@ public:
 
 void MiniCaptPMTAssemblyBuilder::Init(void) {
     SetMessenger(new MiniCaptPMTAssemblyMessenger(this));
-    SetApothem(503*mm);
-    SetPlateThickness(3*mm);
-    SetHoleRadius(50*mm);
-    SetTPBThickness(6*mm);
-    SetTPBSize(50*mm);
+    SetApothem(503*CLHEP::mm);
+    SetPlateThickness(3*CLHEP::mm);
+    SetHoleRadius(50*CLHEP::mm);
+    SetTPBThickness(6*CLHEP::mm);
+    SetTPBSize(50*CLHEP::mm);
     
     SetSensitiveDetector("cryo","segment");
 
     AddBuilder(new CaptPMTBuilder("PMT",this));
 }
 
-MiniCaptPMTAssemblyBuilder::~MiniCaptPMTAssemblyBuilder() {};
+MiniCaptPMTAssemblyBuilder::~MiniCaptPMTAssemblyBuilder() {}
 
 double MiniCaptPMTAssemblyBuilder::GetHeight() {
     CaptPMTBuilder& pmt = Get<CaptPMTBuilder>("PMT");
@@ -81,7 +84,7 @@ G4LogicalVolume *MiniCaptPMTAssemblyBuilder::GetPiece(void) {
 
     G4LogicalVolume *logVolume
 	= new G4LogicalVolume(new G4Polyhedra(GetName(),
-                                              90*degree, 450*degree,
+                                              90*CLHEP::degree, 450*CLHEP::degree,
                                               6, 2,
                                               zPlane, rInner, rOuter),
                               FindMaterial("Argon_Liquid"),
@@ -94,7 +97,7 @@ G4LogicalVolume *MiniCaptPMTAssemblyBuilder::GetPiece(void) {
 
     typedef std::vector< G4ThreeVector > Positions;
     Positions pmtPositions;
-    const double inch = 25.4*mm;
+    const double inch = 25.4*CLHEP::mm;
 
     pmtPositions.push_back(G4ThreeVector(-8.9*inch,0.0*inch,0));
     pmtPositions.push_back(G4ThreeVector(-4.0*inch,-11.42*inch,0));
@@ -117,14 +120,14 @@ G4LogicalVolume *MiniCaptPMTAssemblyBuilder::GetPiece(void) {
     // Construct PMT plate
     double platePlane[] = {-GetPlateThickness()/2, GetPlateThickness()/2};
     G4VSolid* shapePlate = new G4Polyhedra("sheet",
-                                          90*degree, 450*degree,
+                                          90*CLHEP::degree, 450*CLHEP::degree,
                                           6, 2,
                                           platePlane, rInner, rOuter);
     G4VSolid* shapeHole = new G4Tubs("hole",
                                      0.0,
                                      GetHoleRadius(),
                                      0.5+GetPlateThickness()/2.0 , 
-                                     0*degree, 360*degree);
+                                     0*CLHEP::degree, 360*CLHEP::degree);
 
     for (Positions::iterator p = pmtPositions.begin();
          p != pmtPositions.end();

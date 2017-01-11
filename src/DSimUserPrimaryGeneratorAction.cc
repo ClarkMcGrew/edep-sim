@@ -46,17 +46,17 @@ void DSimUserPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent) {
         }
         if (fAddFakeGeantino) {
             DSimWarn("Add a GEANTINO vertex.");
-            // Put the vertex far downstream, and long after beam spill.
+            // Put the vertex far way, and far in the future. 
             G4PrimaryVertex* theVertex = 
-                new G4PrimaryVertex(G4ThreeVector(0*cm, 0*cm, 20*m),
-                                    50000.0*ns);
+                new G4PrimaryVertex(G4ThreeVector(1E+20, 1E+20, 1E+20),
+                                    1E+20);
             anEvent->AddPrimaryVertex(theVertex);
             // Create the GEANTINO
             G4ParticleTable* particleTable 
                 = G4ParticleTable::GetParticleTable();
             G4ParticleDefinition* def = particleTable->FindParticle("geantino");
             G4PrimaryParticle* part 
-                = new G4PrimaryParticle(def,0.0, 0.0, 1*MeV);
+                = new G4PrimaryParticle(def,0.0, 0.0, 1.0);
             theVertex->SetPrimary(part);
             break;
         }
@@ -69,11 +69,11 @@ void DSimUserPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent) {
 }
 
 void DSimUserPrimaryGeneratorAction::ClearGenerators() {
-    for (std::vector<G4VPrimaryGenerator*>::iterator g 
+    for (std::vector<G4VPrimaryGenerator*>::iterator gen 
              = fPrimaryGenerators.begin();
-         g != fPrimaryGenerators.end();
-         ++g) {
-        delete (*g);
+         gen != fPrimaryGenerators.end();
+         ++gen) {
+        delete (*gen);
     }
     fPrimaryGenerators.clear();
 }

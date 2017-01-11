@@ -69,7 +69,9 @@ public:
     G4double GetSDLength() const {return fSDLength;}
 
     /// Add the length that has been deposited into a sensitive detector.
-    void AddSDLength(double len) {fSDLength += len;}
+    void AddSDLength(double len) {
+        fSDLength += len;
+    }
 
     /// Get the total amount of energy deposited into a sensitive detector by
     /// this trajectory and all of it's daughters.
@@ -89,8 +91,6 @@ public:
     /// Check if this trajectory should be saved.
     bool SaveTrajectory() const { return fSaveTrajectory;}
 
-    virtual void ShowTrajectory(std::ostream& os=G4cout) const;
-    virtual void DrawTrajectory(G4int i_mode=0) const;
     virtual void AppendStep(const G4Step* aStep);
 
     /// Get the number of trajectory points saved with this trajectory.

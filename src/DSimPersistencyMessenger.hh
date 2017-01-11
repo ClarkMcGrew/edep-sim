@@ -1,14 +1,4 @@
 ////////////////////////////////////////////////////////////
-// $Id: DSimPersistencyMessenger.hh,v 1.12 2011/09/06 18:58:35 mcgrew Exp $
-// 
-// class description:
-//
-//      This is a messenger class for DSimPersistencyManager.
-//      Implemented commands are following;
-//
-//  Commands : 
-//    /db/open *            Open the output file
-//    /db/close             Close the database
 // 
 
 #ifndef DSimPersistencyMessenger_h

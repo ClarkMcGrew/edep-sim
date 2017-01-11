@@ -3,7 +3,7 @@
 
 #include "DSimBuilder.hh"
 
-#include <DSimLog.hh>
+#include "DSimLog.hh"
 
 #include <globals.hh>
 #include <G4Material.hh>
@@ -13,6 +13,9 @@
 #include <G4VisAttributes.hh>
 #include <G4Tubs.hh>
 #include <G4Polyhedra.hh>
+
+#include <G4SystemOfUnits.hh>
+#include <G4PhysicalConstants.hh>
 
 class MiniCaptExposedMessenger
     : public DSimBuilderMessenger {
@@ -35,14 +38,14 @@ void MiniCaptExposedBuilder::Init(void) {
     SetMessenger(new MiniCaptExposedMessenger(this));
 }
 
-MiniCaptExposedBuilder::~MiniCaptExposedBuilder() {};
+MiniCaptExposedBuilder::~MiniCaptExposedBuilder() {}
 
 double MiniCaptExposedBuilder::GetRadius() {
-    return 65*cm;
+    return 65*CLHEP::cm;
 }
 
 double MiniCaptExposedBuilder::GetHeight() {
-    return 3*cm;
+    return 3*CLHEP::cm;
 }
 
 G4LogicalVolume *MiniCaptExposedBuilder::GetPiece(void) {

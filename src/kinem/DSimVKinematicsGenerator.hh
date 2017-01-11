@@ -4,6 +4,8 @@
 #include <G4ThreeVector.hh>
 #include <G4LorentzVector.hh>
 #include <G4Material.hh>
+#include <G4SystemOfUnits.hh>
+#include <G4PhysicalConstants.hh>
 
 #include "DSimException.hh"
 

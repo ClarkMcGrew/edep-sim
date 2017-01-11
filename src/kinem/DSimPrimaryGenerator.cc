@@ -7,6 +7,8 @@
 #include <G4LogicalVolume.hh>
 #include <G4Material.hh>
 #include <G4VisExtent.hh>
+#include <G4SystemOfUnits.hh>
+#include <G4PhysicalConstants.hh>
 
 #include <Randomize.hh>
 
@@ -74,7 +76,7 @@ void DSimPrimaryGenerator::GeneratePrimaryVertex(G4Event* evt) {
             }
             if (fTime->ForceTime()) {
                 DSimVerbose("#    Force time to " 
-                             << vertex.t()/ns << " ns");
+                            << vertex.t()/ns << " ns");
                 vtx->SetT0(vertex.t());
             }
         }

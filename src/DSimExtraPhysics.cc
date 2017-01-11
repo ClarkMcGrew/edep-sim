@@ -32,6 +32,9 @@ void DSimExtraPhysics::ConstructParticle() {
 void DSimExtraPhysics::ConstructProcess() {
     DSimLog("DSimExtraPhysics:: Add Extra Physics Processes");
 
+    G4ParticleTable::G4PTblDicIterator* theParticleIterator
+        = theParticleTable->GetIterator();
+
     theParticleIterator->reset();
     while ((*theParticleIterator)()) {
         G4ParticleDefinition* particle = theParticleIterator->value();

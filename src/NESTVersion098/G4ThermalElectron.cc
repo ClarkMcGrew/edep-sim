@@ -39,6 +39,8 @@
 
 #include "G4ThermalElectron.hh"
 #include "G4ParticleTable.hh"
+#include "G4SystemOfUnits.hh"
+#include "G4PhysicalConstants.hh"
 
 // ######################################################################
 // ###                    THERMAL (DRIFT) ELECTRON                    ###
@@ -68,15 +70,15 @@ G4ThermalElectron* G4ThermalElectron::Definition()
   //  static const double electron_mass_c2 = 0.51099906 * MeV;
 
     anInstance = new G4ParticleDefinition(
-                 name,  electron_mass_c2,       0.0*MeV,    -1.*eplus, 
-		    1,                 0,             0,          
-		    0,                 0,             0,             
-	     "lepton",                 1,             0,          11,
-		 true,              -1.0,          NULL,
-             false,                  "e"
-              );
+        name, CLHEP::electron_mass_c2, 0.0*CLHEP::MeV, -1.*CLHEP::eplus, 
+        1,                 0,             0,          
+        0,                 0,             0,             
+        "lepton",          1,             0,          11,
+        true,           -1.0,          NULL,
+        false,            "e"
+        );
     // Bohr Magnetron
-   G4double muB =  -0.5*eplus*hbar_Planck/(electron_mass_c2/c_squared) ;
+    G4double muB =  -0.5*CLHEP::eplus*CLHEP::hbar_Planck/(CLHEP::electron_mass_c2/CLHEP::c_squared) ;
    
    anInstance->SetPDGMagneticMoment( muB * 2.* 1.0011596521859 );
 

@@ -78,7 +78,7 @@ G4double DSimTrajectory::GetInitialKineticEnergy() const {
     if (!p) return mom;
     double mass = p->GetPDGMass();
     double kin = std::sqrt(mom*mom + mass*mass) - mass;
-    if (kin<0.0*MeV) return 0.0;
+    if (kin<0.0) return 0.0;
     return kin;
 }
 
@@ -103,18 +103,6 @@ void DSimTrajectory::MarkTrajectory(bool save) {
     // Protect against infinite loops.
     if (this == traj) return;
     traj->MarkTrajectory(save);
-}
-
-void DSimTrajectory::ShowTrajectory(std::ostream& os) const {
-    // Invoke the default implementation in G4VTrajectory...
-    G4VTrajectory::ShowTrajectory(os);
-    // ... or override with your own code here.
-}
-
-void DSimTrajectory::DrawTrajectory(G4int i_mode) const {
-    // Invoke the default implementation in G4VTrajectory...
-    G4VTrajectory::DrawTrajectory(i_mode);
-    // ... or override with your own code here.
 }
 
 const std::map<G4String,G4AttDef>* DSimTrajectory::GetAttDefs() const {

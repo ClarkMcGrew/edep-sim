@@ -19,7 +19,8 @@
 
 #include <cstdlib>
 #include <sstream>
-
+#include <algorithm>
+#include <functional>
 
 DSimDetectorMessenger::DSimDetectorMessenger(DSimUserDetectorConstruction* d)
     : fConstruction(d) {
@@ -96,13 +97,13 @@ void DSimDetectorMessenger::SetNewValue(G4UIcommand * cmd,
         std::string name;
         std::string version;
         input >> name >> version;
-        char *tmp = std::getenv("DETSIMROOT");
-        if (!tmp) DSimThrow("DETSIMROOT not set");
-        std::string packageroot(tmp);
-        tmp = std::getenv("DETSIMCONFIG");
-        if (!tmp) DSimThrow("DETSIMCONFIG not set");
-        std::string packageconfig(tmp);
-        std::string file = packageroot + "/" + packageconfig + "/" 
+#define STRINGIFY(s) #s
+#define STRINGIFY_DEFINITION(s) STRINGIFY(s)
+        std::string packageroot(STRINGIFY_DEFINITION(DETSIM_INSTALL_PREFIX));
+        std::string::iterator new_end
+            = std::remove(packageroot.begin(), packageroot.end(), '"');
+        packageroot.erase(new_end, packageroot.end());
+        std::string file = packageroot + "/lib/edep-sim/"
             + name + "-" + version + ".mac";
         DSimLog("%%%% Set Run Conditions");
         DSimLog("%%     Condition Name: "<< name);

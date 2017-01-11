@@ -10,6 +10,9 @@
 #include <G4SDManager.hh>
 #include <G4UnitsTable.hh>
 
+#include <G4SystemOfUnits.hh>
+#include <G4PhysicalConstants.hh>
+
 #include <DSimLog.hh>
 
 #include "DSimSegmentSD.hh"
@@ -18,7 +21,7 @@
 DSimSegmentSD::DSimSegmentSD(G4String name)
     :G4VSensitiveDetector(name),
      fHits(NULL), fHCID(-1),
-     fMaximumHitSagitta(1*mm), fMaximumHitLength(10*mm),
+     fMaximumHitSagitta(1*CLHEP::mm), fMaximumHitLength(10*CLHEP::mm),
      fLastHit(0) {
     // In an unbelievably poor interface, the G4VSensitiveDetector class
     // exposes the protected field "std::vector<G4String> collectionName" to
@@ -77,4 +80,4 @@ G4bool DSimSegmentSD::ProcessHits(G4Step* theStep,
     return true;
 }
 
-void DSimSegmentSD::EndOfEvent(G4HCofThisEvent* HCE) { }
+void DSimSegmentSD::EndOfEvent(G4HCofThisEvent*) { }

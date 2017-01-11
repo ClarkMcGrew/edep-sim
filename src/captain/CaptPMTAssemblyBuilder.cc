@@ -2,7 +2,7 @@
 #include "CaptPMTBuilder.hh"
 #include "DSimBuilder.hh"
 
-#include <DSimLog.hh>
+#include "DSimLog.hh"
 
 #include <globals.hh>
 #include <G4Material.hh>
@@ -16,6 +16,9 @@
 #include <G4Tubs.hh>
 #include <G4Box.hh>
 #include <G4SubtractionSolid.hh>
+
+#include <G4SystemOfUnits.hh>
+#include <G4PhysicalConstants.hh>
 
 class CaptPMTAssemblyMessenger
     : public DSimBuilderMessenger {
@@ -51,18 +54,18 @@ public:
 
 void CaptPMTAssemblyBuilder::Init(void) {
     SetMessenger(new CaptPMTAssemblyMessenger(this));
-    SetApothem(1037*mm);
-    SetPlateThickness(3*mm);
-    SetHoleRadius(50*mm);
-    SetTPBThickness(6*mm);
-    SetTPBSize(50*mm);
+    SetApothem(1037*CLHEP::mm);
+    SetPlateThickness(3*CLHEP::mm);
+    SetHoleRadius(50*CLHEP::mm);
+    SetTPBThickness(6*CLHEP::mm);
+    SetTPBSize(50*CLHEP::mm);
     
     SetSensitiveDetector("cryo","segment");
 
     AddBuilder(new CaptPMTBuilder("PMT",this));
 }
 
-CaptPMTAssemblyBuilder::~CaptPMTAssemblyBuilder() {};
+CaptPMTAssemblyBuilder::~CaptPMTAssemblyBuilder() {}
 
 double CaptPMTAssemblyBuilder::GetHeight() {
     CaptPMTBuilder& pmt = Get<CaptPMTBuilder>("PMT");
@@ -81,7 +84,7 @@ G4LogicalVolume *CaptPMTAssemblyBuilder::GetPiece(void) {
 
     G4LogicalVolume *logVolume
 	= new G4LogicalVolume(new G4Polyhedra(GetName(),
-                                              90*degree, 450*degree,
+                                              90*CLHEP::degree, 450*CLHEP::degree,
                                               6, 2,
                                               zPlane, rInner, rOuter),
                               FindMaterial("Argon_Liquid"),
@@ -109,14 +112,14 @@ G4LogicalVolume *CaptPMTAssemblyBuilder::GetPiece(void) {
     // Construct PMT plate
     double platePlane[] = {-GetPlateThickness()/2, GetPlateThickness()/2};
     G4VSolid* shapePlate = new G4Polyhedra("sheet",
-                                          90*degree, 450*degree,
+                                          90*CLHEP::degree, 450*CLHEP::degree,
                                           6, 2,
                                           platePlane, rInner, rOuter);
     G4VSolid* shapeHole = new G4Tubs("hole",
                                      0.0,
                                      GetHoleRadius(),
                                      0.5+GetPlateThickness()/2.0 , 
-                                     0*degree, 360*degree);
+                                     0*CLHEP::degree, 360*CLHEP::degree);
 
     for (Positions::iterator p = pmtPositions.begin();
          p != pmtPositions.end();

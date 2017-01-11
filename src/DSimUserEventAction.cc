@@ -1,3 +1,6 @@
+#include <TGeoManager.h>
+#include <TGeoNode.h>
+
 #include "DSimUserEventAction.hh"
 #include "DSimException.hh"
 #include "DSimUserEventInformation.hh"
@@ -7,10 +10,7 @@
 #include "DSimHitSegment.hh"
 #include "DSimRootGeometryManager.hh"
 
-#include <DSimLog.hh>
-
-#include <TGeoManager.h>
-#include <TGeoNode.h>
+#include "DSimLog.hh"
 
 #include <G4Event.hh>
 #include <G4EventManager.hh>
@@ -141,7 +141,10 @@ void DSimUserEventAction::EndOfEventAction(const G4Event* evt) {
         G4String HCname = hcT->GetHCname(i);
         int HCId = sdM->GetCollectionID(SDname+"/"+HCname);
         G4VHitsCollection* g4Hits = HCofEvent->GetHC(HCId);
-        if (g4Hits->GetSize()<1) continue;
+        if (g4Hits->GetSize()<1) {
+            DSimError("No hits for " << SDname << "/" << HCname); 
+            continue;
+        }
         for (unsigned int h=0; h<g4Hits->GetSize(); ++h) {
             DSimHitSegment* g4Hit
                 = dynamic_cast<DSimHitSegment*>(g4Hits->GetHit(h));
@@ -158,7 +161,7 @@ void DSimUserEventAction::EndOfEventAction(const G4Event* evt) {
                 continue;
             }
             traj->AddSDEnergyDeposit(energy);
-            traj->AddSDLength(g4Hit->GetLength());
+            traj->AddSDLength(g4Hit->GetTrackLength());
             for (int loopCount = 0; ; ++loopCount) {
                 int parentId = traj->GetParentID();
                 if (!parentId) break;

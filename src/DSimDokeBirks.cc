@@ -1,12 +1,14 @@
-#include "G4ParticleTypes.hh" //lets you refer to G4OpticalPhoton, etc.
-#include "G4EmProcessSubType.hh" //lets you call this process Scintillation
-#include "G4Version.hh" //tells you what Geant4 version you are running
+#include <G4ParticleTypes.hh> //lets you refer to G4OpticalPhoton, etc.
+#include <G4EmProcessSubType.hh> //lets you call this process Scintillation
+#include <G4Version.hh> //tells you what Geant4 version you are running
+#include <G4SystemOfUnits.hh>
+#include <G4PhysicalConstants.hh>
 
 #include "DSimDokeBirks.hh"
 
-// The physics in DSimDokeBirks is shamelessly stolen from NEST, so cite the NEST
-// paper to give credit where credit is due.  However, all of the bugs are
-// mine, so there should be a note like "Simplified implementation of the
+// The physics in DSimDokeBirks is shamelessly stolen from NEST, so cite the
+// NEST paper to give credit where credit is due.  However, all of the bugs
+// are mine, so there should be a note like "Simplified implementation of the
 // physics described in NEST paper".
 
 DSimDokeBirks::DSimDokeBirks(const G4String& processName,
@@ -64,8 +66,8 @@ DSimDokeBirks::PostStepDoIt(const G4Track& aTrack, const G4Step& aStep)
     
     const G4ParticleDefinition *pDef = aParticle->GetDefinition();
     G4String particleName = pDef->GetParticleName();
-    G4StepPoint* pPreStepPoint  = aStep.GetPreStepPoint();
-    G4StepPoint* pPostStepPoint = aStep.GetPostStepPoint();
+    // G4StepPoint* pPreStepPoint  = aStep.GetPreStepPoint();
+    // G4StepPoint* pPostStepPoint = aStep.GetPostStepPoint();
     G4double totalEnergyDeposit = aStep.GetTotalEnergyDeposit();
     
     if (totalEnergyDeposit <= 0.0) {
@@ -80,7 +82,8 @@ DSimDokeBirks::PostStepDoIt(const G4Track& aTrack, const G4Step& aStep)
     // Doke-Birks only, in LAr only, and for an electric field only.  This is
     // for ARGON only.  The Doke-Birks constants are in kilovolt/cm
     G4double dokeBirks[3];
-    G4double electricField = std::abs(fElectricField/(1000*volt/cm));
+    G4double electricField =
+        std::abs(fElectricField/(kilovolt/cm));
 
     dokeBirks[0] = 0.07*pow((electricField),-0.85);
     dokeBirks[2] = 0.00;

@@ -1,9 +1,10 @@
 #include "kinem/DSimVTimeGenerator.hh"
 #include "kinem/DSimSpillTimeGenerator.hh"
 
-#include <Randomize.hh>
-
 #include <DSimLog.hh>
+
+#include <G4PhysicalConstants.hh>
+#include <Randomize.hh>
 
 DSimSpillTimeGenerator::DSimSpillTimeGenerator(
     G4String name, double spillTime, double bunchSeparation,

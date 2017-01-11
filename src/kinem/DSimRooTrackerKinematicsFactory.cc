@@ -1,3 +1,8 @@
+#include <TFile.h>
+#include <TTree.h>
+#include <TBits.h>
+#include <TObjString.h>
+
 #include "kinem/DSimRooTrackerKinematicsFactory.hh"
 #include "kinem/DSimRooTrackerKinematicsGenerator.hh"
 

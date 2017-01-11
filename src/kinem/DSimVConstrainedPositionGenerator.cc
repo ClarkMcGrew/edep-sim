@@ -11,6 +11,7 @@
 #include <G4Material.hh>
 #include <G4VisExtent.hh>
 #include <Randomize.hh>
+#include <G4SystemOfUnits.hh>
 
 #include <queue>
 
@@ -152,60 +153,59 @@ namespace {
         double fValue;
     };
 
-};
+}
 
 void DSimVConstrainedPositionGenerator::CheckVolumeName(
     const G4String& name) {
     fPositionTests.push_back(new InternalVolumeName(name));
-};
+}
 
 void DSimVConstrainedPositionGenerator::CheckNotVolumeName(
     const G4String& name) {
     fPositionTests.push_back(new InternalNotVolumeName(name));
-};
+}
 
 void DSimVConstrainedPositionGenerator::CheckVolumeMaterial(
     const G4String& name) {
     fPositionTests.push_back(new InternalVolumeMaterial(name));
-};
+}
 
 void DSimVConstrainedPositionGenerator::CheckNotVolumeMaterial(
     const G4String& name) {
     fPositionTests.push_back(new InternalNotVolumeMaterial(name));
-};
+}
 
 void DSimVConstrainedPositionGenerator::CheckMinX(double x) {
     if (fMinimumCorner.x() < x) fMinimumCorner.setX(x);
     fPositionTests.push_back(new InternalMinimumCoordinate(0,x));
-};
+}
 
 void DSimVConstrainedPositionGenerator::CheckMinY(double y) {
     if (fMinimumCorner.y() < y) fMinimumCorner.setY(y);
     fPositionTests.push_back(new InternalMinimumCoordinate(1,y));
-};
+}
 
 void DSimVConstrainedPositionGenerator::CheckMinZ(double z) {
     if (fMinimumCorner.z() < z) fMinimumCorner.setZ(z);
     fPositionTests.push_back(new InternalMinimumCoordinate(2,z));
-};
+}
 
 void DSimVConstrainedPositionGenerator::CheckMaxX(double x) {
     if (fMaximumCorner.x() > x) fMaximumCorner.setX(x);
     fPositionTests.push_back(new InternalMaximumCoordinate(0,x));
-};
+}
 
 void DSimVConstrainedPositionGenerator::CheckMaxY(double y) {
     if (fMaximumCorner.y() > y) fMaximumCorner.setY(y);
     fPositionTests.push_back(new InternalMaximumCoordinate(1,y));
-};
+}
 
 void DSimVConstrainedPositionGenerator::CheckMaxZ(double z) {
     if (fMaximumCorner.z() > z) fMaximumCorner.setZ(z);
     fPositionTests.push_back(new InternalMaximumCoordinate(2,z));
-};
+}
 
 namespace {
-
     class QueueElement {
     public:
         QueueElement(G4VPhysicalVolume* v,
@@ -216,7 +216,7 @@ namespace {
         G4ThreeVector translation;
         G4RotationMatrix rotation;
     };
-};
+}
 
 void DSimVConstrainedPositionGenerator::FindLimits() {
     if (fLimitsFound) return;

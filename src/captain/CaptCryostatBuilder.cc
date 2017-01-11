@@ -1,5 +1,3 @@
-#include "DSimRootPersistencyManager.hh"
-
 #include "CaptCryostatBuilder.hh"
 #include "CaptImmersedBuilder.hh"
 #include "CaptExposedBuilder.hh"
@@ -8,7 +6,7 @@
 
 #include "DSimBuilder.hh"
 
-#include <DSimLog.hh>
+#include "DSimLog.hh"
 
 #include <globals.hh>
 #include <G4Material.hh>
@@ -19,7 +17,8 @@
 #include <G4Tubs.hh>
 #include <G4Polycone.hh>
 
-#include <TEventContext.hxx>
+#include <G4SystemOfUnits.hh>
+#include <G4PhysicalConstants.hh>
 
 class CaptCryostatMessenger
     : public DSimBuilderMessenger {
@@ -92,7 +91,7 @@ void CaptCryostatBuilder::Init(void) {
     AddBuilder(new MiniCaptExposedBuilder("mExposed",this));
 }
 
-CaptCryostatBuilder::~CaptCryostatBuilder() {};
+CaptCryostatBuilder::~CaptCryostatBuilder() {}
 
 G4ThreeVector CaptCryostatBuilder::GetOffset() {
     return G4ThreeVector(0,0,0);
@@ -103,8 +102,8 @@ G4ThreeVector CaptCryostatBuilder::GetTPCOffset() {
 }
 
 void CaptCryostatBuilder::DefineCAPTAINVessel() {
-    SetArgonDepth(24*25.4*mm);  // The design spec for CAPTAIN (24 inch).
-    SetTPCDepth(GetArgonDepth()+25*mm);   // I made this one up...
+    SetArgonDepth(24*25.4*CLHEP::mm);  // The design spec for CAPTAIN (24 inch).
+    SetTPCDepth(GetArgonDepth()+25*CLHEP::mm);   // I made this one up...
 
     fInnerVessel.clear();
 #include "captainInnerVessel.hxx"
@@ -126,8 +125,8 @@ void CaptCryostatBuilder::DefineCAPTAINVessel() {
 }
 
 void CaptCryostatBuilder::DefineMiniCAPTAINVessel() {
-    SetArgonDepth(9*25.4*mm);  // The design spec for CAPTAIN (24 inch).
-    SetTPCDepth(GetArgonDepth()+25*mm);   // I made this one up...
+    SetArgonDepth(9*25.4*CLHEP::mm);  // The design spec for CAPTAIN (24 inch).
+    SetTPCDepth(GetArgonDepth()+25*CLHEP::mm);   // I made this one up...
 
     fInnerVessel.clear();
 #include "miniCaptainInnerVessel.hxx"
@@ -152,13 +151,9 @@ G4LogicalVolume *CaptCryostatBuilder::GetPiece(void) {
 
     if (fVesselType == "CAPTAIN") {
         DefineCAPTAINVessel();
-        DSimRootPersistencyManager::GetInstance()->SetDetectorPartition(
-            CP::TEventContext::kCAPTAIN);
     }
     else if (fVesselType == "mCAPTAIN") {
         DefineMiniCAPTAINVessel();
-        DSimRootPersistencyManager::GetInstance()->SetDetectorPartition(
-            CP::TEventContext::kmCAPTAIN);
     }
     else {
         std::cout << "Undefine vessel type: " << fVesselType << std::endl;
@@ -176,14 +171,14 @@ G4LogicalVolume *CaptCryostatBuilder::GetPiece(void) {
          p != fVesselEnvelope.rend();
          ++p) {
         conePlanes.push_back(- p->fZ);
-        coneMax.push_back(p->fOuter+10*cm);
+        coneMax.push_back(p->fOuter+10*CLHEP::cm);
         coneMin.push_back(0.0);
     }
     
     G4LogicalVolume* logVolume 
         = new G4LogicalVolume(
             new G4Polycone(GetName(),
-                           0*degree, 360*degree, conePlanes.size(),
+                           0*CLHEP::degree, 360*CLHEP::degree, conePlanes.size(),
                            conePlanes.data(),
                            coneMin.data(), coneMax.data()),
             FindMaterial("Air"),
@@ -207,7 +202,7 @@ G4LogicalVolume *CaptCryostatBuilder::GetPiece(void) {
     G4LogicalVolume* logOuterVessel
         = new G4LogicalVolume(
             new G4Polycone(GetName()+"/OuterVessel",
-                           0*degree, 360*degree, conePlanes.size(),
+                           0*CLHEP::degree, 360*CLHEP::degree, conePlanes.size(),
                            conePlanes.data(),
                            coneMin.data(), coneMax.data()),
             FindMaterial("SS_304"),
@@ -241,7 +236,7 @@ G4LogicalVolume *CaptCryostatBuilder::GetPiece(void) {
     G4LogicalVolume* logInnerVessel
         = new G4LogicalVolume(
             new G4Polycone(GetName()+"/InnerVessel",
-                           0*degree, 360*degree, conePlanes.size(),
+                           0*CLHEP::degree, 360*CLHEP::degree, conePlanes.size(),
                            conePlanes.data(),
                            coneMin.data(), coneMax.data()),
             FindMaterial("SS_304"),
@@ -280,7 +275,7 @@ G4LogicalVolume *CaptCryostatBuilder::GetPiece(void) {
     fLiquidVolume
         = new G4LogicalVolume(
             new G4Polycone(GetName()+"/Liquid",
-                           0*degree, 360*degree, conePlanes.size(),
+                           0*CLHEP::degree, 360*CLHEP::degree, conePlanes.size(),
                            conePlanes.data(),
                            coneMin.data(), coneMax.data()),
             FindMaterial("Argon_Liquid"),
@@ -338,9 +333,9 @@ G4LogicalVolume *CaptCryostatBuilder::GetPiece(void) {
     for (Shape::reverse_iterator p = fInnerVessel.rbegin();
          p != fInnerVessel.rend();
          ++p) {
-        if (p->fZ >= GetArgonDepth()-1*mm) continue;
+        if (p->fZ >= GetArgonDepth()-1*CLHEP::mm) continue;
         if (conePlanes.empty() ) {
-            conePlanes.push_back(-GetArgonDepth()+1*um);
+            conePlanes.push_back(-GetArgonDepth()+1*CLHEP::um);
             coneMin.push_back(0.0);
             coneMax.push_back(p->fInner);
         }
@@ -352,7 +347,7 @@ G4LogicalVolume *CaptCryostatBuilder::GetPiece(void) {
     fUllageVolume
         = new G4LogicalVolume(
             new G4Polycone(GetName()+"/Ullage",
-                           0*degree, 360*degree, conePlanes.size(),
+                           0*CLHEP::degree, 360*CLHEP::degree, conePlanes.size(),
                            conePlanes.data(),
                            coneMin.data(), coneMax.data()),
             FindMaterial("Argon_Gas"),

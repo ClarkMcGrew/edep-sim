@@ -1,5 +1,4 @@
 #include "DSimKinemPassThrough.hh"
-#include "DSimRootPersistencyManager.hh"
 
 #include <TROOT.h>
 #include <TList.h>
@@ -8,8 +7,35 @@
 
 #include <memory>
 #include <cstdlib>
+#include <cstring>
 
 #define PASSTHRUDIR "DetSimPassThru"
+
+// void sort() {
+// 	TFile f("hsimple.root");
+// 	TTree *tree = (TTree*)f.Get("ntuple");
+// 	Int_t nentries = (Int_t)tree->GetEntries();
+// 	//Drawing variable pz with no graphics option.
+// 	//variable pz stored in array fV1 (see TTree::Draw)
+// 	tree->Draw("pz","","goff");
+// 	Int_t *index = new Int_t[nentries];
+// 	//sort array containing pz in decreasing order
+// 	//The array index contains the entry numbers in decreasing order
+// of pz
+// 	TMath::Sort(nentries,tree->GetV1(),index);
+	
+// 	//open new file to store the sorted Tree
+// 	TFile f2("hsimple_sorted.root","recreate");
+// 	//Create an empty clone of the original tree
+// 	TTree *tsorted = (TTree*)tree->CloneTree(0);
+// 	for (Int_t i=0;i<nentries;i++) {
+// 		tree->GetEntry(index[i]);
+// 		tsorted->Fill();
+// 	}
+// 	tsorted->Write();
+// 	delete [] index;
+// }
+
 
 DSimKinemPassThrough* DSimKinemPassThrough::fKinemPassThrough = NULL;
 
@@ -110,7 +136,18 @@ bool DSimKinemPassThrough::AddInputTree(const TTree * inputTreePtr,
 }
 
 void DSimKinemPassThrough::CreateInternalTrees() {
-    TFile* output = DSimRootPersistencyManager::GetInstance()->GetTFile();
+    TFile* output = NULL;;
+    TIter files(gROOT->GetListOfFiles());
+    TObject* object;
+    while ((object = files.Next())) {
+	TFile* file = dynamic_cast<TFile*>(output);
+        if (!file->IsOpen()) continue;
+        std::string fileOption(file->GetOption());
+        if (fileOption.find("CREATE") != std::string::npos) {
+            output = file;
+            continue;
+        }
+    }
     
     output->cd();
 

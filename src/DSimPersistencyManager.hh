@@ -4,24 +4,49 @@
 #define DSimPersistencyManager_h 1
 
 #include <vector>
+#include <map>
 
-#include "G4VPersistencyManager.hh"
+#include <G4VPersistencyManager.hh>
 #include <G4StepStatus.hh>
+
+#include "TG4Event.hxx"
 
 class G4Event;
 class G4Run;
+class G4PrimaryVertex;
 class G4VPhysicalVolume;
 class G4VTrajectory;
 class G4TrajectoryContainer;
-
-class DSimPersistencyMessenger;
+class G4VHitsCollection;
 
 class TPRegexp;
 
-///   The class is `singleton', with access via
-///   G4VPersistencyManager::GetPersistencyManager().
+class DSimPersistencyMessenger;
+
+/// The class is `singleton', with access via
+/// G4VPersistencyManager::GetPersistencyManager().  You need to create a
+/// single persistency manager for GEANT4 to work right.  It must derive from
+/// G4VPersistencyManager which will make this object available to the
+/// G4RunManager as a singleton.  As a singleton, there can only be one
+/// persistency manager active at a time.  The Store methods will then be
+/// called by the G4RunManager::AnalyzeEvent method (the
+/// G4RunManager::AnalyzeMethod is protected).
+///
+/// The persistency manager doesn't *have* to be derived from
+/// DSimRootPersistencyManager, but a lot of the trajectory and hit handling
+/// functionality is currently handled by that class, and as of 4.10.2,
+/// persistency managers seem to be the only viable hook to allow the event to
+/// be summarized after it is fully generated.  An alternative place to
+/// summarize the information would be in the
+/// G4UserEventAction::EndOfEventAction method and then keep the summary
+/// data in the EventUserInformation which is thread local.
 class DSimPersistencyManager : public G4VPersistencyManager {
 public:
+    /// Creates a root persistency manager.  Through the "magic" of
+    /// G4VPersistencyManager the ultimate base class, this declared to the G4
+    /// persistency management system.  You can only have one active
+    /// persistency class at any give moment.
+    DSimPersistencyManager();
     virtual ~DSimPersistencyManager();
 
     /// stores anEvent and the associated objects into database.
@@ -29,19 +54,48 @@ public:
     virtual G4bool Store(const G4Run* aRun);
     virtual G4bool Store(const G4VPhysicalVolume* aWorld);
     
-    virtual G4bool Retrieve(G4Event *&aEvent) {return false;}
-    virtual G4bool Retrieve(G4Run*& aRun) {return false;}
-    virtual G4bool Retrieve(G4VPhysicalVolume*& aWorld) {return false;};
+    /// Retrieve information from a file.  These are not implemented.
+    virtual G4bool Retrieve(G4Event *&e) {e=NULL; return false;}
+    virtual G4bool Retrieve(G4Run* &r) {r=NULL; return false;}
+    virtual G4bool Retrieve(G4VPhysicalVolume* &w) {w=NULL; return false;}
     
-    /// Open the output (ie database) file.
-    virtual G4bool Open(G4String filename) = 0;
+    /// A public accessor to the summarized event.  The primaries are
+    /// summarized during by a call to UpdateSummaries.  The
+    /// DSimPersistencyManager::Store(event) method is called from
+    /// G4RunManager::AnalyzeEvent and will call the UpdateSummaries() method.
+    /// Alternatively, the UpdateSummarize method can be called by a method of
+    /// a derived class (e.g. in its Store method).  The fEventSummary field
+    /// is protected so derived classes can directly access it.
+    const TG4Event& GetEventSummary();
+
+    /// A public accessor to the summarized primaries.  The primaries are
+    /// summarized during by a call to UpdateSummaries.  The
+    /// DSimPersistencyManager::Store(event) method is called from
+    /// G4RunManager::AnalyzeEvent and will call the UpdateSummaries() method.
+    /// Alternatively, the UpdateSummarize method can be called by a method of
+    /// a derived class (e.g. in its Store method).
+    const std::vector<TG4PrimaryVertex>& GetPrimaries() const;
+
+    /// A public accessor to the summarized trajectories.  See the
+    /// documentation for the GetPrimaries() method.
+    const std::vector<TG4Trajectory>& GetTrajectories() const;
+
+    /// A public accessor to the summarized hit segment detectors.  See the
+    /// documentation for the GetPrimaries() method.
+    const TG4HitSegmentDetectors& GetSegmentDetectors() const;
+
+    /// Open the output (ie database) file.  This is used by the persistency
+    /// messenger to open files using the G4 macro language.  It can be an
+    /// empty method.
+    virtual G4bool Open(G4String filename);
     
+    /// Make sure the output file is closed.  This is used to make sure that
+    /// any information being summarized has been saved.
+    virtual G4bool Close(void);
+
     /// Return the output file name.
     virtual G4String GetFilename(void) const {return fFilename;}
     
-    /// Make sure the output file is closed.
-    virtual G4bool Close(void) = 0;
-
     /// Set the threshold for length in a sensitive detector above which a
     /// trajectory will be saved.  If a trajectory created this much track
     /// inside a sensitive detector, then it is saved.
@@ -50,9 +104,7 @@ public:
     }
 
     /// Get the threshold for length in a sensitive detector.
-    virtual G4double GetLengthThreshold() const {
-        return fLengthThreshold;
-    }
+    virtual G4double GetLengthThreshold() const {return fLengthThreshold;}
 
     /// Set the momentum threshold required to save a gamma-ray as a
     /// trajectory.
@@ -63,9 +115,7 @@ public:
     /// Get the momentum threshold required to save a gamma-ray as a
     /// trajectory.  Gamma rays are rejected if the gamma-ray momentum is
     /// below either GetGammaThreshold() or GetMomentumThreshold().
-    virtual G4double GetGammaThreshold() const {
-        return fGammaThreshold;
-    }
+    virtual G4double GetGammaThreshold() const {return fGammaThreshold;}
 
     /// Set the momentum threshold required to save a neutron as a
     /// trajectory.
@@ -75,9 +125,7 @@ public:
 
     /// Get the momentum threshold required to save a neutron as a
     /// trajectory.
-    virtual G4double GetNeutronThreshold() const {
-        return fNeutronThreshold;
-    }
+    virtual G4double GetNeutronThreshold() const {return fNeutronThreshold;}
 
     /// Get the required trajectory accuracy.  Trajectory points are saved so
     /// that the interpolated position of a trajectory is never more than this
@@ -113,7 +161,6 @@ public:
         return fSaveAllPrimaryTrajectories;
     }
 
-
     /// Add a regular expression to define a volume boundary at which a
     /// trajectory point should be saved.  The volume names are defined by the
     /// constructors which built the volume.  Most of the names can be found
@@ -130,28 +177,58 @@ public:
 
     /// Get the detector partition.
     int GetDetectorPartition() const {return fDetectorPartition;}
-    
-protected:
-    /// This is protected so that it doesn't get called outside of the class
-    /// implementation.  Use GetPersistencyManager instead.
-    DSimPersistencyManager(); 
 
-    /// Set the filename
+protected:
+    /// Set the output filename.  This can be used by the derived classes to
+    /// inform the base class of the output file name.
     void SetFilename(G4String file) {
         fFilename = file;
     }
 
-    /// Return the intensity used to generate the events.  This is a
-    /// convenience function that accesses the intensity from the run manager.
-    /// The intensity should be saved in the MC header for the event.
-    // double void GetIntensity() const;
+    /// Update the event summary fields.
+    void UpdateSummaries(const G4Event* event);
 
+    /// A summary of the primary vertices in the event.
+    TG4Event fEventSummary;
+
+private: 
+    // Fill the vertex container.  This allows informational vertices to be
+    // filled.
+    void SummarizePrimaries(std::vector<TG4PrimaryVertex>& primaries,
+                            const G4PrimaryVertex* event);
+
+    /// Fill the trajectory container.
+    void SummarizeTrajectories(std::vector<TG4Trajectory>& trajectories,
+                               const G4Event* event);
+    
     /// Mark the G4 Trajectories that should be saved.
     void MarkTrajectories(const G4Event* event);
 
+    /// sensitive detector.
+    void SummarizeSegmentDetectors(TG4HitSegmentDetectors& segmentDetectors,
+                                   const G4Event* event);
+
+    /// Fill a container of hit segments.
+    void SummarizeHitSegments(std::vector<TG4HitSegment>& segments,
+                              G4VHitsCollection* hits);
+
+    /// Fill the map of sensitive detectors which use hit segments as the
+    /// Copy and map the contributing trajectories from the vector of
+    /// contributors for the DSimHitSegment into the vector of contributors
+    /// for the TG4HitSegment.
+    void CopyHitContributors(std::vector<int>& dest,
+                             const std::vector<int>& src);
+
+    /// Copy the trajectory points into the trajectory summary.  This uses
+    /// SelectTrajectoryPoints to pick out the points that should appear in
+    /// the summary.
+    void CopyTrajectoryPoints(TG4Trajectory& traj,
+                              G4VTrajectory* g4Traj);
+
     /// Find the maximum deviation of a trajectory point from the interpolated
     /// path between point 1 and point 2
-    double FindTrajectoryAccuracy(G4VTrajectory* traj, int point1, int point2);
+    double FindTrajectoryAccuracy(G4VTrajectory* traj,
+                                  int point1, int point2);
 
     /// Save another trajectory point between point 1 and point to optimize
     /// the trajectory accuracy.
@@ -171,7 +248,17 @@ protected:
                                 G4String currentVolume,
                                 G4String prevVolume);
 
-private: 
+    /// The mapping between the internal G4 TrackID number and the external
+    /// TrackId number.  The G4 TrackID value is based on the order that the
+    /// particle is placed onto the stack, not all TrackID value exist and the
+    /// ordering in the vector is not monotonic.  The external TrackId is the
+    /// same as the location of the trajectory in the output array and can be
+    /// used as an index so parent trajectories are "easy" to find.  This is
+    /// filled in SummarizeTrajectories, and used to remap TrackId in other
+    /// methods.
+    typedef std::map<int,int> TrackIdMap;
+    TrackIdMap fTrackIdMap;
+
     /// The filename of the output file.
     G4String fFilename;
 
@@ -202,7 +289,7 @@ private:
 
     /// The detector partition
     int fDetectorPartition;
-    
+   
     // A pointer to the messenger.
     DSimPersistencyMessenger* fPersistencyMessenger;
 };

@@ -1,30 +1,33 @@
-#include "G4ios.hh"
-#include "G4NistManager.hh"
-#include "G4StableIsotopes.hh"
-
-#include "G4Isotope.hh"
-#include "G4Material.hh"
-#include "G4UnitsTable.hh"
-#include "G4Box.hh"
-#include "G4LogicalVolume.hh"
-#include "G4PVPlacement.hh"
-#include "G4RunManager.hh"
-#include "G4GeometryManager.hh"
-#include "G4VPersistencyManager.hh"
-
-#include "G4SolidStore.hh"
-#include "G4LogicalVolumeStore.hh"
-#include "G4PhysicalVolumeStore.hh"
-
 #include "DSimUserDetectorConstruction.hh"
 #include "DSimDetectorMessenger.hh"
 #include "DSimRootGeometryManager.hh"
 #include "captain/CaptWorldBuilder.hh"
 
-#include "G4RegionStore.hh"
-
-#include <DSimLog.hh>
+#include "DSimLog.hh"
  
+#include <G4ios.hh>
+#include <G4NistManager.hh>
+#include <G4StableIsotopes.hh>
+
+#include <G4Isotope.hh>
+#include <G4Material.hh>
+#include <G4UnitsTable.hh>
+#include <G4Box.hh>
+#include <G4LogicalVolume.hh>
+#include <G4PVPlacement.hh>
+#include <G4RunManager.hh>
+#include <G4GeometryManager.hh>
+#include <G4VPersistencyManager.hh>
+
+#include <G4SolidStore.hh>
+#include <G4LogicalVolumeStore.hh>
+#include <G4PhysicalVolumeStore.hh>
+
+#include <G4SystemOfUnits.hh>
+#include <G4PhysicalConstants.hh>
+
+#include <G4RegionStore.hh>
+
 DSimUserDetectorConstruction::DSimUserDetectorConstruction() {
 
     fDetectorMessenger = new DSimDetectorMessenger(this);
@@ -45,10 +48,10 @@ G4VPhysicalVolume* DSimUserDetectorConstruction::Construct() {
 
 void DSimUserDetectorConstruction::DefineMaterials() {
     DSimRootGeometryManager* geoMan = DSimRootGeometryManager::Get();
-    G4double a, density;
+    G4double density;
     G4String name, symbol;
     G4double temperature, pressure;
-    G4int nel, ncomponents, natoms;
+    G4int nel, natoms;
     G4double fractionmass;
 
     G4NistManager* nistMan = G4NistManager::Instance();
@@ -92,27 +95,27 @@ void DSimUserDetectorConstruction::DefineMaterials() {
     //Air
     G4Material* air 
         = new G4Material(name="Air",
-                         density = 1.29*mg/cm3,
+                         density = 1.29*CLHEP::mg/CLHEP::cm3,
                          nel=2,
                          kStateGas,
-                         temperature = 293.15*kelvin,
-                         pressure=1*atmosphere);
-    air->AddElement(elN, fractionmass = 70*perCent);
-    air->AddElement(elO, fractionmass = 30*perCent);
+                         temperature = 293.15*CLHEP::kelvin,
+                         pressure=1*CLHEP::atmosphere);
+    air->AddElement(elN, fractionmass = 70*CLHEP::perCent);
+    air->AddElement(elO, fractionmass = 30*CLHEP::perCent);
     geoMan->SetDrawAtt(air,kGray+3,0.01);
 
     // This is the default material.
     fDefaultMaterial = air;
 
     //Earth
-    density = 2.15*g/cm3;
+    density = 2.15*CLHEP::g/CLHEP::cm3;
     G4Material* earth 
         = new G4Material(name="Earth", 
-                         density = 2.15*g/cm3,
+                         density = 2.15*CLHEP::g/CLHEP::cm3,
                          nel=2,
                          kStateSolid,
-                         temperature = 293.15*kelvin,
-                         pressure=1*atmosphere);
+                         temperature = 293.15*CLHEP::kelvin,
+                         pressure=1*CLHEP::atmosphere);
     earth->AddElement(elSi, natoms=1);
     earth->AddElement(elO, natoms=2);
     geoMan->SetDrawAtt(earth,49,0.2);
@@ -120,50 +123,50 @@ void DSimUserDetectorConstruction::DefineMaterials() {
     //Cement
     G4Material* cement 
         = new G4Material(name="Cement",
-                         density = 2.5*g/cm3,
+                         density = 2.5*CLHEP::g/CLHEP::cm3,
                          nel=2,
                          kStateSolid,
-                         temperature = 293.15*kelvin,
-                         pressure=1*atmosphere);
+                         temperature = 293.15*CLHEP::kelvin,
+                         pressure=1*CLHEP::atmosphere);
     cement->AddElement(elSi, natoms=1);
     cement->AddElement(elO, natoms=2);
     geoMan->SetDrawAtt(cement,kGray,0.2);
 
     // The usual stainless steel (SS_304).
-    density = 8.0*g/cm3;
+    density = 8.0*CLHEP::g/CLHEP::cm3;
     G4Material* SS_304 = new G4Material(name="SS_304",
-                                       density = 8.0*g/cm3,
+                                       density = 8.0*CLHEP::g/CLHEP::cm3,
                                        nel=3,
                                        kStateSolid,
-                                       temperature = 293.15*kelvin,
-                                       pressure=1*atmosphere);
-    SS_304->AddElement(elC,  fractionmass =  4*perCent);
-    SS_304->AddElement(elFe, fractionmass = 88*perCent);
-    SS_304->AddElement(elCo, fractionmass =  8*perCent);
+                                       temperature = 293.15*CLHEP::kelvin,
+                                       pressure=1*CLHEP::atmosphere);
+    SS_304->AddElement(elC,  fractionmass =  4*CLHEP::perCent);
+    SS_304->AddElement(elFe, fractionmass = 88*CLHEP::perCent);
+    SS_304->AddElement(elCo, fractionmass =  8*CLHEP::perCent);
     geoMan->SetDrawAtt(SS_304,kBlue-10,0.05);
 
     // Argon Gas
     G4Material* argon =  new G4Material(name="Argon_Gas",
-                                        density = 1.66*mg/cm3,
+                                        density = 1.66*CLHEP::mg/CLHEP::cm3,
                                         nel=1,
                                         kStateGas,
-                                        temperature = 87.3*kelvin,
-                                        pressure=1*atmosphere);
+                                        temperature = 87.3*CLHEP::kelvin,
+                                        pressure=1*CLHEP::atmosphere);
     argon->AddElement(elAr, natoms=1);
     geoMan->SetDrawAtt(argon,kMagenta-10,0.1);
 
     // Liquid Argon
     G4Material* LAr =  new G4Material(name="Argon_Liquid",
-                                      density = 1.3954*g/cm3,
+                                      density = 1.3954*CLHEP::g/CLHEP::cm3,
                                       nel=1,
                                       kStateLiquid,
-                                      temperature = 87.3*kelvin,
-                                      pressure=1*atmosphere);
+                                      temperature = 87.3*CLHEP::kelvin,
+                                      pressure=1*CLHEP::atmosphere);
     LAr->AddElement(elAr, natoms=1);
 
     // Set up liquid argon for NEST.
     G4MaterialPropertiesTable *LArMatProps = new G4MaterialPropertiesTable();
-    LArMatProps->AddConstProperty("ELECTRICFIELD",500*volt/cm);
+    LArMatProps->AddConstProperty("ELECTRICFIELD",500*CLHEP::volt/CLHEP::cm);
     LArMatProps->AddConstProperty("TOTALNUM_INT_SITES",-1);
     LAr->SetMaterialPropertiesTable(LArMatProps);
 
@@ -171,50 +174,50 @@ void DSimUserDetectorConstruction::DefineMaterials() {
 
     // The CAPTAIN TPC wire.
     G4Material *wire = new G4Material(name="Captain_Wire",
-                                      density = 8.96*g/cm3,
+                                      density = 8.96*CLHEP::g/CLHEP::cm3,
                                       nel=1,
                                       kStateSolid,
-                                      temperature = 87.3*kelvin,
-                                      pressure=1*atmosphere);
+                                      temperature = 87.3*CLHEP::kelvin,
+                                      pressure=1*CLHEP::atmosphere);
     wire->AddElement(elCu, natoms=1);
     geoMan->SetDrawAtt(wire,kOrange+1,1.0);
 
     // Glass - 
     G4Material* glass
         = new G4Material(name="Glass", 
-                         density = 2.70*g/cm3,
+                         density = 2.70*CLHEP::g/CLHEP::cm3,
                          nel=4);
-    glass->AddElement(elO,53.9*perCent);
-    glass->AddElement(elSi,38.4*perCent);
-    glass->AddElement(elB,3.8*perCent);
-    glass->AddElement(elNa,3.8*perCent);
+    glass->AddElement(elO,53.9*CLHEP::perCent);
+    glass->AddElement(elSi,38.4*CLHEP::perCent);
+    glass->AddElement(elB,3.8*CLHEP::perCent);
+    glass->AddElement(elNa,3.8*CLHEP::perCent);
     geoMan->SetDrawAtt(glass,kBlue+1,0.3);
 
     // G10 - by volume 57% glass, 43% epoxy (CH2)
     G4Material* g10
         = new G4Material(name="G10", 
-                         density = 1.70*g/cm3,
+                         density = 1.70*CLHEP::g/CLHEP::cm3,
                          nel=6);
-    g10->AddElement(elH,6.2*perCent);
-    g10->AddElement(elC,36.8*perCent);
-    g10->AddElement(elO,30.7*perCent);
-    g10->AddElement(elSi,21.9*perCent);
-    g10->AddElement(elB,2.2*perCent);
-    g10->AddElement(elNa,2.2*perCent);
+    g10->AddElement(elH,6.2*CLHEP::perCent);
+    g10->AddElement(elC,36.8*CLHEP::perCent);
+    g10->AddElement(elO,30.7*CLHEP::perCent);
+    g10->AddElement(elSi,21.9*CLHEP::perCent);
+    g10->AddElement(elB,2.2*CLHEP::perCent);
+    g10->AddElement(elNa,2.2*CLHEP::perCent);
     geoMan->SetDrawAtt(g10,kGreen+1,0.75);
 
     // FR4 - Approximated by the composition of G10.  The density is from
     // Wikipedia.
     G4Material* fr4
         = new G4Material(name="FR4", 
-                         density = 1850*kg/m3,
+                         density = 1850*CLHEP::kg/CLHEP::m3,
                          nel=6);
-    fr4->AddElement(elH,6.2*perCent);
-    fr4->AddElement(elC,36.8*perCent);
-    fr4->AddElement(elO,30.7*perCent);
-    fr4->AddElement(elSi,21.9*perCent);
-    fr4->AddElement(elB,2.2*perCent);
-    fr4->AddElement(elNa,2.2*perCent);
+    fr4->AddElement(elH,6.2*CLHEP::perCent);
+    fr4->AddElement(elC,36.8*CLHEP::perCent);
+    fr4->AddElement(elO,30.7*CLHEP::perCent);
+    fr4->AddElement(elSi,21.9*CLHEP::perCent);
+    fr4->AddElement(elB,2.2*CLHEP::perCent);
+    fr4->AddElement(elNa,2.2*CLHEP::perCent);
     geoMan->SetDrawAtt(fr4,kGreen+1,1.0);
 
     // FR4_Copper - Approximated by the composition of G10 plus copper.  The
@@ -222,16 +225,16 @@ void DSimUserDetectorConstruction::DefineMaterials() {
     // FR4.  The density is from Wikipedia.
     G4Material* fr4Copper
         = new G4Material(name="FR4_Copper", 
-                         density = 1850*kg/m3,
+                         density = 1850*CLHEP::kg/CLHEP::m3,
                          nel=7);
-    double cuFrac = 3*perCent;
+    double cuFrac = 3*CLHEP::perCent;
     double fr4Frac = 1.0 - cuFrac;
-    fr4Copper->AddElement(elH,6.2*perCent*fr4Frac);
-    fr4Copper->AddElement(elC,36.8*perCent*fr4Frac);
-    fr4Copper->AddElement(elO,30.7*perCent*fr4Frac);
-    fr4Copper->AddElement(elSi,21.9*perCent*fr4Frac);
-    fr4Copper->AddElement(elB,2.2*perCent*fr4Frac);
-    fr4Copper->AddElement(elNa,2.2*perCent*fr4Frac);
+    fr4Copper->AddElement(elH,6.2*CLHEP::perCent*fr4Frac);
+    fr4Copper->AddElement(elC,36.8*CLHEP::perCent*fr4Frac);
+    fr4Copper->AddElement(elO,30.7*CLHEP::perCent*fr4Frac);
+    fr4Copper->AddElement(elSi,21.9*CLHEP::perCent*fr4Frac);
+    fr4Copper->AddElement(elB,2.2*CLHEP::perCent*fr4Frac);
+    fr4Copper->AddElement(elNa,2.2*CLHEP::perCent*fr4Frac);
     fr4Copper->AddElement(elCu,cuFrac);
     geoMan->SetDrawAtt(fr4Copper,kYellow-6,1.0);
 
@@ -239,11 +242,11 @@ void DSimUserDetectorConstruction::DefineMaterials() {
     // the TPB..  The density is from Wikipedia.
     G4Material* acrylic
         = new G4Material(name="Acrylic", 
-                         density = 1189*kg/m3,
+                         density = 1189*CLHEP::kg/CLHEP::m3,
                          nel=3);
-    acrylic->AddElement(elH,53.4*perCent);
-    acrylic->AddElement(elO,13.3*perCent);
-    acrylic->AddElement(elC,33.3*perCent);
+    acrylic->AddElement(elH,53.4*CLHEP::perCent);
+    acrylic->AddElement(elO,13.3*CLHEP::perCent);
+    acrylic->AddElement(elC,33.3*CLHEP::perCent);
     geoMan->SetDrawAtt(acrylic,kAzure+6,0.75);
 
     // Print all the materials defined.
@@ -263,9 +266,9 @@ G4Element* DSimUserDetectorConstruction::DefineElement(G4String name,
     {
         G4int A = theDefaultIsotopes.GetIsotopeNucleonCount(first+i);
         std::ostringstream os; os << symbol << A;
-        G4Isotope* is = new G4Isotope(name=os.str(), Z, A, A*g/mole);
+        G4Isotope* is = new G4Isotope(name=os.str(), Z, A, A*CLHEP::g/CLHEP::mole);
         G4double abundance = theDefaultIsotopes.GetAbundance(first+i);
-        el->AddIsotope(is, abundance*perCent);
+        el->AddIsotope(is, abundance*CLHEP::perCent);
     }
     return el;
 }

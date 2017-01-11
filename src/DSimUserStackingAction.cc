@@ -8,6 +8,9 @@
 #include <globals.hh>
 #include <G4ParticleDefinition.hh>
 
+#include <G4SystemOfUnits.hh>
+#include <G4PhysicalConstants.hh>
+
 DSimUserStackingAction::DSimUserStackingAction() { }
 
 DSimUserStackingAction::~DSimUserStackingAction() { }
@@ -21,10 +24,12 @@ DSimUserStackingAction::ClassifyNewTrack(const G4Track* aTrack) {
 
     if (aTrack->GetParentID() <= 0) return fUrgent;
 
-    // This is where we can throw away particles that we don't want to
-    // track.
+    // This is where we can throw away particles that we don't want to track.
+    // Drop photons below the "lowest" nuclear lines.  The lowest I know if is
+    // about 6 keV, and atomic shells start messing with the cross section at
+    // about 70 keV.
     if (particle->GetParticleName() == "gamma") {
-        if (aTrack->GetKineticEnergy() < 5.*keV) return fKill;
+        if (aTrack->GetKineticEnergy() < 10.*CLHEP::keV) return fKill;
     }
 
     if (particle->GetParticleName() == "opticalphoton") {

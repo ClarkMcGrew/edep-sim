@@ -5,6 +5,7 @@
 #define DSimVolumeId_hh_seen
 
 #include <vector>
+#include <ostream>
 
 #include <G4VPhysicalVolume.hh>
 #include <G4TouchableHandle.hh>
@@ -54,6 +55,8 @@ public:
     friend bool operator <(const DSimVolumeId& x,
                            const DSimVolumeId& y);
 
+    friend std::ostream& operator << (std::ostream& s, const DSimVolumeId&);
+    
 private:
     class Volume {
     public:
@@ -68,4 +71,20 @@ private:
     /// the vector.
     Volumes fVolumes;
 };
+
+
+inline std::ostream& operator << (std::ostream& stream, const DSimVolumeId& v) {
+    DSimVolumeId::Volumes::const_iterator b;
+    stream<< "<VolumeId ";
+    if (v.fVolumes.size()<1) {
+        stream << "empty>";
+        return stream;
+    }
+    if (!v.fVolumes.front().fHandle) {
+        stream << "null>";
+        return stream;
+    }
+    stream << v.fVolumes.front().fHandle->GetName() << ">";
+    return stream;
+}
 #endif

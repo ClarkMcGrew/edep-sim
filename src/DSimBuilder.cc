@@ -27,7 +27,7 @@ DSimBuilder::DSimBuilder(G4String n, DSimBuilder* p)
     fMessenger = fParent->GetMessenger();
 }
 
-DSimBuilder::~DSimBuilder() {;};
+DSimBuilder::~DSimBuilder() {;}
 
 G4LogicalVolume *DSimBuilder::GetPiece(void) {
     DSimThrow("DSimBuilder::GetPiece(): Not implemented");
@@ -171,18 +171,17 @@ G4VisAttributes DSimBuilder::GetColor(G4Material* mat, double opacity) {
     opacity += fOpacity;
     if (opacity < -9.9) return G4VisAttributes::Invisible;
     G4Color color = geoMan->GetG4Color(mat);
-    double r = color.GetRed();
-    double g = color.GetGreen();
-    double b = color.GetBlue();
-    double a = std::max(0.0,color.GetAlpha());
-    if (opacity > 9.9) a = 1.0;
-    else if (fOpacity > 9.9) a = 1.0;
-    else a = std::min(1.0, a*std::exp(opacity));
-    return G4VisAttributes(G4Color(r,g,b,a));
+    double red = color.GetRed();
+    double green = color.GetGreen();
+    double blue = color.GetBlue();
+    double alpha = std::max(0.0,color.GetAlpha());
+    if (opacity > 9.9) alpha = 1.0;
+    else if (fOpacity > 9.9) alpha = 1.0;
+    else alpha = std::min(1.0, alpha*std::exp(opacity));
+    return G4VisAttributes(G4Color(red,green,blue,alpha));
 }
 
 G4VisAttributes DSimBuilder::GetColor(G4LogicalVolume* vol, double opacity) {
-    DSimRootGeometryManager* geoMan = DSimRootGeometryManager::Get();
     G4Material* mat = vol->GetMaterial();
     return GetColor(mat,opacity);
 }

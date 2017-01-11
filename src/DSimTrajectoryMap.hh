@@ -9,7 +9,8 @@
 class G4VTrajectory;
 
 /// Maintain a singleton map of track Id to the trajectory in the trajectory
-/// container.
+/// container.  THIS IS NOT THREAD SAFE AND CAN NOT BE USED WITH MULTITHREAD
+/// GEANT4.
 class DSimTrajectoryMap {
 public:
     ~DSimTrajectoryMap() {}
