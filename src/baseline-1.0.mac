@@ -1,9 +1,0 @@
-############################################################
-# Baseline conditions for the CAPTAIN TPC.
-#
-# This sets the default detSim geometry.
-#
-# This is loaded using the /dsim/control directive.
-#
-# Note that the default geometry is built by default (nothing to do here).
-############################################################
