@@ -4,7 +4,6 @@
 #include "DSimUserEventAction.hh"
 #include "DSimUserStackingAction.hh"
 #include "DSimUserTrackingAction.hh"
-#include "DSimUserSteppingAction.hh"
 #include "DSimDetectorMessenger.hh"
 
 #include "DSimCreateRunManager.hh"
@@ -32,12 +31,6 @@ G4RunManager* DSimCreateRunManager(G4String physicsList) {
     runManager->SetUserAction(new DSimUserEventAction);
     runManager->SetUserAction(new DSimUserStackingAction);
     runManager->SetUserAction(new DSimUserTrackingAction);
-    runManager->SetUserAction(new DSimUserSteppingAction);
     
-    // Initialize G4 kernel
-    // (No longer hardcoded but now done with the command: /run/initialize
-    // from macro-files) 
-    //runManager->Initialize();
-
     return runManager;
 }

@@ -31,7 +31,7 @@
 #include <map>
 #include <sstream>
 
-G4Allocator<DSimHitSegment> DSimHitSegmentAllocator;
+G4Allocator<DSimHitSegment> dsimHitSegmentAllocator;
 
 DSimHitSegment::DSimHitSegment(double maxSagitta, double maxLength) 
     : fMaxSagitta(maxSagitta), fMaxLength(maxLength),

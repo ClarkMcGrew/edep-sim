@@ -16,7 +16,7 @@
 
 #include <DSimLog.hh>
 
-G4Allocator<DSimTrajectoryPoint> aDSimTrajPointAllocator;
+G4Allocator<DSimTrajectoryPoint> aTrajPointAllocator;
 
 DSimTrajectoryPoint::DSimTrajectoryPoint()
     : fTime(0.), fMomentum(0.,0.,0.),

@@ -24,7 +24,7 @@ public:
     virtual ~DSimTrajectoryPoint();
 
     inline void *operator new(size_t);
-    inline void operator delete(void *aDSimTrajectoryPoint);
+    inline void operator delete(void *aTrajectoryPoint);
     inline int operator==(const DSimTrajectoryPoint& right) const
     { return (this==&right); };
 
@@ -90,18 +90,18 @@ public:
 };
 
 #if defined G4TRACKING_ALLOC_EXPORT
-extern G4DLLEXPORT G4Allocator<DSimTrajectoryPoint> aDSimTrajPointAllocator;
+extern G4DLLEXPORT G4Allocator<DSimTrajectoryPoint> aTrajPointAllocator;
 #else
-extern G4DLLIMPORT G4Allocator<DSimTrajectoryPoint> aDSimTrajPointAllocator;
+extern G4DLLIMPORT G4Allocator<DSimTrajectoryPoint> aTrajPointAllocator;
 #endif
 
 inline void* DSimTrajectoryPoint::operator new(size_t) {
-    void *aTrajectoryPoint = (void *) aDSimTrajPointAllocator.MallocSingle();
+    void *aTrajectoryPoint = (void *) aTrajPointAllocator.MallocSingle();
     return aTrajectoryPoint;
 }
 
 inline void DSimTrajectoryPoint::operator delete(void *aTrajectoryPoint) {
-    aDSimTrajPointAllocator.FreeSingle(
+    aTrajPointAllocator.FreeSingle(
         (DSimTrajectoryPoint *) aTrajectoryPoint);
 }
 #endif

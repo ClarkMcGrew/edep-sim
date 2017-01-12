@@ -454,7 +454,7 @@ private:
     static std::map<std::string,LogPriority> fLogTraces;
     static int fIndentation;
 
-    DSimLogManager();
+    DSimLogManager() { }
 };
 
 /// INTERNAL: A macro to handle the output of an error message.  This is used

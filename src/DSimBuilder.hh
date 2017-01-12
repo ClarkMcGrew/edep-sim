@@ -1,6 +1,9 @@
 #ifndef DSimBuilder_hh_Seen
 #define DSimBuilder_hh_Seen
 
+class DSimBuilder;
+class DSimUserDetectorConstruction;
+
 #include "DSimUserDetectorConstruction.hh"
 #include "DSimException.hh"
 

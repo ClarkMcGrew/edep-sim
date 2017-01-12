@@ -38,6 +38,8 @@ public:
     DSimHitSegment(const DSimHitSegment& rhs);
     virtual ~DSimHitSegment();
 
+    typedef G4THitsCollection<DSimHitSegment> HitSegmentCollection;
+    
     inline void* operator new(size_t);
     inline void  operator delete(void*);
     
@@ -228,20 +230,16 @@ private:
     
 };
 
-typedef
-G4THitsCollection<DSimHitSegment> DSimHitSegmentCollection;
-
-extern G4Allocator<DSimHitSegment> DSimHitSegmentAllocator;
+extern G4Allocator<DSimHitSegment> dsimHitSegmentAllocator;
 
 inline void* DSimHitSegment::operator new(size_t) {
     void *aHit;
-    aHit = (void *) DSimHitSegmentAllocator.MallocSingle();
+    aHit = (void *) dsimHitSegmentAllocator.MallocSingle();
     return aHit;
 }
 
-
 inline void DSimHitSegment::operator delete(void *aHit) {
-    DSimHitSegmentAllocator.FreeSingle((DSimHitSegment*) aHit);
+    dsimHitSegmentAllocator.FreeSingle((DSimHitSegment*) aHit);
 }
 
 #endif

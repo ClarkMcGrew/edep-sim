@@ -46,7 +46,7 @@ private:
     /// The collection of hits that is being filled in the current event.  It
     /// is constructed in Initialize, filled in ProcessHits, and added the the
     /// event in EndOfEvent.
-    DSimHitSegmentCollection* fHits;
+    DSimHitSegment::HitSegmentCollection* fHits;
 
     /// The hit collection id of fHits
     int fHCID;

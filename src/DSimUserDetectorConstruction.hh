@@ -7,10 +7,11 @@
 class G4Element;
 class G4Material;
 class G4VPhysicalVolume;
+class DSimBuilder;
+class DSimUserDetectorConstruction;
 
 #include "DSimDetectorMessenger.hh"
-
-class DSimBuilder; 
+#include "DSimBuilder.hh"
 
 /// Construct the DSim detector geometry.
 class DSimUserDetectorConstruction : public G4VUserDetectorConstruction {

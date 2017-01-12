@@ -57,7 +57,6 @@ public:
 
     friend std::ostream& operator << (std::ostream& s, const DSimVolumeId&);
     
-private:
     class Volume {
     public:
         G4VPhysicalVolume* fHandle;

@@ -13,7 +13,6 @@ std::map<std::string,DSimLogManager::ErrorPriority> DSimLogManager::fErrorTraces
 std::map<std::string,DSimLogManager::LogPriority> DSimLogManager::fLogTraces;
 int DSimLogManager::fIndentation = 0;
 
-DSimLogManager::DSimLogManager() { }
 DSimLogManager::~DSimLogManager() { }
 
 void DSimLogManager::SetDebugLevel(const char* trace, 

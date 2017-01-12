@@ -126,17 +126,17 @@ private:
 };
 
 #if defined G4TRACKING_ALLOC_EXPORT
-extern G4DLLEXPORT G4Allocator<DSimTrajectory> aDSimTrajAllocator;
+extern G4DLLEXPORT G4Allocator<DSimTrajectory> aTrajAllocator;
 #else
-extern G4DLLIMPORT G4Allocator<DSimTrajectory> aDSimTrajAllocator;
+extern G4DLLIMPORT G4Allocator<DSimTrajectory> aTrajAllocator;
 #endif
 
 inline void* DSimTrajectory::operator new(size_t) {
-    void* aTrajectory = (void*) aDSimTrajAllocator.MallocSingle();
+    void* aTrajectory = (void*) aTrajAllocator.MallocSingle();
     return aTrajectory;
 }
 
 inline void DSimTrajectory::operator delete(void* aTrajectory) {
-    aDSimTrajAllocator.FreeSingle((DSimTrajectory*)aTrajectory);
+    aTrajAllocator.FreeSingle((DSimTrajectory*)aTrajectory);
 }
 #endif

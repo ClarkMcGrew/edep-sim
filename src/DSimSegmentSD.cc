@@ -35,8 +35,8 @@ DSimSegmentSD::DSimSegmentSD(G4String name)
 DSimSegmentSD::~DSimSegmentSD() {}
 
 void DSimSegmentSD::Initialize(G4HCofThisEvent* HCE) {
-    fHits = new DSimHitSegmentCollection(GetName(),
-                                          GetCollectionName(0));
+    fHits = new DSimHitSegment::HitSegmentCollection(GetName(),
+                                                     GetCollectionName(0));
 
     if (fHCID<0) {
         G4String hcName = GetName() + "/" + GetCollectionName(0);

@@ -13,7 +13,7 @@
 #include "DSimTrajectoryPoint.hh"
 #include "DSimTrajectoryMap.hh"
 
-G4Allocator<DSimTrajectory> aDSimTrajAllocator;
+G4Allocator<DSimTrajectory> aTrajAllocator;
 
 DSimTrajectory::DSimTrajectory()
     : fPositionRecord(0), fTrackID(0), fParentID(0),
