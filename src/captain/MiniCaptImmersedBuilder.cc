@@ -1,10 +1,9 @@
 #include "MiniCaptImmersedBuilder.hh"
 #include "CaptDriftRegionBuilder.hh"
-#include "MiniCaptPMTAssemblyBuilder.hh"
 
-#include "DSimBuilder.hh"
+#include "EDepSimBuilder.hh"
 
-#include <DSimLog.hh>
+#include <EDepSimLog.hh>
 
 #include <globals.hh>
 #include <G4Material.hh>
@@ -19,13 +18,13 @@
 #include <G4PhysicalConstants.hh>
 
 class MiniCaptImmersedMessenger
-    : public DSimBuilderMessenger {
+    : public EDepSim::BuilderMessenger {
 private:
     MiniCaptImmersedBuilder* fBuilder;
 
 public:
     MiniCaptImmersedMessenger(MiniCaptImmersedBuilder* c) 
-        : DSimBuilderMessenger(c,"Control the immersed geometry."),
+        : EDepSim::BuilderMessenger(c,"Control the immersed geometry."),
           fBuilder(c) {
 
     };
@@ -34,7 +33,7 @@ public:
     };
 
     void SetNewValue(G4UIcommand *cmd, G4String val) {
-        DSimBuilderMessenger::SetNewValue(cmd,val);
+        EDepSim::BuilderMessenger::SetNewValue(cmd,val);
     };
 };
 
@@ -43,7 +42,6 @@ void MiniCaptImmersedBuilder::Init(void) {
     SetSensitiveDetector("cryo","segment");
 
     AddBuilder(new CaptDriftRegionBuilder("Drift",this));
-    AddBuilder(new MiniCaptPMTAssemblyBuilder("PMTAssembly",this));
 
     /// Set the drift region parameters for CAPTAIN.
     CaptDriftRegionBuilder& drift = Get<CaptDriftRegionBuilder>("Drift");
@@ -63,9 +61,7 @@ double MiniCaptImmersedBuilder::GetRadius() {
 
 double MiniCaptImmersedBuilder::GetHeight() {
     CaptDriftRegionBuilder& drift = Get<CaptDriftRegionBuilder>("Drift");
-    MiniCaptPMTAssemblyBuilder& pmts
-        = Get<MiniCaptPMTAssemblyBuilder>("PMTAssembly");
-    double height = drift.GetHeight() + pmts.GetHeight();
+    double height = drift.GetHeight();
     return height;
 }
 
@@ -127,24 +123,5 @@ G4LogicalVolume *MiniCaptImmersedBuilder::GetPiece(void) {
                       0,                       // Copy number (zero)
                       Check());                // Check overlaps.
     
-    // Put in the PMT mounting
-    MiniCaptPMTAssemblyBuilder& pmts
-        = Get<MiniCaptPMTAssemblyBuilder>("PMTAssembly");
-    center -= G4ThreeVector(0.0,0.0,drift.GetHeight()/2);
-    center -= G4ThreeVector(0.0,0.0,pmts.GetHeight()/2);
-    G4LogicalVolume* logPMTS = pmts.GetPiece();
-
-    G4RotationMatrix* rotation = new G4RotationMatrix(); 
-    rotation->rotateZ(60*CLHEP::degree);
-
-    new G4PVPlacement(rotation,                    // rotation.
-                      center,                  // position
-                      logPMTS,            // logical volume
-                      logPMTS->GetName(), // name
-                      logVolume,               // mother  volume
-                      false,                   // (not used)
-                      0,                       // Copy number (zero)
-                      Check());                // Check overlaps.
-
     return logVolume;
 }

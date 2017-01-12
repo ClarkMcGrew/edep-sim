@@ -4,9 +4,9 @@
 #include "MiniCaptImmersedBuilder.hh"
 #include "MiniCaptExposedBuilder.hh"
 
-#include "DSimBuilder.hh"
+#include "EDepSimBuilder.hh"
 
-#include "DSimLog.hh"
+#include "EDepSimLog.hh"
 
 #include <globals.hh>
 #include <G4Material.hh>
@@ -21,7 +21,7 @@
 #include <G4PhysicalConstants.hh>
 
 class CaptCryostatMessenger
-    : public DSimBuilderMessenger {
+    : public EDepSim::BuilderMessenger {
 private:
     CaptCryostatBuilder* fBuilder;
     G4UIcmdWithADoubleAndUnit* fArgonDepthCMD;
@@ -30,7 +30,7 @@ private:
 
 public:
     CaptCryostatMessenger(CaptCryostatBuilder* c) 
-        : DSimBuilderMessenger(c,"Control the driftRegion geometry."),
+        : EDepSim::BuilderMessenger(c,"Control the driftRegion geometry."),
           fBuilder(c) {
 
         fArgonDepthCMD
@@ -73,7 +73,7 @@ public:
             fBuilder->SetVesselType(val);
         }
         else {
-            DSimBuilderMessenger::SetNewValue(cmd,val);
+            EDepSim::BuilderMessenger::SetNewValue(cmd,val);
         }
     };
 };

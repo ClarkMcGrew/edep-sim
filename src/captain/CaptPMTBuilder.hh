@@ -1,16 +1,16 @@
 #ifndef CaptPMTBuilder_hh_Seen
 #define CaptPMTBuilder_hh_Seen
 
-#include "DSimBuilder.hh"
+#include "EDepSimBuilder.hh"
 
 class G4LogicalVolume;
 
 /// Construct an unrotated PMT.  In the local coordinate system, the
 /// PMT points along the positive Z direction.
-class CaptPMTBuilder : public DSimBuilder {
+class CaptPMTBuilder : public EDepSim::Builder {
 public:
-    CaptPMTBuilder(G4String name, DSimBuilder* parent)
-        : DSimBuilder(name,parent) {Init();};
+    CaptPMTBuilder(G4String name, EDepSim::Builder* parent)
+        : EDepSim::Builder(name,parent) {Init();};
     virtual ~CaptPMTBuilder();
 
     /// Construct and return a G4 volume for the object.  This is a pure

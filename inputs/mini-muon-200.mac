@@ -3,8 +3,8 @@
 # Generate a 600 MeV electron along the X axis.
 #
 
-/dsim/control mini-captain 1.0
-/dsim/update
+/edep/control mini-captain 1.0
+/edep/update
 
 # Create the first particle source.  This source will be used to
 # specify the position of the vertex.  The any of the GPS direction

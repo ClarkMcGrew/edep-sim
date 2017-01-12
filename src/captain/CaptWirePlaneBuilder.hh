@@ -1,7 +1,7 @@
 #ifndef CaptWirePlaneBuilder_hh_Seen
 #define CaptWirePlaneBuilder_hh_Seen
 
-#include "DSimBuilder.hh"
+#include "EDepSimBuilder.hh"
 
 class G4LogicalVolume;
 
@@ -16,10 +16,10 @@ class G4LogicalVolume;
 /// since captevent will assigned a geometry identifier based on the name
 /// "XPlane", "UPlane", "VPlane".  There can only be one with each name.
 ///
-class CaptWirePlaneBuilder : public DSimBuilder {
+class CaptWirePlaneBuilder : public EDepSim::Builder {
 public:
-    CaptWirePlaneBuilder(G4String name, DSimBuilder* parent)
-        : DSimBuilder(name,parent) {Init();};
+    CaptWirePlaneBuilder(G4String name, EDepSim::Builder* parent)
+        : EDepSim::Builder(name,parent) {Init();};
     virtual ~CaptWirePlaneBuilder();
 
     /// Construct and return a G4 volume for the object.  This is a pure

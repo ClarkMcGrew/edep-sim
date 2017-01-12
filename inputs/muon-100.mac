@@ -3,7 +3,7 @@
 # Generate a 100 MeV muon with an isotropic distribution.
 #
 
-/dsim/update
+/edep/update
 
 # Create the first particle source.  This source will be used to
 # specify the position of the vertex.  The any of the GPS direction

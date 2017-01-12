@@ -1,7 +1,7 @@
 #ifndef CaptDriftRegionBuilder_hh_Seen
 #define CaptDriftRegionBuilder_hh_Seen
 
-#include "DSimBuilder.hh"
+#include "EDepSimBuilder.hh"
 
 class G4LogicalVolume;
 
@@ -11,10 +11,10 @@ class G4LogicalVolume;
 /// Y.  The V plane runs from positive Y to negative Y.  The planes are
 /// oriented from top to bottom X, U, V (in otherwords, the first plane seen
 /// by the electrons is the V plane).  The X plane is the collection plane.
-class CaptDriftRegionBuilder : public DSimBuilder {
+class CaptDriftRegionBuilder : public EDepSim::Builder {
 public:
-    CaptDriftRegionBuilder(G4String name, DSimBuilder* parent)
-        : DSimBuilder(name,parent) {Init();};
+    CaptDriftRegionBuilder(G4String name, EDepSim::Builder* parent)
+        : EDepSim::Builder(name,parent) {Init();};
     virtual ~CaptDriftRegionBuilder();
 
     /// Construct and return a G4 volume for the object.  This is a pure

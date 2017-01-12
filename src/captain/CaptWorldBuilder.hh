@@ -1,16 +1,16 @@
 #ifndef CaptWorldBuilder_hh_Seen
 #define CaptWorldBuilder_hh_Seen
 
-#include "DSimBuilder.hh"
+#include "EDepSimBuilder.hh"
 
 class G4LogicalVolume;
 
 /// Construct the world volume.  The origin is located at the center of the
 /// detector coordinate system.  The world is mostly filled with air.
-class CaptWorldBuilder : public DSimBuilder {
+class CaptWorldBuilder : public EDepSim::Builder {
 public:
-    CaptWorldBuilder(G4String n, DSimUserDetectorConstruction* c)
-        : DSimBuilder(n,c) {Init();};
+    CaptWorldBuilder(G4String n, EDepSim::UserDetectorConstruction* c)
+        : EDepSim::Builder(n,c) {Init();};
     virtual ~CaptWorldBuilder();
 
     /// Construct and return a G4 volume for the object.  This is a pure

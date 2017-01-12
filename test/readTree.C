@@ -1,4 +1,4 @@
-#include "makeTree/makeTreeProjectHeaders.h"
+#include "edepsimTree/edepsimTreeProjectHeaders.h"
 
 #include <TFile.h>
 #include <TTree.h>
@@ -6,7 +6,7 @@
 #include <iostream>
 
 void readTree() {
-    TTree* eventTree = (TTree*) gFile->Get("EventTree");
+    TTree* eventTree = (TTree*) gFile->Get("EDepSimEvents");
     if (!eventTree) {
         std::cout << "Missing the event tree" << std::endl;
         return;
@@ -16,7 +16,7 @@ void readTree() {
     eventTree->Scan();
 
     TG4Event *event = NULL;
-    eventTree->SetBranchAddress("EventSummary",&event);
+    eventTree->SetBranchAddress("Event",&event);
     
     int entries = eventTree->GetEntries();
     std::cout << "Entries " << entries << std::endl;

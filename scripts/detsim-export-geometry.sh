@@ -3,10 +3,10 @@
 # Export an MC geometry to a geometry file.  This prepares a file that
 # is ready to be used in the reconstruction.
 #
-# USAGE: ./detsim-export-geometry.sh <control-file> <1.0> ...
+# USAGE: ./edepsim-export-geometry.sh <control-file> <1.0> ...
 # 
 # Make a temporary macro file.
-MACRO=`mktemp -t detsim.XXXXXXXXXX` || exit 1
+MACRO=`mktemp -t edepsim.XXXXXXXXXX` || exit 1
 
 haveControl=""
 
@@ -27,7 +27,7 @@ while true; do
 
     haveControl=${haveControl}"-"${CTRL}
 
-    echo /dsim/control ${CTRL} ${CTRLVERS} >> $MACRO
+    echo /edep/control ${CTRL} ${CTRLVERS} >> $MACRO
     shift
 done
 
@@ -39,17 +39,14 @@ fi
 
 OUTPUT=export-geometry${haveControl}.root
 cat >> $MACRO <<EOF
-# /dsim/validateGeometry
-/dsim/update
-/dsim/export $OUTPUT
+# /edep/validateGeometry
+/edep/update
+/edep/export $OUTPUT
 EOF
 
 set -e
 
-DETSIM.exe $MACRO 
+edep-sim $MACRO 
 
 rm $MACRO
 
-VERS=`(cd $DETSIMROOT/cmt ; cmt show version)`
-
-strip-geom.exe -p ${VERS}${haveControl} $OUTPUT

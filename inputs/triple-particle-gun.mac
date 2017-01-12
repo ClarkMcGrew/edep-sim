@@ -2,8 +2,8 @@
 # A macro that uses the G4 particle gun to create three particles per event.
 ##################################################################
 
-/dsim/control baseline 1.0
-/dsim/update
+/edep/control baseline 1.0
+/edep/update
 
 # Make sure that the GPS generator is it's default state.
 /gps/source/clear

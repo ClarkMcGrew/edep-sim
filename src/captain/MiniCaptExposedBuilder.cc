@@ -1,9 +1,8 @@
 #include "MiniCaptExposedBuilder.hh"
-#include "MiniCaptPMTAssemblyBuilder.hh"
 
-#include "DSimBuilder.hh"
+#include "EDepSimBuilder.hh"
 
-#include "DSimLog.hh"
+#include "EDepSimLog.hh"
 
 #include <globals.hh>
 #include <G4Material.hh>
@@ -18,19 +17,19 @@
 #include <G4PhysicalConstants.hh>
 
 class MiniCaptExposedMessenger
-    : public DSimBuilderMessenger {
+    : public EDepSim::BuilderMessenger {
 private:
     MiniCaptExposedBuilder* fBuilder;
 
 public:
     MiniCaptExposedMessenger(MiniCaptExposedBuilder* c) 
-        : DSimBuilderMessenger(c,"Control the exposed geometry."),
+        : EDepSim::BuilderMessenger(c,"Control the exposed geometry."),
           fBuilder(c) {};
 
     virtual ~MiniCaptExposedMessenger() {};
 
     void SetNewValue(G4UIcommand *cmd, G4String val) {
-        DSimBuilderMessenger::SetNewValue(cmd,val);
+        EDepSim::BuilderMessenger::SetNewValue(cmd,val);
     };
 };
 

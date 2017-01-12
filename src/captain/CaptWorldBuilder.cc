@@ -1,4 +1,4 @@
-#include "DSimBuilder.hh"
+#include "EDepSimBuilder.hh"
 #include "CaptWorldBuilder.hh"
 #include "CaptCryostatBuilder.hh"
 
@@ -17,10 +17,10 @@
 #include <G4Tubs.hh>
 #include <G4SubtractionSolid.hh>
 
-#include <DSimLog.hh>
+#include <EDepSimLog.hh>
 
 class CaptWorldMessenger
-    : public DSimBuilderMessenger {
+    : public EDepSim::BuilderMessenger {
 private:
     CaptWorldBuilder* fBuilder;
     G4UIcmdWithADoubleAndUnit* fLengthCMD;
@@ -29,7 +29,7 @@ private:
 
 public:
     CaptWorldMessenger(CaptWorldBuilder* c) 
-        : DSimBuilderMessenger(c,"Control the world geometry."),
+        : EDepSim::BuilderMessenger(c,"Control the world geometry."),
           fBuilder(c) {
         fLengthCMD
             = new G4UIcmdWithADoubleAndUnit(CommandName("length"),this);
@@ -65,7 +65,7 @@ public:
             fBuilder->SetHeight(fHeightCMD->GetNewDoubleValue(val));
         }
         else {
-            DSimBuilderMessenger::SetNewValue(cmd,val);
+            EDepSim::BuilderMessenger::SetNewValue(cmd,val);
         }
     };
 };
@@ -84,9 +84,9 @@ CaptWorldBuilder::~CaptWorldBuilder() {}
 
 G4LogicalVolume *CaptWorldBuilder::GetPiece(void) {
 
-    DSimLog("##############################################");
-    DSimLog("# CONSTRUCT THE WORLD GEOMETRY ");
-    DSimLog("##############################################");
+    EDepSimLog("##############################################");
+    EDepSimLog("# CONSTRUCT THE WORLD GEOMETRY ");
+    EDepSimLog("##############################################");
 
     G4LogicalVolume *logVolume
 	= new G4LogicalVolume(new G4Box(GetName(),

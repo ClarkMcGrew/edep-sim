@@ -1,8 +1,8 @@
 #include "CaptDriftRegionBuilder.hh"
 #include "CaptWirePlaneBuilder.hh"
-#include "DSimBuilder.hh"
+#include "EDepSimBuilder.hh"
 
-#include <DSimLog.hh>
+#include <EDepSimLog.hh>
 
 #include <globals.hh>
 #include <G4Material.hh>
@@ -19,7 +19,7 @@
 #include <G4Polyhedra.hh>
 
 class CaptDriftRegionMessenger
-    : public DSimBuilderMessenger {
+    : public EDepSim::BuilderMessenger {
 private:
     CaptDriftRegionBuilder* fBuilder;
     G4UIcmdWithADoubleAndUnit* fApothemCMD;
@@ -28,7 +28,7 @@ private:
 
 public:
     CaptDriftRegionMessenger(CaptDriftRegionBuilder* c) 
-        : DSimBuilderMessenger(c,"Control the drift region geometry."),
+        : EDepSim::BuilderMessenger(c,"Control the drift region geometry."),
           fBuilder(c) {
 
         fApothemCMD
@@ -70,7 +70,7 @@ public:
                 fWirePlaneSpacingCMD->GetNewDoubleValue(val));
         }
         else {
-            DSimBuilderMessenger::SetNewValue(cmd,val);
+            EDepSim::BuilderMessenger::SetNewValue(cmd,val);
         }
     };
 };
@@ -135,7 +135,7 @@ G4LogicalVolume *CaptDriftRegionBuilder::GetPiece(void) {
     double rOuter[] = {GetApothem(), GetApothem()};
     double zPlane[] = {-GetHeight()/2, GetHeight()/2};
 
-    DSimLog("Construct " << GetName() 
+    EDepSimLog("Construct " << GetName() 
             << " with " << GetHeight()/mm << " mm height"
             << " and " <<  GetDriftLength()/mm << " mm drift");
 

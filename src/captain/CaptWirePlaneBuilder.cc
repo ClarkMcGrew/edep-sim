@@ -1,7 +1,7 @@
 #include "CaptWirePlaneBuilder.hh"
-#include "DSimBuilder.hh"
+#include "EDepSimBuilder.hh"
 
-#include "DSimLog.hh"
+#include "EDepSimLog.hh"
 
 #include <globals.hh>
 #include <G4Material.hh>
@@ -20,7 +20,7 @@
 #include <cmath>
 
 class CaptWirePlaneMessenger
-    : public DSimBuilderMessenger {
+    : public EDepSim::BuilderMessenger {
 private:
     CaptWirePlaneBuilder* fBuilder;
     G4UIcmdWithADoubleAndUnit* fApothemCMD;
@@ -30,7 +30,7 @@ private:
     
 public:
     CaptWirePlaneMessenger(CaptWirePlaneBuilder* c) 
-        : DSimBuilderMessenger(c,"Control the drift region geometry."),
+        : EDepSim::BuilderMessenger(c,"Control the drift region geometry."),
           fBuilder(c) {
 
         fApothemCMD
@@ -71,7 +71,7 @@ public:
             fBuilder->SetMaxWireCount(fMaxWireCountCMD->GetNewIntValue(val));
         }
         else {
-            DSimBuilderMessenger::SetNewValue(cmd,val);
+            EDepSim::BuilderMessenger::SetNewValue(cmd,val);
         }
     }
 
@@ -117,18 +117,18 @@ G4LogicalVolume *CaptWirePlaneBuilder::GetPiece(void) {
     if (wires<1) wires = 1;
 
     if (GetMaxWireCount()>0 && GetMaxWireCount()<wires) {
-        DSimLog("Reduce number of wires for " << GetName()
+        EDepSimLog("Reduce number of wires for " << GetName()
                 << " from " << wires
                 << " to " << GetMaxWireCount());
         wires = GetMaxWireCount();
     }
 
-    DSimLog("Construct " << GetName() 
+    EDepSimLog("Construct " << GetName() 
             << " with " << wires << " wires"
             << "  (spacing: " << GetSpacing()/CLHEP::mm << " mm)");
 
     if (wires<GetMaxWireCount()) {
-        DSimWarn(GetName() << ": Wire count is less than expected:"
+        EDepSimWarn(GetName() << ": Wire count is less than expected:"
                     << "  " << wires
                     << " < " << GetMaxWireCount());
     }

@@ -1,7 +1,7 @@
 #ifndef MiniCaptExposedBuilder_hh_Seen
 #define MiniCaptExposedBuilder_hh_Seen
 
-#include "DSimBuilder.hh"
+#include "EDepSimBuilder.hh"
 class G4LogicalVolume;
 
 #include <string>
@@ -9,10 +9,10 @@ class G4LogicalVolume;
 /// Construct the exposed part of the miniCAPTAIN detector.  This builds
 /// exposed parts of the TPC that are in the argon gas.  The exposed volume is
 /// returned as a cylinder filled with liquid argon.
-class MiniCaptExposedBuilder : public DSimBuilder {
+class MiniCaptExposedBuilder : public EDepSim::Builder {
 public:
-    MiniCaptExposedBuilder(G4String name, DSimBuilder* parent)
-        : DSimBuilder(name,parent) {Init();};
+    MiniCaptExposedBuilder(G4String name, EDepSim::Builder* parent)
+        : EDepSim::Builder(name,parent) {Init();};
     virtual ~MiniCaptExposedBuilder();
 
     /// Construct and return a G4 volume for the object.  This is a pure

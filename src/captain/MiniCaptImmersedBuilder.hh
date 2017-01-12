@@ -1,7 +1,7 @@
 #ifndef MiniCaptImmersedBuilder_hh_Seen
 #define MiniCaptImmersedBuilder_hh_Seen
 
-#include "DSimBuilder.hh"
+#include "EDepSimBuilder.hh"
 class G4LogicalVolume;
 
 #include <string>
@@ -9,10 +9,10 @@ class G4LogicalVolume;
 /// Construct the immersed part of the mini CAPTAIN detector.  This builds
 /// immersed parts of the TPC that are in the argon liquid.  The exposed
 /// volume is returned as a cylinder filled with liquid argon.
-class MiniCaptImmersedBuilder : public DSimBuilder {
+class MiniCaptImmersedBuilder : public EDepSim::Builder {
 public:
-    MiniCaptImmersedBuilder(G4String name, DSimBuilder* parent)
-        : DSimBuilder(name,parent) {Init();};
+    MiniCaptImmersedBuilder(G4String name, EDepSim::Builder* parent)
+        : EDepSim::Builder(name,parent) {Init();};
     virtual ~MiniCaptImmersedBuilder();
 
     /// Construct and return a G4 volume for the object.  This is a pure

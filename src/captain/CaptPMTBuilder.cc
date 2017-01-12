@@ -1,7 +1,7 @@
 #include "CaptPMTBuilder.hh"
-#include "DSimBuilder.hh"
+#include "EDepSimBuilder.hh"
 
-#include "DSimLog.hh"
+#include "EDepSimLog.hh"
 
 #include <globals.hh>
 #include <G4Material.hh>
@@ -20,7 +20,7 @@
 #include <cmath>
 
 class CaptPMTMessenger
-    : public DSimBuilderMessenger {
+    : public EDepSim::BuilderMessenger {
 private:
     CaptPMTBuilder* fBuilder;
     G4UIcmdWithADoubleAndUnit* fSizeCMD;
@@ -29,7 +29,7 @@ private:
 
 public:
     CaptPMTMessenger(CaptPMTBuilder* c) 
-        : DSimBuilderMessenger(c,"Control the PMT construction."),
+        : EDepSim::BuilderMessenger(c,"Control the PMT construction."),
           fBuilder(c) {
 
         fSizeCMD
@@ -66,7 +66,7 @@ public:
             fBuilder->SetRound(fRoundCMD->GetNewBoolValue(val));
         }
         else {
-            DSimBuilderMessenger::SetNewValue(cmd,val);
+            EDepSim::BuilderMessenger::SetNewValue(cmd,val);
         }
     }
 

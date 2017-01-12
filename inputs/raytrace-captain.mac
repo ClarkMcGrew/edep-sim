@@ -3,10 +3,10 @@
 #
 
 # Get the default values for the MC.
-/dsim/control baseline 1.0
+/edep/control baseline 1.0
 
 # Update the geometry so that the MC geometry is self consistent.
-/dsim/update
+/edep/update
 
 /vis/open RayTracer 300x300
 

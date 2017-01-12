@@ -1,10 +1,9 @@
 #include "CaptImmersedBuilder.hh"
 #include "CaptDriftRegionBuilder.hh"
-#include "CaptPMTAssemblyBuilder.hh"
 
-#include "DSimBuilder.hh"
+#include "EDepSimBuilder.hh"
 
-#include <DSimLog.hh>
+#include <EDepSimLog.hh>
 
 #include <globals.hh>
 #include <G4Material.hh>
@@ -20,13 +19,13 @@
 
 
 class CaptImmersedMessenger
-    : public DSimBuilderMessenger {
+    : public EDepSim::BuilderMessenger {
 private:
     CaptImmersedBuilder* fBuilder;
 
 public:
     CaptImmersedMessenger(CaptImmersedBuilder* c) 
-        : DSimBuilderMessenger(c,"Control the immersed geometry."),
+        : EDepSim::BuilderMessenger(c,"Control the immersed geometry."),
           fBuilder(c) {
 
     };
@@ -35,7 +34,7 @@ public:
     };
 
     void SetNewValue(G4UIcommand *cmd, G4String val) {
-        DSimBuilderMessenger::SetNewValue(cmd,val);
+        EDepSim::BuilderMessenger::SetNewValue(cmd,val);
     };
 };
 
@@ -44,7 +43,6 @@ void CaptImmersedBuilder::Init(void) {
     SetSensitiveDetector("cryo","segment");
 
     AddBuilder(new CaptDriftRegionBuilder("Drift",this));
-    AddBuilder(new CaptPMTAssemblyBuilder("PMTAssembly",this));
 
     /// Set the drift region parameters for CAPTAIN.
     CaptDriftRegionBuilder& drift = Get<CaptDriftRegionBuilder>("Drift");
@@ -63,8 +61,7 @@ double CaptImmersedBuilder::GetRadius() {
 
 double CaptImmersedBuilder::GetHeight() {
     CaptDriftRegionBuilder& drift = Get<CaptDriftRegionBuilder>("Drift");
-    CaptPMTAssemblyBuilder& pmts = Get<CaptPMTAssemblyBuilder>("PMTAssembly");
-    double height = drift.GetHeight() + pmts.GetHeight();
+    double height = drift.GetHeight();
     return height;
 }
 
@@ -126,19 +123,5 @@ G4LogicalVolume *CaptImmersedBuilder::GetPiece(void) {
                       0,                       // Copy number (zero)
                       Check());                // Check overlaps.
     
-    // Put in the PMT mounting
-    CaptPMTAssemblyBuilder& pmts = Get<CaptPMTAssemblyBuilder>("PMTAssembly");
-    center -= G4ThreeVector(0.0,0.0,drift.GetHeight()/2);
-    center -= G4ThreeVector(0.0,0.0,pmts.GetHeight()/2);
-    G4LogicalVolume* logPMTS = pmts.GetPiece();
-    new G4PVPlacement(NULL,                    // rotation.
-                      center,                  // position
-                      logPMTS,            // logical volume
-                      logPMTS->GetName(), // name
-                      logVolume,               // mother  volume
-                      false,                   // (not used)
-                      0,                       // Copy number (zero)
-                      Check());                // Check overlaps.
-
     return logVolume;
 }

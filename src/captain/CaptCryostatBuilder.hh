@@ -1,7 +1,7 @@
 #ifndef CaptCryostatBuilder_hh_Seen
 #define CaptCryostatBuilder_hh_Seen
 
-#include "DSimBuilder.hh"
+#include "EDepSimBuilder.hh"
 class G4LogicalVolume;
 
 #include <string>
@@ -16,10 +16,10 @@ class G4LogicalVolume;
 /// The invariants for this class are the inner diameter and inner heights
 /// which define the cold volume.  The outer diameter and height should be
 /// calculated.
-class CaptCryostatBuilder : public DSimBuilder {
+class CaptCryostatBuilder : public EDepSim::Builder {
 public:
-    CaptCryostatBuilder(G4String name, DSimBuilder* parent)
-        : DSimBuilder(name,parent) {Init();};
+    CaptCryostatBuilder(G4String name, EDepSim::Builder* parent)
+        : EDepSim::Builder(name,parent) {Init();};
     virtual ~CaptCryostatBuilder();
 
     /// Construct and return a G4 volume for the object.  This is a pure

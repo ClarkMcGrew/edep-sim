@@ -11,5 +11,5 @@ add_library(edep ${source}
 target_include_directories(edep PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 target_link_libraries(edep PUBLIC ${Geant4_LIBRARIES} ${ROOT_LIBRARIES})
 
-install(FILES detsim-defaults-1.0.mac DESTINATION lib/edep-sim)
+install(FILES edepsim-defaults-1.0.mac DESTINATION lib/edep-sim)
         

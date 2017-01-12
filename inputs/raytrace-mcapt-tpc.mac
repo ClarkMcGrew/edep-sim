@@ -3,13 +3,13 @@
 #
 
 # Get the default values for the MC.
-/dsim/control baseline 1.0
-/dsim/control mini-captain 1.0
+/edep/control baseline 1.0
+/edep/control mini-captain 1.0
 
 /Captain/Cryostat/opacity 2
 
 # Update the geometry so that the MC geometry is self consistent.
-/dsim/update
+/edep/update
 
 /vis/open RayTracer
 /vis/geometry/set/visibility /Captain/Cryostat/mExposed 0 0

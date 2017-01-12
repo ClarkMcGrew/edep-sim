@@ -3,8 +3,8 @@
 # Generate a 300 MeV electron along the X axis.
 #
 
-/dsim/control baseline 1.0
-/dsim/update
+/edep/control baseline 1.0
+/edep/update
 
 # Create the first particle source.  This source will be used to
 # specify the position of the vertex.  The any of the GPS direction
