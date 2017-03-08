@@ -49,18 +49,45 @@ void readTree() {
             std::cout << " " << t->ParentId;
             std::cout << " " << t->Name;
             std::cout << " " << t->Points.size();
+            int count = 3;
+            std::cout << " Up to " << count << " points";
             std::cout << std::endl;
+            for (std::vector<TG4TrajectoryPoint>::iterator
+                     p = t->Points.begin();
+                 p != t->Points.end();
+                 ++p) {
+                std::cout << "      ";
+                std::cout << " Time: " << p->Position.T();
+                std::cout << " Process: " << p->Process;
+                std::cout << " Subprocess: " << p->Subprocess;
+                std::cout << std::endl;
+                if (--count < 1) break;
+            }
         }
-        typedef std::vector<
-            std::pair<std::string,
-                      std::vector<TG4HitSegment>
-                      > > SegmentDetectorContainer;
+        typedef
+            std::vector<std::pair<std::string,std::vector<TG4HitSegment> > >
+            SegmentDetectorContainer;
         for (SegmentDetectorContainer::iterator
                  d = event->SegmentDetectors.begin();
              d != event->SegmentDetectors.end(); ++d) {
             std::cout << "   det " << d->first;
             std::cout << " " << d->second.size();
+            int count = 10;
+            std::cout << " up to " << count << " segments";
             std::cout << std::endl;
+            for (std::vector<TG4HitSegment>::iterator
+                     h = d->second.begin();
+                 h != d->second.end();
+                 ++h) {
+                std::cout << "      ";
+                std::cout << " P: " << h->PrimaryId;
+                std::cout << " E: " << h->EnergyDeposit;
+                std::cout << " S: " << h->SecondaryDeposit;
+                std::cout << " C: " << h->Contrib.size();
+                std::cout << " L: " << h->TrackLength;
+                std::cout << std::endl;
+                if ((--count) < 1) break;
+            }
         }
     }
 }
