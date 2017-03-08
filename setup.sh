@@ -22,12 +22,8 @@ unset -f ___edep_root
 
 ___edep_target () {
     target="edep"
-    # if which lsb_release >> /dev/null; then
-    #     target="${target}-$(lsb_release -s -i)-$(lsb_release -s -r)"
-    # fi
-    if which gcc >> /dev/null; then
-	target="${target}-gcc-$(gcc -dumpversion)-$(gcc -dumpmachine)"
-    fi
+    compiler=gcc
+    target="${target}-${compiler}-$(cc -dumpversion)-$(cc -dumpmachine)"
     echo $target
 }
 
@@ -51,7 +47,7 @@ unset -f ___path_prepend
 unset -f ___path_remove
 
 
-alias edep-setup=". ${EDEP_ROOT}/build/setup.sh"
+alias edep-setup=". ${EDEP_ROOT}/setup.sh"
 
 alias edep-build="${EDEP_ROOT}/build/edep-build.sh"
 
