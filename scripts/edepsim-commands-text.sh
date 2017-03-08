@@ -1,19 +1,17 @@
 #!/bin/bash
 
-source ${DETSIMROOT}/cmt/setup.sh
-
-MACRO=`mktemp -t detsim.XXXXXXXXXX` || exit 1
+MACRO=`mktemp -t edepsim.XXXXXXXXXX` || exit 1
 cat >> $MACRO <<EOF
 /control/manual
 EOF
 
-DETSIM.exe $MACRO > detsim-command.temp
+edep-sim $MACRO > edepsim-command.temp
 
-LINE=`grep -n "^Command directory path : /$" detsim-command.temp | grep -o '[0-9]*'`
+LINE=`grep -n "^Command directory path : /$" edepsim-command.temp | grep -o '[0-9]*'`
 
-tail -n +${LINE} detsim-command.temp > detsim-command.list
+tail -n +${LINE} edepsim-command.temp > edepsim-command.list
 
-rm detsim-command.temp
+rm edepsim-command.temp
 rm $MACRO
 
-mv detsim-command.list ${DETSIMROOT}/doc
+mv edepsim-command.list ../doc
