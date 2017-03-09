@@ -1,4 +1,4 @@
-#include "edepsimTree/edepsimTreeProjectHeaders.h"
+#include "EDepSimEvents/EDepSimEventsProjectHeaders.h"
 
 #include <TFile.h>
 #include <TTree.h>

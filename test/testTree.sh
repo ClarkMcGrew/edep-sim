@@ -10,6 +10,6 @@ fi
 
 edep-sim ${EDEP_ROOT}/inputs/muon-100.mac -o edepsimTree
 
-root -q edepsimTree.root makeTree.C readTree.C++
+root -q edepsimTree.root ${EDEP_ROOT}/tools/loadEDepSim.C readTree.C++
 
    
