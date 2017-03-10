@@ -1,27 +1,14 @@
-#include "EDepSimEvents/EDepSimEventsProjectHeaders.h"
-
-#include <TFile.h>
-#include <TTree.h>
-
 #include <iostream>
 
-void readTree() {
-    TTree* eventTree = (TTree*) gFile->Get("EDepSimEvents");
-    if (!eventTree) {
-        std::cout << "Missing the event tree" << std::endl;
-        return;
-    }
-    
-    eventTree->Print();
-    eventTree->Scan();
+#include <readEDepSim.h>
 
-    TG4Event *event = NULL;
-    eventTree->SetBranchAddress("Event",&event);
+void readTree() {
     
-    int entries = eventTree->GetEntries();
+    int entries = EDepSimTree()->GetEntries();
     std::cout << "Entries " << entries << std::endl;
+    entries = 1;
     for (int i = 0; i<entries; ++i) {
-        eventTree->GetEntry(i);
+        TG4Event* event = EDepSimEvent(i);
         std::cout << "entry " << i;
         std::cout << " event " << event->EventId;
         std::cout << " primaries " << event->Primaries.size();
@@ -64,11 +51,17 @@ void readTree() {
                 if (--count < 1) break;
             }
         }
+#ifdef GARBAGE
+        // This works, but is very verbose.
         typedef
             std::vector<std::pair<std::string,std::vector<TG4HitSegment> > >
             SegmentDetectorContainer;
         for (SegmentDetectorContainer::iterator
                  d = event->SegmentDetectors.begin();
+             d != event->SegmentDetectors.end(); ++d) {}
+            
+#endif
+        for (auto d = event->SegmentDetectors.begin();
              d != event->SegmentDetectors.end(); ++d) {
             std::cout << "   det " << d->first;
             std::cout << " " << d->second.size();
