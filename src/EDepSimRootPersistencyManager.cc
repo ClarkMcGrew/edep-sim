@@ -39,7 +39,7 @@ bool EDepSim::RootPersistencyManager::Open(G4String filename) {
                  << "-- Delete current file pointer" );
     }
 
-    SetFilename(filename +".root");
+    SetFilename(filename);
 
     EDepSimLog("EDepSim::RootPersistencyManager::Open " << GetFilename());
 
