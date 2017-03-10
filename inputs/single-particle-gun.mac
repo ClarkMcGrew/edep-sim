@@ -1,6 +1,6 @@
+################################################################## 
 # Macro that use G4 particle gun to create a single particle
-/edep/control baseline 1.0
-/edep/update
+##################################################################
 
 # Create the first particle source.  This source will be used to
 # specify the position of the vertex.  The any of the GPS direction

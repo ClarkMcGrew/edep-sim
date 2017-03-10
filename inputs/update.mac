@@ -1,0 +1,4 @@
+# Setup for a run.  The is really simple for now.  If a GDML geometry is
+# used, it should be loaded from the command line.
+
+/edep/update

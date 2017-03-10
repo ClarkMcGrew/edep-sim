@@ -2,9 +2,6 @@
 # A macro that uses the G4 particle gun to create three particles per event.
 ##################################################################
 
-/edep/control baseline 1.0
-/edep/update
-
 # Make sure that the GPS generator is it's default state.
 /gps/source/clear
 
@@ -19,7 +16,7 @@
 # This source will be used to specify the position of the vertex.  The
 # any of the GPS direction and energy commands can be used.
 /gps/particle mu-
-/gps/energy 600 MeV
+/gps/energy 100 MeV
 
 # This generates the position of the first particle gun.  It will be
 # used for the other particle guns.  The /gps/position command must
@@ -44,7 +41,7 @@
 #########################################
 /gps/source/add 2
 /gps/particle proton
-/gps/energy 300 MeV
+/gps/energy 200 MeV
 
 # This generates the direction of the second particle gun.  This aims
 # the particle downstream with the directions uniformly distributed in
@@ -56,10 +53,10 @@
 
 #########################################
 # Create the third particle source.
-#########################################
+#########################################
 /gps/source/add 3
-/gps/particle mu+
-/gps/energy 300 MeV
+/gps/particle e+
+/gps/energy 400 MeV
 
 # This generates the direction of the third particle gun.
 /gps/ang/type iso

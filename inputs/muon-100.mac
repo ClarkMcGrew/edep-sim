@@ -3,8 +3,6 @@
 # Generate a 100 MeV muon with an isotropic distribution.
 #
 
-/edep/update
-
 # Create the first particle source.  This source will be used to
 # specify the position of the vertex.  The any of the GPS direction
 # and energy commands can be used.
@@ -21,7 +19,7 @@
 /gps/pos/halfy 1 cm
 /gps/pos/halfz 1 cm
 
-# This generates the direction of the particle gun. 
+# Make an isotropic particle gun.
 /gps/ang/type iso
 
-/run/beamOn 10
+# Do not include /run/beamOn here.

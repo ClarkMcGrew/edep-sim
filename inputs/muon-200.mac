@@ -1,10 +1,7 @@
 ####################################################################
 #
-# Generate a 600 MeV electron along the X axis.
+# Generate a 200 MeV muon along the X axis.
 #
-
-/edep/control mini-captain 1.0
-/edep/update
 
 # Create the first particle source.  This source will be used to
 # specify the position of the vertex.  The any of the GPS direction

@@ -1,8 +1,5 @@
 # Macro that use G4 particle gun to create a single particle
 
-/edep/control baseline 1.0
-/edep/update
-
 # Create the first particle source.  This source will be used to
 # specify the position of the vertex.  The any of the GPS direction
 # and energy commands can be used.
@@ -24,4 +21,4 @@
 /gps/ang/sigma_r 15 deg
 /gps/ang/rot2 0 0 -1
 
-/run/beamOn 1
+# Don't include the beamOn here.

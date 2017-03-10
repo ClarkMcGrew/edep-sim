@@ -1,10 +1,7 @@
 ####################################################################
 #
-# Generate a 300 MeV electron along the X axis.
+# Generate an isotropic 300 MeV proton.
 #
-
-/edep/control baseline 1.0
-/edep/update
 
 # Create the first particle source.  This source will be used to
 # specify the position of the vertex.  The any of the GPS direction
@@ -15,7 +12,7 @@
 # This generates the position of the particle gun.  It can be
 # used for the other particle guns to create a multi particle event.  The
 # /gps/position command must come first.
-/gps/position 0.0 0.0 -50.0 cm
+/gps/position 0.0 0.0 -15.0 cm
 /gps/pos/type Volume
 /gps/pos/shape Para
 /gps/pos/halfx 10 cm
