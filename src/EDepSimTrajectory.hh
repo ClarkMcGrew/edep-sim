@@ -17,6 +17,14 @@
 typedef std::vector<G4VTrajectoryPoint*>  TrajectoryPointContainer;
 
 namespace EDepSim {class Trajectory;}
+
+/// EDepSim specific trajectory class to save internal bookkeeping
+/// information.  This keeps track of information about a particular particle
+/// track.  Important information kept includes how much energy this
+/// trajectory has deposited in sensitive detectors, and it can query it's
+/// children to find out how much energy they deposited.  It also keeps track
+/// of the process that created the trajectory, the total length in the
+/// sensitive detectors, and points along the trajectory.
 class EDepSim::Trajectory : public G4VTrajectory {
 public:
     Trajectory();

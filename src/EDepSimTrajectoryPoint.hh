@@ -14,7 +14,9 @@ class G4VProcess;
 
 /// Store a point along a particle trajectory.  This is used internally for
 /// some bookkeeping, and then is translated into an output class when the
-/// event is saved.
+/// event is saved.  It keeps track of information like the momentum at the
+/// point, the process that occured the the point, the volume containing the
+/// point, and the energy deposited at the point.
 namespace EDepSim {class TrajectoryPoint;}
 class EDepSim::TrajectoryPoint : public G4TrajectoryPoint {
 public:
