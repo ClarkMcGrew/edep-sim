@@ -11,3 +11,5 @@ Linux-*
 Makefile
 *\#*
 *.root
+*_C.*
+*.pcm
