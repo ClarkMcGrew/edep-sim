@@ -1,0 +1,895 @@
+<?xml version="1.0" encoding="ASCII"?>
+<gdml xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://service-spi.web.cern.ch/service-spi/app/releases/GDML/schema/gdml.xsd">
+  <define>
+    <position name="LArPlane_el0_pos" unit="cm" x="0.0" y="0.0" z="-989.5"/>
+    <position name="LArPlane_el1_pos" unit="cm" x="0.0" y="0.0" z="-968.5"/>
+    <position name="LArPlane_el2_pos" unit="cm" x="0.0" y="0.0" z="-947.5"/>
+    <position name="LArPlane_el3_pos" unit="cm" x="0.0" y="0.0" z="-926.5"/>
+    <position name="LArPlane_el4_pos" unit="cm" x="0.0" y="0.0" z="-905.5"/>
+    <position name="LArPlane_el5_pos" unit="cm" x="0.0" y="0.0" z="-884.5"/>
+    <position name="LArPlane_el6_pos" unit="cm" x="0.0" y="0.0" z="-863.5"/>
+    <position name="LArPlane_el7_pos" unit="cm" x="0.0" y="0.0" z="-842.5"/>
+    <position name="LArPlane_el8_pos" unit="cm" x="0.0" y="0.0" z="-821.5"/>
+    <position name="LArPlane_el9_pos" unit="cm" x="0.0" y="0.0" z="-800.5"/>
+    <position name="LArMod_el0_pos" unit="cm" x="0.5" y="0.0" z="0.0"/>
+    <position name="LArD_el0_pos" unit="cm" x="1183.5" y="0.0" z="0.0"/>
+    <position name="TrackerPlane_el0_pos" unit="cm" x="982.5" y="0.0" z="0.0"/>
+    <position name="TrackerPlane_el1_pos" unit="cm" x="947.5" y="0.0" z="0.0"/>
+    <position name="TrackerPlane_el2_pos" unit="cm" x="912.5" y="0.0" z="0.0"/>
+    <position name="TrackerPlane_el3_pos" unit="cm" x="877.5" y="0.0" z="0.0"/>
+    <position name="TrackerPlane_el4_pos" unit="cm" x="842.5" y="0.0" z="0.0"/>
+    <position name="TrackerPlane_el5_pos" unit="cm" x="807.5" y="0.0" z="0.0"/>
+    <position name="TrackerPlane_el6_pos" unit="cm" x="772.5" y="0.0" z="0.0"/>
+    <position name="TrackerPlane_el7_pos" unit="cm" x="737.5" y="0.0" z="0.0"/>
+    <position name="TrackerPlane_el8_pos" unit="cm" x="702.5" y="0.0" z="0.0"/>
+    <position name="TrackerPlane_el9_pos" unit="cm" x="667.5" y="0.0" z="0.0"/>
+    <position name="TrackerPlane_el10_pos" unit="cm" x="632.5" y="0.0" z="0.0"/>
+    <position name="TrackerPlane_el11_pos" unit="cm" x="597.5" y="0.0" z="0.0"/>
+    <position name="TrackerPlane_el12_pos" unit="cm" x="562.5" y="0.0" z="0.0"/>
+    <position name="TrackerPlane_el13_pos" unit="cm" x="527.5" y="0.0" z="0.0"/>
+    <position name="TrackerPlane_el14_pos" unit="cm" x="492.5" y="0.0" z="0.0"/>
+    <position name="TrackerPlane_el15_pos" unit="cm" x="457.5" y="0.0" z="0.0"/>
+    <position name="TrackerPlane_el16_pos" unit="cm" x="422.5" y="0.0" z="0.0"/>
+    <position name="TrackerPlane_el17_pos" unit="cm" x="387.5" y="0.0" z="0.0"/>
+    <position name="TrackerPlane_el18_pos" unit="cm" x="352.5" y="0.0" z="0.0"/>
+    <position name="TrackerPlane_el19_pos" unit="cm" x="317.5" y="0.0" z="0.0"/>
+    <position name="TrackerPlane_el20_pos" unit="cm" x="282.5" y="0.0" z="0.0"/>
+    <position name="TrackerPlane_el21_pos" unit="cm" x="247.5" y="0.0" z="0.0"/>
+    <position name="TrackerPlane_el22_pos" unit="cm" x="212.5" y="0.0" z="0.0"/>
+    <position name="TrackerPlane_el23_pos" unit="cm" x="177.5" y="0.0" z="0.0"/>
+    <position name="TrackerPlane_el24_pos" unit="cm" x="142.5" y="0.0" z="0.0"/>
+    <position name="TrackerPlane_el25_pos" unit="cm" x="107.5" y="0.0" z="0.0"/>
+    <position name="TrackerPlane_el26_pos" unit="cm" x="72.5" y="0.0" z="0.0"/>
+    <position name="TrackerPlane_el27_pos" unit="cm" x="37.5" y="0.0" z="0.0"/>
+    <position name="TrackerPlane_el28_pos" unit="cm" x="2.5" y="0.0" z="0.0"/>
+    <position name="TrackerPlane_el29_pos" unit="cm" x="-32.5" y="0.0" z="0.0"/>
+    <position name="TrackerPlane_el30_pos" unit="cm" x="-67.5" y="0.0" z="0.0"/>
+    <position name="TrackerPlane_el31_pos" unit="cm" x="-102.5" y="0.0" z="0.0"/>
+    <position name="TrackerPlane_el32_pos" unit="cm" x="-137.5" y="0.0" z="0.0"/>
+    <position name="TrackerPlane_el33_pos" unit="cm" x="-172.5" y="0.0" z="0.0"/>
+    <position name="TrackerPlane_el34_pos" unit="cm" x="-207.5" y="0.0" z="0.0"/>
+    <position name="TrackerPlane_el35_pos" unit="cm" x="-242.5" y="0.0" z="0.0"/>
+    <position name="TrackerPlane_el36_pos" unit="cm" x="-277.5" y="0.0" z="0.0"/>
+    <position name="TrackerPlane_el37_pos" unit="cm" x="-312.5" y="0.0" z="0.0"/>
+    <position name="TrackerPlane_el38_pos" unit="cm" x="-347.5" y="0.0" z="0.0"/>
+    <position name="TrackerPlane_el39_pos" unit="cm" x="-382.5" y="0.0" z="0.0"/>
+    <position name="TrackerPlane_el40_pos" unit="cm" x="-417.5" y="0.0" z="0.0"/>
+    <position name="TrackerPlane_el41_pos" unit="cm" x="-452.5" y="0.0" z="0.0"/>
+    <position name="TrackerPlane_el42_pos" unit="cm" x="-487.5" y="0.0" z="0.0"/>
+    <position name="TrackerPlane_el43_pos" unit="cm" x="-522.5" y="0.0" z="0.0"/>
+    <position name="TrackerPlane_el44_pos" unit="cm" x="-557.5" y="0.0" z="0.0"/>
+    <position name="TrackerPlane_el45_pos" unit="cm" x="-592.5" y="0.0" z="0.0"/>
+    <position name="TrackerPlane_el46_pos" unit="cm" x="-627.5" y="0.0" z="0.0"/>
+    <position name="TrackerPlane_el47_pos" unit="cm" x="-662.5" y="0.0" z="0.0"/>
+    <position name="TrackerPlane_el48_pos" unit="cm" x="-697.5" y="0.0" z="0.0"/>
+    <position name="TrackerPlane_el49_pos" unit="cm" x="-732.5" y="0.0" z="0.0"/>
+    <position name="TrackerMod_el0_pos" unit="cm" x="0.0" y="0.0" z="42.5"/>
+    <position name="TrackerMod_el1_pos" unit="cm" x="0.0" y="0.0" z="7.5"/>
+    <position name="TrackerMod_el2_pos" unit="cm" x="0.0" y="0.0" z="-27.5"/>
+    <position name="Tracker_el0_pos" unit="cm" x="0.0" y="0.0" z="1935.0"/>
+    <position name="Tracker_el1_pos" unit="cm" x="0.0" y="0.0" z="1805.0"/>
+    <position name="Tracker_el2_pos" unit="cm" x="0.0" y="0.0" z="1675.0"/>
+    <position name="Tracker_el3_pos" unit="cm" x="0.0" y="0.0" z="1545.0"/>
+    <position name="Tracker_el4_pos" unit="cm" x="0.0" y="0.0" z="1415.0"/>
+    <position name="Tracker_el5_pos" unit="cm" x="0.0" y="0.0" z="1285.0"/>
+    <position name="Tracker_el6_pos" unit="cm" x="0.0" y="0.0" z="1155.0"/>
+    <position name="Tracker_el7_pos" unit="cm" x="0.0" y="0.0" z="1025.0"/>
+    <position name="Tracker_el8_pos" unit="cm" x="0.0" y="0.0" z="895.0"/>
+    <position name="Tracker_el9_pos" unit="cm" x="0.0" y="0.0" z="765.0"/>
+    <position name="Tracker_el10_pos" unit="cm" x="0.0" y="0.0" z="635.0"/>
+    <position name="Tracker_el11_pos" unit="cm" x="0.0" y="0.0" z="505.0"/>
+    <position name="Tracker_el12_pos" unit="cm" x="0.0" y="0.0" z="375.0"/>
+    <position name="Tracker_el13_pos" unit="cm" x="0.0" y="0.0" z="245.0"/>
+    <position name="Tracker_el14_pos" unit="cm" x="0.0" y="0.0" z="115.0"/>
+    <position name="Tracker_el15_pos" unit="cm" x="0.0" y="0.0" z="-15.0"/>
+    <position name="Tracker_el16_pos" unit="cm" x="0.0" y="0.0" z="-145.0"/>
+    <position name="Tracker_el17_pos" unit="cm" x="0.0" y="0.0" z="-275.0"/>
+    <position name="Tracker_el18_pos" unit="cm" x="0.0" y="0.0" z="-405.0"/>
+    <position name="Tracker_el19_pos" unit="cm" x="0.0" y="0.0" z="-535.0"/>
+    <position name="LArD_lv_pos" unit="cm" x="0.0" y="0.0" z="0.0"/>
+    <position name="Tracker_lv_pos" unit="cm" x="0.0" y="0.0" z="3200.0"/>
+    <position name="idDetector_lv_pos" unit="cm" x="0.0" y="0.0" z="0.0"/>
+    <rotation name="r90aboutX" unit="degree" x="90" y="0" z="0"/>
+    <rotation name="rminus90aboutX" unit="degree" x="-90" y="0" z="0"/>
+    <rotation name="r90aboutY" unit="degree" x="0" y="90" z="0"/>
+    <rotation name="r180aboutY" unit="degree" x="0" y="180" z="0"/>
+    <rotation name="rminus90aboutY" unit="degree" x="0" y="-90" z="0"/>
+    <rotation name="r90aboutZ" unit="degree" x="0" y="0" z="90"/>
+    <rotation name="r90aboutXZ" unit="degree" x="90" y="0" z="90"/>
+    <position name="DetEnc_pos" unit="cm" x="0.0" y="0.0" z="0.0"/>
+    <position name="center"/>
+    <rotation name="identity"/>
+  </define>
+  <materials>
+    <element Z="1" formula="H" name="hydrogen">
+      <atom value="1.0791"/>
+    </element>
+    <element Z="6" formula="C" name="carbon">
+      <atom value="12.0107"/>
+    </element>
+    <element Z="7" formula="N" name="nitrogen">
+      <atom value="14.0671"/>
+    </element>
+    <element Z="8" formula="O" name="oxygen">
+      <atom value="15.999"/>
+    </element>
+    <element Z="9" formula="F" name="fluorine">
+      <atom value="18.9984"/>
+    </element>
+    <element Z="11" formula="Na" name="sodium">
+      <atom value="22.99"/>
+    </element>
+    <element Z="12" formula="Mg" name="magnesium">
+      <atom value="24.305"/>
+    </element>
+    <element Z="13" formula="Al" name="aluminum">
+      <atom value="26.9815"/>
+    </element>
+    <element Z="14" formula="Si" name="silicon">
+      <atom value="28.0855"/>
+    </element>
+    <element Z="15" formula="P" name="phosphorus">
+      <atom value="30.973"/>
+    </element>
+    <element Z="16" formula="S" name="sulfur">
+      <atom value="32.065"/>
+    </element>
+    <element Z="18" formula="Ar" name="argon">
+      <atom value="39.948"/>
+    </element>
+    <element Z="19" formula="K" name="potassium">
+      <atom value="39.0983"/>
+    </element>
+    <element Z="20" formula="Ca" name="calcium">
+      <atom value="40.078"/>
+    </element>
+    <element Z="22" formula="Ti" name="titanium">
+      <atom value="47.867"/>
+    </element>
+    <element Z="24" formula="Cr" name="chromium">
+      <atom value="51.9961"/>
+    </element>
+    <element Z="26" formula="Fe" name="iron">
+      <atom value="55.845"/>
+    </element>
+    <element Z="28" formula="Ni" name="nickel">
+      <atom value="58.6934"/>
+    </element>
+    <element Z="35" formula="Br" name="bromine">
+      <atom value="79.904"/>
+    </element>
+    <element Z="54" formula="Xe" name="xenon">
+      <atom value="131.293"/>
+    </element>
+    <element Z="82" formula="Pb" name="lead">
+      <atom value="207.2"/>
+    </element>
+    <material formula="" name="SiO2">
+      <D value="2.2"/>
+      <composite n="1" ref="silicon"/>
+      <composite n="2" ref="oxygen"/>
+    </material>
+    <material formula="" name="FeO">
+      <D value="5.745"/>
+      <composite n="1" ref="iron"/>
+      <composite n="1" ref="oxygen"/>
+    </material>
+    <material formula="" name="Al2O3">
+      <D value="3.97"/>
+      <composite n="2" ref="aluminum"/>
+      <composite n="3" ref="oxygen"/>
+    </material>
+    <material formula="" name="MgO">
+      <D value="3.58"/>
+      <composite n="1" ref="magnesium"/>
+      <composite n="1" ref="oxygen"/>
+    </material>
+    <material formula="" name="CO2">
+      <D value="1.562"/>
+      <composite n="1" ref="carbon"/>
+      <composite n="2" ref="oxygen"/>
+    </material>
+    <material formula="" name="CaO">
+      <D value="3.35"/>
+      <composite n="1" ref="calcium"/>
+      <composite n="1" ref="oxygen"/>
+    </material>
+    <material formula="" name="Na2O">
+      <D value="2.27"/>
+      <composite n="2" ref="sodium"/>
+      <composite n="1" ref="oxygen"/>
+    </material>
+    <material formula="" name="P2O5">
+      <D value="1.562"/>
+      <composite n="2" ref="phosphorus"/>
+      <composite n="5" ref="oxygen"/>
+    </material>
+    <material formula="" name="TiO2">
+      <D value="4.23"/>
+      <composite n="1" ref="titanium"/>
+      <composite n="2" ref="oxygen"/>
+    </material>
+    <material formula="" name="Fe2O3">
+      <D value="5.24"/>
+      <composite n="2" ref="iron"/>
+      <composite n="3" ref="oxygen"/>
+    </material>
+    <material formula="" name="Rock">
+      <D value="2.82"/>
+      <fraction n="0.5267" ref="SiO2"/>
+      <fraction n="0.1174" ref="FeO"/>
+      <fraction n="0.1025" ref="Al2O3"/>
+      <fraction n="0.0771" ref="oxygen"/>
+      <fraction n="0.0473" ref="MgO"/>
+      <fraction n="0.0422" ref="CO2"/>
+      <fraction n="0.0382" ref="CaO"/>
+      <fraction n="0.024" ref="carbon"/>
+      <fraction n="0.0186" ref="sulfur"/>
+      <fraction n="0.0053" ref="Na2O"/>
+      <fraction n="0.0007" ref="P2O5"/>
+    </material>
+    <material formula="" name="Dirt">
+      <D value="1.7"/>
+      <fraction n="0.438" ref="oxygen"/>
+      <fraction n="0.257" ref="silicon"/>
+      <fraction n="0.222" ref="sodium"/>
+      <fraction n="0.049" ref="aluminum"/>
+      <fraction n="0.019" ref="iron"/>
+      <fraction n="0.015" ref="potassium"/>
+    </material>
+    <material formula="" name="Air">
+      <D value="0.001225"/>
+      <fraction n="0.781154" ref="nitrogen"/>
+      <fraction n="0.209476" ref="oxygen"/>
+      <fraction n="0.00934" ref="argon"/>
+    </material>
+    <material formula="" name="Bakelite">
+      <D value="1.25"/>
+      <fraction n="0.057441" ref="hydrogen"/>
+      <fraction n="0.774591" ref="carbon"/>
+      <fraction n="0.167968" ref="oxygen"/>
+    </material>
+    <material formula="" name="Honeycomb">
+      <D value="0.94"/>
+      <fraction n="0.143711" ref="hydrogen"/>
+      <fraction n="0.856289" ref="carbon"/>
+    </material>
+    <material formula="" name="C3H6">
+      <D value="0.946"/>
+      <composite n="3" ref="carbon"/>
+      <composite n="6" ref="hydrogen"/>
+    </material>
+    <material formula="" name="RadiatorBlend">
+      <D value="0.1586875"/>
+      <fraction n="0.00643297886307" ref="Air"/>
+      <fraction n="0.993567021137" ref="C3H6"/>
+    </material>
+    <material formula="" name="stGas_Xe">
+      <D value="0.00469254464286"/>
+      <fraction n="0.3" ref="CO2"/>
+      <fraction n="0.7" ref="argon"/>
+    </material>
+    <material formula="" name="Water">
+      <D value="1.0"/>
+      <composite n="1" ref="oxygen"/>
+      <composite n="2" ref="hydrogen"/>
+    </material>
+    <material formula="" name="ArgonTarget">
+      <D value="0.2297"/>
+      <composite n="1" ref="argon"/>
+    </material>
+    <material formula="" name="Aluminum">
+      <D value="2.7"/>
+      <composite n="1" ref="aluminum"/>
+    </material>
+    <material formula="" name="CarbonFiber">
+      <D value="1.6"/>
+      <composite n="1" ref="carbon"/>
+    </material>
+    <material formula="" name="stGas_Ar">
+      <D value="0.00183785714286"/>
+      <fraction n="0.3" ref="CO2"/>
+      <fraction n="0.7" ref="argon"/>
+    </material>
+    <material formula="" name="Kapton">
+      <D value="1.4"/>
+      <composite n="22" ref="carbon"/>
+      <composite n="5" ref="oxygen"/>
+      <composite n="2" ref="nitrogen"/>
+    </material>
+    <material formula="" name="Iron">
+      <D value="7.874"/>
+      <composite n="1" ref="iron"/>
+    </material>
+    <material formula="" name="Graphite">
+      <D value="2.23"/>
+      <composite n="1" ref="carbon"/>
+    </material>
+    <material formula="" name="Calcium">
+      <D value="1.55"/>
+      <composite n="1" ref="calcium"/>
+    </material>
+    <material formula="" name="Steel">
+      <D value="7.93"/>
+      <fraction n="0.7298" ref="iron"/>
+      <fraction n="0.1792" ref="chromium"/>
+      <fraction n="0.09" ref="nickel"/>
+      <fraction n="0.001" ref="carbon"/>
+    </material>
+    <material formula="" name="polycarbonate">
+      <D value="1.6"/>
+      <composite n="16" ref="carbon"/>
+      <composite n="6" ref="hydrogen"/>
+      <composite n="3" ref="oxygen"/>
+    </material>
+    <material formula="" name="sttFrameMix">
+      <D value="0.235"/>
+      <fraction n="0.764705882353" ref="carbon"/>
+      <fraction n="0.235294117647" ref="polycarbonate"/>
+    </material>
+    <material formula="" name="fibrous_glass">
+      <D value="1.0"/>
+      <fraction n="0.6" ref="SiO2"/>
+      <fraction n="0.224" ref="CaO"/>
+      <fraction n="0.118" ref="Al2O3"/>
+      <fraction n="0.034" ref="MgO"/>
+      <fraction n="0.013" ref="TiO2"/>
+      <fraction n="0.01" ref="Na2O"/>
+      <fraction n="0.001" ref="Fe2O3"/>
+    </material>
+    <material formula="" name="CH2FCF3">
+      <D value="0.00425"/>
+      <composite n="2" ref="carbon"/>
+      <composite n="2" ref="hydrogen"/>
+      <composite n="4" ref="fluorine"/>
+    </material>
+    <material formula="" name="C4H10">
+      <D value="0.00251"/>
+      <composite n="4" ref="carbon"/>
+      <composite n="10" ref="hydrogen"/>
+    </material>
+    <material formula="" name="SF6">
+      <D value="0.00617"/>
+      <composite n="4" ref="sulfur"/>
+      <composite n="6" ref="fluorine"/>
+    </material>
+    <material formula="" name="rpcGas">
+      <D value="0.001784"/>
+      <fraction n="0.75" ref="argon"/>
+      <fraction n="0.2" ref="CH2FCF3"/>
+      <fraction n="0.04" ref="C4H10"/>
+      <fraction n="0.01" ref="SF6"/>
+    </material>
+    <material formula="" name="epoxy_resin">
+      <D value="1.125"/>
+      <composite n="38" ref="carbon"/>
+      <composite n="40" ref="hydrogen"/>
+      <composite n="6" ref="oxygen"/>
+    </material>
+    <material formula="" name="Scintillator">
+      <D value="1.05"/>
+      <fraction n="0.916" ref="carbon"/>
+      <fraction n="0.084" ref="hydrogen"/>
+    </material>
+    <material formula="" name="Lead">
+      <D value="11.342"/>
+      <composite n="1" ref="lead"/>
+    </material>
+    <material formula="" state="liquid" name="LAr">
+      <D value="1.4"/>
+      <composite n="1" ref="argon"/>
+    </material>
+  </materials>
+  <solids>
+    <box lunit="cm" name="idWire" x="20.0" y="2000.0" z="20.0"/>
+    <box lunit="cm" name="LArPlane" x="30.0" y="2000.0" z="2000.0"/>
+    <box lunit="cm" name="LArMod" x="32.0" y="2040.0" z="2040.0"/>
+    <box lunit="cm" name="LArD" x="2400.0" y="2400.0" z="2000.0"/>
+    <box lunit="cm" name="idStrip" x="30.0" y="2000.0" z="30.0"/>
+    <box lunit="cm" name="TrackerPlane" x="2000.0" y="2000.0" z="30.0"/>
+    <box lunit="cm" name="TrackerMod" x="2040.0" y="2040.0" z="120.0"/>
+    <box lunit="cm" name="Tracker" x="2400.0" y="2400.0" z="4000.0"/>
+    <box lunit="cm" name="idDetector" x="2400.0" y="2400.0" z="10000.0"/>
+    <box lunit="cm" name="DetEnclosure" x="2400.0" y="2400.0" z="12000.0"/>
+    <box lunit="cm" name="World" x="3200.0" y="3200.0" z="14000.0"/>
+  </solids>
+  <structure>
+    <volume name="idWire_lv">
+      <materialref ref="Steel"/>
+      <solidref ref="idWire"/>
+      <auxiliary auxtype="Color" auxvalue="blue"/>
+    </volume>
+    <volume name="LArPlane_lv">
+      <materialref ref="Air"/>
+      <solidref ref="LArPlane"/>
+      <physvol>
+        <volumeref ref="idWire_lv"/>
+        <positionref ref="LArPlane_el0_pos"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="idWire_lv"/>
+        <positionref ref="LArPlane_el1_pos"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="idWire_lv"/>
+        <positionref ref="LArPlane_el2_pos"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="idWire_lv"/>
+        <positionref ref="LArPlane_el3_pos"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="idWire_lv"/>
+        <positionref ref="LArPlane_el4_pos"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="idWire_lv"/>
+        <positionref ref="LArPlane_el5_pos"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="idWire_lv"/>
+        <positionref ref="LArPlane_el6_pos"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="idWire_lv"/>
+        <positionref ref="LArPlane_el7_pos"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="idWire_lv"/>
+        <positionref ref="LArPlane_el8_pos"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="idWire_lv"/>
+        <positionref ref="LArPlane_el9_pos"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <auxiliary auxtype="Color" auxvalue="blue"/>
+    </volume>
+    <volume name="LArMod_lv">
+      <materialref ref="Air"/>
+      <solidref ref="LArMod"/>
+      <physvol>
+        <volumeref ref="LArPlane_lv"/>
+        <positionref ref="LArMod_el0_pos"/>
+        <rotationref ref="identity"/>
+      </physvol>
+    </volume>
+    <volume name="LArD_lv">
+      <materialref ref="LAr"/>
+      <solidref ref="LArD"/>
+      <physvol>
+        <volumeref ref="LArMod_lv"/>
+        <positionref ref="LArD_el0_pos"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <auxiliary auxtype="SensDet" auxvalue="LArD"/>
+    </volume>
+    <volume name="idStrip_lv">
+      <materialref ref="Scintillator"/>
+      <solidref ref="idStrip"/>
+      <auxiliary auxtype="SensDet" auxvalue="FGD"/>
+    </volume>
+    <volume name="TrackerPlane_lv">
+      <materialref ref="Air"/>
+      <solidref ref="TrackerPlane"/>
+      <physvol>
+        <volumeref ref="idStrip_lv"/>
+        <positionref ref="TrackerPlane_el0_pos"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="idStrip_lv"/>
+        <positionref ref="TrackerPlane_el1_pos"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="idStrip_lv"/>
+        <positionref ref="TrackerPlane_el2_pos"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="idStrip_lv"/>
+        <positionref ref="TrackerPlane_el3_pos"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="idStrip_lv"/>
+        <positionref ref="TrackerPlane_el4_pos"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="idStrip_lv"/>
+        <positionref ref="TrackerPlane_el5_pos"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="idStrip_lv"/>
+        <positionref ref="TrackerPlane_el6_pos"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="idStrip_lv"/>
+        <positionref ref="TrackerPlane_el7_pos"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="idStrip_lv"/>
+        <positionref ref="TrackerPlane_el8_pos"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="idStrip_lv"/>
+        <positionref ref="TrackerPlane_el9_pos"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="idStrip_lv"/>
+        <positionref ref="TrackerPlane_el10_pos"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="idStrip_lv"/>
+        <positionref ref="TrackerPlane_el11_pos"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="idStrip_lv"/>
+        <positionref ref="TrackerPlane_el12_pos"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="idStrip_lv"/>
+        <positionref ref="TrackerPlane_el13_pos"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="idStrip_lv"/>
+        <positionref ref="TrackerPlane_el14_pos"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="idStrip_lv"/>
+        <positionref ref="TrackerPlane_el15_pos"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="idStrip_lv"/>
+        <positionref ref="TrackerPlane_el16_pos"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="idStrip_lv"/>
+        <positionref ref="TrackerPlane_el17_pos"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="idStrip_lv"/>
+        <positionref ref="TrackerPlane_el18_pos"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="idStrip_lv"/>
+        <positionref ref="TrackerPlane_el19_pos"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="idStrip_lv"/>
+        <positionref ref="TrackerPlane_el20_pos"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="idStrip_lv"/>
+        <positionref ref="TrackerPlane_el21_pos"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="idStrip_lv"/>
+        <positionref ref="TrackerPlane_el22_pos"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="idStrip_lv"/>
+        <positionref ref="TrackerPlane_el23_pos"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="idStrip_lv"/>
+        <positionref ref="TrackerPlane_el24_pos"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="idStrip_lv"/>
+        <positionref ref="TrackerPlane_el25_pos"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="idStrip_lv"/>
+        <positionref ref="TrackerPlane_el26_pos"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="idStrip_lv"/>
+        <positionref ref="TrackerPlane_el27_pos"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="idStrip_lv"/>
+        <positionref ref="TrackerPlane_el28_pos"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="idStrip_lv"/>
+        <positionref ref="TrackerPlane_el29_pos"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="idStrip_lv"/>
+        <positionref ref="TrackerPlane_el30_pos"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="idStrip_lv"/>
+        <positionref ref="TrackerPlane_el31_pos"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="idStrip_lv"/>
+        <positionref ref="TrackerPlane_el32_pos"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="idStrip_lv"/>
+        <positionref ref="TrackerPlane_el33_pos"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="idStrip_lv"/>
+        <positionref ref="TrackerPlane_el34_pos"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="idStrip_lv"/>
+        <positionref ref="TrackerPlane_el35_pos"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="idStrip_lv"/>
+        <positionref ref="TrackerPlane_el36_pos"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="idStrip_lv"/>
+        <positionref ref="TrackerPlane_el37_pos"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="idStrip_lv"/>
+        <positionref ref="TrackerPlane_el38_pos"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="idStrip_lv"/>
+        <positionref ref="TrackerPlane_el39_pos"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="idStrip_lv"/>
+        <positionref ref="TrackerPlane_el40_pos"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="idStrip_lv"/>
+        <positionref ref="TrackerPlane_el41_pos"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="idStrip_lv"/>
+        <positionref ref="TrackerPlane_el42_pos"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="idStrip_lv"/>
+        <positionref ref="TrackerPlane_el43_pos"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="idStrip_lv"/>
+        <positionref ref="TrackerPlane_el44_pos"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="idStrip_lv"/>
+        <positionref ref="TrackerPlane_el45_pos"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="idStrip_lv"/>
+        <positionref ref="TrackerPlane_el46_pos"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="idStrip_lv"/>
+        <positionref ref="TrackerPlane_el47_pos"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="idStrip_lv"/>
+        <positionref ref="TrackerPlane_el48_pos"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="idStrip_lv"/>
+        <positionref ref="TrackerPlane_el49_pos"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <auxiliary auxtype="Color" auxvalue="blue"/>
+    </volume>
+    <volume name="TrackerMod_lv">
+      <materialref ref="Air"/>
+      <solidref ref="TrackerMod"/>
+      <physvol>
+        <volumeref ref="TrackerPlane_lv"/>
+        <positionref ref="TrackerMod_el0_pos"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="TrackerPlane_lv"/>
+        <positionref ref="TrackerMod_el1_pos"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="TrackerPlane_lv"/>
+        <positionref ref="TrackerMod_el2_pos"/>
+        <rotationref ref="identity"/>
+      </physvol>
+    </volume>
+    <volume name="Tracker_lv">
+      <materialref ref="Air"/>
+      <solidref ref="Tracker"/>
+      <physvol>
+        <volumeref ref="TrackerMod_lv"/>
+        <positionref ref="Tracker_el0_pos"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="TrackerMod_lv"/>
+        <positionref ref="Tracker_el1_pos"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="TrackerMod_lv"/>
+        <positionref ref="Tracker_el2_pos"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="TrackerMod_lv"/>
+        <positionref ref="Tracker_el3_pos"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="TrackerMod_lv"/>
+        <positionref ref="Tracker_el4_pos"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="TrackerMod_lv"/>
+        <positionref ref="Tracker_el5_pos"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="TrackerMod_lv"/>
+        <positionref ref="Tracker_el6_pos"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="TrackerMod_lv"/>
+        <positionref ref="Tracker_el7_pos"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="TrackerMod_lv"/>
+        <positionref ref="Tracker_el8_pos"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="TrackerMod_lv"/>
+        <positionref ref="Tracker_el9_pos"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="TrackerMod_lv"/>
+        <positionref ref="Tracker_el10_pos"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="TrackerMod_lv"/>
+        <positionref ref="Tracker_el11_pos"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="TrackerMod_lv"/>
+        <positionref ref="Tracker_el12_pos"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="TrackerMod_lv"/>
+        <positionref ref="Tracker_el13_pos"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="TrackerMod_lv"/>
+        <positionref ref="Tracker_el14_pos"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="TrackerMod_lv"/>
+        <positionref ref="Tracker_el15_pos"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="TrackerMod_lv"/>
+        <positionref ref="Tracker_el16_pos"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="TrackerMod_lv"/>
+        <positionref ref="Tracker_el17_pos"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="TrackerMod_lv"/>
+        <positionref ref="Tracker_el18_pos"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="TrackerMod_lv"/>
+        <positionref ref="Tracker_el19_pos"/>
+        <rotationref ref="identity"/>
+      </physvol>
+    </volume>
+    <volume name="idDetector_lv">
+      <materialref ref="Air"/>
+      <solidref ref="idDetector"/>
+      <physvol>
+        <volumeref ref="LArD_lv"/>
+        <positionref ref="LArD_lv_pos"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="Tracker_lv"/>
+        <positionref ref="Tracker_lv_pos"/>
+        <rotationref ref="identity"/>
+      </physvol>
+    </volume>
+    <volume name="DetEnclosure_lv">
+      <materialref ref="Air"/>
+      <solidref ref="DetEnclosure"/>
+      <physvol>
+        <volumeref ref="idDetector_lv"/>
+        <positionref ref="idDetector_lv_pos"/>
+        <rotationref ref="identity"/>
+      </physvol>
+    </volume>
+    <volume name="World_lv">
+      <materialref ref="Air"/>
+      <solidref ref="World"/>
+      <physvol>
+        <volumeref ref="DetEnclosure_lv"/>
+        <positionref ref="DetEnc_pos"/>
+        <rotationref ref="identity"/>
+      </physvol>
+    </volume>
+  </structure>
+  <setup name="Default" version="0">
+    <world ref="World_lv"/>
+  </setup>
+</gdml>
