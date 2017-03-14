@@ -28,10 +28,17 @@ void usage () {
               << std::endl
               << "            -- Change the named debug level"
               << std::endl;
+    std::cout << "    -e <n>  -- Add /run/beamOn <n> after last macro."
+              << std::endl;
     std::cout << "    -g      -- Set a GDML file" << std::endl;
     std::cout << "    -o      -- Set the output file" << std::endl;
     std::cout << "    -p      -- Select the physics list" << std::endl;
-    std::cout << "    -u      -- Start an interactive run" << std::endl;
+    std::cout << "    -u      -- Do update before running the macros"
+              << std::endl;
+    std::cout << "    -U      -- Start an interactive run after the macros"
+              << std::endl
+              << "               are processed."
+              << std::endl;
     std::cout << "    -v      -- Increase the verbosity" << std::endl;
     std::cout << "    -V <name>=[quiet,log,info,verbose]" << std::endl
               << "            -- Change the named log level" 
@@ -51,14 +58,20 @@ int main(int argc,char** argv) {
     int errflg = 0;
     int c = 0;
     bool useUI = false;
-
+    bool doUpdate=false;
     int debugLevel = 0;
     std::map<std::string, EDepSim::LogManager::ErrorPriority> namedDebugLevel;
 
     int logLevel = 1; // Will choose default logging level...
     std::map<std::string, EDepSim::LogManager::LogPriority> namedLogLevel;
 
-    while (!errflg && ((c=getopt(argc,argv,"dD:g:o:p:quvV:h")) != -1)) {
+    // If filled, run this many events.  The command line argument must be an
+    // integer or G4 will give an error.  There could be error checking here,
+    // but assume the user is "intelligent", and won't try to run "-e ten"
+    // instead of "-e 10".
+    std::string beamOnCount = "";  
+    
+    while (!errflg && ((c=getopt(argc,argv,"dD:e:g:o:p:quUvV:h")) != -1)) {
         switch (c) {
         case 'd':
         {
@@ -101,6 +114,10 @@ int main(int argc,char** argv) {
             }
             break;
         }
+        case 'e': {
+            beamOnCount = optarg;
+            break;
+        }
         case 'g': {
             gdmlFilename = optarg;
             break;
@@ -114,6 +131,11 @@ int main(int argc,char** argv) {
             break;
         }
         case 'u': {
+            // Use a tcsh-style command line interface
+            doUpdate = true;
+            break;
+        }
+        case 'U': {
             // Use a tcsh-style command line interface
             useUI = true;
             break;
@@ -247,41 +269,43 @@ int main(int argc,char** argv) {
 
     // Open the file if one was declared on the command line.
     if (gdmlFilename != "") {
-        std::string command = "/edep/gdml/read ";
-        UI->ApplyCommand(command+gdmlFilename);
+        UI->ApplyCommand("/edep/gdml/read "+gdmlFilename);
     }
     
     // Set the defaults for the simulation.
     UI->ApplyCommand("/edep/control edepsim-defaults 1.0");
 
     // Open the file if one was declared on the command line.
-    if (persistencyManager && outputFilename != "") {
-        std::string command = "/edep/db/open ";
-        UI->ApplyCommand(command+outputFilename);
+    if (persistencyManager && ! outputFilename.empty()) {
+        UI->ApplyCommand("/edep/db/open "+outputFilename);
     }
     
     std::signal(SIGILL,  SIG_DFL);
     std::signal(SIGBUS,  SIG_DFL);
     std::signal(SIGSEGV, SIG_DFL);
 
+    // Set the defaults for the simulation.
+    if (doUpdate) UI->ApplyCommand("/edep/update");
+
     if (useUI) {
         // Make a command line available if one was requested.
         G4UIExecutive* ui = new G4UIExecutive(argc, argv);
-        std::string command = "/control/execute ";
         for (int i=optind; i<argc; ++i) {
             std::string macroFilename = argv[i];
             std::cout << "## Run macro: " << macroFilename << std::endl;
-            UI->ApplyCommand(command+macroFilename);
+            UI->ApplyCommand("/control/execute "+macroFilename);
         }
         ui->SessionStart();
         delete ui;
     }
     else if (optind < argc) {
         // Run a macro from the command line.
-        std::string command = "/control/execute ";
         for (int i=optind; i<argc; ++i) {
             std::string macroFilename = argv[i];
-            UI->ApplyCommand(command+macroFilename);
+            UI->ApplyCommand("/control/execute " +macroFilename);
+        }
+        if (!beamOnCount.empty()) {
+            UI->ApplyCommand("/run/beamOn " + beamOnCount);
         }
     }
     
