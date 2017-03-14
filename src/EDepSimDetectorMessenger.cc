@@ -14,7 +14,7 @@
 #include "G4UIcmdWithAnInteger.hh"
 #include "G4UIcmdWithADoubleAndUnit.hh"
 #include "G4UIcmdWithoutParameter.hh"
-
+#include "G4GDMLParser.hh"
 #include "EDepSimLog.hh"
 
 #include <cstdlib>
@@ -25,11 +25,12 @@
 EDepSim::DetectorMessenger::DetectorMessenger(EDepSim::UserDetectorConstruction* d)
     : fConstruction(d) {
     fEDepSimDir = new G4UIdirectory("/edep/");
-    fEDepSimDir->SetGuidance("T2K detector control.");
+    fEDepSimDir->SetGuidance("EDepSim detector control.");
 
     fUpdateCmd = new G4UIcmdWithoutParameter("/edep/update",this);
-    fUpdateCmd->SetGuidance("Update geometry definition.");
-    fUpdateCmd->SetGuidance("This MUST be applied before \"/run/beamOn\".");
+    fUpdateCmd->SetGuidance("Do the run manager initialization."
+                            "  This causes the geometry to be built."
+                            "  This MUST be applied before \"/run/beamOn\".");
     fUpdateCmd->AvailableForStates(G4State_PreInit);
 
     fValidateCmd = new G4UIcmdWithoutParameter("/edep/validateGeometry",this);
@@ -42,6 +43,10 @@ EDepSim::DetectorMessenger::DetectorMessenger(EDepSim::UserDetectorConstruction*
         "Export the geometry to a file.  This is not compatible with event\n"
         "generation, or reading of kinematics files.");
     fExportCmd->SetParameterName("RootFile", false);
+
+    fGDMLCmd = new G4UIcmdWithAString("/edep/gdml/read",this);
+    fGDMLCmd->SetGuidance("Define a GDML file to be used for the geometry.");
+    fGDMLCmd->AvailableForStates(G4State_PreInit);
 
     fMagneticFieldCmd = new G4UIcmdWithADoubleAndUnit("/edep/field",this);
     fMagneticFieldCmd->SetGuidance("Set the field strength in the UA1 magnet.");
@@ -74,6 +79,7 @@ EDepSim::DetectorMessenger::~DetectorMessenger()
     delete fUpdateCmd;
     delete fValidateCmd;
     delete fExportCmd;
+    delete fGDMLCmd;
     delete fMagneticFieldCmd;
     delete fControlCmd;
     delete fEDepSimDir;
@@ -81,7 +87,7 @@ EDepSim::DetectorMessenger::~DetectorMessenger()
 
 
 void EDepSim::DetectorMessenger::SetNewValue(G4UIcommand * cmd,
-                                         G4String newValue) {
+                                             G4String newValue) {
     if (cmd == fUpdateCmd) {
         fConstruction->UpdateGeometry();
     }
@@ -91,6 +97,12 @@ void EDepSim::DetectorMessenger::SetNewValue(G4UIcommand * cmd,
     }
     else if (cmd == fExportCmd) {
         EDepSim::RootGeometryManager::Get()->Export(newValue);
+    }
+    else if (cmd == fGDMLCmd) {
+        EDepSimLog("Read a gdml geometry from |" << newValue << "|");
+        // Read the gdml file, but don't try and validate it against the
+        // schema since there's a really high chance it won't be available.
+        fConstruction->GetGDMLParser()->Read(newValue,false);
     }
     else if (cmd == fControlCmd) {
         std::istringstream input((const char*)newValue);

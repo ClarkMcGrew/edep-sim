@@ -1,6 +1,8 @@
 #include "EDepSimUserDetectorConstruction.hh"
 #include "EDepSimDetectorMessenger.hh"
 #include "EDepSimRootGeometryManager.hh"
+#include "EDepSimSDFactory.hh"
+
 #include "captain/CaptWorldBuilder.hh"
 
 #include "EDepSimLog.hh"
@@ -18,6 +20,7 @@
 #include <G4RunManager.hh>
 #include <G4GeometryManager.hh>
 #include <G4VPersistencyManager.hh>
+#include <G4GDMLParser.hh>
 
 #include <G4SolidStore.hh>
 #include <G4LogicalVolumeStore.hh>
@@ -29,22 +32,73 @@
 #include <G4RegionStore.hh>
 
 EDepSim::UserDetectorConstruction::UserDetectorConstruction() {
-
     fDetectorMessenger = new EDepSim::DetectorMessenger(this);
     fWorldBuilder = new CaptWorldBuilder("/Captain",this);
     fDefaultMaterial = NULL;
     fValidateGeometry = false;
+    fGDMLParser = new G4GDMLParser;
 }
  
 EDepSim::UserDetectorConstruction::~UserDetectorConstruction() { 
     delete fDetectorMessenger;
     delete fWorldBuilder;
+    delete fGDMLParser;
 }
  
 G4VPhysicalVolume* EDepSim::UserDetectorConstruction::Construct() {
-    DefineMaterials();
-    return ConstructDetector();
+    G4VPhysicalVolume* physWorld =  fGDMLParser->GetWorldVolume();
+    
+    if (!physWorld) {
+        EDepSimLog("Using a Custom Geometry");
+        DefineMaterials();
+        physWorld = ConstructDetector();
+    }
+    else {
+        EDepSimLog("Using a GDML Geometry");
+    }
+
+    G4RunManager::GetRunManager()->DefineWorldVolume(physWorld);
+
+    EDepSim::RootGeometryManager::Get()->Update(physWorld,fValidateGeometry);
+
+    G4VPersistencyManager *pMan
+        = G4VPersistencyManager::GetPersistencyManager();
+    if (pMan) pMan->Store(physWorld);
+
+    return physWorld;
 }
+
+void EDepSim::UserDetectorConstruction::ConstructSDandField() {
+    // The parser didn't get created.
+    if (!fGDMLParser) return;
+    // There isn't an auxillary map associated with the parser.
+    if (!fGDMLParser->GetAuxMap()) return;
+    
+    for (G4GDMLAuxMapType::const_iterator
+             aux = fGDMLParser->GetAuxMap()->begin();
+         aux != fGDMLParser->GetAuxMap()->end();
+         ++aux) {
+        for (G4GDMLAuxListType::const_iterator auxItem = aux->second.begin();
+             auxItem != aux->second.end();
+             ++auxItem) {
+            if (auxItem->type != "SensDet") continue;
+            std::cout << "***************************************" << std::endl;
+            std::cout << "***************************************" << std::endl;
+            std::cout << "***************************************" << std::endl;
+            std::cout << "***************************************" << std::endl;
+            std::cout << "******** CONSTRUCT SD AND FIELD *******" << std::endl;
+            std::cout << "***************************************" << std::endl;
+            std::cout << "***************************************" << std::endl;
+            std::cout << "***************************************" << std::endl;
+            std::cout << "***************************************" << std::endl;
+            std::cout << "Volume: " << aux->first->GetName() << std::endl;
+            std::cout << "Sensitive Detector: " << auxItem->value << std::endl;
+            EDepSim::SDFactory factory("segment");
+            aux->first->SetSensitiveDetector(factory.MakeSD(auxItem->value));
+        }
+    }
+}
+
 
 void EDepSim::UserDetectorConstruction::DefineMaterials() {
     EDepSim::RootGeometryManager* geoMan = EDepSim::RootGeometryManager::Get();
@@ -266,7 +320,8 @@ G4Element* EDepSim::UserDetectorConstruction::DefineElement(G4String name,
     {
         G4int A = theDefaultIsotopes.GetIsotopeNucleonCount(first+i);
         std::ostringstream os; os << symbol << A;
-        G4Isotope* is = new G4Isotope(name=os.str(), Z, A, A*CLHEP::g/CLHEP::mole);
+        G4Isotope* is = new G4Isotope(name=os.str(), Z, A,
+                                      A*CLHEP::g/CLHEP::mole);
         G4double abundance = theDefaultIsotopes.GetAbundance(first+i);
         el->AddIsotope(is, abundance*CLHEP::perCent);
     }
@@ -297,14 +352,6 @@ G4VPhysicalVolume* EDepSim::UserDetectorConstruction::ConstructDetector() {
                             0,               // mother  volume
                             false,           // no boolean operations
                             0);
-
-    G4RunManager::GetRunManager()->DefineWorldVolume(physWorld);
-
-    EDepSim::RootGeometryManager::Get()->Update(physWorld,fValidateGeometry);
-
-    G4VPersistencyManager *pMan
-        = G4VPersistencyManager::GetPersistencyManager();
-    if (pMan) pMan->Store(physWorld);
 
     return physWorld;
 }

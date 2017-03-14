@@ -29,6 +29,7 @@ private:
     G4UIcmdWithoutParameter*   fUpdateCmd;
     G4UIcmdWithoutParameter*   fValidateCmd;
     G4UIcmdWithAString*        fExportCmd;
+    G4UIcmdWithAString*        fGDMLCmd;
     G4UIcommand*               fControlCmd;
     G4UIcmdWithADoubleAndUnit* fMagneticFieldCmd;
 

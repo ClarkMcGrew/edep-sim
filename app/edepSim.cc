@@ -23,19 +23,20 @@
 
 void usage () {
     std::cout << "Usage: DETSIM.exe [options] [macro]" << std::endl;
-    std::cout << "    -h      -- This help message." << std::endl;
-    std::cout << "    -p      -- Select the physics list" << std::endl;
-    std::cout << "    -o      -- Set the output file" << std::endl;
-    std::cout << "    -u      -- Start an interactive run" << std::endl;
     std::cout << "    -d      -- Increase the debug level" << std::endl;
     std::cout << "    -D <name>=[error,severe,warn,debug,trace]"
               << std::endl
               << "            -- Change the named debug level"
               << std::endl;
+    std::cout << "    -g      -- Set a GDML file" << std::endl;
+    std::cout << "    -o      -- Set the output file" << std::endl;
+    std::cout << "    -p      -- Select the physics list" << std::endl;
+    std::cout << "    -u      -- Start an interactive run" << std::endl;
     std::cout << "    -v      -- Increase the verbosity" << std::endl;
     std::cout << "    -V <name>=[quiet,log,info,verbose]" << std::endl
               << "            -- Change the named log level" 
               << std::endl;
+    std::cout << "    -h      -- This help message." << std::endl;
     
     exit(1);
 }
@@ -45,6 +46,7 @@ int main(int argc,char** argv) {
 
     std::string outputFilename;
     std::string physicsList = "";
+    std::string gdmlFilename = "";
 
     int errflg = 0;
     int c = 0;
@@ -56,21 +58,8 @@ int main(int argc,char** argv) {
     int logLevel = 1; // Will choose default logging level...
     std::map<std::string, EDepSim::LogManager::LogPriority> namedLogLevel;
 
-    while (!errflg && ((c=getopt(argc,argv,"hp:o:udD:qvV:")) != -1)) {
+    while (!errflg && ((c=getopt(argc,argv,"dD:g:o:p:quvV:h")) != -1)) {
         switch (c) {
-        case 'p': {
-            physicsList = optarg;
-            break;
-        }
-        case 'o': {
-            outputFilename = optarg;
-            break;
-        }
-        case 'u': {
-            // Use a tcsh-style command line interface
-            useUI = true;
-            break;
-        }
         case 'd':
         {
             // increase the debugging level.
@@ -87,24 +76,46 @@ int main(int argc,char** argv) {
                 std::string levelName = arg.substr(sep+1);
                 switch (levelName[0]) {
                 case 'e': case 'E':
-                    namedDebugLevel[name.c_str()] = EDepSim::LogManager::ErrorLevel;
+                    namedDebugLevel[name.c_str()]
+                        = EDepSim::LogManager::ErrorLevel;
                     break;
                 case 's': case 'S':
-                    namedDebugLevel[name.c_str()] = EDepSim::LogManager::SevereLevel;
+                    namedDebugLevel[name.c_str()]
+                        = EDepSim::LogManager::SevereLevel;
                     break;
                 case 'w': case 'W':
-                    namedDebugLevel[name.c_str()] = EDepSim::LogManager::WarnLevel;
+                    namedDebugLevel[name.c_str()]
+                        = EDepSim::LogManager::WarnLevel;
                     break;
                 case 'd': case 'D':
-                    namedDebugLevel[name.c_str()] = EDepSim::LogManager::DebugLevel;
+                    namedDebugLevel[name.c_str()]
+                        = EDepSim::LogManager::DebugLevel;
                     break;
                 case 't': case 'T':
-                    namedDebugLevel[name.c_str()] = EDepSim::LogManager::TraceLevel;
+                    namedDebugLevel[name.c_str()]
+                        = EDepSim::LogManager::TraceLevel;
                     break;
                 default:
                     usage();
                 }
             }
+            break;
+        }
+        case 'g': {
+            gdmlFilename = optarg;
+            break;
+        }
+        case 'o': {
+            outputFilename = optarg;
+            break;
+        }
+        case 'p': {
+            physicsList = optarg;
+            break;
+        }
+        case 'u': {
+            // Use a tcsh-style command line interface
+            useUI = true;
             break;
         }
         case 'q':
@@ -131,16 +142,20 @@ int main(int argc,char** argv) {
                 std::string levelName = arg.substr(sep+1);
                 switch (levelName[0]) {
                 case 'q': case 'Q':
-                    namedLogLevel[name.c_str()] = EDepSim::LogManager::QuietLevel;
+                    namedLogLevel[name.c_str()]
+                        = EDepSim::LogManager::QuietLevel;
                     break;
                 case 'l': case 'L':
-                    namedLogLevel[name.c_str()] = EDepSim::LogManager::LogLevel;
+                    namedLogLevel[name.c_str()]
+                        = EDepSim::LogManager::LogLevel;
                     break;
                 case 'i': case 'I':
-                    namedLogLevel[name.c_str()] = EDepSim::LogManager::InfoLevel;
+                    namedLogLevel[name.c_str()]
+                        = EDepSim::LogManager::InfoLevel;
                     break;
                 case 'v': case 'V':
-                    namedLogLevel[name.c_str()] = EDepSim::LogManager::VerboseLevel;
+                    namedLogLevel[name.c_str()]
+                        = EDepSim::LogManager::VerboseLevel;
                     break;
                 default:
                     usage();
@@ -223,11 +238,19 @@ int main(int argc,char** argv) {
     // Create a "no i/o" persistency manager.  This doesn't actually save
     // anything, and it may be better to stop if there isn't a real
     // persistency manager declared.
-    if (!persistencyManager) persistencyManager = new EDepSim::PersistencyManager();
+    if (!persistencyManager) {
+        persistencyManager = new EDepSim::PersistencyManager();
+    }
 
     // Get the pointer to the UI manager
     G4UImanager* UI = G4UImanager::GetUIpointer();
 
+    // Open the file if one was declared on the command line.
+    if (gdmlFilename != "") {
+        std::string command = "/edep/gdml/read ";
+        UI->ApplyCommand(command+gdmlFilename);
+    }
+    
     // Set the defaults for the simulation.
     UI->ApplyCommand("/edep/control edepsim-defaults 1.0");
 

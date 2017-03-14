@@ -7,6 +7,7 @@
 class G4Element;
 class G4Material;
 class G4VPhysicalVolume;
+class G4GDMLParser;
 namespace EDepSim {class Builder;}
 namespace EDepSim {class UserDetectorConstruction;}
 
@@ -20,9 +21,14 @@ public:
     UserDetectorConstruction();
     virtual ~UserDetectorConstruction();
 
-    /// Construct the detector and define the world volume.
+    /// The required method to construct the detector and define the world
+    /// volume.
     virtual G4VPhysicalVolume* Construct();
 
+    /// The method to setup the sensitive detectors and fields.  In a multi
+    /// thread application, this is called per thread.
+    virtual void ConstructSDandField();
+    
     /// Return the detector construction messenger
     virtual EDepSim::DetectorMessenger* GetMessenger(void) {
         return fDetectorMessenger;
@@ -35,6 +41,12 @@ public:
     /// Set ValidateGeomtry to true
     void ValidateGeometry() {fValidateGeometry = true;}
 
+    /// Set the GDML parser that this class should use.
+    void SetGDMLParser(G4GDMLParser* parser) {fGDMLParser = parser;}
+
+    /// Get the GDML parser that this class is using.
+    G4GDMLParser* GetGDMLParser() {return fGDMLParser;}
+    
 protected:
 
     /// Define the materials used in the detector.
@@ -52,6 +64,9 @@ protected:
 
     /// A constructor to create the world.
     EDepSim::Builder* fWorldBuilder;
+
+    /// A GDML Parser if one has been defined.
+    G4GDMLParser* fGDMLParser;
 
 private:
 

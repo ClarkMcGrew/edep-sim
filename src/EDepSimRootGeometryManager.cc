@@ -58,9 +58,6 @@
 EDepSim::RootGeometryManager* EDepSim::RootGeometryManager::fThis = NULL;
 
 EDepSim::RootGeometryManager::RootGeometryManager() {
-    ShouldPrintMass("/EDepSim::ain/Cryostat");
-    ShouldPrintMass("/EDepSim::ain/Cryostat/Liquid");
-    ShouldPrintMass("/EDepSim::ain/Cryostat/Drift");
 }
 
 EDepSim::RootGeometryManager* EDepSim::RootGeometryManager::Get() {
@@ -119,6 +116,8 @@ void EDepSim::RootGeometryManager::Update(const G4VPhysicalVolume* aWorld,
     CreateEnvelope(aWorld,gGeoManager,NULL);
     gGeoManager->CloseGeometry("di");
 
+    EDepSimLog("Geometry initialized and closed");
+    
     if (!validateGeometry) return;
 
     // Check for overlaps at volume corners.  Look for overlaps at 0.1 mm size.
@@ -151,6 +150,7 @@ void EDepSim::RootGeometryManager::Update(const G4VPhysicalVolume* aWorld,
         }
     }
 
+    EDepSimLog("Geometry validated");
 }
 
 TGeoShape* EDepSim::RootGeometryManager::CreateShape(const G4VSolid* theSolid, 
@@ -541,8 +541,9 @@ bool EDepSim::RootGeometryManager::CreateEnvelope(
     G4LogicalVolume* theLog = theG4PhysVol->GetLogicalVolume();
 
     if (PrintMass(theG4PhysVol)) {
-        EDepSimLog("%%% Mass: " << theLog->GetMass(true)/CLHEP::kg/1000.0 << " ton"
-                 << " Volume: " << theG4PhysVol->GetName());
+        EDepSimLog("%%% Mass: " << theLog->GetMass(true)/CLHEP::kg/1000.0
+                   << " ton"
+                   << " Volume: " << theG4PhysVol->GetName());
     }
     
     // Get the name of the expected name of the volume.
@@ -567,24 +568,16 @@ bool EDepSim::RootGeometryManager::CreateEnvelope(
     theVolumeName += "/";
     theVolumeName += theShortName;
 
-    // Check the volume names for validity.
+    // Check the volume names for validity.  If they don't match then just
+    // force it.
     if (theShortName == theFullName) {
-        EDepSimError("Invalid volume name: " << theFullName);
-        EDepSimError("   Expected name is: " << theVolumeName);
         theFullName = theVolumeName;
     }
 
+    // Make sure there isn't a bug in the naming.  There should never be a
+    // "//" in the name.
     if (theFullName.find("//") != std::string::npos) {
         EDepSimError("Invalid volume name: " << theFullName);
-        EDepSimError("   Expected name is: " << theVolumeName);
-        theFullName = theVolumeName;
-    }
-
-    std::string::size_type edepPos = theFullName.find("/edep");
-    if (edepPos != std::string::npos
-        && theFullName.find("/edep",edepPos+1) != std::string::npos) {
-        EDepSimError("Invalid volume name: " << theFullName);
-        EDepSimError("   Duplicate '/edep' prefix");
         EDepSimError("   Expected name is: " << theVolumeName);
         theFullName = theVolumeName;
     }
@@ -702,7 +695,7 @@ bool EDepSim::RootGeometryManager::CreateEnvelope(
 }
 
 void EDepSim::RootGeometryManager::SetDrawAtt(G4Material* material,
-                                          int color, double opacity) {
+                                              int color, double opacity) {
     G4String materialName = material->GetName();    
     fColorMap[materialName].color = color;
     fColorMap[materialName].alpha = opacity;
