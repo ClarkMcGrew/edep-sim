@@ -48,7 +48,9 @@ void loadEDepSim() {
 
     // Make sur we have a file.  If we don't, then stop.
     if (!gFile) {
-        std::cout << "The loadEDepSim macro have a file loaded."
+        std::cout << "ERROR: The loadEDepSim macro needs to have a file loaded."
+                  << std::endl;
+        std::cout << "  e.g. root -l input.root loadEDepSim.C"
                   << std::endl;
         return;
     }

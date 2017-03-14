@@ -8,10 +8,8 @@ if [ -d edepsimTree ]; then
     rm -rf edepsimTree
 fi
 
-edep-sim -o edepsimTree.root \
-         ${EDEP_ROOT}/inputs/update.mac \
-	 ${EDEP_ROOT}/inputs/muon-200.mac \
-	 ${EDEP_ROOT}/inputs/beam-10.mac \
+edep-sim -o edepsimTree.root -e 10 -u 
+	 ${EDEP_ROOT}/inputs/muon-10000.mac \
 
 root -l -q edepsimTree.root ${EDEP_ROOT}/tools/loadEDepSim.C readTree.C
 
