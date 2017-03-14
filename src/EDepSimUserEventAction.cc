@@ -39,6 +39,11 @@ void EDepSim::UserEventAction::BeginOfEventAction(const G4Event* evt) {
             SetUserInformation(new EDepSim::UserEventInformation);
     }
 
+    if (!gGeoManager) {
+        EDepSimError("The geometry manager is not defined.");
+        EDepSimThrow("Missing Geometry Manager");
+    }
+    
     int vtxNumber=0;
     for (G4PrimaryVertex* vtx = evt->GetPrimaryVertex();
          vtx; 
