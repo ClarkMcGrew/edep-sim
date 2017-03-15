@@ -3,14 +3,18 @@
 #include <G4Version.hh> //tells you what Geant4 version you are running
 #include <G4SystemOfUnits.hh>
 #include <G4PhysicalConstants.hh>
+#include <G4FieldManager.hh>
+#include <G4Field.hh>
+
+
+#include "EDepSimLog.hh"
 
 #include "EDepSimDokeBirks.hh"
 
-// The physics in EDepSim::DokeBirks is shamelessly stolen from NEST, so cite the
-// NEST paper to give credit where credit is due.  However, all of the bugs
-// are mine, so there should be a note like "Simplified implementation of the
-// physics described in NEST paper".
-
+// The physics in EDepSim::DokeBirks is shamelessly stolen from NEST, so cite
+// the NEST paper to give credit where credit is due.  However, all of the
+// bugs are mine, so there should be a note like "Simplified implementation of
+// the physics described in NEST paper".
 EDepSim::DokeBirks::DokeBirks(const G4String& processName,
                              G4ProcessType type)
     : G4VRestDiscreteProcess(processName, type)
@@ -28,7 +32,8 @@ EDepSim::DokeBirks::DokeBirks(const G4String& processName,
 EDepSim::DokeBirks::~DokeBirks () {} //destructor needed to avoid linker error
 
     
-G4bool EDepSim::DokeBirks::IsApplicable(const G4ParticleDefinition& aParticleType)
+G4bool
+EDepSim::DokeBirks::IsApplicable(const G4ParticleDefinition& aParticleType)
 {
     // This process is applicable to some neutral particles (e.g. gammas)
     // since G4 will fake creating the low energy electrons.
@@ -50,24 +55,37 @@ EDepSim::DokeBirks::AtRestDoIt(const G4Track& aTrack, const G4Step& aStep)
     return EDepSim::DokeBirks::PostStepDoIt(aTrack, aStep);
 }
 
+// this is the most important function, where all light & charge yields
+// happen!
 G4VParticleChange*
 EDepSim::DokeBirks::PostStepDoIt(const G4Track& aTrack, const G4Step& aStep)
-// this is the most important function, where all light & charge yields happen!
 {
     aParticleChange.Initialize(aTrack);
         
-    const G4DynamicParticle* aParticle = aTrack.GetDynamicParticle();
     const G4Material* aMaterial = aTrack.GetMaterial();
-
+    
     // Check that we are in liquid argon.
-    if (aMaterial->GetName() != "Argon_Liquid") {
-        return G4VRestDiscreteProcess::PostStepDoIt(aTrack, aStep);        
+    if (aMaterial->GetState() != kStateLiquid) {
+        // Do Nothing
+        if (aMaterial->GetState() == kStateUndefined) {
+            EDepSimError("Undefined material state for "
+                         << aMaterial->GetName());
+        }
+        return G4VRestDiscreteProcess::PostStepDoIt(aTrack, aStep);
+    }
+    if (aMaterial->GetNumberOfElements() > 1) {
+        // Do Nothing
+        return G4VRestDiscreteProcess::PostStepDoIt(aTrack, aStep);
+    }
+    if (std::abs(aMaterial->GetElement(0)->GetZ()-18.0) > 0.5) {
+        // Do Nothing
+        return G4VRestDiscreteProcess::PostStepDoIt(aTrack, aStep);
     }
     
+    const G4DynamicParticle* aParticle = aTrack.GetDynamicParticle();
     const G4ParticleDefinition *pDef = aParticle->GetDefinition();
     G4String particleName = pDef->GetParticleName();
     // G4StepPoint* pPreStepPoint  = aStep.GetPreStepPoint();
-    // G4StepPoint* pPostStepPoint = aStep.GetPostStepPoint();
     G4double totalEnergyDeposit = aStep.GetTotalEnergyDeposit();
     
     if (totalEnergyDeposit <= 0.0) {
@@ -78,12 +96,40 @@ EDepSim::DokeBirks::PostStepDoIt(const G4Track& aTrack, const G4Step& aStep)
         return G4VRestDiscreteProcess::PostStepDoIt(aTrack, aStep);        
     }
     
+    // Figure out the electric field.
+    G4double electricField = fElectricField;
+    G4StepPoint* pPostStepPoint = aStep.GetPostStepPoint();
+    const G4VPhysicalVolume* aVolume = pPostStepPoint->GetPhysicalVolume();
+    const G4LogicalVolume* aLogVolume = aVolume->GetLogicalVolume();
+    const G4FieldManager* aFieldManager = aLogVolume->GetFieldManager();
+    if (aFieldManager && aFieldManager->DoesFieldExist()) {
+        const G4Field* aField = aFieldManager->GetDetectorField();
+        if (!aField) {
+            EDepSimError("LAr Volume "
+                         << aLogVolume->GetName()
+                         << " should have field!");
+            return G4VRestDiscreteProcess::PostStepDoIt(aTrack, aStep);        
+        }
+        G4ThreeVector thePosition = pPostStepPoint->GetPosition();
+        double theTime = pPostStepPoint->GetGlobalTime();
+        double point[4] = {
+            thePosition.x(), thePosition.y(), thePosition.z(), theTime};
+        double bField[6];
+        aField->GetFieldValue(point,bField);
+        
+        electricField = bField[3]*bField[3];
+        electricField += bField[4]*bField[4];
+        electricField += bField[5]*bField[5];
+        if (electricField > 0) {
+            electricField = std::sqrt(electricField)/(kilovolt/cm);
+        }
+    }
+    electricField = std::abs(electricField/(kilovolt/cm));
+    
     // The code below is pulled from G4S1Light and is simplified to be
     // Doke-Birks only, in LAr only, and for an electric field only.  This is
     // for ARGON only.  The Doke-Birks constants are in kilovolt/cm
     G4double dokeBirks[3];
-    G4double electricField =
-        std::abs(fElectricField/(kilovolt/cm));
 
     dokeBirks[0] = 0.07*pow((electricField),-0.85);
     dokeBirks[2] = 0.00;
