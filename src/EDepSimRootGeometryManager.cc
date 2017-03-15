@@ -117,8 +117,49 @@ void EDepSim::RootGeometryManager::Update(const G4VPhysicalVolume* aWorld,
     gGeoManager->CloseGeometry("di");
 
     EDepSimLog("Geometry initialized and closed");
-    
-    if (!validateGeometry) return;
+
+    if (validateGeometry) return Validate();
+}
+
+void EDepSim::RootGeometryManager::Update(std::string gdmlFile,
+                                          bool validateGeometry) {
+    EDepSimLog(   "%%%%%%%%%%%%%%%%%% Update ROOT Geometry from GDML"
+               << "%%%%%%%%%%%%%%%%%%" );
+    if (gGeoManager) {
+        EDepSimLog("%%%%%%%%%%%%%%% Warning: Replacing ROOT Geometry ");
+        delete gGeoManager;
+        // Clear the node counts definitions.
+        fNodeCount.clear();
+        // Clear the cached materials.  The material objects are owned by the
+        // TGeoManager and are invalid after it has been deleted.
+        fMedium.clear();
+        // Clear the cached isotopes.  This is a bit complicated since the
+        // isotope pointers may be duplicated in the map.
+        std::set<TGeoElement*> isotope;
+        for (std::map<G4String,TGeoElement*>::iterator i = fIsotope.begin();
+             i != fIsotope.end();
+             ++i) {
+            isotope.insert(i->second);
+        }
+        fIsotope.clear();
+        for (std::set<TGeoElement*>::iterator i = isotope.begin();
+             i != isotope.end();
+             ++i) {
+            delete *i;
+        }
+    }
+
+    // Create the new geometry.
+    TGeoManager::Import(gdmlFile.c_str());
+    gGeoManager->SetName("EDepSimGeometry");
+    gGeoManager->SetTitle("Simulated Detector Geometry");
+
+    EDepSimLog("Geometry initialized and closed");
+
+    if (validateGeometry) return Validate();
+}
+
+void EDepSim::RootGeometryManager::Validate() {
 
     // Check for overlaps at volume corners.  Look for overlaps at 0.1 mm size.
     gGeoManager->CheckOverlaps(0.1*CLHEP::mm);

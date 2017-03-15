@@ -43,12 +43,18 @@ public:
     /// If a persistency manager has not been created, create one.
     static EDepSim::RootGeometryManager* Get(void);
 
-    /// Update the root geometry to match the g4 geometry
-    void Update(const G4VPhysicalVolume* aWorld, bool validate);
-
     /// Export the geometry to a file.
     void Export(const char *file);
 
+    /// Update the root geometry to match the g4 geometry
+    void Update(const G4VPhysicalVolume* aWorld, bool validate);
+
+    /// Set the root geometry from a gdml file.
+    void Update(std::string gdmlFile, bool validate);
+    
+    /// Make sure that the current geometry passes a bunch of tests.
+    void Validate();
+    
     /// Get a volume ID base on the volume position.
     int GetNodeId(const G4ThreeVector& pos);
 
