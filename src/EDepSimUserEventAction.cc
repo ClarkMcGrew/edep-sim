@@ -147,7 +147,7 @@ void EDepSim::UserEventAction::EndOfEventAction(const G4Event* evt) {
         int HCId = sdM->GetCollectionID(SDname+"/"+HCname);
         G4VHitsCollection* g4Hits = HCofEvent->GetHC(HCId);
         if (g4Hits->GetSize()<1) {
-            EDepSimError("No hits for " << SDname << "/" << HCname); 
+            EDepSimWarn("No hits for " << SDname << "/" << HCname); 
             continue;
         }
         for (unsigned int h=0; h<g4Hits->GetSize(); ++h) {
