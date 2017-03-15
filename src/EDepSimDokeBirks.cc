@@ -121,9 +121,10 @@ EDepSim::DokeBirks::PostStepDoIt(const G4Track& aTrack, const G4Step& aStep)
         electricField += bField[4]*bField[4];
         electricField += bField[5]*bField[5];
         if (electricField > 0) {
-            electricField = std::sqrt(electricField)/(kilovolt/cm);
+            electricField = std::sqrt(electricField);
         }
     }
+
     electricField = std::abs(electricField/(kilovolt/cm));
     
     // The code below is pulled from G4S1Light and is simplified to be
