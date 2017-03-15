@@ -52,6 +52,7 @@ G4VPhysicalVolume* EDepSim::UserDetectorConstruction::Construct() {
         EDepSimLog("Using a Custom Geometry");
         DefineMaterials();
         physWorld = ConstructDetector();
+        EDepSim::RootGeometryManager::Get()->Update(physWorld,fValidateGeometry);
     }
     else {
         EDepSimLog("Using a GDML Geometry");
@@ -59,7 +60,6 @@ G4VPhysicalVolume* EDepSim::UserDetectorConstruction::Construct() {
 
     G4RunManager::GetRunManager()->DefineWorldVolume(physWorld);
 
-    EDepSim::RootGeometryManager::Get()->Update(physWorld,fValidateGeometry);
 
     G4VPersistencyManager *pMan
         = G4VPersistencyManager::GetPersistencyManager();
@@ -332,10 +332,6 @@ G4VPhysicalVolume* EDepSim::UserDetectorConstruction::ConstructDetector() {
 
     // Create a region outside of the detector to define cuts.
     G4RegionStore::GetInstance()->FindOrCreateRegion("hallRegion");
-#ifdef USE_PAI
-    // Create a region for the PAI Model.
-    G4RegionStore::GetInstance()->FindOrCreateRegion("driftRegion");
-#endif
 
     G4String name = fWorldBuilder->GetName();
     G4LogicalVolume *vol = fWorldBuilder->GetPiece();
