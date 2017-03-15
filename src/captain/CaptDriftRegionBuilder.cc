@@ -1,6 +1,8 @@
 #include "CaptDriftRegionBuilder.hh"
 #include "CaptWirePlaneBuilder.hh"
 #include "EDepSimBuilder.hh"
+#include "EDepSimEMFieldSetup.hh"
+#include "EDepSimUniformField.hh"
 
 #include <EDepSimLog.hh>
 
@@ -12,6 +14,7 @@
 #include <G4RotationMatrix.hh>
 #include <G4VisAttributes.hh>
 #include <G4UserLimits.hh>
+#include <G4FieldManager.hh>
 
 #include <G4SystemOfUnits.hh>
 #include <G4PhysicalConstants.hh>
@@ -147,7 +150,12 @@ G4LogicalVolume *CaptDriftRegionBuilder::GetPiece(void) {
                               FindMaterial("Argon_Liquid"),
                               GetName());
     logVolume->SetVisAttributes(GetColor(logVolume));
-
+    G4FieldManager* manager = new G4FieldManager();
+    G4ElectroMagneticField* field = new EDepSim::UniformField(
+        G4ThreeVector(0,0,0), G4ThreeVector(0.0,0.0,500.0*volt/cm));
+    EDepSim::EMFieldSetup* fieldSetup
+        = new EDepSim::EMFieldSetup(field,manager);
+    logVolume->SetFieldManager(manager,true);
     if (GetSensitiveDetector()) {
         logVolume->SetSensitiveDetector(GetSensitiveDetector());
         logVolume->SetUserLimits(new G4UserLimits(1.0*mm));
