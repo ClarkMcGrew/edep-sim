@@ -37,3 +37,11 @@ add_definitions(-DDETSIM_INSTALL_PREFIX=\"${CMAKE_INSTALL_PREFIX}\")
 add_subdirectory(src)
 add_subdirectory(app)
 
+install(DIRECTORY inputs DESTINATION share/EDepSim
+  FILES_MATCHING PATTERN *.mac PATTERN *.gdml PATTERN README*)
+
+install(DIRECTORY test DESTINATION share/EDepSim
+  FILES_MATCHING PATTERN *.sh PATTERN *.C PATTERN *.py PATTERN README*)
+
+install(DIRECTORY tools DESTINATION share/EDepSim
+  FILES_MATCHING PATTERN *.sh PATTERN *.C PATTERN *.py PATTERN README*)
