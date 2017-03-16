@@ -84,6 +84,8 @@ bool EDepSim::RootPersistencyManager::Store(const G4Event* anEvent) {
     
     fOutput->cd();
 
+    EDepSimLog("Save event on " << fOutput->GetName());
+    
     fEventTree->Fill();
 
     return true;
