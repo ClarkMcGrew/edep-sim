@@ -14,8 +14,13 @@ namespace EDepSim {class UserDetectorConstruction;}
 #include "EDepSimDetectorMessenger.hh"
 #include "EDepSimBuilder.hh"
 
-/// Construct the EDepSim:: detector geometry.
 namespace EDepSim {class UserDetectorConstruction;}
+
+/// Construct the EDepSim detector geometry.  This handles two methods of
+/// construction.  In the first, the geometry is read from a GDML file which
+/// is expected to contain the SensDet, EField and BField auxiliary types for
+/// logical volumes that are sensitive, have an electric field, and have a
+/// magnetic field (respectively).  The alternative is to define a builder 
 class EDepSim::UserDetectorConstruction : public G4VUserDetectorConstruction {
 public:
     UserDetectorConstruction();

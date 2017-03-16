@@ -5,7 +5,10 @@
 #include "EDepSimUniformField.hh"
 #include "EDepSimEMFieldSetup.hh"
 
+#define BUILD_CAPTAIN
+#ifdef BUILD_CAPTAIN
 #include "captain/CaptWorldBuilder.hh"
+#endif
 
 #include "EDepSimLog.hh"
  
@@ -38,17 +41,20 @@
 
 EDepSim::UserDetectorConstruction::UserDetectorConstruction() {
     fDetectorMessenger = new EDepSim::DetectorMessenger(this);
+    fWorldBuilder = NULL;
+#ifdef BUILD_CAPTAIN
     fWorldBuilder = new CaptWorldBuilder("/Captain",this);
+#endif
     fDefaultMaterial = NULL;
     fValidateGeometry = false;
     fGDMLParser = new G4GDMLParser;
     new G4UnitDefinition("volt/cm","V/cm","Electric field",volt/cm);
 }
- 
+
 EDepSim::UserDetectorConstruction::~UserDetectorConstruction() { 
-    delete fDetectorMessenger;
-    delete fWorldBuilder;
-    delete fGDMLParser;
+    if (fDetectorMessenger) delete fDetectorMessenger;
+    if (fWorldBuilder) delete fWorldBuilder;
+    if (fGDMLParser) delete fGDMLParser;
 }
  
 G4VPhysicalVolume* EDepSim::UserDetectorConstruction::Construct() {
@@ -56,7 +62,6 @@ G4VPhysicalVolume* EDepSim::UserDetectorConstruction::Construct() {
     
     if (!physWorld) {
         EDepSimLog("Using a Custom Geometry");
-        DefineMaterials();
         physWorld = ConstructDetector();
         EDepSim::RootGeometryManager::Get()->Update(physWorld,fValidateGeometry);
     }
@@ -209,7 +214,6 @@ void EDepSim::UserDetectorConstruction::ConstructSDandField() {
         logVolume->SetFieldManager(manager,true);
     }
 }
-
 
 void EDepSim::UserDetectorConstruction::DefineMaterials() {
     EDepSim::RootGeometryManager* geoMan = EDepSim::RootGeometryManager::Get();
@@ -440,6 +444,10 @@ G4Element* EDepSim::UserDetectorConstruction::DefineElement(G4String name,
 }
 
 G4VPhysicalVolume* EDepSim::UserDetectorConstruction::ConstructDetector() {
+
+    if (!fWorldBuilder) return NULL;
+
+    DefineMaterials();
 
     // Create a region outside of the detector to define cuts.
     G4RegionStore::GetInstance()->FindOrCreateRegion("hallRegion");
