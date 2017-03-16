@@ -100,6 +100,51 @@ GDML definition using the `/edep/gdml/read` macro command.  The gdml file can be
 edep-sim -g geometry.gdml -o output.root macro-file.mac
 ```
 
+### GDML Auxiliary Fields
+	
+Several auxiliary fields are parsed to help describe the detector geometry
+and attach more meaning to the GDML description.  For example, here is a
+simple LAr detector description that is attached as a sensitive detector,
+and has both an electric and a magnetic field.
+
+```
+    <volume name="LArD_lv">
+      <materialref ref="LAr"/>
+      <solidref ref="LArD"/>
+      <physvol>
+        <volumeref ref="LArMod_lv"/>
+        <positionref ref="LArD_el0_pos"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <auxiliary auxtype="SensDet" auxvalue="LArD"/>
+      <auxiliary auxtype="EField" 
+		  auxvalue="(500.0 V/cm, 1.0 V/m, 500.0 V/cm)"/>
+      <auxiliary auxtype="BField
+		  " auxvalue="(2.0 tesla, 3.0 T, 1.0 G)"/>
+    </volume>
+```
+
+Sensitive logical volumes recording energy deposition are specified using
+the "SensDet" type.  It takes a value which is the name of the sensitive
+detector that will record the deposition.  In the example above, the energy
+is recorded in a sensitive detector named `LArD`.  After an event is
+simulated, the deposited energy is recorded in an internal map keyed by the
+sensitive detector name, and with a value that is a vector of TG4HitSegment
+objects.  See the example in the `./test` subdirectory for how to read this
+information from the output tree.
+
+Uniform electric and magnetic fields can be set using the `EField` and
+`BField` auxiliary types.  The value for each is the field vector in the
+volume specified by the X, Y and Z components (global coordinates).  It is
+assumed that the field applies to all of the daughter volumes.
+
+The possible units for the electric field are `volt/cm`, `volt/m`, `V/cm`,
+and `V/m`.  You should specify a unit.  If no units are provided, it is
+assumed that the units are `volt/cm`.
+
+The possible units for the magnetic field are `tesla`, `gauss`, `T`, and
+`G`.  If no unts are provided, it is assumed that the units are `tesla`.  
+
 ## Using GPS (The General Particle Source)
 
 This page describes how to use the GPS particle source provided by GEANT.
