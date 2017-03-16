@@ -54,9 +54,19 @@ alias edep-build="${EDEP_ROOT}/build/edep-build.sh"
 echo Defined edep-setup to re-setup the edep-sim package
 echo Define edep-build to build the the edep-sim package.
 
-if which geant4.sh >> /dev/null; then
-    . geant4.sh
-else
+# Try to setup root.  ROOT installs thisroot.sh in the bin directory
+# to setup the environment.  The first "thisroot.sh" in the path will
+# define the root that is used.
+. thisroot.sh >& /dev/null
+if [ $? != 0 ]; then
+    echo ROOT not available.
+fi
+
+# Try to setup geant4.  GEANT4 installs geant4.sh in the bin directory
+# to setup the environment.  The first "geant4.sh" in the path will
+# define the geant that is used.
+. geant4.sh >& /dev/null
+if [ $? != 0 ]; then
     echo GEANT not available.
 fi
 
