@@ -43,14 +43,16 @@ bool EDepSim::RootPersistencyManager::Open(G4String filename) {
 
     EDepSimLog("EDepSim::RootPersistencyManager::Open " << GetFilename());
 
-    fOutput = TFile::Open(GetFilename(), "RECREATE", "EDepSim:: Root Output");
-
+    fOutput = TFile::Open(GetFilename(), "RECREATE", "EDepSim Root Output");
+    fOutput->cd();
+    
     fEventTree = new TTree("EDepSimEvents",
                            "Energy Deposition for Simulated Events");
 
     static TG4Event *pEvent = &fEventSummary;
     fEventTree->Branch("Event","TG4Event",&pEvent);
-
+    fEventTree->Print();
+       
     fEventsNotSaved = 0;
 
     return true;
@@ -64,7 +66,13 @@ bool EDepSim::RootPersistencyManager::Close() {
     }
 
     fOutput->cd();
+
+    EDepSimLog("Print output file " << fOutput->GetName());
+    fOutput->Print();
+
+    EDepSimLog("Write output file " << fOutput->GetName());
     fOutput->Write();
+    EDepSimLog("Close output file " << fOutput->GetName());
     fOutput->Close();
     EDepSimLog("Output file " << GetFilename() << " closed.");
 
