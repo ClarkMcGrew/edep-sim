@@ -67,14 +67,10 @@ bool EDepSim::RootPersistencyManager::Close() {
 
     fOutput->cd();
 
-    EDepSimLog("Print output file " << fOutput->GetName());
     fOutput->Print();
 
-    EDepSimLog("Write output file " << fOutput->GetName());
     fOutput->Write();
-    EDepSimLog("Close output file " << fOutput->GetName());
     fOutput->Close();
-    EDepSimLog("Output file " << GetFilename() << " closed.");
 
     fEventTree = NULL;
 
@@ -92,8 +88,6 @@ bool EDepSim::RootPersistencyManager::Store(const G4Event* anEvent) {
     
     fOutput->cd();
 
-    EDepSimLog("Save event on " << fOutput->GetName());
-    
     fEventTree->Fill();
 
     return true;
