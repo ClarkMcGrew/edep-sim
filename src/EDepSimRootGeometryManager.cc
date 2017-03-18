@@ -226,7 +226,7 @@ TGeoShape* EDepSim::RootGeometryManager::CreateShape(const G4VSolid* theSolid,
         double maxPhiDeg = minPhiDeg + sphere->GetDeltaPhiAngle()/CLHEP::degree;
         double minThetaDeg = sphere->GetStartThetaAngle()/CLHEP::degree;
         double maxThetaDeg = minThetaDeg + sphere->GetDeltaThetaAngle()/CLHEP::degree;
-        theShape = new TGeoSphere(sphere->GetInsideRadius()/CLHEP::mm,
+        theShape = new TGeoSphere(sphere->GetInnerRadius()/CLHEP::mm,
                                   sphere->GetOuterRadius()/CLHEP::mm,
                                   minThetaDeg, maxThetaDeg,
                                   minPhiDeg, maxPhiDeg);
