@@ -58,6 +58,7 @@ ___path_remove ()  {
 }
 
 ___path_prepend PATH ${EDEP_ROOT}/${EDEP_TARGET}/bin
+___path_prepend LD_LIBRARY_PATH ${EDEP_ROOT}/${EDEP_TARGET}/lib
 
 unset -f ___path_prepend
 unset -f ___path_remove
