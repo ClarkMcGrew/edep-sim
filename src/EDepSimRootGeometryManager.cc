@@ -259,9 +259,11 @@ TGeoShape* EDepSim::RootGeometryManager::CreateShape(const G4VSolid* theSolid,
         double dPhi = polycone->GetEndPhi() - phi;
         if (dPhi>2*M_PI) dPhi -= 2*M_PI;
         if (dPhi<0) dPhi += 2*M_PI;
-#ifdef USE_POLYCONE_CORNERS
+#ifdef G4GEOM_USE_USOLIDS
+#warning GEANT HAS BEEN COMPILED WITH BROKEN USOLIDS.
         int numZ = polycone->GetNumRZCorner()/2;
-        TGeoPcon* pcon = new TGeoPcon(phi/CLHEP::degree, dPhi/CLHEP::degree, numZ);
+        TGeoPcon* pcon = new TGeoPcon(phi/CLHEP::degree,
+                                      dPhi/CLHEP::degree, numZ);
         // This depends on the (mostly) undocumented order of the corners in
         // the G4Polycone internals.  It's a little unstable...
         for (int i = 0; i< numZ; ++i) {
