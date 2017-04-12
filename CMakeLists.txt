@@ -1,5 +1,7 @@
 cmake_minimum_required(VERSION 3.0)
 
+set(CMAKE_BUILD_TYPE Debug)
+
 # Set the project name and version
 project(edep-sim)
 set(VERSION_MAJOR "1")
