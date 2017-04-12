@@ -10,7 +10,7 @@ class TG4PrimaryParticle;
 
 /// A class to save a G4 primary vertex into a root output file without linking
 /// to geant.
-class TG4PrimaryVertex {
+class TG4PrimaryVertex : public TObject {
 public:
     TG4PrimaryVertex(void)
         : Position(0,0,0,0), GeneratorName("none"),
@@ -56,11 +56,12 @@ public:
     /// The informational vertices associated with this vertex.
     // std::vector<TG4PrimaryVertex> Informational;
 
+    ClassDef(TG4PrimaryVertex,1)
 };
 
 /// A class to save a G4 primary particle into a root output file without
 /// linking to geant.
-class TG4PrimaryParticle {
+class TG4PrimaryParticle : public TObject {
 public:
     TG4PrimaryParticle(void)
         : TrackId(-1), PDGCode(0), Momentum(0,0,0,0) {}
@@ -78,6 +79,7 @@ public:
 
     /// The initial momentum of the particle
     TLorentzVector Momentum;
-};
 
+    ClassDef(TG4PrimaryParticle,1);
+};
 #endif

@@ -4,6 +4,7 @@
 #include <string>
 #include <vector>
 
+#include <TObject.h>
 #include <TVector3.h>
 #include <TLorentzVector.h>
 
@@ -21,7 +22,7 @@ typedef std::vector<TG4Trajectory> TG4TrajectoryContainer;
 /// through the G4 simulation. It saves the parent trajectory that generated
 /// this particle, the initial momentum of the particle, and the path followed
 /// by the particle in the detector.  
-class TG4Trajectory {
+class TG4Trajectory : public TObject {
 public:
     typedef std::vector<TG4TrajectoryPoint> TrajectoryPoints;
 
@@ -50,6 +51,7 @@ public:
     /// The trajectory points for this trajectory.
     TrajectoryPoints Points;
 
+    ClassDef(TG4Trajectory,1)
 };
 
 
@@ -59,7 +61,7 @@ public:
 /// truth information about the particles which were tracked, but is not a
 /// good record of the energy deposition.  Use the TG4HitSegment objects for a
 /// record of the energy deposition.
-class TG4TrajectoryPoint {
+class TG4TrajectoryPoint : public TObject {
 public:
     TG4TrajectoryPoint()
         : Position(0,0,0,0), Momentum(0,0,0),
@@ -129,5 +131,6 @@ public:
     /// The possible values are defined in the G4ProcessSubtype enum.
     Int_t Subprocess;
     
+    ClassDef(TG4TrajectoryPoint,1)
 };
 #endif

@@ -22,7 +22,7 @@ typedef std::map<std::string,TG4HitSegmentContainer> TG4HitSegmentDetectors;
 /// the total and secondary energy deposition is saved.  The definition of the
 /// secondary energy depends on the configuration of the simulation, but
 /// generally, it refers to the amount of energy going into scintillation.
-class TG4HitSegment {
+class TG4HitSegment : public TObject {
 public:
     TG4HitSegment() 
         : PrimaryId(0), EnergyDeposit(0), SecondaryDeposit(0),
@@ -62,5 +62,7 @@ public:
 
     /// The stopping position of the segment.
     TLorentzVector Stop;
+
+    ClassDef(TG4HitSegment,1);
 };
 #endif

@@ -5,7 +5,7 @@
 #include "TG4Trajectory.hxx"
 #include "TG4HitSegment.hxx"
 
-class TG4Event: public TObject {
+class TG4Event : public TObject {
 public:
     TG4Event(void) {}
     virtual ~TG4Event();

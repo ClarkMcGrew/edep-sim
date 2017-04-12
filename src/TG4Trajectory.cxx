@@ -3,6 +3,9 @@
 //
 #include "TG4Trajectory.hxx"
 
+ClassImp(TG4Trajectory)
+ClassImp(TG4TrajectoryPoint)
+
 TG4Trajectory::~TG4Trajectory() {}
 TG4TrajectoryPoint::~TG4TrajectoryPoint() {}
 
