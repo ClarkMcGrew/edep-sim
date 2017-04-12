@@ -1,3 +1,4 @@
+// TEST MACRO FOR USE WITH ROOT5.
 #ifndef loadEDepSim_h
 #define loadEDepSim_h
 

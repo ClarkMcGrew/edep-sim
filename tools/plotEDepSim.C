@@ -1,3 +1,5 @@
+// TEST MACRO FOR USE WITH OLDER ROOT6.  DOESN"T WORK WHEN CLING KNOWS ABOUT
+// THE VARIOUS CLASSES.
 #include <loadEDepSim.h>
 #include <TPolyLine3D.h>
 #include <TPolyMarker3D.h>

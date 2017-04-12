@@ -1,5 +1,5 @@
-#include "EDepSimEvents/EDepSimEventsProjectHeaders.h"
-
+// TEST MACRO FOR USE WITH OLDER ROOT6.  DOESN"T WORK WHEN CLING KNOWS ABOUT
+// THE VARIOUS CLASSES.
 #include <TFile.h>
 #include <TTree.h>
 

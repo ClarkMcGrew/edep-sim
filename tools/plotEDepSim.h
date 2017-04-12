@@ -1,3 +1,4 @@
+// TEST MACRO FOR USE WITH ROOT5.
 #ifndef plotEDepSim_h
 #define plotEDepSim_h
 

@@ -1,3 +1,5 @@
+// TEST MACRO FOR USE WITH OLDER ROOT6.  DOESN"T WORK WHEN CLING KNOWS ABOUT
+// THE VARIOUS CLASSES.
 #include <TFile.h>
 #include <TSystem.h>
 #include <TROOT.h>
@@ -24,9 +26,7 @@
 /// This will compile and run the code in myAnalysis.C.  There is no reason to
 /// compile loadEDepSim.C since it is fast enough for jit.
 ///
-/// The analysis macro should include the headers with
-///
-/// #include "EDepSimEvents/EDepSimEventsProjectHeaders.h"
+/// The analysis macro should include the headers directly.
 ///
 void loadEDepSim() {
     // Get the directory of this file.
@@ -57,6 +57,8 @@ void loadEDepSim() {
     
     // Dynamically load the event tree definition
     gFile->MakeProject("EDepSimEvents","*","recreate++");
+    // Add the directory of this file to the macro path.
+    gSystem->AddIncludePath(("-I"+thisFileDirectory+"/EDepSimEvents").c_str());
 
     // Get the geometry.
     gFile->Get("EDepSimGeometry");

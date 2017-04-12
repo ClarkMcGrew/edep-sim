@@ -1,9 +1,10 @@
+// TEST MACRO FOR USE WITH OLDER ROOT.  DOESN"T WORK WHEN CLING KNOWS ABOUT
+// THE DATA CLASSES.
 #ifndef readEDepSim_h
 #define readEDepSim_h
 
-#include "EDepSimEvents/EDepSimEventsProjectHeaders.h"
-
 #include <TTree.h>
+#include "TG4Event.h"
 
 /// Return a pointer to the EDepSimEvents Tree found in the geometry file.
 TTree*    EDepSimTree();
