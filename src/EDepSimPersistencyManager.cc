@@ -13,6 +13,7 @@
 #include "EDepSimHitSegment.hh"
 #include "EDepSimException.hh"
 #include "EDepSimUserRunAction.hh"
+#include "EDepSimLog.hh"
 
 #include <G4ios.hh>
 #include <G4RunManager.hh>
@@ -136,15 +137,21 @@ void EDepSim::PersistencyManager::UpdateSummaries(const G4Event* event) {
 
     fEventSummary.RunId = runInfo->GetRunID();
     fEventSummary.EventId = event->GetEventID();
+    EDepSimLog("Event Summary for run " << fEventSummary.RunId
+               << " event " << fEventSummary.EventId);
 
     // Summarize the trajectories first so that fTrackIdMap is filled.
     MarkTrajectories(event);
 
     SummarizePrimaries(fEventSummary.Primaries,event->GetPrimaryVertex());
+    EDepSimLog("   Primaries " << fEventSummary.Primaries.size());
 
     SummarizeTrajectories(fEventSummary.Trajectories,event);
+    EDepSimLog("   Trajectories " << fEventSummary.Trajectories.size());
 
     SummarizeSegmentDetectors(fEventSummary.SegmentDetectors, event);
+    EDepSimLog("   Segment Detectors "
+               << fEventSummary.SegmentDetectors.size());
 }
 
 void EDepSim::PersistencyManager::SummarizePrimaries(

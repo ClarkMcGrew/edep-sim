@@ -51,7 +51,6 @@ bool EDepSim::RootPersistencyManager::Open(G4String filename) {
 
     static TG4Event *pEvent = &fEventSummary;
     fEventTree->Branch("Event","TG4Event",&pEvent);
-    fEventTree->Print();
        
     fEventsNotSaved = 0;
 
@@ -66,8 +65,6 @@ bool EDepSim::RootPersistencyManager::Close() {
     }
 
     fOutput->cd();
-
-    fOutput->Print();
 
     fOutput->Write();
     fOutput->Close();
