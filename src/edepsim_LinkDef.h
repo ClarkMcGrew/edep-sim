@@ -1,5 +1,5 @@
 #ifdef __CINT__
-#include "TG4Event.hxx"
+#include "TG4Event.h"
 
 #pragma link C++ class TG4PrimaryParticle+;
 #pragma link C++ class std::vector<TG4PrimaryParticle>+;

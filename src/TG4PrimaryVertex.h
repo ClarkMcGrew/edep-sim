@@ -5,6 +5,7 @@
 #include <vector>
 
 #include <TLorentzVector.h>
+#include <TObject.h>
 
 class TG4PrimaryParticle;
 

@@ -1,9 +1,11 @@
 #ifndef TG4Event_hxx_seen
 #define TG4Event_hxx_seen
 
-#include "TG4PrimaryVertex.hxx"
-#include "TG4Trajectory.hxx"
-#include "TG4HitSegment.hxx"
+#include "TG4PrimaryVertex.h"
+#include "TG4Trajectory.h"
+#include "TG4HitSegment.h"
+
+#include <TObject.h>
 
 class TG4Event : public TObject {
 public:

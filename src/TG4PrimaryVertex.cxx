@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////
 //
-#include "TG4PrimaryVertex.hxx"
+#include "TG4PrimaryVertex.h"
 
 ClassImp(TG4PrimaryVertex)
 TG4PrimaryVertex::~TG4PrimaryVertex() {}

@@ -4,9 +4,9 @@
 #include <string>
 #include <vector>
 
-#include <TObject.h>
 #include <TVector3.h>
 #include <TLorentzVector.h>
+#include <TObject.h>
 
 class TG4Trajectory;
 class TG4TrajectoryPoint;

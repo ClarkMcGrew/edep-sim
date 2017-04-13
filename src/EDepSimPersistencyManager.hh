@@ -3,13 +3,13 @@
 #ifndef EDepSim_PersistencyManager_h
 #define EDepSim_PersistencyManager_h 1
 
-#include <vector>
-#include <map>
+#include "TG4Event.h"
 
 #include <G4VPersistencyManager.hh>
 #include <G4StepStatus.hh>
 
-#include "TG4Event.hxx"
+#include <vector>
+#include <map>
 
 class G4Event;
 class G4Run;

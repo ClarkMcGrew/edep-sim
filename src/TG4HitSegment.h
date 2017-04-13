@@ -1,9 +1,11 @@
 #ifndef TG4HitSegment_hxx_seen
 #define TG4HitSegment_hxx_seen
 
+#include <TLorentzVector.h>
+#include <TObject.h>
+
 #include <map> 
 #include <vector> 
-#include <TLorentzVector.h>
 
 class TG4HitSegment;
 
