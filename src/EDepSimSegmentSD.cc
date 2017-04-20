@@ -41,7 +41,7 @@ void EDepSim::SegmentSD::Initialize(G4HCofThisEvent* HCE) {
     if (fHCID<0) {
         G4String hcName = GetName() + "/" + GetCollectionName(0);
         fHCID = G4SDManager::GetSDMpointer()->GetCollectionID(hcName);
-        EDepSimInfo("Initialize SD for " 
+        EDepSimLog("Initialize SD for " 
                   << GetName() << "/" << GetCollectionName(0)
                   << " w/ sagitta " << G4BestUnit(fMaximumHitSagitta,"Length")
                   << " & " << G4BestUnit(fMaximumHitLength,"Length"));
@@ -50,12 +50,14 @@ void EDepSim::SegmentSD::Initialize(G4HCofThisEvent* HCE) {
 }
 
 G4bool EDepSim::SegmentSD::ProcessHits(G4Step* theStep,
-                                  G4TouchableHistory*) {
+                                       G4TouchableHistory*) {
     // Get the hit information.
     G4double energyDeposit = theStep->GetTotalEnergyDeposit();
-    EDepSimTrace("Process hit with " << energyDeposit);
-
     if (energyDeposit <= 0.) return true;
+
+    EDepSimTrace("Process hit with " << energyDeposit
+                 << " in " << theStep->GetTrack()->GetVolume()->GetName());
+
 
     EDepSim::HitSegment* currentHit = NULL;
 
@@ -70,7 +72,8 @@ G4bool EDepSim::SegmentSD::ProcessHits(G4Step* theStep,
 
     // If a hit wasn't found, create one.
     if (!currentHit) {
-        currentHit = new EDepSim::HitSegment(fMaximumHitSagitta,fMaximumHitLength);
+        currentHit = new EDepSim::HitSegment(fMaximumHitSagitta,
+                                             fMaximumHitLength);
         fLastHit = fHits->entries();
         fHits->insert(currentHit);
     }
