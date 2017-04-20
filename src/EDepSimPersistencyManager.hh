@@ -33,13 +33,13 @@ namespace EDepSim {class PersistencyMessenger;}
 /// G4RunManager::AnalyzeMethod is protected).
 ///
 /// The persistency manager doesn't *have* to be derived from
-/// EDepSim::RootPersistencyManager, but a lot of the trajectory and hit handling
-/// functionality is currently handled by that class, and as of 4.10.2,
+/// EDepSim::PersistencyManager, but a lot of the trajectory and hit handling
+/// functionality is currently handled by this class, and as of 4.10.2,
 /// persistency managers seem to be the only viable hook to allow the event to
-/// be summarized after it is fully generated.  An alternative place to
+/// be summarized after it is fully generated.  An alternative might be to
 /// summarize the information would be in the
-/// G4UserEventAction::EndOfEventAction method and then keep the summary
-/// data in the EventUserInformation which is thread local.
+/// G4UserEventAction::EndOfEventAction method and then keep the summary data
+/// in the EventUserInformation which is thread local.
 namespace EDepSim {class PersistencyManager;}
 class EDepSim::PersistencyManager : public G4VPersistencyManager {
 public:
