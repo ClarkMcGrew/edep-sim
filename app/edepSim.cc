@@ -1,18 +1,11 @@
 #include "EDepSimCreateRunManager.hh"
 #include "EDepSimPersistencyManager.hh"
-#define USE_ROOT_PERSISTENCY
-#ifdef USE_ROOT_PERSISTENCY
 #include "EDepSimRootPersistencyManager.hh"
-#endif
 #include "EDepSimLog.hh"
 
 #include "G4RunManager.hh"
 #include "G4UImanager.hh"
 #include "G4UIExecutive.hh"
-
-#ifdef G4VIS_USE
-#include <G4VisExecutive.hh>
-#endif
 
 #include "globals.hh"
 
@@ -238,12 +231,6 @@ int main(int argc,char** argv) {
     // Construct the default run manager
     G4RunManager* runManager = EDepSim::CreateRunManager(physicsList);
     
-#ifdef G4VIS_USE
-    // Visualization.
-    G4VisManager* visManager = new G4VisExecutive;
-    visManager->Initialize();
-#endif
-    
     // Create the persistency manager.  The persistency manager must derive
     // from G4VPersistencyManager which will make this object available to the
     // G4RunManager as a singleton.  There can only be one persistency manager
@@ -253,13 +240,12 @@ int main(int argc,char** argv) {
     // handling functionality is handled by that class.
     EDepSim::PersistencyManager* persistencyManager = NULL;
 
-#ifdef USE_ROOT_PERSISTENCY
     persistencyManager = new EDepSim::RootPersistencyManager();
-#endif
     
     // Create a "no i/o" persistency manager.  This doesn't actually save
     // anything, and it may be better to stop if there isn't a real
-    // persistency manager declared.
+    // persistency manager declared.  This is here as paranoia in case later
+    // gode gets clever about how the persistency manager is created.
     if (!persistencyManager) {
         persistencyManager = new EDepSim::PersistencyManager();
     }
@@ -284,7 +270,10 @@ int main(int argc,char** argv) {
     std::signal(SIGBUS,  SIG_DFL);
     std::signal(SIGSEGV, SIG_DFL);
 
-    // Set the defaults for the simulation.
+    // Set the defaults for the simulation and get ready to run.  This needs
+    // to be done before the first event is generated, but can also be done in
+    // the users macro file.  It's executed here if the "-u" option was
+    // provided on the command line.
     if (doUpdate) UI->ApplyCommand("/edep/update");
 
     if (useUI) {
@@ -304,15 +293,15 @@ int main(int argc,char** argv) {
             std::string macroFilename = argv[i];
             UI->ApplyCommand("/control/execute " +macroFilename);
         }
+        // If a event count was provided with the -e format, then add a beamOn
+        // command.  The beamOn command can also be in the users macro, but
+        // this makes it a little more convenient to write generic macros and
+        // then specify the number of interactions to simulate from the
+        // command line.
         if (!beamOnCount.empty()) {
             UI->ApplyCommand("/run/beamOn " + beamOnCount);
         }
     }
-    
-    // job termination
-#ifdef G4VIS_USE
-    delete visManager;
-#endif
     
     // If we have the persistency manager, then make sure it's closed.
     if (persistencyManager) {
