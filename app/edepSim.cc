@@ -15,7 +15,7 @@
 #include <cstdlib>
 
 void usage () {
-    std::cout << "Usage: DETSIM.exe [options] [macro]" << std::endl;
+    std::cout << "Usage: edep-sim [options] [macros]" << std::endl;
     std::cout << "    -d      -- Increase the debug level" << std::endl;
     std::cout << "    -D <name>=[error,severe,warn,debug,trace]"
               << std::endl
