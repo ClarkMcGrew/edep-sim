@@ -103,7 +103,6 @@ void EDepSim::DetectorMessenger::SetNewValue(G4UIcommand * cmd,
         // Read the gdml file, but don't try and validate it against the
         // schema since there's a really high chance it won't be available.
         fConstruction->GetGDMLParser()->Read(newValue,false);
-        EDepSim::RootGeometryManager::Get()->Update(newValue,false);
     }
     else if (cmd == fControlCmd) {
         std::istringstream input((const char*)newValue);
