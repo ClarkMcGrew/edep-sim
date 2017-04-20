@@ -473,12 +473,14 @@
       </physvol>
       <auxiliary auxtype="SensDet" auxvalue="LArD"/>
       <auxiliary auxtype="EField" auxvalue="(500.0, 1.0 V/m, 500.0 V/cm)"/>
-      <auxiliary auxtype="BField" auxvalue="(2.0, 3.0 T, 1.0 G)"/>
+      <auxiliary auxtype="BField" auxvalue="(0.5, 0.0 T, 1.0 G)"/>
+      <auxiliary auxtype="Color" auxvalue="blue"/>
     </volume>
     <volume name="idStrip_lv">
       <materialref ref="Scintillator"/>
       <solidref ref="idStrip"/>
       <auxiliary auxtype="SensDet" auxvalue="FGD"/>
+      <auxiliary auxtype="Color" auxvalue="blue"/>
     </volume>
     <volume name="TrackerPlane_lv">
       <materialref ref="Air"/>
@@ -861,6 +863,7 @@
     <volume name="idDetector_lv">
       <materialref ref="Air"/>
       <solidref ref="idDetector"/>
+      <auxiliary auxtype="BField" auxvalue="(-0.5, 0.0 T, 1.0 G)"/>
       <physvol>
         <volumeref ref="LArD_lv"/>
         <positionref ref="LArD_lv_pos"/>

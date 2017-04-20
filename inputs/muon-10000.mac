@@ -12,7 +12,7 @@
 # This generates the position of the particle gun.  It can be
 # used for the other particle guns to create a multi particle event.  The
 # /gps/position command must come first.
-/gps/position 0.0 0.0 -10.0 m
+/gps/position 0.0 0.0 -3.0 m
 /gps/pos/type Volume
 /gps/pos/shape Para
 /gps/pos/halfx 1 cm
@@ -23,7 +23,7 @@
 # the particle downstream with the directions uniformly distributed in
 # a 10 deg cone around the Z axis.
 /gps/ang/type iso
-/gps/ang/maxtheta 5 deg
+/gps/ang/maxtheta 15 deg
 /gps/ang/rot1 1 0 0 
 /gps/ang/rot2 0 -1 0
 
