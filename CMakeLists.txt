@@ -43,6 +43,7 @@ add_definitions(-DDETSIM_INSTALL_PREFIX=\"${CMAKE_INSTALL_PREFIX}\")
 # Build the subdirectories
 add_subdirectory(src)
 add_subdirectory(app)
+add_subdirectory(display)
 
 # Install some extra files.
 install(DIRECTORY inputs DESTINATION share/EDepSim
