@@ -78,8 +78,19 @@ int EDepSim::RootGeometryManager::GetNodeId(const G4ThreeVector& pos) {
     return gGeoManager->GetCurrentNodeId();
 }
 
+namespace {
+    int CountVolumes(G4LogicalVolume* volume) {
+        int count = 1;
+        for (int i = 0; i<volume->GetNoDaughters(); ++i) {
+            G4VPhysicalVolume* daughter = volume->GetDaughter(i);
+            count += CountVolumes(daughter->GetLogicalVolume());
+        }
+        return count;
+    }
+}
+
 void EDepSim::RootGeometryManager::Update(const G4VPhysicalVolume* aWorld,
-                                      bool validateGeometry) {
+                                          bool validateGeometry) {
     EDepSimLog("%%%%%%%%%%%%%%%%%%%%%%%%%% Update ROOT Geometry "
              << "%%%%%%%%%%%%%%%%%%%%%%%%%%" );
     if (gGeoManager) {
@@ -109,11 +120,25 @@ void EDepSim::RootGeometryManager::Update(const G4VPhysicalVolume* aWorld,
     gGeoManager = new TGeoManager("EDepSimGeometry",
                                   "Simulated Detector Geometry");
     // Create all of the materials.
+    EDepSimLog("Create materials");
     CreateMaterials(aWorld);
+
+    //Check to see if we can create all of the volumes.  This is done by
+    //traversing the GEANT physical volume tree.
+    fCreateAllVolumes = false;
+    if (CountVolumes(aWorld->GetLogicalVolume()) < 100000) {
+        EDepSimLog("Create all volumes");
+        fCreateAllVolumes = true;
+    }
+    
     // Create the ROOT geometry definitions.
     fPrintedMass.clear();
     fNameStack.clear();
+    fKnownVolumes.clear();
+    EDepSimLog("Start defining envelope");
     CreateEnvelope(aWorld,gGeoManager,NULL);
+    EDepSimLog("Geometry is Filled");
+    
     gGeoManager->CloseGeometry("di");
 
     EDepSimLog("Geometry initialized and closed");
@@ -154,7 +179,7 @@ void EDepSim::RootGeometryManager::Update(std::string gdmlFile,
     gGeoManager->SetName("EDepSimGeometry");
     gGeoManager->SetTitle("Simulated Detector Geometry");
 
-    EDepSimLog("Geometry initialized and closed");
+    EDepSimLog("####################### Geometry initialized and closed");
 
     if (validateGeometry) return Validate();
 }
@@ -575,7 +600,7 @@ bool EDepSim::RootGeometryManager::CreateEnvelope(
     const G4VPhysicalVolume* theG4PhysVol,
     TGeoManager* theEnvelope,
     TGeoVolume* theMother) {
-    
+
     if (IgnoreVolume(theG4PhysVol)) return true;
 
     // The new volume that will be added to the mother volume.  This is
@@ -633,55 +658,68 @@ bool EDepSim::RootGeometryManager::CreateEnvelope(
         EDepSimThrow("Material definition is missing");
     }
 
-    // Create the root volume (the solid in G4 lingo).
-    theVolume = CreateVolume(theEnvelope, theSolid, theShortName, theMedium);
-    if (!theVolume) theVolume = theMother;
-    theVolume->SetTitle(theVolumeName.c_str());
-    int color = GetColor(theG4PhysVol);
-    theVolume->SetLineColor(color);
-    if (GetFill(theG4PhysVol)>0) {
-        theVolume->SetFillColor(color);
-        theVolume->SetFillStyle(GetFill(theG4PhysVol));
+    if (!fCreateAllVolumes) {
+        std::map<G4LogicalVolume*, TGeoVolume*>::iterator seenVolume;
+        seenVolume = fKnownVolumes.find(theLog);
+        if (seenVolume != fKnownVolumes.end()) theVolume = seenVolume->second;
     }
-
-    // There is no mother so set this as the top volume.
-    if (!theMother) {
-        EDepSimLog("Making \"" << theVolume->GetName() << "\" the top\n");
-        theEnvelope->SetTopVolume(theVolume);
-    }
-
-    // Push the name of this volume onto the stack before creating the
-    // children.
-    fNameStack.push_back(theShortName);
-
-    // Add the children to the daughter.
-    double missingMass = 0.0;
-    for (int child = 0;
-         child < theLog->GetNoDaughters();
-         ++child) {
-        G4VPhysicalVolume* theChild = theLog->GetDaughter(child);
-        if (CreateEnvelope(theChild, theEnvelope, theVolume)) {
-            G4LogicalVolume *skippedVolume = theChild->GetLogicalVolume();
-            missingMass += skippedVolume->GetMass(true);
+    
+    if (!theVolume) {
+        // Create the root volume (the solid in G4 lingo).
+        theVolume = CreateVolume(theEnvelope, theSolid,
+                                 theShortName, theMedium);
+        if (!theVolume) theVolume = theMother;
+        theVolume->SetTitle(theVolumeName.c_str());
+        int color = GetColor(theG4PhysVol);
+        theVolume->SetLineColor(color);
+    
+        // There is no mother so set this as the top volume.
+        if (!theMother) {
+            EDepSimLog("Making \"" << theVolume->GetName() << "\" the top\n");
+            theEnvelope->SetTopVolume(theVolume);
         }
-    }
+        
+        // Push the name of this volume onto the stack before creating the
+        // children.
+        fNameStack.push_back(theShortName);
 
-    // Remove this volume from the name stack.
-    fNameStack.pop_back();
+        // Add the children to the daughter.
+        double missingMass = 0.0;
+        for (int child = 0;
+             child < theLog->GetNoDaughters();
+             ++child) {
+            G4VPhysicalVolume* theChild = theLog->GetDaughter(child);
+            if (theLog->GetNoDaughters() > 20000) {
+                G4LogicalVolume *skippedVolume = theChild->GetLogicalVolume();
+                missingMass += skippedVolume->GetMass(true);
+            }
+            else if (CreateEnvelope(theChild, theEnvelope, theVolume)) {
+                G4LogicalVolume *skippedVolume = theChild->GetLogicalVolume();
+                missingMass += skippedVolume->GetMass(true);
+            }
+        }
+        // Remove this volume from the name stack.
+        fNameStack.pop_back();
 
-    // A some daughter volumes were ignored and so the density of this volume
-    // needs to be adjusted.
-    if (missingMass > 0.0) {
-        // The correction of the material needs to be implemented.
-        double totalMass = theLog->GetMass(true);
-        double totalVolume = theLog->GetSolid()->GetCubicVolume();
-        double totalDensity = totalMass/totalVolume;
-        EDepSimNamedDebug("ROOTGeom", "Skipping sub-volumes. Correct "
-                        << theMedium->GetName() << " density "
-                        << theMedium->GetMaterial()->GetDensity()/(CLHEP::g/CLHEP::cm3)
-                        << " g/cm3 to " << totalDensity/(CLHEP::g/CLHEP::cm3) << " g/cm3");
-        TGeoMedium *avgMedium = AverageMaterial(theG4PhysVol);
-        if (avgMedium) theVolume->SetMedium(avgMedium);
+        // A some daughter volumes were ignored and so the density of this
+        // volume needs to be adjusted.
+        if (missingMass > 0.0) {
+            // The correction of the material needs to be implemented.
+            double totalMass = theLog->GetMass(true);
+            double totalVolume = theLog->GetSolid()->GetCubicVolume();
+            double totalDensity = totalMass/totalVolume;
+            EDepSimNamedDebug(
+                "ROOTGeom", "Skipping sub-volumes. Correct "
+                << theMedium->GetName() << " density "
+                << theMedium->GetMaterial()->GetDensity()/(CLHEP::g/CLHEP::cm3)
+                << " g/cm3 to "
+                << totalDensity/(CLHEP::g/CLHEP::cm3) << " g/cm3");
+            TGeoMedium *avgMedium = AverageMaterial(theG4PhysVol);
+            if (avgMedium) theVolume->SetMedium(avgMedium);
+        }
+
+        // Put this volume into the known volumes.
+        fKnownVolumes[theLog] = theVolume;
     }
 
     // Apply the rotation for theMother volume.  This is only done if the
@@ -749,28 +787,6 @@ void EDepSim::RootGeometryManager::SetDrawAtt(G4Material* material,
     }
 }
                                           
-int EDepSim::RootGeometryManager::GetFill(const G4VPhysicalVolume* vol) {
-#ifdef USE_FILL
-    const G4LogicalVolume* log = vol->GetLogicalVolume();
-    G4String materialName = log->GetMaterial()->GetName();
-    std::string theFullName = vol->GetName();
-
-    AttributeMap::const_iterator colorPair = fColorMap.find(materialName);
-
-    if (colorPair == fColorMap.end()) {
-        EDepSimError("Missing color for \"" << materialName << "\""
-                   " in volume " << theFullName);
-        fColorMap[materialName].color = kOrange+1;
-        fColorMap[materialName].fill = 0;
-        return 0;
-    }
-
-    return colorPair->second.fill;
-#else
-    return -1;
-#endif
-}
-
 G4Color EDepSim::RootGeometryManager::GetG4Color(G4Material* material) {
     G4String materialName = material->GetName();
     AttributeMap::const_iterator colorPair = fColorMap.find(materialName);
@@ -799,20 +815,33 @@ G4Color EDepSim::RootGeometryManager::GetG4Color(G4Material* material) {
 
 int EDepSim::RootGeometryManager::GetColor(const G4VPhysicalVolume* vol) {
     const G4LogicalVolume* log = vol->GetLogicalVolume();
-    G4String materialName = log->GetMaterial()->GetName();
     std::string theFullName = vol->GetName();
 
-    AttributeMap::const_iterator colorPair = fColorMap.find(materialName);
-    
-    if (colorPair == fColorMap.end()) {
-        EDepSimError("Missing color for \"" << materialName << "\""
-                   " in volume " << theFullName);
-        fColorMap[materialName].color = kOrange+1;
-        fColorMap[materialName].fill = 0;
+    const G4VisAttributes* visAttributes = log->GetVisAttributes();
+    if (!visAttributes) {
         return kOrange+1;
     }
     
-    return colorPair->second.color;
+#include "rootColorToG4ColorMap.hxx"
+
+    int index = -1;
+    double minDist = 10000;
+    G4Color g4Color = visAttributes->GetColor();
+    for(std::map<int,G4Color>::iterator c = sRootColorToG4ColorMap.begin();
+        c != sRootColorToG4ColorMap.end(); ++c) {
+        G4Color rootColor = c->second;
+        double dR = (rootColor.GetRed() - g4Color.GetRed());
+        double dG = (rootColor.GetGreen() - g4Color.GetGreen());
+        double dB = (rootColor.GetBlue() - g4Color.GetBlue());
+        double dist = std::sqrt(dR*dR + dG*dG + dB*dB);
+        if (dist > minDist) continue;
+        index = c->first;
+        minDist = dist;
+    }
+
+    if (index < 0) return kOrange + 1;
+
+    return index;
 }
 
 std::string EDepSim::RootGeometryManager::MaterialName(

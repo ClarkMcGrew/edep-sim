@@ -75,9 +75,6 @@ protected:
     /// should be invisible.
     int GetColor(const G4VPhysicalVolume* vol);
 
-    /// Find the fill style for a physical volume.
-    int GetFill(const G4VPhysicalVolume* vol);
-
 private:
     /// The pointer to the instantiation of this object.
     static EDepSim::RootGeometryManager* fThis;
@@ -104,6 +101,21 @@ private:
     /// volume names of all of the parents to the current volue.
     std::vector<G4String> fNameStack;
 
+    /// A map between the G4 logical volumes and the root volumes.  This keeps
+    /// track of which volumes have already been created.  It needs to be
+    /// cleared before starting to build a new root geometry.
+    std::map<G4LogicalVolume*,TGeoVolume*> fKnownVolumes;
+
+    /// A flag whether to brute force the geometry or not.  If this is true,
+    /// then a new volume is created for every object in the geometry.  This
+    /// means that replicated volumes, and duplicated volume trees occur
+    /// multiple times.  This is good for small detectors since it means that
+    /// each volume in the detector will have a unique TGeoNode associated
+    /// with it.  It is bad for large detectors since the ROOT geometry will
+    /// become impractially large.  The decision is made based on traversing
+    /// the geant geometry and counting the number of unique volumes.
+    bool fCreateAllVolumes;
+    
     /// Create a new ROOT shape object based on the G4 solid.  This might be
     /// called recursively if a G4 boolean solid is found.
     TGeoShape* CreateShape(const G4VSolid* theSolid, TGeoMatrix **mat = NULL);
