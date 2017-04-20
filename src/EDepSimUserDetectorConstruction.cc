@@ -23,7 +23,6 @@
 #include <G4LogicalVolume.hh>
 #include <G4PVPlacement.hh>
 #include <G4RunManager.hh>
-#include <G4GeometryManager.hh>
 #include <G4VPersistencyManager.hh>
 #include <G4GDMLParser.hh>
 
@@ -39,6 +38,8 @@
 
 #include <G4RegionStore.hh>
 
+#include <queue>
+
 EDepSim::UserDetectorConstruction::UserDetectorConstruction() {
     fDetectorMessenger = new EDepSim::DetectorMessenger(this);
     fWorldBuilder = NULL;
@@ -48,6 +49,7 @@ EDepSim::UserDetectorConstruction::UserDetectorConstruction() {
     fDefaultMaterial = NULL;
     fValidateGeometry = false;
     fGDMLParser = new G4GDMLParser;
+    fPhysicalWorld = NULL;
     new G4UnitDefinition("volt/cm","V/cm","Electric field",volt/cm);
 }
 
@@ -58,25 +60,90 @@ EDepSim::UserDetectorConstruction::~UserDetectorConstruction() {
 }
  
 G4VPhysicalVolume* EDepSim::UserDetectorConstruction::Construct() {
-    G4VPhysicalVolume* physWorld =  fGDMLParser->GetWorldVolume();
+    fPhysicalWorld =  fGDMLParser->GetWorldVolume();
     
-    if (!physWorld) {
+    if (!fPhysicalWorld) {
         EDepSimLog("Using a Custom Geometry");
-        physWorld = ConstructDetector();
-        EDepSim::RootGeometryManager::Get()->Update(physWorld,fValidateGeometry);
+        fPhysicalWorld = ConstructDetector();
     }
     else {
         EDepSimLog("Using a GDML Geometry");
+        
+        // Use auxilliary information to set the visual attributes for logical
+        // volumes.
+        for (G4GDMLAuxMapType::const_iterator
+                 aux = fGDMLParser->GetAuxMap()->begin();
+             aux != fGDMLParser->GetAuxMap()->end();
+             ++aux) {
+            for (G4GDMLAuxListType::const_iterator auxItem
+                     = aux->second.begin();
+                 auxItem != aux->second.end();
+                 ++auxItem) {
+                if (auxItem->type != "Color") continue;
+                EDepSimLog("Set volume " << aux->first->GetName()
+                           << " color to " << auxItem->value);
+                G4Color color;
+                if (G4Color::GetColour(auxItem->value,color)) {
+                    aux->first->SetVisAttributes(new G4VisAttributes(color));
+                }
+            }
+        }
     }
 
-    G4RunManager::GetRunManager()->DefineWorldVolume(physWorld);
+    if (!fPhysicalWorld) {
+        EDepSimError("Physical world not built");
+        EDepSimThrow("Physical world not built");
+    }
+        
+    EDepSim::RootGeometryManager::Get()->Update(fPhysicalWorld,
+                                                fValidateGeometry);
 
+    G4RunManager::GetRunManager()->DefineWorldVolume(fPhysicalWorld);
 
     G4VPersistencyManager *pMan
         = G4VPersistencyManager::GetPersistencyManager();
-    if (pMan) pMan->Store(physWorld);
+    if (pMan) pMan->Store(fPhysicalWorld);
 
-    return physWorld;
+    return fPhysicalWorld;
+}
+
+namespace {
+    double ParseUnit(std::string value, std::string unit) {
+        double val = 0.0;
+        std::istringstream theStream(value);
+        theStream >> val >> unit;
+        val *= G4UnitDefinition::GetValueOf(unit);
+        return val;
+    }
+
+    // Parse a string containing the electric field vector.
+    G4ThreeVector ParseEField(std::string value) {
+        G4ThreeVector field(0,0,0);
+        value = value.substr(value.find("(")+1);
+        std::string elem = value.substr(0,value.find(","));
+        field.setX(ParseUnit(elem,"V/cm"));
+        value = value.substr(value.find(",")+1);
+        elem = value.substr(0,value.find(","));
+        field.setY(ParseUnit(elem,"V/cm"));
+        value = value.substr(value.find(",")+1);
+        elem = value.substr(0,value.find(")"));
+        field.setZ(ParseUnit(elem,"V/cm"));
+        return field;
+    }
+
+    G4ThreeVector ParseBField(std::string value) {
+        G4ThreeVector field(0,0,0);
+        value = value.substr(value.find("(")+1);
+        std::string elem = value.substr(0,value.find(","));
+        field.setX(ParseUnit(elem,"tesla"));
+        value = value.substr(value.find(",")+1);
+        elem = value.substr(0,value.find(","));
+        field.setY(ParseUnit(elem,"tesla"));
+        value = value.substr(value.find(",")+1);
+        elem = value.substr(0,value.find(")"));
+        field.setZ(ParseUnit(elem,"tesla"));
+        return field;
+    }
 }
 
 void EDepSim::UserDetectorConstruction::ConstructSDandField() {
@@ -85,7 +152,8 @@ void EDepSim::UserDetectorConstruction::ConstructSDandField() {
     // There isn't an auxillary map associated with the parser.
     if (!fGDMLParser->GetAuxMap()) return;
     
-    // Construct the sensitive detectors for the logical volumes.
+    // Construct the sensitive detectors for the logical volumes.  This can be
+    // done in any order so leave it outside of the traversal below.
     for (G4GDMLAuxMapType::const_iterator
              aux = fGDMLParser->GetAuxMap()->begin();
          aux != fGDMLParser->GetAuxMap()->end();
@@ -94,57 +162,45 @@ void EDepSim::UserDetectorConstruction::ConstructSDandField() {
              auxItem != aux->second.end();
              ++auxItem) {
             if (auxItem->type != "SensDet") continue;
+            EDepSimLog("Collect energy deposition for " << aux->first->GetName()
+                       << " in " << auxItem->value);
             EDepSim::SDFactory factory("segment");
             aux->first->SetSensitiveDetector(factory.MakeSD(auxItem->value));
         }
     }
 
-    // Set the fields for the logical volumes.
-    for (G4GDMLAuxMapType::const_iterator
-             aux = fGDMLParser->GetAuxMap()->begin();
-         aux != fGDMLParser->GetAuxMap()->end();
-         ++aux) {
-        G4LogicalVolume* logVolume = aux->first;
-        // Find the electric field for the volume.
+    // Add the EM field using a breadth first traversal of the geometry.  This
+    // means that the field from parent volumes are applied to children, but
+    // that the children can override the local field.
+    std::queue<G4LogicalVolume*> remainingVolumes;
+    remainingVolumes.push(fPhysicalWorld->GetLogicalVolume());
+    while (!remainingVolumes.empty()) {
+        // Get the next logical volume and put it's daughters onto queue to be
+        // handled later.
+        G4LogicalVolume* logVolume = remainingVolumes.front();
+        remainingVolumes.pop();
+        for (int i = 0; i<logVolume->GetNoDaughters(); ++i) {
+            G4VPhysicalVolume* daughter = logVolume->GetDaughter(i);
+            remainingVolumes.push(daughter->GetLogicalVolume());
+        }
+
+        // Check to see if there are any auxillary values for this volume.  If
+        // not, then we are done.
+        G4GDMLAuxMapType::const_iterator aux
+            = fGDMLParser->GetAuxMap()->find(logVolume);
+        if (aux == fGDMLParser->GetAuxMap()->end()) continue;
+
+
+        // Check the auxilliary items and add the field if necessary.
+        const G4GDMLAuxListType& auxItems = aux->second;
+
         G4ThreeVector eField(0,0,0);
-        for (G4GDMLAuxListType::const_iterator auxItem = aux->second.begin();
-             auxItem != aux->second.end();
+        for (G4GDMLAuxListType::const_iterator auxItem = auxItems.begin();
+             auxItem != auxItems.end();
              ++auxItem) {
             if (auxItem->type != "EField") continue;
-            std::string value = auxItem->value;
 
-            value = value.substr(value.find("(")+1);
-            std::string elem = value.substr(0,value.find(","));
-            {
-                double val = 0.0;
-                std::string unit = "V/cm";
-                std::istringstream theStream(elem);
-                theStream >> val >> unit;
-                val *= G4UnitDefinition::GetValueOf(unit);
-                eField.setX(val);
-            }
-
-            value = value.substr(value.find(",")+1);
-            elem = value.substr(0,value.find(","));
-            {
-                double val = 0.0;
-                std::string unit = "V/cm";
-                std::istringstream theStream(elem);
-                theStream >> val >> unit;
-                val *= G4UnitDefinition::GetValueOf(unit);
-                eField.setY(val);
-            }
-
-            value = value.substr(value.find(",")+1);
-            elem = value.substr(0,value.find(")"));
-            {
-                double val = 0.0;
-                std::string unit = "V/cm";
-                std::istringstream theStream(elem);
-                theStream >> val >> unit;
-                val *= G4UnitDefinition::GetValueOf(unit);
-                eField.setZ(val);
-            }
+            eField = ParseEField(auxItem->value);
 
             EDepSimLog("Set the electric field for "
                        << logVolume->GetName()
@@ -156,45 +212,13 @@ void EDepSim::UserDetectorConstruction::ConstructSDandField() {
 
         // Find the magnetic field for the volume.
         G4ThreeVector bField(0,0,0);
-        for (G4GDMLAuxListType::const_iterator auxItem = aux->second.begin();
-             auxItem != aux->second.end();
+        for (G4GDMLAuxListType::const_iterator auxItem = auxItems.begin();
+             auxItem != auxItems.end();
              ++auxItem) {
             if (auxItem->type != "BField") continue;
-            std::string value = auxItem->value;
 
-            value = value.substr(value.find("(")+1);
-            std::string elem = value.substr(0,value.find(","));
-            {
-                double val = 0.0;
-                std::string unit = "tesla";
-                std::istringstream theStream(elem);
-                theStream >> val >> unit;
-                val *= G4UnitDefinition::GetValueOf(unit);
-                bField.setX(val);
-            }
-
-            value = value.substr(value.find(",")+1);
-            elem = value.substr(0,value.find(","));
-            {
-                double val = 0.0;
-                std::string unit = "tesla";
-                std::istringstream theStream(elem);
-                theStream >> val >> unit;
-                val *= G4UnitDefinition::GetValueOf(unit);
-                bField.setY(val);
-            }
-
-            value = value.substr(value.find(",")+1);
-            elem = value.substr(0,value.find(")"));
-            {
-                double val = 0.0;
-                std::string unit = "tesla";
-                std::istringstream theStream(elem);
-                theStream >> val >> unit;
-                val *= G4UnitDefinition::GetValueOf(unit);
-                bField.setZ(val);
-            }
-
+            bField = ParseBField(auxItem->value);
+            
             EDepSimLog("Set the magnetic field for "
                        << logVolume->GetName()
                        << " to "
@@ -205,8 +229,10 @@ void EDepSim::UserDetectorConstruction::ConstructSDandField() {
 
         // Set the electromagnetic field.
         if (eField.mag()<0.1*volt/cm && bField.mag()<25e-3*tesla) continue;
-        G4FieldManager* manager = logVolume->GetFieldManager();
-        if (!manager) manager = new G4FieldManager();
+        // The electric field can't be exactly zero, or the equation of
+        // motion fails.
+        if (eField.mag()<0.01*volt/cm) eField.setY(0.01*volt/cm);
+        G4FieldManager* manager = new G4FieldManager();
         G4ElectroMagneticField* field
                          = new EDepSim::UniformField(bField, eField);
         EDepSim::EMFieldSetup* fieldSetup
@@ -425,6 +451,8 @@ void EDepSim::UserDetectorConstruction::DefineMaterials() {
 G4Element* EDepSim::UserDetectorConstruction::DefineElement(G4String name,
                                                         G4String symbol,
                                                         G4double z) {
+    // Keep track of existing isotopes.  This prevents them from being created
+    // twice when the geometry is regenerated.
     static G4StableIsotopes theDefaultIsotopes;
 
     G4int Z = G4int(z);

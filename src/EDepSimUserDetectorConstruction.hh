@@ -73,6 +73,9 @@ protected:
     /// A GDML Parser if one has been defined.
     G4GDMLParser* fGDMLParser;
 
+    /// The constructed world volume.
+    G4VPhysicalVolume* fPhysicalWorld;
+    
 private:
 
     /// The default material.
