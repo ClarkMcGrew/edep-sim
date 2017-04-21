@@ -16,6 +16,7 @@
 
 void usage () {
     std::cout << "Usage: edep-sim [options] [macros]" << std::endl;
+    std::cout << "    -C      -- Toggle validating the geometry" << std::endl;
     std::cout << "    -d      -- Increase the debug level" << std::endl;
     std::cout << "    -D <name>=[error,severe,warn,debug,trace]"
               << std::endl
@@ -52,6 +53,7 @@ int main(int argc,char** argv) {
     int c = 0;
     bool useUI = false;
     bool doUpdate=false;
+    bool validateGeometry=true;
     int debugLevel = 0;
     std::map<std::string, EDepSim::LogManager::ErrorPriority> namedDebugLevel;
 
@@ -64,8 +66,16 @@ int main(int argc,char** argv) {
     // instead of "-e 10".
     std::string beamOnCount = "";  
     
-    while (!errflg && ((c=getopt(argc,argv,"dD:e:g:o:p:quUvV:h")) != -1)) {
+    if (argc<2) usage();
+    
+    while (!errflg && ((c=getopt(argc,argv,"CdD:e:g:o:p:quUvV:h")) != -1)) {
         switch (c) {
+        case 'C': {
+            // Toggle the validateGeometry flag.  The default value is set
+            // above.
+            validateGeometry = !validateGeometry;
+            break;
+        }
         case 'd':
         {
             // increase the debugging level.
@@ -108,6 +118,8 @@ int main(int argc,char** argv) {
             break;
         }
         case 'e': {
+            // Add a /run/beamOn command after the last macro has been
+            // processed.
             beamOnCount = optarg;
             break;
         }
@@ -124,7 +136,7 @@ int main(int argc,char** argv) {
             break;
         }
         case 'u': {
-            // Use a tcsh-style command line interface
+            // Force a '/edep/update' before running the first macro.
             doUpdate = true;
             break;
         }
@@ -250,7 +262,9 @@ int main(int argc,char** argv) {
         persistencyManager = new EDepSim::PersistencyManager();
     }
 
-    // Get the pointer to the UI manager
+    // Get the pointer to the UI manager.  This is used to control how
+    // edep-sim will run.  All arguments are passed in using GEANT4 macro
+    // commands.
     G4UImanager* UI = G4UImanager::GetUIpointer();
 
     // Open the file if one was declared on the command line.
@@ -270,6 +284,11 @@ int main(int argc,char** argv) {
     std::signal(SIGBUS,  SIG_DFL);
     std::signal(SIGSEGV, SIG_DFL);
 
+    // Signal that the geometry should be validated for overlaps before
+    // generating the first event.  This causes the executable to throw an
+    // exception if the geometry has overlaps.
+    if (validateGeometry) UI->ApplyCommand("/edep/validateGeometry");
+    
     // Set the defaults for the simulation and get ready to run.  This needs
     // to be done before the first event is generated, but can also be done in
     // the users macro file.  It's executed here if the "-u" option was
