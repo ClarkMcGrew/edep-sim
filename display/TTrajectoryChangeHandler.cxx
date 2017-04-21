@@ -17,7 +17,7 @@
 EDep::TTrajectoryChangeHandler::TTrajectoryChangeHandler() {
     fTrajectoryList = new TEveElementList("g4Trajectories",
                                           "Geant4 Trajectories");
-    fTrajectoryList->SetMainColor(kYellow);
+    fTrajectoryList->SetMainColor(kRed);
     fTrajectoryList->SetMainAlpha(1.0);
     gEve->AddElement(fTrajectoryList);
 }
@@ -51,11 +51,11 @@ void EDep::TTrajectoryChangeHandler::Apply() {
         track->SetName("trajectory");
         track->SetTitle(label.str().c_str());
         if (charged) {
-            track->SetLineColor(kYellow);
+            track->SetLineColor(kRed);
             track->SetLineStyle(3);
         }
         else {
-            track->SetLineColor(kYellow+4);
+            track->SetLineColor(kRed+4);
             track->SetLineStyle(4);
         }
 

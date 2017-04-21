@@ -13,14 +13,15 @@
 #include <memory>
 
 void usage() {
-    std::cout << "Usage: event-display.exe [input-file] " << std::endl;
-    std::cout << "    The event display: " << std::endl;
-    std::cout << "  -g    Toggle showing the geometry (on by default)."
+    std::cout << "Usage: edep-disp [options] [input-file] " << std::endl;
+    std::cout << "  The edep-sim event display: " << std::endl;
+    std::cout << "   -g    Toggle showing the geometry (on by default)."
               << std::endl;
-    std::cout << "  -s<name>  Show volumes containing <name> (limit this to "
-              << "            a few, or it's horribly slow."
+    std::cout << "   -s<name>  Show volumes containing <name> (limit this to "
+              << std::endl
+              << "             a few, or it's horribly slow."
               << std::endl;
-    std::cout << "  -h    This message." << std::endl;
+    std::cout << "   -h    This message." << std::endl;
 }
 
 int main(int argc, char **argv) {

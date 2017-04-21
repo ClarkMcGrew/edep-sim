@@ -113,6 +113,14 @@ macro files in the tools directory, written to help test and debug the MC,
 in the "tools" directory.  They can be helpful to process the file (and do
 simple event displays).
 
+### Simple Debugging Display
+
+There is a simple Eve based event display that will read the ROOT output
+file and.  It is not a complete event display, but can be useful to help
+debug geometries, and input kinematics files.  It can also be helpful to
+understand what events "look like".  It can be run using the `edep-disp`
+command.  A help message is printed if it is run without any arguments.  
+
 ## Specifying The Detector Geometry.
 
 The detector geometry can be specified in more than one way.  The first is
