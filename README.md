@@ -9,9 +9,31 @@ machine, so given runs are machine dependent and may not be reproducible.
 This documentation assumes that you have a passing familiarity with how to
 write GEANT4 macro control files.
 
+## Working with the source distribution
+
+Most people will probably use `edep-sim` after it's already been installed
+(check your local guide).  However, if you are installing it from source,
+you need to run the local setup and then build it.  Assuming you've already
+cloned it from someplace and have the source directories, then `source` the
+setup script in the top level directory to define some simple aliases and
+define necessary environment variables.  The only explicitly external
+requirements are that GEANT and ROOT are available.  The setup script will
+make sure that root and geant can be located (using `thisroot.sh` and
+`geant4.sh`).
+
+```bash
+. setup.sh
+```
+
+The simulation is built using cmake.  CMake can be run by hand, but there
+is a script in the build directory that can be run using the `edep-build`
+alias.  The build has been tested with GEANT4 10.2 and ROOT 6.08, but
+will probably build with any recent version of GEANT4 and ROOT after about
+5.34.
+
 ## Running the Detector Simulation
 
-The detector simulation is run using the `edep-sim.exe` program which
+The detector simulation is run using the `edep-sim` program which
 is a standard GEANT main program with minimal customization.  This
 can be run in any directory.  You will need to provide some sort of event
 kinematics generator (NEUT, NUANCE, NEUGEN, GPS, &c).  The preferred input
@@ -38,6 +60,9 @@ Some important options:
 		to the `/edep/db/open` macro command.
 * -u      : Add a `/edep/update` command before the first macro is
 		processed.
+* -p <physics-list> : Set the physics list (see G4 documentation for the
+		available lists.
+* -C      : Toggle checking the validity of the geometry.
 
 If `edep-sim` is run with the `-h` option, it will print a help message.
 There are example macro files in the "inputs" subdirectory.
@@ -143,7 +168,17 @@ and `V/m`.  You should specify a unit.  If no units are provided, it is
 assumed that the units are `volt/cm`.
 
 The possible units for the magnetic field are `tesla`, `gauss`, `T`, and
-`G`.  If no unts are provided, it is assumed that the units are `tesla`.  
+`G`.  If no unts are provided, it is assumed that the units are `tesla`.
+
+## Running as a library
+
+The simulation is developed as a library separated from a main program
+wrapping the library.  The entire main program is only a few hundred lines
+long, of which about twenty lines are needed to actually setup and run the
+simulation.  It is relatively straight forward to take this and include
+edep-sim into a separate package.  The example main program
+(i.e. app/edepSim.cc) is commented and the library is started beginning at
+about line 230.
 
 ## Using GPS (The General Particle Source)
 
