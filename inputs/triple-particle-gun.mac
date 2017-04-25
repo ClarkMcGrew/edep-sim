@@ -16,12 +16,12 @@
 # This source will be used to specify the position of the vertex.  The
 # any of the GPS direction and energy commands can be used.
 /gps/particle mu-
-/gps/energy 100 MeV
+/gps/energy 7000 MeV
 
 # This generates the position of the first particle gun.  It will be
 # used for the other particle guns.  The /gps/position command must
 # come first.
-/gps/position 0.0 0.0 -50.0 cm
+/gps/position 0.0 0.0 -3.0 m
 /gps/pos/type Volume
 /gps/pos/shape Para
 /gps/pos/halfx 1 cm
@@ -33,36 +33,37 @@
 # a 10 deg cone around the X axis.
 /gps/ang/type iso
 /gps/ang/maxtheta 10 deg
-/gps/ang/rot1 0 0 1
-/gps/ang/rot2 0 1 0
+/gps/ang/rot1 1 0 0 
+/gps/ang/rot2 0 -1 0
 
 #########################################
 # Create the second particle source.
 #########################################
 /gps/source/add 2
 /gps/particle proton
-/gps/energy 200 MeV
+/gps/energy 3000 MeV
 
 # This generates the direction of the second particle gun.  This aims
 # the particle downstream with the directions uniformly distributed in
 # a 25 deg cone.
 /gps/ang/type iso
 /gps/ang/maxtheta 25 deg
-/gps/ang/rot1 0 0 1
-/gps/ang/rot2 0 1 0
+/gps/ang/rot1 1 0 0 
+/gps/ang/rot2 0 -1 0
+
 
 #########################################
 # Create the third particle source.
 #########################################
 /gps/source/add 3
 /gps/particle e+
-/gps/energy 400 MeV
+/gps/energy 2000 MeV
 
 # This generates the direction of the third particle gun.
 /gps/ang/type iso
 /gps/ang/maxtheta 25 deg
-/gps/ang/rot1 0 0 1 
-/gps/ang/rot2 0 1 0
+/gps/ang/rot1 1 0 0 
+/gps/ang/rot2 0 -1 0
 
 # Create the GPS particle generator so it exists.  This isn't necessary for a
 # single particle generator since DETSIM will create it by default,
