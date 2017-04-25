@@ -7,7 +7,10 @@
 #include <TLorentzVector.h>
 #include <TObject.h>
 
+class TG4PrimaryVertex;
 class TG4PrimaryParticle;
+
+typedef std::vector<TG4PrimaryVertex> TG4PrimaryVertexContainer;
 
 /// A class to save a G4 primary vertex into a root output file without linking
 /// to geant.
