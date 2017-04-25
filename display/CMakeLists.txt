@@ -17,7 +17,7 @@ ROOT_GENERATE_DICTIONARY(G__edepdisp
 # Build the library.
 add_library(edepdisp SHARED ${source} G__edepdisp.cxx)
 target_include_directories(edepdisp PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
-target_link_libraries(edepdisp PUBLIC -lEve ${ROOT_LIBRARIES})
+target_link_libraries(edepdisp PUBLIC ${ROOT_EVE_LIBRARY} ${ROOT_LIBRARIES})
 install(TARGETS edepdisp LIBRARY DESTINATION lib)
 
 message(${ROOT_LIBRARIES})
