@@ -53,7 +53,7 @@ int main(int argc,char** argv) {
     int c = 0;
     bool useUI = false;
     bool doUpdate=false;
-    bool validateGeometry=true;
+    bool validateGeometry=false;
     int debugLevel = 0;
     std::map<std::string, EDepSim::LogManager::ErrorPriority> namedDebugLevel;
 
