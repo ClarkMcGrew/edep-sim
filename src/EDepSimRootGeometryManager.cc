@@ -186,18 +186,15 @@ void EDepSim::RootGeometryManager::Update(std::string gdmlFile,
 
 void EDepSim::RootGeometryManager::Validate() {
 
+    int count = 0;
     // Check for overlaps at volume corners.  Look for overlaps at 0.1 mm size.
     gGeoManager->CheckOverlaps(0.1*CLHEP::mm);
     {
         TIter next(gGeoManager->GetListOfOverlaps());
-        int count = 0;
         TGeoOverlap* overlap;
         while ((overlap=(TGeoOverlap*)next())) {
             ++count;
             overlap->PrintInfo();
-        }
-        if (count > 0) {
-            EDepSimThrow("Geometry has overlaps");
         }
     }
 
@@ -205,15 +202,18 @@ void EDepSim::RootGeometryManager::Validate() {
     gGeoManager->CheckOverlaps(0.1*CLHEP::mm,"s100000");
     {
         TIter next(gGeoManager->GetListOfOverlaps());
-        int count = 0;
         TGeoOverlap* overlap;
         while ((overlap=(TGeoOverlap*)next())) {
             ++count;
             overlap->PrintInfo();
         }
-        if (count > 0) {
-            EDepSimThrow("Geometry has Overlaps");
-        }
+    }
+
+    if (count > 0) {
+        EDepSimThrow(
+            "The geometry has overlaps and will produce incorrect"
+            " results.  To use the geometry, specify the '-C' option"
+            " on the command line.");
     }
 
     EDepSimLog("Geometry validated");
