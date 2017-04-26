@@ -1,6 +1,7 @@
 # Suck up all of the .cc files for the source.  This isn't good CMAKE
 # practice, but it makes maintaining this file easier.
 file(GLOB_RECURSE source *.cc)
+file(GLOB_RECURSE includes EDepSim*.hh TG4*.h)
 
 # Make sure the current directories are available for the root
 # dictionary generation.
@@ -18,12 +19,14 @@ add_library(edepsim SHARED ${source}
 target_include_directories(edepsim PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 target_link_libraries(edepsim PUBLIC ${Geant4_LIBRARIES} ${ROOT_LIBRARIES})
 
-
 # Install the G4 macro files used to control the MC.
 install(FILES edepsim-defaults-1.0.mac DESTINATION lib/edep-sim)
 
 # Install the library for edep-sime
 install(TARGETS edepsim LIBRARY DESTINATION lib)
+
+# Install the header files.
+install(FILES ${includes} DESTINATION include/edep-sim)
 
 # If this is ROOT6 or later, then install the rootmap and pcm files.
 if(${ROOT_VERSION} VERSION_GREATER 6)
