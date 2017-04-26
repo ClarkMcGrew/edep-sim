@@ -7,7 +7,7 @@ sequence of random numbers depends on the floating point accuracy of the
 machine, so given runs are machine dependent and may not be reproducible.
 
 This documentation assumes that you have a passing familiarity with how to
-write GEANT4 macro control files.
+write GEANT4 macro control files.  The `edep-sim`
 
 ## Working with the source distribution
 
@@ -62,7 +62,7 @@ Some important options:
 		processed.
 * -p <physics-list> : Set the physics list (see G4 documentation for the
 		available lists.
-* -C      : Toggle checking the validity of the geometry.
+* -C      : Toggle checking for overlaps in the geometry.
 
 If `edep-sim` is run with the `-h` option, it will print a help message.
 There are example macro files in the "inputs" subdirectory.
@@ -77,7 +77,7 @@ which will write 100 events to `my-output.root` using the geometry in
 `my-geometry.gdml` according to the commands in muon-10000.mac.
 
 The muon-10000.mac might contain:
-~~~~
+```
 ####################################################################
 #
 # Generate a 10000 MeV muon beamed in the down stream direction.
@@ -97,7 +97,7 @@ The muon-10000.mac might contain:
 /gps/ang/maxtheta 5 deg
 /gps/ang/rot1 1 0 0 
 /gps/ang/rot2 0 -1 0
-~~~~
+```
 
 ## Reading the output
 
@@ -112,6 +112,14 @@ tree access techniques (e.g. `MakeProject`).  There are some ROOT ".C"
 macro files in the tools directory, written to help test and debug the MC,
 in the "tools" directory.  They can be helpful to process the file (and do
 simple event displays).
+
+All of the values in the output file are given in CLHEP units.  Namely,
+distances are in millimeters, energies are in MeV, and times are in
+nanoseconds.  The output file uses the global coordinate system defined by
+the input geometry.  Be aware that in the saved TGeoManager object, the
+masses and densities are also in CLHEP units, so that 1 kilogram equals
+6.24x10^24^ MeV ns^2^ mm^-2^, and densities are in units of 6.24x^24^ MeV
+ns^2^ mm^-5^.
 
 ### Simple Debugging Display
 
