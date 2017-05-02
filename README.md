@@ -17,9 +17,9 @@ you need to run the local setup and then build it.  Assuming you've already
 cloned it from someplace and have the source directories, then `source` the
 setup script in the top level directory to define some simple aliases and
 define necessary environment variables.  The only explicitly external
-requirements are that GEANT and ROOT are available.  The setup script will
-make sure that root and geant can be located (using `thisroot.sh` and
-`geant4.sh`).
+requirements are that GEANT and ROOT must be available (and found by cmake).
+The setup script will make sure that root and geant can be located (using
+`thisroot.sh` and `geant4.sh`).
 
 ```bash
 . setup.sh
@@ -27,9 +27,8 @@ make sure that root and geant can be located (using `thisroot.sh` and
 
 The simulation is built using cmake.  CMake can be run by hand, but there
 is a script in the build directory that can be run using the `edep-build`
-alias.  The build has been tested with GEANT4 10.2 and ROOT 6.08, but
-will probably build with any recent version of GEANT4 and ROOT after about
-5.34.
+alias.  The build has been tested with GEANT4 10.2 and ROOT 6.08, but it
+will probably build with any recent version of GEANT4 and ROOT.
 
 ## Running the Detector Simulation
 
