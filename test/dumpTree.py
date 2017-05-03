@@ -37,7 +37,23 @@ events.GetEntry(0)
 
 print "event number", event.EventId
 print "number of trajectories", event.Trajectories.size()
-for i in  event.SegmentDetectors:
-    print "Detector name:", i.first, "Hits:", i.second.size()
-
+for traj in event.Trajectories:
+    print "  Track Id: ", traj.TrackId
+    print "  Parent Id:", traj.ParentId
+    print "  Particle: ", traj.Name
+    print "  PDG Code: ", traj.PDGCode
+    print "  Points:   ", traj.Points.size()
+    
+print "number of segment detectors", event.SegmentDetectors.size()
+for det in  event.SegmentDetectors:
+    print "Detector name:", det.first, "Hits:", det.second.size()
+    hit = det.second[0]
+    print "First Hit:" 
+    print "    Primary Id:        ", hit.PrimaryId
+    print "    First Contributor  ", hit.Contrib[0]
+    print "    Energy Deposit:    ", hit.EnergyDeposit
+    print "    Secondary Deposit: ", hit.SecondaryDeposit
+    print "    Track Length:      ", hit.TrackLength
+    print "    Start              ", \
+        hit.Start.X(), hit.Start.Y(), hit.Start.Z()
 

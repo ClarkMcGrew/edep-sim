@@ -7,7 +7,16 @@ sequence of random numbers depends on the floating point accuracy of the
 machine, so given runs are machine dependent and may not be reproducible.
 
 This documentation assumes that you have a passing familiarity with how to
-write GEANT4 macro control files.  The `edep-sim`
+write GEANT4 macro control files.
+
+Where it's available (and in particular for argon), the simulation
+implements a fairly detailed model of the energy deposited as ionization
+and scintillation.  This is implemented using the NEST model (Sorry Matt, I
+need reference here!).
+
+Input file translators are provided for several standard input file
+formats.  In particular, this support input from both NEUT and GENIE.  The
+GENIE input is read using the RooTracker format.
 
 ## Working with the source distribution
 
@@ -18,7 +27,7 @@ cloned it from someplace and have the source directories, then `source` the
 setup script in the top level directory to define some simple aliases and
 define necessary environment variables.  The only explicitly external
 requirements are that GEANT and ROOT must be available (and found by cmake).
-The setup script will make sure that root and geant can be located (using
+The setup script will make sure that root and GEANT can be located (using
 `thisroot.sh` and `geant4.sh`).
 
 ```bash
@@ -29,6 +38,15 @@ The simulation is built using cmake.  CMake can be run by hand, but there
 is a script in the build directory that can be run using the `edep-build`
 alias.  The build has been tested with GEANT4 10.2 and ROOT 6.08, but it
 will probably build with any recent version of GEANT4 and ROOT.
+
+If you have doxygen installed in a place where `cmake` can find it, then
+you can compile using
+
+```bash
+edep-build doc
+```
+
+which will create the html directory containing Doxygen class documentation.
 
 ## Running the Detector Simulation
 
@@ -120,6 +138,141 @@ masses and densities are also in CLHEP units, so that 1 kilogram equals
 6.24x10^24^ MeV ns^2^ mm^-2^, and densities are in units of 6.24x^24^ MeV
 ns^2^ mm^-5^.
 
+### Output Tree Format
+
+The `edep-sim` executable produces a root `TTree` containing a single
+branch.  You can access this from either C++, a root macro or python.  For
+C++ based access, you must include the TG4Event.h header, and then attach
+to the tree. 
+
+```C++
+#include "TG4Event.h"
+
+/// Get the event tree.
+TTree* events = (TTree*) gFile->Get("EDepSimEvents");
+
+/// Set the branch address.
+TG4Event* event=NULL;
+events->SetBranchAddress("Event",&event);
+
+/// Get event zero.
+events->GetEntry(0);
+```
+
+Or in python:
+```python
+# Get the event tree.
+events = tFile.Get("EDepSimEvents")
+
+# Set the branch address.
+event = ROOT.TG4Event()
+events.SetBranchAddress("Event",ROOT.AddressOf(event))
+
+# Get event zero.
+events.GetEntry(0)
+
+print "event number", event.EventId
+print "number of trajectories", event.Trajectories.size()
+```
+
+The detailed documentation is available via doxygen, but is summarized
+here.
+
+#### The TG4Event Class
+
+The main event class (TG4Event) is a data-only class defined in the
+`TG4Event.h` include file.  It has the following public user fields:
+
+   * EventId: The event number
+   
+   * RunId: The run number
+   
+   * Primaries: The GEANT4 primary particles (A vector of
+     TG4PrimaryVertex)
+	 
+   * Trajectories: The GEANT4 particle trajectories (A vector of
+     TG4Trajectory) 
+	 
+   * SegmentDetectors: The energy deposition information (A map keyed by
+     sensitive detector name, containing a vector of TG4HitSegments).
+   
+#### The Trajectory Class (and Friends)
+
+The trajectory information for each particle simulated in GEANT4 is
+contained in a TG4Trajectory object.  This is a data-only class defined in
+TG4Trajectory.h.  It has the public user fields:
+
+  * TrackId: The track identifier for this particular trajectory.  This is
+      a positive integer.
+
+  * ParentId: The track identifier for the parent of this trajectory.
+     This is an integer.  If the track is from a primary particle, the
+     parent identifier will be zero.
+	  
+  * Name: The type of particle creating this track.
+	
+  * PDGCode: The PDG MC code for the type of particle creating this track.
+	  
+  * InitialMomentum: The initial momentum of track (A TLorentzVector).
+	
+  * Points: A vector of TG4TrajectoryPoints along the track.
+	
+The TG4TrajectoryPoint is a data-only class with the following information.
+
+  * Position: The position of the trajectory point (A TLorentzVector)
+  
+  * Momentum: The momentum (a TVector3) as the trajectory leaves the point.
+
+  * Process: The process type which created this point.  These are defined
+    by GEANT4.
+	
+  * Subprocess: The subprocess type which create this point.  These are
+    defined by GEANT4.
+	
+#### The Energy Deposition Class (and Friends).
+
+The energy deposition in each sensitive detector is recorded using the
+TG4HitSegment class.  This class records the starting and stopping position
+of for each energy deposition step (the energy is *not* deposited at a
+point).  It also records the particle depositing the energy, as well as the
+primary particle, or ultimate parent, associated with the energy deposit.
+The maximum length of the hit segment can be controlled using the GEANT4
+macros interface to `edep-sim`, but in general should be a little smaller
+than the resolution of the detector.  Hit segments will not cross geometry
+boundaries. 
+
+  * Contrib: A vector of track identifiers which contributed to this hit
+    segment.  There is almost always only one contributor, but for certain
+    run settings there may be several particles associated with one segment
+    (this is a very unusual situation).
+	
+  * PrimaryId: The track identifier for the primary particle creating this
+    hit.
+	
+  * EnergyDeposit: The total energy deposited over the length of this
+    track.  The energy should be assumed to have been uniformly deposited
+    along the segment (*not* at the beginning or the end).  This is the
+    total dEdX of the track between the start and stop position of the segment.
+	
+  * SecondaryDeposit: The "secondary" energy deposited over the length of
+    the segment.  This is generally used to help simulate the energy
+    emitted as scintillation light vs the total dEdX of the track.  In
+    other words, when the secondary deposit simulation is turned on,  This
+    is the energy deposited as optical photons.  The remaining energy is
+    usually deposited as ionization.  For example, in liquid argon, the
+    mean number of quanta crated will be N~q~ = (EnergyDeposit/W~Ar~),
+    where W~Ar~ is the work function for argon (typically 19.5 eV). The number
+    of optical photons is N~ph~ = N~q~ * SecondaryDeposit/EnergyDeposit,
+    and the number of ionization electrons is N~e~ = N~q~ - N~ph~.  For
+    liquid argon the Doke-Birks model as implemented by NEST used.
+	
+  * TrackLength: The total track length between the start and stop points
+    (as estimated by GEANT4)
+	
+  * Start, Stop: The starting and stopping points of the segment
+    (TLorentzVector). 
+	
+
 ### Simple Debugging Display
 
 There is a simple Eve based event display that will read the ROOT output
@@ -183,7 +336,7 @@ and `V/m`.  You should specify a unit.  If no units are provided, it is
 assumed that the units are `volt/cm`.
 
 The possible units for the magnetic field are `tesla`, `gauss`, `T`, and
-`G`.  If no unts are provided, it is assumed that the units are `tesla`.
+`G`.  If no units are provided, it is assumed that the units are `tesla`.
 
 ## Running as a library
 
