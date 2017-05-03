@@ -102,9 +102,9 @@ EDep::TEventChangeManager::TEventChangeManager() {
     ClearVolumesToShow();
     AddVolumeToShow("LArTracker");
     AddVolumeToShow("LArD");
-    AddVolumeToShow("Wagasci");
+    AddVolumeToShow("Ogasci_lv");
     AddVolumeToShow("StrawDetector");
-    AddVolumeToShow("GasTracker");
+    AddVolumeToShow("GasTracker_lv");
     AddVolumeToShow("TrackerMod_lv");
 }
 

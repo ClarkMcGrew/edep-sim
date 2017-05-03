@@ -1,94 +1,248 @@
 <?xml version="1.0" encoding="ASCII"?>
 <gdml xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://service-spi.web.cern.ch/service-spi/app/releases/GDML/schema/gdml.xsd">
   <define>
-    <position name="LArPlane_el0_pos" unit="cm" x="0.0" y="0.0" z="-989.5"/>
-    <position name="LArPlane_el1_pos" unit="cm" x="0.0" y="0.0" z="-968.5"/>
-    <position name="LArPlane_el2_pos" unit="cm" x="0.0" y="0.0" z="-947.5"/>
-    <position name="LArPlane_el3_pos" unit="cm" x="0.0" y="0.0" z="-926.5"/>
-    <position name="LArPlane_el4_pos" unit="cm" x="0.0" y="0.0" z="-905.5"/>
-    <position name="LArPlane_el5_pos" unit="cm" x="0.0" y="0.0" z="-884.5"/>
-    <position name="LArPlane_el6_pos" unit="cm" x="0.0" y="0.0" z="-863.5"/>
-    <position name="LArPlane_el7_pos" unit="cm" x="0.0" y="0.0" z="-842.5"/>
-    <position name="LArPlane_el8_pos" unit="cm" x="0.0" y="0.0" z="-821.5"/>
-    <position name="LArPlane_el9_pos" unit="cm" x="0.0" y="0.0" z="-800.5"/>
-    <position name="LArMod_el0_pos" unit="cm" x="0.5" y="0.0" z="0.0"/>
-    <position name="LArD_el0_pos" unit="cm" x="1183.5" y="0.0" z="0.0"/>
-    <position name="TrackerPlane_el0_pos" unit="cm" x="982.5" y="0.0" z="0.0"/>
-    <position name="TrackerPlane_el1_pos" unit="cm" x="947.5" y="0.0" z="0.0"/>
-    <position name="TrackerPlane_el2_pos" unit="cm" x="912.5" y="0.0" z="0.0"/>
-    <position name="TrackerPlane_el3_pos" unit="cm" x="877.5" y="0.0" z="0.0"/>
-    <position name="TrackerPlane_el4_pos" unit="cm" x="842.5" y="0.0" z="0.0"/>
-    <position name="TrackerPlane_el5_pos" unit="cm" x="807.5" y="0.0" z="0.0"/>
-    <position name="TrackerPlane_el6_pos" unit="cm" x="772.5" y="0.0" z="0.0"/>
-    <position name="TrackerPlane_el7_pos" unit="cm" x="737.5" y="0.0" z="0.0"/>
-    <position name="TrackerPlane_el8_pos" unit="cm" x="702.5" y="0.0" z="0.0"/>
-    <position name="TrackerPlane_el9_pos" unit="cm" x="667.5" y="0.0" z="0.0"/>
-    <position name="TrackerPlane_el10_pos" unit="cm" x="632.5" y="0.0" z="0.0"/>
-    <position name="TrackerPlane_el11_pos" unit="cm" x="597.5" y="0.0" z="0.0"/>
-    <position name="TrackerPlane_el12_pos" unit="cm" x="562.5" y="0.0" z="0.0"/>
-    <position name="TrackerPlane_el13_pos" unit="cm" x="527.5" y="0.0" z="0.0"/>
-    <position name="TrackerPlane_el14_pos" unit="cm" x="492.5" y="0.0" z="0.0"/>
-    <position name="TrackerPlane_el15_pos" unit="cm" x="457.5" y="0.0" z="0.0"/>
-    <position name="TrackerPlane_el16_pos" unit="cm" x="422.5" y="0.0" z="0.0"/>
-    <position name="TrackerPlane_el17_pos" unit="cm" x="387.5" y="0.0" z="0.0"/>
-    <position name="TrackerPlane_el18_pos" unit="cm" x="352.5" y="0.0" z="0.0"/>
-    <position name="TrackerPlane_el19_pos" unit="cm" x="317.5" y="0.0" z="0.0"/>
-    <position name="TrackerPlane_el20_pos" unit="cm" x="282.5" y="0.0" z="0.0"/>
-    <position name="TrackerPlane_el21_pos" unit="cm" x="247.5" y="0.0" z="0.0"/>
-    <position name="TrackerPlane_el22_pos" unit="cm" x="212.5" y="0.0" z="0.0"/>
-    <position name="TrackerPlane_el23_pos" unit="cm" x="177.5" y="0.0" z="0.0"/>
-    <position name="TrackerPlane_el24_pos" unit="cm" x="142.5" y="0.0" z="0.0"/>
-    <position name="TrackerPlane_el25_pos" unit="cm" x="107.5" y="0.0" z="0.0"/>
-    <position name="TrackerPlane_el26_pos" unit="cm" x="72.5" y="0.0" z="0.0"/>
-    <position name="TrackerPlane_el27_pos" unit="cm" x="37.5" y="0.0" z="0.0"/>
-    <position name="TrackerPlane_el28_pos" unit="cm" x="2.5" y="0.0" z="0.0"/>
-    <position name="TrackerPlane_el29_pos" unit="cm" x="-32.5" y="0.0" z="0.0"/>
-    <position name="TrackerPlane_el30_pos" unit="cm" x="-67.5" y="0.0" z="0.0"/>
-    <position name="TrackerPlane_el31_pos" unit="cm" x="-102.5" y="0.0" z="0.0"/>
-    <position name="TrackerPlane_el32_pos" unit="cm" x="-137.5" y="0.0" z="0.0"/>
-    <position name="TrackerPlane_el33_pos" unit="cm" x="-172.5" y="0.0" z="0.0"/>
-    <position name="TrackerPlane_el34_pos" unit="cm" x="-207.5" y="0.0" z="0.0"/>
-    <position name="TrackerPlane_el35_pos" unit="cm" x="-242.5" y="0.0" z="0.0"/>
-    <position name="TrackerPlane_el36_pos" unit="cm" x="-277.5" y="0.0" z="0.0"/>
-    <position name="TrackerPlane_el37_pos" unit="cm" x="-312.5" y="0.0" z="0.0"/>
-    <position name="TrackerPlane_el38_pos" unit="cm" x="-347.5" y="0.0" z="0.0"/>
-    <position name="TrackerPlane_el39_pos" unit="cm" x="-382.5" y="0.0" z="0.0"/>
-    <position name="TrackerPlane_el40_pos" unit="cm" x="-417.5" y="0.0" z="0.0"/>
-    <position name="TrackerPlane_el41_pos" unit="cm" x="-452.5" y="0.0" z="0.0"/>
-    <position name="TrackerPlane_el42_pos" unit="cm" x="-487.5" y="0.0" z="0.0"/>
-    <position name="TrackerPlane_el43_pos" unit="cm" x="-522.5" y="0.0" z="0.0"/>
-    <position name="TrackerPlane_el44_pos" unit="cm" x="-557.5" y="0.0" z="0.0"/>
-    <position name="TrackerPlane_el45_pos" unit="cm" x="-592.5" y="0.0" z="0.0"/>
-    <position name="TrackerPlane_el46_pos" unit="cm" x="-627.5" y="0.0" z="0.0"/>
-    <position name="TrackerPlane_el47_pos" unit="cm" x="-662.5" y="0.0" z="0.0"/>
-    <position name="TrackerPlane_el48_pos" unit="cm" x="-697.5" y="0.0" z="0.0"/>
-    <position name="TrackerPlane_el49_pos" unit="cm" x="-732.5" y="0.0" z="0.0"/>
-    <position name="TrackerMod_el0_pos" unit="cm" x="0.0" y="0.0" z="42.5"/>
-    <position name="TrackerMod_el1_pos" unit="cm" x="0.0" y="0.0" z="7.5"/>
-    <position name="TrackerMod_el2_pos" unit="cm" x="0.0" y="0.0" z="-27.5"/>
-    <position name="Tracker_el0_pos" unit="cm" x="0.0" y="0.0" z="1935.0"/>
-    <position name="Tracker_el1_pos" unit="cm" x="0.0" y="0.0" z="1805.0"/>
-    <position name="Tracker_el2_pos" unit="cm" x="0.0" y="0.0" z="1675.0"/>
-    <position name="Tracker_el3_pos" unit="cm" x="0.0" y="0.0" z="1545.0"/>
-    <position name="Tracker_el4_pos" unit="cm" x="0.0" y="0.0" z="1415.0"/>
-    <position name="Tracker_el5_pos" unit="cm" x="0.0" y="0.0" z="1285.0"/>
-    <position name="Tracker_el6_pos" unit="cm" x="0.0" y="0.0" z="1155.0"/>
-    <position name="Tracker_el7_pos" unit="cm" x="0.0" y="0.0" z="1025.0"/>
-    <position name="Tracker_el8_pos" unit="cm" x="0.0" y="0.0" z="895.0"/>
-    <position name="Tracker_el9_pos" unit="cm" x="0.0" y="0.0" z="765.0"/>
-    <position name="Tracker_el10_pos" unit="cm" x="0.0" y="0.0" z="635.0"/>
-    <position name="Tracker_el11_pos" unit="cm" x="0.0" y="0.0" z="505.0"/>
-    <position name="Tracker_el12_pos" unit="cm" x="0.0" y="0.0" z="375.0"/>
-    <position name="Tracker_el13_pos" unit="cm" x="0.0" y="0.0" z="245.0"/>
-    <position name="Tracker_el14_pos" unit="cm" x="0.0" y="0.0" z="115.0"/>
-    <position name="Tracker_el15_pos" unit="cm" x="0.0" y="0.0" z="-15.0"/>
-    <position name="Tracker_el16_pos" unit="cm" x="0.0" y="0.0" z="-145.0"/>
-    <position name="Tracker_el17_pos" unit="cm" x="0.0" y="0.0" z="-275.0"/>
-    <position name="Tracker_el18_pos" unit="cm" x="0.0" y="0.0" z="-405.0"/>
-    <position name="Tracker_el19_pos" unit="cm" x="0.0" y="0.0" z="-535.0"/>
-    <position name="LArD_lv_pos" unit="cm" x="0.0" y="0.0" z="0.0"/>
-    <position name="Tracker_lv_pos" unit="cm" x="0.0" y="0.0" z="3200.0"/>
-    <position name="idDetector_lv_pos" unit="cm" x="0.0" y="0.0" z="0.0"/>
+    <rotation name="SteelPlane_rot" unit="degree" x="0" y="0" z="0"/>
+    <position name="SteelPlane_el0_pos" unit="cm" x="0.0" y="0.0" z="-197.5"/>
+    <position name="SteelPlane_el1_pos" unit="cm" x="0.0" y="0.0" z="-192.5"/>
+    <position name="SteelPlane_el2_pos" unit="cm" x="0.0" y="0.0" z="-187.5"/>
+    <position name="SteelPlane_el3_pos" unit="cm" x="0.0" y="0.0" z="-182.5"/>
+    <position name="SteelPlane_el4_pos" unit="cm" x="0.0" y="0.0" z="-177.5"/>
+    <position name="SteelPlane_el5_pos" unit="cm" x="0.0" y="0.0" z="-172.5"/>
+    <position name="SteelPlane_el6_pos" unit="cm" x="0.0" y="0.0" z="-167.5"/>
+    <position name="SteelPlane_el7_pos" unit="cm" x="0.0" y="0.0" z="-162.5"/>
+    <position name="SteelPlane_el8_pos" unit="cm" x="0.0" y="0.0" z="-157.5"/>
+    <position name="SteelPlane_el9_pos" unit="cm" x="0.0" y="0.0" z="-152.5"/>
+    <position name="SteelPlane_el10_pos" unit="cm" x="0.0" y="0.0" z="-147.5"/>
+    <position name="SteelPlane_el11_pos" unit="cm" x="0.0" y="0.0" z="-142.5"/>
+    <position name="SteelPlane_el12_pos" unit="cm" x="0.0" y="0.0" z="-137.5"/>
+    <position name="SteelPlane_el13_pos" unit="cm" x="0.0" y="0.0" z="-132.5"/>
+    <position name="SteelPlane_el14_pos" unit="cm" x="0.0" y="0.0" z="-127.5"/>
+    <position name="SteelPlane_el15_pos" unit="cm" x="0.0" y="0.0" z="-122.5"/>
+    <position name="SteelPlane_el16_pos" unit="cm" x="0.0" y="0.0" z="-117.5"/>
+    <position name="SteelPlane_el17_pos" unit="cm" x="0.0" y="0.0" z="-112.5"/>
+    <position name="SteelPlane_el18_pos" unit="cm" x="0.0" y="0.0" z="-107.5"/>
+    <position name="SteelPlane_el19_pos" unit="cm" x="0.0" y="0.0" z="-102.5"/>
+    <position name="SteelPlane_el20_pos" unit="cm" x="0.0" y="0.0" z="-97.5"/>
+    <position name="SteelPlane_el21_pos" unit="cm" x="0.0" y="0.0" z="-92.5"/>
+    <position name="SteelPlane_el22_pos" unit="cm" x="0.0" y="0.0" z="-87.5"/>
+    <position name="SteelPlane_el23_pos" unit="cm" x="0.0" y="0.0" z="-82.5"/>
+    <position name="SteelPlane_el24_pos" unit="cm" x="0.0" y="0.0" z="-77.5"/>
+    <position name="SteelPlane_el25_pos" unit="cm" x="0.0" y="0.0" z="-72.5"/>
+    <position name="SteelPlane_el26_pos" unit="cm" x="0.0" y="0.0" z="-67.5"/>
+    <position name="SteelPlane_el27_pos" unit="cm" x="0.0" y="0.0" z="-62.5"/>
+    <position name="SteelPlane_el28_pos" unit="cm" x="0.0" y="0.0" z="-57.5"/>
+    <position name="SteelPlane_el29_pos" unit="cm" x="0.0" y="0.0" z="-52.5"/>
+    <position name="SteelPlane_el30_pos" unit="cm" x="0.0" y="0.0" z="-47.5"/>
+    <position name="SteelPlane_el31_pos" unit="cm" x="0.0" y="0.0" z="-42.5"/>
+    <position name="SteelPlane_el32_pos" unit="cm" x="0.0" y="0.0" z="-37.5"/>
+    <position name="SteelPlane_el33_pos" unit="cm" x="0.0" y="0.0" z="-32.5"/>
+    <position name="SteelPlane_el34_pos" unit="cm" x="0.0" y="0.0" z="-27.5"/>
+    <position name="SteelPlane_el35_pos" unit="cm" x="0.0" y="0.0" z="-22.5"/>
+    <position name="SteelPlane_el36_pos" unit="cm" x="0.0" y="0.0" z="-17.5"/>
+    <position name="SteelPlane_el37_pos" unit="cm" x="0.0" y="0.0" z="-12.5"/>
+    <position name="SteelPlane_el38_pos" unit="cm" x="0.0" y="0.0" z="-7.5"/>
+    <position name="SteelPlane_el39_pos" unit="cm" x="0.0" y="0.0" z="-2.5"/>
+    <position name="SteelPlane_el40_pos" unit="cm" x="0.0" y="0.0" z="2.5"/>
+    <position name="SteelPlane_el41_pos" unit="cm" x="0.0" y="0.0" z="7.5"/>
+    <position name="SteelPlane_el42_pos" unit="cm" x="0.0" y="0.0" z="12.5"/>
+    <position name="SteelPlane_el43_pos" unit="cm" x="0.0" y="0.0" z="17.5"/>
+    <position name="SteelPlane_el44_pos" unit="cm" x="0.0" y="0.0" z="22.5"/>
+    <position name="SteelPlane_el45_pos" unit="cm" x="0.0" y="0.0" z="27.5"/>
+    <position name="SteelPlane_el46_pos" unit="cm" x="0.0" y="0.0" z="32.5"/>
+    <position name="SteelPlane_el47_pos" unit="cm" x="0.0" y="0.0" z="37.5"/>
+    <position name="SteelPlane_el48_pos" unit="cm" x="0.0" y="0.0" z="42.5"/>
+    <position name="SteelPlane_el49_pos" unit="cm" x="0.0" y="0.0" z="47.5"/>
+    <position name="SteelPlane_el50_pos" unit="cm" x="0.0" y="0.0" z="52.5"/>
+    <position name="SteelPlane_el51_pos" unit="cm" x="0.0" y="0.0" z="57.5"/>
+    <position name="SteelPlane_el52_pos" unit="cm" x="0.0" y="0.0" z="62.5"/>
+    <position name="SteelPlane_el53_pos" unit="cm" x="0.0" y="0.0" z="67.5"/>
+    <position name="SteelPlane_el54_pos" unit="cm" x="0.0" y="0.0" z="72.5"/>
+    <position name="SteelPlane_el55_pos" unit="cm" x="0.0" y="0.0" z="77.5"/>
+    <position name="SteelPlane_el56_pos" unit="cm" x="0.0" y="0.0" z="82.5"/>
+    <position name="SteelPlane_el57_pos" unit="cm" x="0.0" y="0.0" z="87.5"/>
+    <position name="SteelPlane_el58_pos" unit="cm" x="0.0" y="0.0" z="92.5"/>
+    <position name="SteelPlane_el59_pos" unit="cm" x="0.0" y="0.0" z="97.5"/>
+    <position name="SteelPlane_el60_pos" unit="cm" x="0.0" y="0.0" z="102.5"/>
+    <position name="SteelPlane_el61_pos" unit="cm" x="0.0" y="0.0" z="107.5"/>
+    <position name="SteelPlane_el62_pos" unit="cm" x="0.0" y="0.0" z="112.5"/>
+    <position name="SteelPlane_el63_pos" unit="cm" x="0.0" y="0.0" z="117.5"/>
+    <position name="SteelPlane_el64_pos" unit="cm" x="0.0" y="0.0" z="122.5"/>
+    <position name="SteelPlane_el65_pos" unit="cm" x="0.0" y="0.0" z="127.5"/>
+    <position name="SteelPlane_el66_pos" unit="cm" x="0.0" y="0.0" z="132.5"/>
+    <position name="SteelPlane_el67_pos" unit="cm" x="0.0" y="0.0" z="137.5"/>
+    <position name="SteelPlane_el68_pos" unit="cm" x="0.0" y="0.0" z="142.5"/>
+    <position name="SteelPlane_el69_pos" unit="cm" x="0.0" y="0.0" z="147.5"/>
+    <position name="SteelPlane_el70_pos" unit="cm" x="0.0" y="0.0" z="152.5"/>
+    <position name="SteelPlane_el71_pos" unit="cm" x="0.0" y="0.0" z="157.5"/>
+    <position name="SteelPlane_el72_pos" unit="cm" x="0.0" y="0.0" z="162.5"/>
+    <position name="SteelPlane_el73_pos" unit="cm" x="0.0" y="0.0" z="167.5"/>
+    <position name="SteelPlane_el74_pos" unit="cm" x="0.0" y="0.0" z="172.5"/>
+    <position name="SteelPlane_el75_pos" unit="cm" x="0.0" y="0.0" z="177.5"/>
+    <position name="SteelPlane_el76_pos" unit="cm" x="0.0" y="0.0" z="182.5"/>
+    <position name="SteelPlane_el77_pos" unit="cm" x="0.0" y="0.0" z="187.5"/>
+    <position name="SteelPlane_el78_pos" unit="cm" x="0.0" y="0.0" z="192.5"/>
+    <position name="SteelPlane_el79_pos" unit="cm" x="0.0" y="0.0" z="197.5"/>
+    <rotation name="LArTracker_rot" unit="degree" x="0" y="0" z="0"/>
+    <position name="LArTrackerSteelPlane_lv0_pos" unit="cm" x="197.5" y="0.0" z="0.0"/>
+    <position name="LArTrackerSteelPlane_lv1_pos" unit="cm" x="187.5" y="0.0" z="0.0"/>
+    <rotation name="STPlane_rot" unit="degree" x="90" y="0" z="0"/>
+    <position name="STPlane_el0_pos" unit="cm" x="196.0" y="0.0" z="0.0"/>
+    <position name="STPlane_el1_pos" unit="cm" x="188.0" y="0.0" z="0.0"/>
+    <position name="STPlane_el2_pos" unit="cm" x="180.0" y="0.0" z="0.0"/>
+    <position name="STPlane_el3_pos" unit="cm" x="172.0" y="0.0" z="0.0"/>
+    <position name="STPlane_el4_pos" unit="cm" x="164.0" y="0.0" z="0.0"/>
+    <position name="STPlane_el5_pos" unit="cm" x="156.0" y="0.0" z="0.0"/>
+    <position name="STPlane_el6_pos" unit="cm" x="148.0" y="0.0" z="0.0"/>
+    <position name="STPlane_el7_pos" unit="cm" x="140.0" y="0.0" z="0.0"/>
+    <position name="STPlane_el8_pos" unit="cm" x="132.0" y="0.0" z="0.0"/>
+    <position name="STPlane_el9_pos" unit="cm" x="124.0" y="0.0" z="0.0"/>
+    <position name="STPlane_el10_pos" unit="cm" x="116.0" y="0.0" z="0.0"/>
+    <position name="STPlane_el11_pos" unit="cm" x="108.0" y="0.0" z="0.0"/>
+    <position name="STPlane_el12_pos" unit="cm" x="100.0" y="0.0" z="0.0"/>
+    <position name="STPlane_el13_pos" unit="cm" x="92.0" y="0.0" z="0.0"/>
+    <position name="STPlane_el14_pos" unit="cm" x="84.0" y="0.0" z="0.0"/>
+    <position name="STPlane_el15_pos" unit="cm" x="76.0" y="0.0" z="0.0"/>
+    <position name="STPlane_el16_pos" unit="cm" x="68.0" y="0.0" z="0.0"/>
+    <position name="STPlane_el17_pos" unit="cm" x="60.0" y="0.0" z="0.0"/>
+    <position name="STPlane_el18_pos" unit="cm" x="52.0" y="0.0" z="0.0"/>
+    <position name="STPlane_el19_pos" unit="cm" x="44.0" y="0.0" z="0.0"/>
+    <position name="STPlane_el20_pos" unit="cm" x="36.0" y="0.0" z="0.0"/>
+    <position name="STPlane_el21_pos" unit="cm" x="28.0" y="0.0" z="0.0"/>
+    <position name="STPlane_el22_pos" unit="cm" x="20.0" y="0.0" z="0.0"/>
+    <position name="STPlane_el23_pos" unit="cm" x="12.0" y="0.0" z="0.0"/>
+    <position name="STPlane_el24_pos" unit="cm" x="4.0" y="0.0" z="0.0"/>
+    <position name="STPlane_el25_pos" unit="cm" x="-4.0" y="0.0" z="0.0"/>
+    <position name="STPlane_el26_pos" unit="cm" x="-12.0" y="0.0" z="0.0"/>
+    <position name="STPlane_el27_pos" unit="cm" x="-20.0" y="0.0" z="0.0"/>
+    <position name="STPlane_el28_pos" unit="cm" x="-28.0" y="0.0" z="0.0"/>
+    <position name="STPlane_el29_pos" unit="cm" x="-36.0" y="0.0" z="0.0"/>
+    <position name="STPlane_el30_pos" unit="cm" x="-44.0" y="0.0" z="0.0"/>
+    <position name="STPlane_el31_pos" unit="cm" x="-52.0" y="0.0" z="0.0"/>
+    <position name="STPlane_el32_pos" unit="cm" x="-60.0" y="0.0" z="0.0"/>
+    <position name="STPlane_el33_pos" unit="cm" x="-68.0" y="0.0" z="0.0"/>
+    <position name="STPlane_el34_pos" unit="cm" x="-76.0" y="0.0" z="0.0"/>
+    <position name="STPlane_el35_pos" unit="cm" x="-84.0" y="0.0" z="0.0"/>
+    <position name="STPlane_el36_pos" unit="cm" x="-92.0" y="0.0" z="0.0"/>
+    <position name="STPlane_el37_pos" unit="cm" x="-100.0" y="0.0" z="0.0"/>
+    <position name="STPlane_el38_pos" unit="cm" x="-108.0" y="0.0" z="0.0"/>
+    <position name="STPlane_el39_pos" unit="cm" x="-116.0" y="0.0" z="0.0"/>
+    <position name="STPlane_el40_pos" unit="cm" x="-124.0" y="0.0" z="0.0"/>
+    <position name="STPlane_el41_pos" unit="cm" x="-132.0" y="0.0" z="0.0"/>
+    <position name="STPlane_el42_pos" unit="cm" x="-140.0" y="0.0" z="0.0"/>
+    <position name="STPlane_el43_pos" unit="cm" x="-148.0" y="0.0" z="0.0"/>
+    <position name="STPlane_el44_pos" unit="cm" x="-156.0" y="0.0" z="0.0"/>
+    <position name="STPlane_el45_pos" unit="cm" x="-164.0" y="0.0" z="0.0"/>
+    <position name="STPlane_el46_pos" unit="cm" x="-172.0" y="0.0" z="0.0"/>
+    <position name="STPlane_el47_pos" unit="cm" x="-180.0" y="0.0" z="0.0"/>
+    <position name="STPlane_el48_pos" unit="cm" x="-188.0" y="0.0" z="0.0"/>
+    <position name="STPlane_el49_pos" unit="cm" x="-196.0" y="0.0" z="0.0"/>
+    <rotation name="StrawDetector1_rot" unit="degree" x="0" y="0" z="0"/>
+    <position name="StrawDetector1STPlane_lv0_pos" unit="cm" x="0.0" y="0.0" z="-22.0"/>
+    <position name="StrawDetector1STPlane_lv1_pos" unit="cm" x="0.0" y="0.0" z="-12.0"/>
+    <position name="StrawDetector1STPlane_lv2_pos" unit="cm" x="0.0" y="0.0" z="-2.0"/>
+    <position name="StrawDetector1STPlane_lv3_pos" unit="cm" x="0.0" y="0.0" z="8.0"/>
+    <position name="StrawDetector1STPlane_lv4_pos" unit="cm" x="0.0" y="0.0" z="18.0"/>
+    <rotation name="DoubleArrPlane_rot1" unit="degree" x="0" y="0" z="0"/>
+    <position name="DoubleArrPlane_el0_0_pos" unit="cm" x="80.0" y="80.0" z="0.0"/>
+    <position name="DoubleArrPlane_el1_0_pos" unit="cm" x="40.0" y="80.0" z="0.0"/>
+    <position name="DoubleArrPlane_el2_0_pos" unit="cm" x="0.0" y="80.0" z="0.0"/>
+    <position name="DoubleArrPlane_el3_0_pos" unit="cm" x="-40.0" y="80.0" z="0.0"/>
+    <position name="DoubleArrPlane_el4_0_pos" unit="cm" x="-80.0" y="80.0" z="0.0"/>
+    <position name="DoubleArrPlane_el0_1_pos" unit="cm" x="80.0" y="40.0" z="0.0"/>
+    <position name="DoubleArrPlane_el1_1_pos" unit="cm" x="40.0" y="40.0" z="0.0"/>
+    <position name="DoubleArrPlane_el2_1_pos" unit="cm" x="0.0" y="40.0" z="0.0"/>
+    <position name="DoubleArrPlane_el3_1_pos" unit="cm" x="-40.0" y="40.0" z="0.0"/>
+    <position name="DoubleArrPlane_el4_1_pos" unit="cm" x="-80.0" y="40.0" z="0.0"/>
+    <position name="DoubleArrPlane_el0_2_pos" unit="cm" x="80.0" y="0.0" z="0.0"/>
+    <position name="DoubleArrPlane_el1_2_pos" unit="cm" x="40.0" y="0.0" z="0.0"/>
+    <position name="DoubleArrPlane_el2_2_pos" unit="cm" x="0.0" y="0.0" z="0.0"/>
+    <position name="DoubleArrPlane_el3_2_pos" unit="cm" x="-40.0" y="0.0" z="0.0"/>
+    <position name="DoubleArrPlane_el4_2_pos" unit="cm" x="-80.0" y="0.0" z="0.0"/>
+    <position name="DoubleArrPlane_el0_3_pos" unit="cm" x="80.0" y="-40.0" z="0.0"/>
+    <position name="DoubleArrPlane_el1_3_pos" unit="cm" x="40.0" y="-40.0" z="0.0"/>
+    <position name="DoubleArrPlane_el2_3_pos" unit="cm" x="0.0" y="-40.0" z="0.0"/>
+    <position name="DoubleArrPlane_el3_3_pos" unit="cm" x="-40.0" y="-40.0" z="0.0"/>
+    <position name="DoubleArrPlane_el4_3_pos" unit="cm" x="-80.0" y="-40.0" z="0.0"/>
+    <position name="DoubleArrPlane_el0_4_pos" unit="cm" x="80.0" y="-80.0" z="0.0"/>
+    <position name="DoubleArrPlane_el1_4_pos" unit="cm" x="40.0" y="-80.0" z="0.0"/>
+    <position name="DoubleArrPlane_el2_4_pos" unit="cm" x="0.0" y="-80.0" z="0.0"/>
+    <position name="DoubleArrPlane_el3_4_pos" unit="cm" x="-40.0" y="-80.0" z="0.0"/>
+    <position name="DoubleArrPlane_el4_4_pos" unit="cm" x="-80.0" y="-80.0" z="0.0"/>
+    <rotation name="SingleArrPlane_rot" unit="degree" x="0" y="0" z="0"/>
+    <position name="SingleArrPlane_el0_pos" unit="cm" x="90.0" y="0.0" z="0.0"/>
+    <position name="SingleArrPlane_el1_pos" unit="cm" x="70.0" y="0.0" z="0.0"/>
+    <position name="SingleArrPlane_el2_pos" unit="cm" x="50.0" y="0.0" z="0.0"/>
+    <position name="SingleArrPlane_el3_pos" unit="cm" x="30.0" y="0.0" z="0.0"/>
+    <position name="SingleArrPlane_el4_pos" unit="cm" x="10.0" y="0.0" z="0.0"/>
+    <position name="SingleArrPlane_el5_pos" unit="cm" x="-10.0" y="0.0" z="0.0"/>
+    <position name="SingleArrPlane_el6_pos" unit="cm" x="-30.0" y="0.0" z="0.0"/>
+    <position name="SingleArrPlane_el7_pos" unit="cm" x="-50.0" y="0.0" z="0.0"/>
+    <position name="SingleArrPlane_el8_pos" unit="cm" x="-70.0" y="0.0" z="0.0"/>
+    <position name="SingleArrPlane_el9_pos" unit="cm" x="-90.0" y="0.0" z="0.0"/>
+    <rotation name="Ogasci_rot" unit="degree" x="0" y="0" z="0"/>
+    <position name="OgasciDoubleArrPlane_lv0_pos" unit="cm" x="0.0" y="0.0" z="-165.0"/>
+    <position name="OgasciSingleArrPlane_lv0_pos" unit="cm" x="0.0" y="0.0" z="-155.0"/>
+    <position name="OgasciDoubleArrPlane_lv1_pos" unit="cm" x="0.0" y="0.0" z="-142.5"/>
+    <position name="OgasciSingleArrPlane_lv1_pos" unit="cm" x="0.0" y="0.0" z="-132.5"/>
+    <position name="OgasciDoubleArrPlane_lv2_pos" unit="cm" x="0.0" y="0.0" z="-120.0"/>
+    <position name="OgasciSingleArrPlane_lv2_pos" unit="cm" x="0.0" y="0.0" z="-110.0"/>
+    <position name="OgasciDoubleArrPlane_lv3_pos" unit="cm" x="0.0" y="0.0" z="-97.5"/>
+    <position name="OgasciSingleArrPlane_lv3_pos" unit="cm" x="0.0" y="0.0" z="-87.5"/>
+    <position name="OgasciDoubleArrPlane_lv4_pos" unit="cm" x="0.0" y="0.0" z="-75.0"/>
+    <position name="OgasciSingleArrPlane_lv4_pos" unit="cm" x="0.0" y="0.0" z="-65.0"/>
+    <position name="OgasciDoubleArrPlane_lv5_pos" unit="cm" x="0.0" y="0.0" z="-52.5"/>
+    <position name="OgasciSingleArrPlane_lv5_pos" unit="cm" x="0.0" y="0.0" z="-42.5"/>
+    <position name="OgasciDoubleArrPlane_lv6_pos" unit="cm" x="0.0" y="0.0" z="-30.0"/>
+    <position name="OgasciSingleArrPlane_lv6_pos" unit="cm" x="0.0" y="0.0" z="-20.0"/>
+    <position name="OgasciDoubleArrPlane_lv7_pos" unit="cm" x="0.0" y="0.0" z="-7.5"/>
+    <position name="OgasciSingleArrPlane_lv7_pos" unit="cm" x="0.0" y="0.0" z="2.5"/>
+    <position name="OgasciDoubleArrPlane_lv8_pos" unit="cm" x="0.0" y="0.0" z="15.0"/>
+    <position name="OgasciSingleArrPlane_lv8_pos" unit="cm" x="0.0" y="0.0" z="25.0"/>
+    <position name="OgasciDoubleArrPlane_lv9_pos" unit="cm" x="0.0" y="0.0" z="37.5"/>
+    <position name="OgasciSingleArrPlane_lv9_pos" unit="cm" x="0.0" y="0.0" z="47.5"/>
+    <position name="OgasciDoubleArrPlane_lv10_pos" unit="cm" x="0.0" y="0.0" z="60.0"/>
+    <position name="OgasciSingleArrPlane_lv10_pos" unit="cm" x="0.0" y="0.0" z="70.0"/>
+    <position name="OgasciDoubleArrPlane_lv11_pos" unit="cm" x="0.0" y="0.0" z="82.5"/>
+    <position name="OgasciSingleArrPlane_lv11_pos" unit="cm" x="0.0" y="0.0" z="92.5"/>
+    <position name="OgasciDoubleArrPlane_lv12_pos" unit="cm" x="0.0" y="0.0" z="105.0"/>
+    <position name="OgasciSingleArrPlane_lv12_pos" unit="cm" x="0.0" y="0.0" z="115.0"/>
+    <position name="OgasciDoubleArrPlane_lv13_pos" unit="cm" x="0.0" y="0.0" z="127.5"/>
+    <position name="OgasciSingleArrPlane_lv13_pos" unit="cm" x="0.0" y="0.0" z="137.5"/>
+    <position name="OgasciDoubleArrPlane_lv14_pos" unit="cm" x="0.0" y="0.0" z="150.0"/>
+    <position name="OgasciSingleArrPlane_lv14_pos" unit="cm" x="0.0" y="0.0" z="160.0"/>
+    <rotation name="GasPlane_rot" unit="degree" x="0" y="0" z="0"/>
+    <position name="GasPlane_el0_pos" unit="cm" x="36.5" y="0.0" z="0.0"/>
+    <position name="GasPlane_el1_pos" unit="cm" x="29.5" y="0.0" z="0.0"/>
+    <position name="GasPlane_el2_pos" unit="cm" x="22.5" y="0.0" z="0.0"/>
+    <position name="GasPlane_el3_pos" unit="cm" x="15.5" y="0.0" z="0.0"/>
+    <position name="GasPlane_el4_pos" unit="cm" x="8.5" y="0.0" z="0.0"/>
+    <position name="GasPlane_el5_pos" unit="cm" x="1.5" y="0.0" z="0.0"/>
+    <position name="GasPlane_el6_pos" unit="cm" x="-5.5" y="0.0" z="0.0"/>
+    <position name="GasPlane_el7_pos" unit="cm" x="-12.5" y="0.0" z="0.0"/>
+    <position name="GasPlane_el8_pos" unit="cm" x="-19.5" y="0.0" z="0.0"/>
+    <position name="GasPlane_el9_pos" unit="cm" x="-26.5" y="0.0" z="0.0"/>
+    <rotation name="GasTracker_rot" unit="degree" x="0" y="0" z="0"/>
+    <position name="GasTrackerGasPlane_lv0_pos" unit="cm" x="0.0" y="-37.0" z="0.0"/>
+    <position name="GasTrackerGasPlane_lv1_pos" unit="cm" x="0.0" y="-26.0" z="0.0"/>
+    <rotation name="OgasciGasTracker_rot" unit="degree" x="0" y="0" z="0"/>
+    <position name="Ogasci_lv_pos" unit="cm" x="0.0" y="0.0" z="0.0"/>
+    <position name="GasTracker_lv0_pos" unit="cm" x="0.0" y="160.0" z="0.0"/>
+    <position name="GasTracker_lv90_pos" unit="cm" x="-160.0" y="3.5527136788e-14" z="0.0"/>
+    <position name="GasTracker_lv180_pos" unit="cm" x="-1.95943487864e-14" y="-160.0" z="0.0"/>
+    <position name="GasTracker_lv270_pos" unit="cm" x="160.0" y="-3.5527136788e-14" z="0.0"/>
+    <rotation name="StrawDetector2_rot" unit="degree" x="0" y="0" z="0"/>
+    <position name="StrawDetector2STPlane_lv0_pos" unit="cm" x="0.0" y="0.0" z="-22.0"/>
+    <position name="StrawDetector2STPlane_lv1_pos" unit="cm" x="0.0" y="0.0" z="-12.0"/>
+    <position name="StrawDetector2STPlane_lv2_pos" unit="cm" x="0.0" y="0.0" z="-2.0"/>
+    <position name="StrawDetector2STPlane_lv3_pos" unit="cm" x="0.0" y="0.0" z="8.0"/>
+    <position name="StrawDetector2STPlane_lv4_pos" unit="cm" x="0.0" y="0.0" z="18.0"/>
+    <rotation name="Primary_rot" unit="degree" x="0" y="0" z="0"/>
+    <position name="PrimaryLArTracker_lv_pos" unit="cm" x="0.0" y="0.0" z="-250.0"/>
+    <position name="PrimaryStrawDetector1_lv_pos" unit="cm" x="0.0" y="0.0" z="25.0"/>
+    <position name="PrimaryOgasciGasTracker_lv_pos" unit="cm" x="0.0" y="0.0" z="250.0"/>
+    <position name="PrimaryStrawDetector2_lv_pos" unit="cm" x="0.0" y="0.0" z="475.0"/>
+    <position name="Primary_lv_pos" unit="cm" x="0.0" y="0.0" z="0.0"/>
+    <rotation name="noRotate" unit="degree" x="0" y="0" z="0"/>
     <rotation name="r90aboutX" unit="degree" x="90" y="0" z="0"/>
     <rotation name="rminus90aboutX" unit="degree" x="-90" y="0" z="0"/>
     <rotation name="r90aboutY" unit="degree" x="0" y="90" z="0"/>
@@ -96,7 +250,7 @@
     <rotation name="rminus90aboutY" unit="degree" x="0" y="-90" z="0"/>
     <rotation name="r90aboutZ" unit="degree" x="0" y="0" z="90"/>
     <rotation name="r90aboutXZ" unit="degree" x="90" y="0" z="90"/>
-    <position name="DetEnc_pos" unit="cm" x="0.0" y="0.0" z="0.0"/>
+    <position name="DetEnclosure_lv_pos" unit="cm" x="0.0" y="0.0" z="0.0"/>
     <position name="center"/>
     <rotation name="identity"/>
   </define>
@@ -371,525 +525,1290 @@
       <fraction n="0.916" ref="carbon"/>
       <fraction n="0.084" ref="hydrogen"/>
     </material>
+    <material formula="" name="Oil">
+      <D value="0.8"/>
+      <fraction n="0.916" ref="carbon"/>
+      <fraction n="0.084" ref="hydrogen"/>
+    </material>
     <material formula="" name="Lead">
       <D value="11.342"/>
       <composite n="1" ref="lead"/>
     </material>
-    <material formula="" state="liquid" name="LAr">
+    <material formula="" name="LAr">
       <D value="1.4"/>
       <composite n="1" ref="argon"/>
     </material>
   </materials>
   <solids>
-    <box lunit="cm" name="idWire" x="20.0" y="2000.0" z="20.0"/>
-    <box lunit="cm" name="LArPlane" x="30.0" y="2000.0" z="2000.0"/>
-    <box lunit="cm" name="LArMod" x="32.0" y="2040.0" z="2040.0"/>
-    <box lunit="cm" name="LArD" x="2400.0" y="2400.0" z="2000.0"/>
-    <box lunit="cm" name="idStrip" x="30.0" y="2000.0" z="30.0"/>
-    <box lunit="cm" name="TrackerPlane" x="2000.0" y="2000.0" z="30.0"/>
-    <box lunit="cm" name="TrackerMod" x="2040.0" y="2040.0" z="120.0"/>
-    <box lunit="cm" name="Tracker" x="2400.0" y="2400.0" z="4000.0"/>
-    <box lunit="cm" name="idDetector" x="2400.0" y="2400.0" z="10000.0"/>
-    <box lunit="cm" name="DetEnclosure" x="2400.0" y="2400.0" z="12000.0"/>
-    <box lunit="cm" name="World" x="3200.0" y="3200.0" z="14000.0"/>
+    <box lunit="cm" name="SteelBar" x="5.0" y="400.0" z="2.0"/>
+    <box lunit="cm" name="SteelPlane" x="5.0" y="400.0" z="400.0"/>
+    <box lunit="cm" name="LArTracker" x="400.0" y="400.0" z="450.0"/>
+    <tube aunit="radian" deltaphi="6.28318530718" lunit="cm" name="STBar" rmax="3.0" rmin="0.0" startphi="0.0" z="400.0"/>
+    <tube aunit="radian" deltaphi="6.28318530718" lunit="cm" name="STBar_straw" rmax="3.0" rmin="2.5" startphi="0.0" z="400.0"/>
+    <tube aunit="radian" deltaphi="6.28318530718" lunit="cm" name="STBar_wire" rmax="0.003" rmin="0.0" startphi="0.0" z="400.0"/>
+    <box lunit="cm" name="STPlane" x="400.0" y="400.0" z="6.0"/>
+    <box lunit="cm" name="StrawDetector1" x="400.0" y="400.0" z="50.0"/>
+    <box lunit="cm" name="DoubleRectBar" x="32.0" y="32.0" z="10.0"/>
+    <box lunit="cm" name="DoubleArrPlane" x="200.0" y="200.0" z="10.0"/>
+    <box lunit="cm" name="SingleRectBar" x="16.0" y="200.0" z="5.0"/>
+    <box lunit="cm" name="SingleArrPlane" x="200.0" y="200.0" z="5.0"/>
+    <box lunit="cm" name="Ogasci" x="200.0" y="200.0" z="350.0"/>
+    <box lunit="cm" name="GasBar" x="6.0" y="6.0" z="350.0"/>
+    <box lunit="cm" name="GasPlane" x="80.0" y="6.0" z="350.0"/>
+    <box lunit="cm" name="GasTracker" x="80.0" y="80.0" z="350.0"/>
+    <box lunit="cm" name="OgasciGasTracker" x="400.0" y="400.0" z="350.0"/>
+    <box lunit="cm" name="StrawDetector2" x="400.0" y="400.0" z="50.0"/>
+    <box lunit="cm" name="Primary" x="400.0" y="400.0" z="1000.0"/>
+    <box lunit="cm" name="DetEnclosure" x="1300.0" y="1300.0" z="2100.0"/>
+    <box lunit="cm" name="World" x="20000.0" y="20000.0" z="20000.0"/>
   </solids>
   <structure>
-    <volume name="idWire_lv">
+    <volume name="SteelBar_lv">
       <materialref ref="Steel"/>
-      <solidref ref="idWire"/>
-      <auxiliary auxtype="Color" auxvalue="blue"/>
+      <solidref ref="SteelBar"/>
     </volume>
-    <volume name="LArPlane_lv">
+    <volume name="SteelPlane_lv">
       <materialref ref="Air"/>
-      <solidref ref="LArPlane"/>
+      <solidref ref="SteelPlane"/>
       <physvol>
-        <volumeref ref="idWire_lv"/>
-        <positionref ref="LArPlane_el0_pos"/>
-        <rotationref ref="identity"/>
+        <volumeref ref="SteelBar_lv"/>
+        <positionref ref="SteelPlane_el0_pos"/>
+        <rotationref ref="SteelPlane_rot"/>
       </physvol>
       <physvol>
-        <volumeref ref="idWire_lv"/>
-        <positionref ref="LArPlane_el1_pos"/>
-        <rotationref ref="identity"/>
+        <volumeref ref="SteelBar_lv"/>
+        <positionref ref="SteelPlane_el1_pos"/>
+        <rotationref ref="SteelPlane_rot"/>
       </physvol>
       <physvol>
-        <volumeref ref="idWire_lv"/>
-        <positionref ref="LArPlane_el2_pos"/>
-        <rotationref ref="identity"/>
+        <volumeref ref="SteelBar_lv"/>
+        <positionref ref="SteelPlane_el2_pos"/>
+        <rotationref ref="SteelPlane_rot"/>
       </physvol>
       <physvol>
-        <volumeref ref="idWire_lv"/>
-        <positionref ref="LArPlane_el3_pos"/>
-        <rotationref ref="identity"/>
+        <volumeref ref="SteelBar_lv"/>
+        <positionref ref="SteelPlane_el3_pos"/>
+        <rotationref ref="SteelPlane_rot"/>
       </physvol>
       <physvol>
-        <volumeref ref="idWire_lv"/>
-        <positionref ref="LArPlane_el4_pos"/>
-        <rotationref ref="identity"/>
+        <volumeref ref="SteelBar_lv"/>
+        <positionref ref="SteelPlane_el4_pos"/>
+        <rotationref ref="SteelPlane_rot"/>
       </physvol>
       <physvol>
-        <volumeref ref="idWire_lv"/>
-        <positionref ref="LArPlane_el5_pos"/>
-        <rotationref ref="identity"/>
+        <volumeref ref="SteelBar_lv"/>
+        <positionref ref="SteelPlane_el5_pos"/>
+        <rotationref ref="SteelPlane_rot"/>
       </physvol>
       <physvol>
-        <volumeref ref="idWire_lv"/>
-        <positionref ref="LArPlane_el6_pos"/>
-        <rotationref ref="identity"/>
+        <volumeref ref="SteelBar_lv"/>
+        <positionref ref="SteelPlane_el6_pos"/>
+        <rotationref ref="SteelPlane_rot"/>
       </physvol>
       <physvol>
-        <volumeref ref="idWire_lv"/>
-        <positionref ref="LArPlane_el7_pos"/>
-        <rotationref ref="identity"/>
+        <volumeref ref="SteelBar_lv"/>
+        <positionref ref="SteelPlane_el7_pos"/>
+        <rotationref ref="SteelPlane_rot"/>
       </physvol>
       <physvol>
-        <volumeref ref="idWire_lv"/>
-        <positionref ref="LArPlane_el8_pos"/>
-        <rotationref ref="identity"/>
+        <volumeref ref="SteelBar_lv"/>
+        <positionref ref="SteelPlane_el8_pos"/>
+        <rotationref ref="SteelPlane_rot"/>
       </physvol>
       <physvol>
-        <volumeref ref="idWire_lv"/>
-        <positionref ref="LArPlane_el9_pos"/>
-        <rotationref ref="identity"/>
+        <volumeref ref="SteelBar_lv"/>
+        <positionref ref="SteelPlane_el9_pos"/>
+        <rotationref ref="SteelPlane_rot"/>
       </physvol>
-      <auxiliary auxtype="Color" auxvalue="blue"/>
+      <physvol>
+        <volumeref ref="SteelBar_lv"/>
+        <positionref ref="SteelPlane_el10_pos"/>
+        <rotationref ref="SteelPlane_rot"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="SteelBar_lv"/>
+        <positionref ref="SteelPlane_el11_pos"/>
+        <rotationref ref="SteelPlane_rot"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="SteelBar_lv"/>
+        <positionref ref="SteelPlane_el12_pos"/>
+        <rotationref ref="SteelPlane_rot"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="SteelBar_lv"/>
+        <positionref ref="SteelPlane_el13_pos"/>
+        <rotationref ref="SteelPlane_rot"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="SteelBar_lv"/>
+        <positionref ref="SteelPlane_el14_pos"/>
+        <rotationref ref="SteelPlane_rot"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="SteelBar_lv"/>
+        <positionref ref="SteelPlane_el15_pos"/>
+        <rotationref ref="SteelPlane_rot"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="SteelBar_lv"/>
+        <positionref ref="SteelPlane_el16_pos"/>
+        <rotationref ref="SteelPlane_rot"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="SteelBar_lv"/>
+        <positionref ref="SteelPlane_el17_pos"/>
+        <rotationref ref="SteelPlane_rot"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="SteelBar_lv"/>
+        <positionref ref="SteelPlane_el18_pos"/>
+        <rotationref ref="SteelPlane_rot"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="SteelBar_lv"/>
+        <positionref ref="SteelPlane_el19_pos"/>
+        <rotationref ref="SteelPlane_rot"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="SteelBar_lv"/>
+        <positionref ref="SteelPlane_el20_pos"/>
+        <rotationref ref="SteelPlane_rot"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="SteelBar_lv"/>
+        <positionref ref="SteelPlane_el21_pos"/>
+        <rotationref ref="SteelPlane_rot"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="SteelBar_lv"/>
+        <positionref ref="SteelPlane_el22_pos"/>
+        <rotationref ref="SteelPlane_rot"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="SteelBar_lv"/>
+        <positionref ref="SteelPlane_el23_pos"/>
+        <rotationref ref="SteelPlane_rot"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="SteelBar_lv"/>
+        <positionref ref="SteelPlane_el24_pos"/>
+        <rotationref ref="SteelPlane_rot"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="SteelBar_lv"/>
+        <positionref ref="SteelPlane_el25_pos"/>
+        <rotationref ref="SteelPlane_rot"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="SteelBar_lv"/>
+        <positionref ref="SteelPlane_el26_pos"/>
+        <rotationref ref="SteelPlane_rot"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="SteelBar_lv"/>
+        <positionref ref="SteelPlane_el27_pos"/>
+        <rotationref ref="SteelPlane_rot"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="SteelBar_lv"/>
+        <positionref ref="SteelPlane_el28_pos"/>
+        <rotationref ref="SteelPlane_rot"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="SteelBar_lv"/>
+        <positionref ref="SteelPlane_el29_pos"/>
+        <rotationref ref="SteelPlane_rot"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="SteelBar_lv"/>
+        <positionref ref="SteelPlane_el30_pos"/>
+        <rotationref ref="SteelPlane_rot"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="SteelBar_lv"/>
+        <positionref ref="SteelPlane_el31_pos"/>
+        <rotationref ref="SteelPlane_rot"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="SteelBar_lv"/>
+        <positionref ref="SteelPlane_el32_pos"/>
+        <rotationref ref="SteelPlane_rot"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="SteelBar_lv"/>
+        <positionref ref="SteelPlane_el33_pos"/>
+        <rotationref ref="SteelPlane_rot"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="SteelBar_lv"/>
+        <positionref ref="SteelPlane_el34_pos"/>
+        <rotationref ref="SteelPlane_rot"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="SteelBar_lv"/>
+        <positionref ref="SteelPlane_el35_pos"/>
+        <rotationref ref="SteelPlane_rot"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="SteelBar_lv"/>
+        <positionref ref="SteelPlane_el36_pos"/>
+        <rotationref ref="SteelPlane_rot"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="SteelBar_lv"/>
+        <positionref ref="SteelPlane_el37_pos"/>
+        <rotationref ref="SteelPlane_rot"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="SteelBar_lv"/>
+        <positionref ref="SteelPlane_el38_pos"/>
+        <rotationref ref="SteelPlane_rot"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="SteelBar_lv"/>
+        <positionref ref="SteelPlane_el39_pos"/>
+        <rotationref ref="SteelPlane_rot"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="SteelBar_lv"/>
+        <positionref ref="SteelPlane_el40_pos"/>
+        <rotationref ref="SteelPlane_rot"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="SteelBar_lv"/>
+        <positionref ref="SteelPlane_el41_pos"/>
+        <rotationref ref="SteelPlane_rot"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="SteelBar_lv"/>
+        <positionref ref="SteelPlane_el42_pos"/>
+        <rotationref ref="SteelPlane_rot"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="SteelBar_lv"/>
+        <positionref ref="SteelPlane_el43_pos"/>
+        <rotationref ref="SteelPlane_rot"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="SteelBar_lv"/>
+        <positionref ref="SteelPlane_el44_pos"/>
+        <rotationref ref="SteelPlane_rot"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="SteelBar_lv"/>
+        <positionref ref="SteelPlane_el45_pos"/>
+        <rotationref ref="SteelPlane_rot"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="SteelBar_lv"/>
+        <positionref ref="SteelPlane_el46_pos"/>
+        <rotationref ref="SteelPlane_rot"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="SteelBar_lv"/>
+        <positionref ref="SteelPlane_el47_pos"/>
+        <rotationref ref="SteelPlane_rot"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="SteelBar_lv"/>
+        <positionref ref="SteelPlane_el48_pos"/>
+        <rotationref ref="SteelPlane_rot"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="SteelBar_lv"/>
+        <positionref ref="SteelPlane_el49_pos"/>
+        <rotationref ref="SteelPlane_rot"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="SteelBar_lv"/>
+        <positionref ref="SteelPlane_el50_pos"/>
+        <rotationref ref="SteelPlane_rot"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="SteelBar_lv"/>
+        <positionref ref="SteelPlane_el51_pos"/>
+        <rotationref ref="SteelPlane_rot"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="SteelBar_lv"/>
+        <positionref ref="SteelPlane_el52_pos"/>
+        <rotationref ref="SteelPlane_rot"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="SteelBar_lv"/>
+        <positionref ref="SteelPlane_el53_pos"/>
+        <rotationref ref="SteelPlane_rot"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="SteelBar_lv"/>
+        <positionref ref="SteelPlane_el54_pos"/>
+        <rotationref ref="SteelPlane_rot"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="SteelBar_lv"/>
+        <positionref ref="SteelPlane_el55_pos"/>
+        <rotationref ref="SteelPlane_rot"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="SteelBar_lv"/>
+        <positionref ref="SteelPlane_el56_pos"/>
+        <rotationref ref="SteelPlane_rot"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="SteelBar_lv"/>
+        <positionref ref="SteelPlane_el57_pos"/>
+        <rotationref ref="SteelPlane_rot"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="SteelBar_lv"/>
+        <positionref ref="SteelPlane_el58_pos"/>
+        <rotationref ref="SteelPlane_rot"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="SteelBar_lv"/>
+        <positionref ref="SteelPlane_el59_pos"/>
+        <rotationref ref="SteelPlane_rot"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="SteelBar_lv"/>
+        <positionref ref="SteelPlane_el60_pos"/>
+        <rotationref ref="SteelPlane_rot"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="SteelBar_lv"/>
+        <positionref ref="SteelPlane_el61_pos"/>
+        <rotationref ref="SteelPlane_rot"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="SteelBar_lv"/>
+        <positionref ref="SteelPlane_el62_pos"/>
+        <rotationref ref="SteelPlane_rot"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="SteelBar_lv"/>
+        <positionref ref="SteelPlane_el63_pos"/>
+        <rotationref ref="SteelPlane_rot"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="SteelBar_lv"/>
+        <positionref ref="SteelPlane_el64_pos"/>
+        <rotationref ref="SteelPlane_rot"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="SteelBar_lv"/>
+        <positionref ref="SteelPlane_el65_pos"/>
+        <rotationref ref="SteelPlane_rot"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="SteelBar_lv"/>
+        <positionref ref="SteelPlane_el66_pos"/>
+        <rotationref ref="SteelPlane_rot"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="SteelBar_lv"/>
+        <positionref ref="SteelPlane_el67_pos"/>
+        <rotationref ref="SteelPlane_rot"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="SteelBar_lv"/>
+        <positionref ref="SteelPlane_el68_pos"/>
+        <rotationref ref="SteelPlane_rot"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="SteelBar_lv"/>
+        <positionref ref="SteelPlane_el69_pos"/>
+        <rotationref ref="SteelPlane_rot"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="SteelBar_lv"/>
+        <positionref ref="SteelPlane_el70_pos"/>
+        <rotationref ref="SteelPlane_rot"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="SteelBar_lv"/>
+        <positionref ref="SteelPlane_el71_pos"/>
+        <rotationref ref="SteelPlane_rot"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="SteelBar_lv"/>
+        <positionref ref="SteelPlane_el72_pos"/>
+        <rotationref ref="SteelPlane_rot"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="SteelBar_lv"/>
+        <positionref ref="SteelPlane_el73_pos"/>
+        <rotationref ref="SteelPlane_rot"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="SteelBar_lv"/>
+        <positionref ref="SteelPlane_el74_pos"/>
+        <rotationref ref="SteelPlane_rot"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="SteelBar_lv"/>
+        <positionref ref="SteelPlane_el75_pos"/>
+        <rotationref ref="SteelPlane_rot"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="SteelBar_lv"/>
+        <positionref ref="SteelPlane_el76_pos"/>
+        <rotationref ref="SteelPlane_rot"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="SteelBar_lv"/>
+        <positionref ref="SteelPlane_el77_pos"/>
+        <rotationref ref="SteelPlane_rot"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="SteelBar_lv"/>
+        <positionref ref="SteelPlane_el78_pos"/>
+        <rotationref ref="SteelPlane_rot"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="SteelBar_lv"/>
+        <positionref ref="SteelPlane_el79_pos"/>
+        <rotationref ref="SteelPlane_rot"/>
+      </physvol>
     </volume>
-    <volume name="LArMod_lv">
-      <materialref ref="Air"/>
-      <solidref ref="LArMod"/>
-      <physvol>
-        <volumeref ref="LArPlane_lv"/>
-        <positionref ref="LArMod_el0_pos"/>
-        <rotationref ref="identity"/>
-      </physvol>
-    </volume>
-    <volume name="LArD_lv">
+    <volume name="LArTracker_lv">
       <materialref ref="LAr"/>
-      <solidref ref="LArD"/>
+      <solidref ref="LArTracker"/>
       <physvol>
-        <volumeref ref="LArMod_lv"/>
-        <positionref ref="LArD_el0_pos"/>
+        <volumeref ref="SteelPlane_lv"/>
+        <positionref ref="LArTrackerSteelPlane_lv0_pos"/>
+        <rotationref ref="LArTracker_rot"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="SteelPlane_lv"/>
+        <positionref ref="LArTrackerSteelPlane_lv1_pos"/>
+        <rotationref ref="LArTracker_rot"/>
+      </physvol>
+      <auxiliary auxtype="SensDet" auxvalue="LArTracker"/>
+    </volume>
+    <volume name="STBar_straw_lv">
+      <materialref ref="Kapton"/>
+      <solidref ref="STBar_straw"/>
+    </volume>
+    <volume name="STBar_wire_lv">
+      <materialref ref="Kapton"/>
+      <solidref ref="STBar_wire"/>
+    </volume>
+    <volume name="STBar_lv">
+      <materialref ref="stGas_Ar"/>
+      <solidref ref="STBar"/>
+      <physvol>
+        <volumeref ref="STBar_straw_lv"/>
+        <positionref ref="center"/>
         <rotationref ref="identity"/>
       </physvol>
-      <auxiliary auxtype="SensDet" auxvalue="LArD"/>
-      <auxiliary auxtype="EField" auxvalue="(500.0, 1.0 V/m, 500.0 V/cm)"/>
-      <auxiliary auxtype="BField" auxvalue="(0.5, 0.0 T, 1.0 G)"/>
-      <auxiliary auxtype="Color" auxvalue="blue"/>
+      <physvol>
+        <volumeref ref="STBar_wire_lv"/>
+        <positionref ref="center"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <auxiliary auxtype="SensDet" auxvalue="StrawTracker"/>
     </volume>
-    <volume name="idStrip_lv">
+    <volume name="STPlane_lv">
+      <materialref ref="Air"/>
+      <solidref ref="STPlane"/>
+      <physvol>
+        <volumeref ref="STBar_lv"/>
+        <positionref ref="STPlane_el0_pos"/>
+        <rotationref ref="STPlane_rot"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="STBar_lv"/>
+        <positionref ref="STPlane_el1_pos"/>
+        <rotationref ref="STPlane_rot"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="STBar_lv"/>
+        <positionref ref="STPlane_el2_pos"/>
+        <rotationref ref="STPlane_rot"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="STBar_lv"/>
+        <positionref ref="STPlane_el3_pos"/>
+        <rotationref ref="STPlane_rot"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="STBar_lv"/>
+        <positionref ref="STPlane_el4_pos"/>
+        <rotationref ref="STPlane_rot"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="STBar_lv"/>
+        <positionref ref="STPlane_el5_pos"/>
+        <rotationref ref="STPlane_rot"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="STBar_lv"/>
+        <positionref ref="STPlane_el6_pos"/>
+        <rotationref ref="STPlane_rot"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="STBar_lv"/>
+        <positionref ref="STPlane_el7_pos"/>
+        <rotationref ref="STPlane_rot"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="STBar_lv"/>
+        <positionref ref="STPlane_el8_pos"/>
+        <rotationref ref="STPlane_rot"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="STBar_lv"/>
+        <positionref ref="STPlane_el9_pos"/>
+        <rotationref ref="STPlane_rot"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="STBar_lv"/>
+        <positionref ref="STPlane_el10_pos"/>
+        <rotationref ref="STPlane_rot"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="STBar_lv"/>
+        <positionref ref="STPlane_el11_pos"/>
+        <rotationref ref="STPlane_rot"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="STBar_lv"/>
+        <positionref ref="STPlane_el12_pos"/>
+        <rotationref ref="STPlane_rot"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="STBar_lv"/>
+        <positionref ref="STPlane_el13_pos"/>
+        <rotationref ref="STPlane_rot"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="STBar_lv"/>
+        <positionref ref="STPlane_el14_pos"/>
+        <rotationref ref="STPlane_rot"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="STBar_lv"/>
+        <positionref ref="STPlane_el15_pos"/>
+        <rotationref ref="STPlane_rot"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="STBar_lv"/>
+        <positionref ref="STPlane_el16_pos"/>
+        <rotationref ref="STPlane_rot"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="STBar_lv"/>
+        <positionref ref="STPlane_el17_pos"/>
+        <rotationref ref="STPlane_rot"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="STBar_lv"/>
+        <positionref ref="STPlane_el18_pos"/>
+        <rotationref ref="STPlane_rot"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="STBar_lv"/>
+        <positionref ref="STPlane_el19_pos"/>
+        <rotationref ref="STPlane_rot"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="STBar_lv"/>
+        <positionref ref="STPlane_el20_pos"/>
+        <rotationref ref="STPlane_rot"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="STBar_lv"/>
+        <positionref ref="STPlane_el21_pos"/>
+        <rotationref ref="STPlane_rot"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="STBar_lv"/>
+        <positionref ref="STPlane_el22_pos"/>
+        <rotationref ref="STPlane_rot"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="STBar_lv"/>
+        <positionref ref="STPlane_el23_pos"/>
+        <rotationref ref="STPlane_rot"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="STBar_lv"/>
+        <positionref ref="STPlane_el24_pos"/>
+        <rotationref ref="STPlane_rot"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="STBar_lv"/>
+        <positionref ref="STPlane_el25_pos"/>
+        <rotationref ref="STPlane_rot"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="STBar_lv"/>
+        <positionref ref="STPlane_el26_pos"/>
+        <rotationref ref="STPlane_rot"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="STBar_lv"/>
+        <positionref ref="STPlane_el27_pos"/>
+        <rotationref ref="STPlane_rot"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="STBar_lv"/>
+        <positionref ref="STPlane_el28_pos"/>
+        <rotationref ref="STPlane_rot"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="STBar_lv"/>
+        <positionref ref="STPlane_el29_pos"/>
+        <rotationref ref="STPlane_rot"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="STBar_lv"/>
+        <positionref ref="STPlane_el30_pos"/>
+        <rotationref ref="STPlane_rot"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="STBar_lv"/>
+        <positionref ref="STPlane_el31_pos"/>
+        <rotationref ref="STPlane_rot"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="STBar_lv"/>
+        <positionref ref="STPlane_el32_pos"/>
+        <rotationref ref="STPlane_rot"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="STBar_lv"/>
+        <positionref ref="STPlane_el33_pos"/>
+        <rotationref ref="STPlane_rot"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="STBar_lv"/>
+        <positionref ref="STPlane_el34_pos"/>
+        <rotationref ref="STPlane_rot"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="STBar_lv"/>
+        <positionref ref="STPlane_el35_pos"/>
+        <rotationref ref="STPlane_rot"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="STBar_lv"/>
+        <positionref ref="STPlane_el36_pos"/>
+        <rotationref ref="STPlane_rot"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="STBar_lv"/>
+        <positionref ref="STPlane_el37_pos"/>
+        <rotationref ref="STPlane_rot"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="STBar_lv"/>
+        <positionref ref="STPlane_el38_pos"/>
+        <rotationref ref="STPlane_rot"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="STBar_lv"/>
+        <positionref ref="STPlane_el39_pos"/>
+        <rotationref ref="STPlane_rot"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="STBar_lv"/>
+        <positionref ref="STPlane_el40_pos"/>
+        <rotationref ref="STPlane_rot"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="STBar_lv"/>
+        <positionref ref="STPlane_el41_pos"/>
+        <rotationref ref="STPlane_rot"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="STBar_lv"/>
+        <positionref ref="STPlane_el42_pos"/>
+        <rotationref ref="STPlane_rot"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="STBar_lv"/>
+        <positionref ref="STPlane_el43_pos"/>
+        <rotationref ref="STPlane_rot"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="STBar_lv"/>
+        <positionref ref="STPlane_el44_pos"/>
+        <rotationref ref="STPlane_rot"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="STBar_lv"/>
+        <positionref ref="STPlane_el45_pos"/>
+        <rotationref ref="STPlane_rot"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="STBar_lv"/>
+        <positionref ref="STPlane_el46_pos"/>
+        <rotationref ref="STPlane_rot"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="STBar_lv"/>
+        <positionref ref="STPlane_el47_pos"/>
+        <rotationref ref="STPlane_rot"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="STBar_lv"/>
+        <positionref ref="STPlane_el48_pos"/>
+        <rotationref ref="STPlane_rot"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="STBar_lv"/>
+        <positionref ref="STPlane_el49_pos"/>
+        <rotationref ref="STPlane_rot"/>
+      </physvol>
+    </volume>
+    <volume name="StrawDetector1_lv">
+      <materialref ref="Air"/>
+      <solidref ref="StrawDetector1"/>
+      <physvol>
+        <volumeref ref="STPlane_lv"/>
+        <positionref ref="StrawDetector1STPlane_lv0_pos"/>
+        <rotationref ref="StrawDetector1_rot"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="STPlane_lv"/>
+        <positionref ref="StrawDetector1STPlane_lv1_pos"/>
+        <rotationref ref="StrawDetector1_rot"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="STPlane_lv"/>
+        <positionref ref="StrawDetector1STPlane_lv2_pos"/>
+        <rotationref ref="StrawDetector1_rot"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="STPlane_lv"/>
+        <positionref ref="StrawDetector1STPlane_lv3_pos"/>
+        <rotationref ref="StrawDetector1_rot"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="STPlane_lv"/>
+        <positionref ref="StrawDetector1STPlane_lv4_pos"/>
+        <rotationref ref="StrawDetector1_rot"/>
+      </physvol>
+    </volume>
+    <volume name="DoubleRectBar_lv">
+      <materialref ref="Oil"/>
+      <solidref ref="DoubleRectBar"/>
+      <auxiliary auxtype="SensDet" auxvalue="Ogasci"/>
+    </volume>
+    <volume name="DoubleArrPlane_lv">
       <materialref ref="Scintillator"/>
-      <solidref ref="idStrip"/>
-      <auxiliary auxtype="SensDet" auxvalue="FGD"/>
-      <auxiliary auxtype="Color" auxvalue="blue"/>
-    </volume>
-    <volume name="TrackerPlane_lv">
-      <materialref ref="Air"/>
-      <solidref ref="TrackerPlane"/>
+      <solidref ref="DoubleArrPlane"/>
       <physvol>
-        <volumeref ref="idStrip_lv"/>
-        <positionref ref="TrackerPlane_el0_pos"/>
-        <rotationref ref="identity"/>
+        <volumeref ref="DoubleRectBar_lv"/>
+        <positionref ref="DoubleArrPlane_el0_0_pos"/>
+        <rotationref ref="DoubleArrPlane_rot1"/>
       </physvol>
       <physvol>
-        <volumeref ref="idStrip_lv"/>
-        <positionref ref="TrackerPlane_el1_pos"/>
-        <rotationref ref="identity"/>
+        <volumeref ref="DoubleRectBar_lv"/>
+        <positionref ref="DoubleArrPlane_el1_0_pos"/>
+        <rotationref ref="DoubleArrPlane_rot1"/>
       </physvol>
       <physvol>
-        <volumeref ref="idStrip_lv"/>
-        <positionref ref="TrackerPlane_el2_pos"/>
-        <rotationref ref="identity"/>
+        <volumeref ref="DoubleRectBar_lv"/>
+        <positionref ref="DoubleArrPlane_el2_0_pos"/>
+        <rotationref ref="DoubleArrPlane_rot1"/>
       </physvol>
       <physvol>
-        <volumeref ref="idStrip_lv"/>
-        <positionref ref="TrackerPlane_el3_pos"/>
-        <rotationref ref="identity"/>
+        <volumeref ref="DoubleRectBar_lv"/>
+        <positionref ref="DoubleArrPlane_el3_0_pos"/>
+        <rotationref ref="DoubleArrPlane_rot1"/>
       </physvol>
       <physvol>
-        <volumeref ref="idStrip_lv"/>
-        <positionref ref="TrackerPlane_el4_pos"/>
-        <rotationref ref="identity"/>
+        <volumeref ref="DoubleRectBar_lv"/>
+        <positionref ref="DoubleArrPlane_el4_0_pos"/>
+        <rotationref ref="DoubleArrPlane_rot1"/>
       </physvol>
       <physvol>
-        <volumeref ref="idStrip_lv"/>
-        <positionref ref="TrackerPlane_el5_pos"/>
-        <rotationref ref="identity"/>
+        <volumeref ref="DoubleRectBar_lv"/>
+        <positionref ref="DoubleArrPlane_el0_1_pos"/>
+        <rotationref ref="DoubleArrPlane_rot1"/>
       </physvol>
       <physvol>
-        <volumeref ref="idStrip_lv"/>
-        <positionref ref="TrackerPlane_el6_pos"/>
-        <rotationref ref="identity"/>
+        <volumeref ref="DoubleRectBar_lv"/>
+        <positionref ref="DoubleArrPlane_el1_1_pos"/>
+        <rotationref ref="DoubleArrPlane_rot1"/>
       </physvol>
       <physvol>
-        <volumeref ref="idStrip_lv"/>
-        <positionref ref="TrackerPlane_el7_pos"/>
-        <rotationref ref="identity"/>
+        <volumeref ref="DoubleRectBar_lv"/>
+        <positionref ref="DoubleArrPlane_el2_1_pos"/>
+        <rotationref ref="DoubleArrPlane_rot1"/>
       </physvol>
       <physvol>
-        <volumeref ref="idStrip_lv"/>
-        <positionref ref="TrackerPlane_el8_pos"/>
-        <rotationref ref="identity"/>
+        <volumeref ref="DoubleRectBar_lv"/>
+        <positionref ref="DoubleArrPlane_el3_1_pos"/>
+        <rotationref ref="DoubleArrPlane_rot1"/>
       </physvol>
       <physvol>
-        <volumeref ref="idStrip_lv"/>
-        <positionref ref="TrackerPlane_el9_pos"/>
-        <rotationref ref="identity"/>
+        <volumeref ref="DoubleRectBar_lv"/>
+        <positionref ref="DoubleArrPlane_el4_1_pos"/>
+        <rotationref ref="DoubleArrPlane_rot1"/>
       </physvol>
       <physvol>
-        <volumeref ref="idStrip_lv"/>
-        <positionref ref="TrackerPlane_el10_pos"/>
-        <rotationref ref="identity"/>
+        <volumeref ref="DoubleRectBar_lv"/>
+        <positionref ref="DoubleArrPlane_el0_2_pos"/>
+        <rotationref ref="DoubleArrPlane_rot1"/>
       </physvol>
       <physvol>
-        <volumeref ref="idStrip_lv"/>
-        <positionref ref="TrackerPlane_el11_pos"/>
-        <rotationref ref="identity"/>
+        <volumeref ref="DoubleRectBar_lv"/>
+        <positionref ref="DoubleArrPlane_el1_2_pos"/>
+        <rotationref ref="DoubleArrPlane_rot1"/>
       </physvol>
       <physvol>
-        <volumeref ref="idStrip_lv"/>
-        <positionref ref="TrackerPlane_el12_pos"/>
-        <rotationref ref="identity"/>
+        <volumeref ref="DoubleRectBar_lv"/>
+        <positionref ref="DoubleArrPlane_el2_2_pos"/>
+        <rotationref ref="DoubleArrPlane_rot1"/>
       </physvol>
       <physvol>
-        <volumeref ref="idStrip_lv"/>
-        <positionref ref="TrackerPlane_el13_pos"/>
-        <rotationref ref="identity"/>
+        <volumeref ref="DoubleRectBar_lv"/>
+        <positionref ref="DoubleArrPlane_el3_2_pos"/>
+        <rotationref ref="DoubleArrPlane_rot1"/>
       </physvol>
       <physvol>
-        <volumeref ref="idStrip_lv"/>
-        <positionref ref="TrackerPlane_el14_pos"/>
-        <rotationref ref="identity"/>
+        <volumeref ref="DoubleRectBar_lv"/>
+        <positionref ref="DoubleArrPlane_el4_2_pos"/>
+        <rotationref ref="DoubleArrPlane_rot1"/>
       </physvol>
       <physvol>
-        <volumeref ref="idStrip_lv"/>
-        <positionref ref="TrackerPlane_el15_pos"/>
-        <rotationref ref="identity"/>
+        <volumeref ref="DoubleRectBar_lv"/>
+        <positionref ref="DoubleArrPlane_el0_3_pos"/>
+        <rotationref ref="DoubleArrPlane_rot1"/>
       </physvol>
       <physvol>
-        <volumeref ref="idStrip_lv"/>
-        <positionref ref="TrackerPlane_el16_pos"/>
-        <rotationref ref="identity"/>
+        <volumeref ref="DoubleRectBar_lv"/>
+        <positionref ref="DoubleArrPlane_el1_3_pos"/>
+        <rotationref ref="DoubleArrPlane_rot1"/>
       </physvol>
       <physvol>
-        <volumeref ref="idStrip_lv"/>
-        <positionref ref="TrackerPlane_el17_pos"/>
-        <rotationref ref="identity"/>
+        <volumeref ref="DoubleRectBar_lv"/>
+        <positionref ref="DoubleArrPlane_el2_3_pos"/>
+        <rotationref ref="DoubleArrPlane_rot1"/>
       </physvol>
       <physvol>
-        <volumeref ref="idStrip_lv"/>
-        <positionref ref="TrackerPlane_el18_pos"/>
-        <rotationref ref="identity"/>
+        <volumeref ref="DoubleRectBar_lv"/>
+        <positionref ref="DoubleArrPlane_el3_3_pos"/>
+        <rotationref ref="DoubleArrPlane_rot1"/>
       </physvol>
       <physvol>
-        <volumeref ref="idStrip_lv"/>
-        <positionref ref="TrackerPlane_el19_pos"/>
-        <rotationref ref="identity"/>
+        <volumeref ref="DoubleRectBar_lv"/>
+        <positionref ref="DoubleArrPlane_el4_3_pos"/>
+        <rotationref ref="DoubleArrPlane_rot1"/>
       </physvol>
       <physvol>
-        <volumeref ref="idStrip_lv"/>
-        <positionref ref="TrackerPlane_el20_pos"/>
-        <rotationref ref="identity"/>
+        <volumeref ref="DoubleRectBar_lv"/>
+        <positionref ref="DoubleArrPlane_el0_4_pos"/>
+        <rotationref ref="DoubleArrPlane_rot1"/>
       </physvol>
       <physvol>
-        <volumeref ref="idStrip_lv"/>
-        <positionref ref="TrackerPlane_el21_pos"/>
-        <rotationref ref="identity"/>
+        <volumeref ref="DoubleRectBar_lv"/>
+        <positionref ref="DoubleArrPlane_el1_4_pos"/>
+        <rotationref ref="DoubleArrPlane_rot1"/>
       </physvol>
       <physvol>
-        <volumeref ref="idStrip_lv"/>
-        <positionref ref="TrackerPlane_el22_pos"/>
-        <rotationref ref="identity"/>
+        <volumeref ref="DoubleRectBar_lv"/>
+        <positionref ref="DoubleArrPlane_el2_4_pos"/>
+        <rotationref ref="DoubleArrPlane_rot1"/>
       </physvol>
       <physvol>
-        <volumeref ref="idStrip_lv"/>
-        <positionref ref="TrackerPlane_el23_pos"/>
-        <rotationref ref="identity"/>
+        <volumeref ref="DoubleRectBar_lv"/>
+        <positionref ref="DoubleArrPlane_el3_4_pos"/>
+        <rotationref ref="DoubleArrPlane_rot1"/>
       </physvol>
       <physvol>
-        <volumeref ref="idStrip_lv"/>
-        <positionref ref="TrackerPlane_el24_pos"/>
-        <rotationref ref="identity"/>
-      </physvol>
-      <physvol>
-        <volumeref ref="idStrip_lv"/>
-        <positionref ref="TrackerPlane_el25_pos"/>
-        <rotationref ref="identity"/>
-      </physvol>
-      <physvol>
-        <volumeref ref="idStrip_lv"/>
-        <positionref ref="TrackerPlane_el26_pos"/>
-        <rotationref ref="identity"/>
-      </physvol>
-      <physvol>
-        <volumeref ref="idStrip_lv"/>
-        <positionref ref="TrackerPlane_el27_pos"/>
-        <rotationref ref="identity"/>
-      </physvol>
-      <physvol>
-        <volumeref ref="idStrip_lv"/>
-        <positionref ref="TrackerPlane_el28_pos"/>
-        <rotationref ref="identity"/>
-      </physvol>
-      <physvol>
-        <volumeref ref="idStrip_lv"/>
-        <positionref ref="TrackerPlane_el29_pos"/>
-        <rotationref ref="identity"/>
-      </physvol>
-      <physvol>
-        <volumeref ref="idStrip_lv"/>
-        <positionref ref="TrackerPlane_el30_pos"/>
-        <rotationref ref="identity"/>
-      </physvol>
-      <physvol>
-        <volumeref ref="idStrip_lv"/>
-        <positionref ref="TrackerPlane_el31_pos"/>
-        <rotationref ref="identity"/>
-      </physvol>
-      <physvol>
-        <volumeref ref="idStrip_lv"/>
-        <positionref ref="TrackerPlane_el32_pos"/>
-        <rotationref ref="identity"/>
-      </physvol>
-      <physvol>
-        <volumeref ref="idStrip_lv"/>
-        <positionref ref="TrackerPlane_el33_pos"/>
-        <rotationref ref="identity"/>
-      </physvol>
-      <physvol>
-        <volumeref ref="idStrip_lv"/>
-        <positionref ref="TrackerPlane_el34_pos"/>
-        <rotationref ref="identity"/>
-      </physvol>
-      <physvol>
-        <volumeref ref="idStrip_lv"/>
-        <positionref ref="TrackerPlane_el35_pos"/>
-        <rotationref ref="identity"/>
-      </physvol>
-      <physvol>
-        <volumeref ref="idStrip_lv"/>
-        <positionref ref="TrackerPlane_el36_pos"/>
-        <rotationref ref="identity"/>
-      </physvol>
-      <physvol>
-        <volumeref ref="idStrip_lv"/>
-        <positionref ref="TrackerPlane_el37_pos"/>
-        <rotationref ref="identity"/>
-      </physvol>
-      <physvol>
-        <volumeref ref="idStrip_lv"/>
-        <positionref ref="TrackerPlane_el38_pos"/>
-        <rotationref ref="identity"/>
-      </physvol>
-      <physvol>
-        <volumeref ref="idStrip_lv"/>
-        <positionref ref="TrackerPlane_el39_pos"/>
-        <rotationref ref="identity"/>
-      </physvol>
-      <physvol>
-        <volumeref ref="idStrip_lv"/>
-        <positionref ref="TrackerPlane_el40_pos"/>
-        <rotationref ref="identity"/>
-      </physvol>
-      <physvol>
-        <volumeref ref="idStrip_lv"/>
-        <positionref ref="TrackerPlane_el41_pos"/>
-        <rotationref ref="identity"/>
-      </physvol>
-      <physvol>
-        <volumeref ref="idStrip_lv"/>
-        <positionref ref="TrackerPlane_el42_pos"/>
-        <rotationref ref="identity"/>
-      </physvol>
-      <physvol>
-        <volumeref ref="idStrip_lv"/>
-        <positionref ref="TrackerPlane_el43_pos"/>
-        <rotationref ref="identity"/>
-      </physvol>
-      <physvol>
-        <volumeref ref="idStrip_lv"/>
-        <positionref ref="TrackerPlane_el44_pos"/>
-        <rotationref ref="identity"/>
-      </physvol>
-      <physvol>
-        <volumeref ref="idStrip_lv"/>
-        <positionref ref="TrackerPlane_el45_pos"/>
-        <rotationref ref="identity"/>
-      </physvol>
-      <physvol>
-        <volumeref ref="idStrip_lv"/>
-        <positionref ref="TrackerPlane_el46_pos"/>
-        <rotationref ref="identity"/>
-      </physvol>
-      <physvol>
-        <volumeref ref="idStrip_lv"/>
-        <positionref ref="TrackerPlane_el47_pos"/>
-        <rotationref ref="identity"/>
-      </physvol>
-      <physvol>
-        <volumeref ref="idStrip_lv"/>
-        <positionref ref="TrackerPlane_el48_pos"/>
-        <rotationref ref="identity"/>
-      </physvol>
-      <physvol>
-        <volumeref ref="idStrip_lv"/>
-        <positionref ref="TrackerPlane_el49_pos"/>
-        <rotationref ref="identity"/>
-      </physvol>
-      <auxiliary auxtype="Color" auxvalue="blue"/>
-    </volume>
-    <volume name="TrackerMod_lv">
-      <materialref ref="Air"/>
-      <solidref ref="TrackerMod"/>
-      <physvol>
-        <volumeref ref="TrackerPlane_lv"/>
-        <positionref ref="TrackerMod_el0_pos"/>
-        <rotationref ref="identity"/>
-      </physvol>
-      <physvol>
-        <volumeref ref="TrackerPlane_lv"/>
-        <positionref ref="TrackerMod_el1_pos"/>
-        <rotationref ref="identity"/>
-      </physvol>
-      <physvol>
-        <volumeref ref="TrackerPlane_lv"/>
-        <positionref ref="TrackerMod_el2_pos"/>
-        <rotationref ref="identity"/>
+        <volumeref ref="DoubleRectBar_lv"/>
+        <positionref ref="DoubleArrPlane_el4_4_pos"/>
+        <rotationref ref="DoubleArrPlane_rot1"/>
       </physvol>
     </volume>
-    <volume name="Tracker_lv">
+    <volume name="SingleRectBar_lv">
+      <materialref ref="Scintillator"/>
+      <solidref ref="SingleRectBar"/>
+      <auxiliary auxtype="SensDet" auxvalue="Ogasci"/>
+    </volume>
+    <volume name="SingleArrPlane_lv">
+      <materialref ref="epoxy_resin"/>
+      <solidref ref="SingleArrPlane"/>
+      <physvol>
+        <volumeref ref="SingleRectBar_lv"/>
+        <positionref ref="SingleArrPlane_el0_pos"/>
+        <rotationref ref="SingleArrPlane_rot"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="SingleRectBar_lv"/>
+        <positionref ref="SingleArrPlane_el1_pos"/>
+        <rotationref ref="SingleArrPlane_rot"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="SingleRectBar_lv"/>
+        <positionref ref="SingleArrPlane_el2_pos"/>
+        <rotationref ref="SingleArrPlane_rot"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="SingleRectBar_lv"/>
+        <positionref ref="SingleArrPlane_el3_pos"/>
+        <rotationref ref="SingleArrPlane_rot"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="SingleRectBar_lv"/>
+        <positionref ref="SingleArrPlane_el4_pos"/>
+        <rotationref ref="SingleArrPlane_rot"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="SingleRectBar_lv"/>
+        <positionref ref="SingleArrPlane_el5_pos"/>
+        <rotationref ref="SingleArrPlane_rot"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="SingleRectBar_lv"/>
+        <positionref ref="SingleArrPlane_el6_pos"/>
+        <rotationref ref="SingleArrPlane_rot"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="SingleRectBar_lv"/>
+        <positionref ref="SingleArrPlane_el7_pos"/>
+        <rotationref ref="SingleArrPlane_rot"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="SingleRectBar_lv"/>
+        <positionref ref="SingleArrPlane_el8_pos"/>
+        <rotationref ref="SingleArrPlane_rot"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="SingleRectBar_lv"/>
+        <positionref ref="SingleArrPlane_el9_pos"/>
+        <rotationref ref="SingleArrPlane_rot"/>
+      </physvol>
+    </volume>
+    <volume name="Ogasci_lv">
       <materialref ref="Air"/>
-      <solidref ref="Tracker"/>
+      <solidref ref="Ogasci"/>
       <physvol>
-        <volumeref ref="TrackerMod_lv"/>
-        <positionref ref="Tracker_el0_pos"/>
+        <volumeref ref="DoubleArrPlane_lv"/>
+        <positionref ref="OgasciDoubleArrPlane_lv0_pos"/>
+        <rotationref ref="Ogasci_rot"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="SingleArrPlane_lv"/>
+        <positionref ref="OgasciSingleArrPlane_lv0_pos"/>
+        <rotationref ref="Ogasci_rot"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="DoubleArrPlane_lv"/>
+        <positionref ref="OgasciDoubleArrPlane_lv1_pos"/>
+        <rotationref ref="Ogasci_rot"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="SingleArrPlane_lv"/>
+        <positionref ref="OgasciSingleArrPlane_lv1_pos"/>
+        <rotationref ref="Ogasci_rot"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="DoubleArrPlane_lv"/>
+        <positionref ref="OgasciDoubleArrPlane_lv2_pos"/>
+        <rotationref ref="Ogasci_rot"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="SingleArrPlane_lv"/>
+        <positionref ref="OgasciSingleArrPlane_lv2_pos"/>
+        <rotationref ref="Ogasci_rot"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="DoubleArrPlane_lv"/>
+        <positionref ref="OgasciDoubleArrPlane_lv3_pos"/>
+        <rotationref ref="Ogasci_rot"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="SingleArrPlane_lv"/>
+        <positionref ref="OgasciSingleArrPlane_lv3_pos"/>
+        <rotationref ref="Ogasci_rot"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="DoubleArrPlane_lv"/>
+        <positionref ref="OgasciDoubleArrPlane_lv4_pos"/>
+        <rotationref ref="Ogasci_rot"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="SingleArrPlane_lv"/>
+        <positionref ref="OgasciSingleArrPlane_lv4_pos"/>
+        <rotationref ref="Ogasci_rot"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="DoubleArrPlane_lv"/>
+        <positionref ref="OgasciDoubleArrPlane_lv5_pos"/>
+        <rotationref ref="Ogasci_rot"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="SingleArrPlane_lv"/>
+        <positionref ref="OgasciSingleArrPlane_lv5_pos"/>
+        <rotationref ref="Ogasci_rot"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="DoubleArrPlane_lv"/>
+        <positionref ref="OgasciDoubleArrPlane_lv6_pos"/>
+        <rotationref ref="Ogasci_rot"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="SingleArrPlane_lv"/>
+        <positionref ref="OgasciSingleArrPlane_lv6_pos"/>
+        <rotationref ref="Ogasci_rot"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="DoubleArrPlane_lv"/>
+        <positionref ref="OgasciDoubleArrPlane_lv7_pos"/>
+        <rotationref ref="Ogasci_rot"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="SingleArrPlane_lv"/>
+        <positionref ref="OgasciSingleArrPlane_lv7_pos"/>
+        <rotationref ref="Ogasci_rot"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="DoubleArrPlane_lv"/>
+        <positionref ref="OgasciDoubleArrPlane_lv8_pos"/>
+        <rotationref ref="Ogasci_rot"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="SingleArrPlane_lv"/>
+        <positionref ref="OgasciSingleArrPlane_lv8_pos"/>
+        <rotationref ref="Ogasci_rot"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="DoubleArrPlane_lv"/>
+        <positionref ref="OgasciDoubleArrPlane_lv9_pos"/>
+        <rotationref ref="Ogasci_rot"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="SingleArrPlane_lv"/>
+        <positionref ref="OgasciSingleArrPlane_lv9_pos"/>
+        <rotationref ref="Ogasci_rot"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="DoubleArrPlane_lv"/>
+        <positionref ref="OgasciDoubleArrPlane_lv10_pos"/>
+        <rotationref ref="Ogasci_rot"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="SingleArrPlane_lv"/>
+        <positionref ref="OgasciSingleArrPlane_lv10_pos"/>
+        <rotationref ref="Ogasci_rot"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="DoubleArrPlane_lv"/>
+        <positionref ref="OgasciDoubleArrPlane_lv11_pos"/>
+        <rotationref ref="Ogasci_rot"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="SingleArrPlane_lv"/>
+        <positionref ref="OgasciSingleArrPlane_lv11_pos"/>
+        <rotationref ref="Ogasci_rot"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="DoubleArrPlane_lv"/>
+        <positionref ref="OgasciDoubleArrPlane_lv12_pos"/>
+        <rotationref ref="Ogasci_rot"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="SingleArrPlane_lv"/>
+        <positionref ref="OgasciSingleArrPlane_lv12_pos"/>
+        <rotationref ref="Ogasci_rot"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="DoubleArrPlane_lv"/>
+        <positionref ref="OgasciDoubleArrPlane_lv13_pos"/>
+        <rotationref ref="Ogasci_rot"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="SingleArrPlane_lv"/>
+        <positionref ref="OgasciSingleArrPlane_lv13_pos"/>
+        <rotationref ref="Ogasci_rot"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="DoubleArrPlane_lv"/>
+        <positionref ref="OgasciDoubleArrPlane_lv14_pos"/>
+        <rotationref ref="Ogasci_rot"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="SingleArrPlane_lv"/>
+        <positionref ref="OgasciSingleArrPlane_lv14_pos"/>
+        <rotationref ref="Ogasci_rot"/>
+      </physvol>
+    </volume>
+    <volume name="GasBar_lv">
+      <materialref ref="Scintillator"/>
+      <solidref ref="GasBar"/>
+      <auxiliary auxtype="SensDet" auxvalue="GasTracker"/>
+    </volume>
+    <volume name="GasPlane_lv">
+      <materialref ref="Air"/>
+      <solidref ref="GasPlane"/>
+      <physvol>
+        <volumeref ref="GasBar_lv"/>
+        <positionref ref="GasPlane_el0_pos"/>
+        <rotationref ref="GasPlane_rot"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="GasBar_lv"/>
+        <positionref ref="GasPlane_el1_pos"/>
+        <rotationref ref="GasPlane_rot"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="GasBar_lv"/>
+        <positionref ref="GasPlane_el2_pos"/>
+        <rotationref ref="GasPlane_rot"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="GasBar_lv"/>
+        <positionref ref="GasPlane_el3_pos"/>
+        <rotationref ref="GasPlane_rot"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="GasBar_lv"/>
+        <positionref ref="GasPlane_el4_pos"/>
+        <rotationref ref="GasPlane_rot"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="GasBar_lv"/>
+        <positionref ref="GasPlane_el5_pos"/>
+        <rotationref ref="GasPlane_rot"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="GasBar_lv"/>
+        <positionref ref="GasPlane_el6_pos"/>
+        <rotationref ref="GasPlane_rot"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="GasBar_lv"/>
+        <positionref ref="GasPlane_el7_pos"/>
+        <rotationref ref="GasPlane_rot"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="GasBar_lv"/>
+        <positionref ref="GasPlane_el8_pos"/>
+        <rotationref ref="GasPlane_rot"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="GasBar_lv"/>
+        <positionref ref="GasPlane_el9_pos"/>
+        <rotationref ref="GasPlane_rot"/>
+      </physvol>
+    </volume>
+    <volume name="GasTracker_lv">
+      <materialref ref="stGas_Ar"/>
+      <solidref ref="GasTracker"/>
+      <physvol>
+        <volumeref ref="GasPlane_lv"/>
+        <positionref ref="GasTrackerGasPlane_lv0_pos"/>
+        <rotationref ref="GasTracker_rot"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="GasPlane_lv"/>
+        <positionref ref="GasTrackerGasPlane_lv1_pos"/>
+        <rotationref ref="GasTracker_rot"/>
+      </physvol>
+    </volume>
+    <volume name="OgasciGasTracker_lv">
+      <materialref ref="Air"/>
+      <solidref ref="OgasciGasTracker"/>
+      <physvol>
+        <volumeref ref="Ogasci_lv"/>
+        <positionref ref="Ogasci_lv_pos"/>
         <rotationref ref="identity"/>
       </physvol>
       <physvol>
-        <volumeref ref="TrackerMod_lv"/>
-        <positionref ref="Tracker_el1_pos"/>
+        <volumeref ref="GasTracker_lv"/>
+        <positionref ref="GasTracker_lv0_pos"/>
         <rotationref ref="identity"/>
       </physvol>
       <physvol>
-        <volumeref ref="TrackerMod_lv"/>
-        <positionref ref="Tracker_el2_pos"/>
+        <volumeref ref="GasTracker_lv"/>
+        <positionref ref="GasTracker_lv90_pos"/>
         <rotationref ref="identity"/>
       </physvol>
       <physvol>
-        <volumeref ref="TrackerMod_lv"/>
-        <positionref ref="Tracker_el3_pos"/>
+        <volumeref ref="GasTracker_lv"/>
+        <positionref ref="GasTracker_lv180_pos"/>
         <rotationref ref="identity"/>
       </physvol>
       <physvol>
-        <volumeref ref="TrackerMod_lv"/>
-        <positionref ref="Tracker_el4_pos"/>
-        <rotationref ref="identity"/>
-      </physvol>
-      <physvol>
-        <volumeref ref="TrackerMod_lv"/>
-        <positionref ref="Tracker_el5_pos"/>
-        <rotationref ref="identity"/>
-      </physvol>
-      <physvol>
-        <volumeref ref="TrackerMod_lv"/>
-        <positionref ref="Tracker_el6_pos"/>
-        <rotationref ref="identity"/>
-      </physvol>
-      <physvol>
-        <volumeref ref="TrackerMod_lv"/>
-        <positionref ref="Tracker_el7_pos"/>
-        <rotationref ref="identity"/>
-      </physvol>
-      <physvol>
-        <volumeref ref="TrackerMod_lv"/>
-        <positionref ref="Tracker_el8_pos"/>
-        <rotationref ref="identity"/>
-      </physvol>
-      <physvol>
-        <volumeref ref="TrackerMod_lv"/>
-        <positionref ref="Tracker_el9_pos"/>
-        <rotationref ref="identity"/>
-      </physvol>
-      <physvol>
-        <volumeref ref="TrackerMod_lv"/>
-        <positionref ref="Tracker_el10_pos"/>
-        <rotationref ref="identity"/>
-      </physvol>
-      <physvol>
-        <volumeref ref="TrackerMod_lv"/>
-        <positionref ref="Tracker_el11_pos"/>
-        <rotationref ref="identity"/>
-      </physvol>
-      <physvol>
-        <volumeref ref="TrackerMod_lv"/>
-        <positionref ref="Tracker_el12_pos"/>
-        <rotationref ref="identity"/>
-      </physvol>
-      <physvol>
-        <volumeref ref="TrackerMod_lv"/>
-        <positionref ref="Tracker_el13_pos"/>
-        <rotationref ref="identity"/>
-      </physvol>
-      <physvol>
-        <volumeref ref="TrackerMod_lv"/>
-        <positionref ref="Tracker_el14_pos"/>
-        <rotationref ref="identity"/>
-      </physvol>
-      <physvol>
-        <volumeref ref="TrackerMod_lv"/>
-        <positionref ref="Tracker_el15_pos"/>
-        <rotationref ref="identity"/>
-      </physvol>
-      <physvol>
-        <volumeref ref="TrackerMod_lv"/>
-        <positionref ref="Tracker_el16_pos"/>
-        <rotationref ref="identity"/>
-      </physvol>
-      <physvol>
-        <volumeref ref="TrackerMod_lv"/>
-        <positionref ref="Tracker_el17_pos"/>
-        <rotationref ref="identity"/>
-      </physvol>
-      <physvol>
-        <volumeref ref="TrackerMod_lv"/>
-        <positionref ref="Tracker_el18_pos"/>
-        <rotationref ref="identity"/>
-      </physvol>
-      <physvol>
-        <volumeref ref="TrackerMod_lv"/>
-        <positionref ref="Tracker_el19_pos"/>
+        <volumeref ref="GasTracker_lv"/>
+        <positionref ref="GasTracker_lv270_pos"/>
         <rotationref ref="identity"/>
       </physvol>
     </volume>
-    <volume name="idDetector_lv">
+    <volume name="StrawDetector2_lv">
       <materialref ref="Air"/>
-      <solidref ref="idDetector"/>
-      <auxiliary auxtype="BField" auxvalue="(-0.5, 0.0 T, 1.0 G)"/>
+      <solidref ref="StrawDetector2"/>
       <physvol>
-        <volumeref ref="LArD_lv"/>
-        <positionref ref="LArD_lv_pos"/>
-        <rotationref ref="identity"/>
+        <volumeref ref="STPlane_lv"/>
+        <positionref ref="StrawDetector2STPlane_lv0_pos"/>
+        <rotationref ref="StrawDetector2_rot"/>
       </physvol>
       <physvol>
-        <volumeref ref="Tracker_lv"/>
-        <positionref ref="Tracker_lv_pos"/>
-        <rotationref ref="identity"/>
+        <volumeref ref="STPlane_lv"/>
+        <positionref ref="StrawDetector2STPlane_lv1_pos"/>
+        <rotationref ref="StrawDetector2_rot"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="STPlane_lv"/>
+        <positionref ref="StrawDetector2STPlane_lv2_pos"/>
+        <rotationref ref="StrawDetector2_rot"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="STPlane_lv"/>
+        <positionref ref="StrawDetector2STPlane_lv3_pos"/>
+        <rotationref ref="StrawDetector2_rot"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="STPlane_lv"/>
+        <positionref ref="StrawDetector2STPlane_lv4_pos"/>
+        <rotationref ref="StrawDetector2_rot"/>
+      </physvol>
+    </volume>
+    <volume name="Primary_lv">
+      <materialref ref="Air"/>
+      <solidref ref="Primary"/>
+      <physvol>
+        <volumeref ref="LArTracker_lv"/>
+        <positionref ref="PrimaryLArTracker_lv_pos"/>
+        <rotationref ref="Primary_rot"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="StrawDetector1_lv"/>
+        <positionref ref="PrimaryStrawDetector1_lv_pos"/>
+        <rotationref ref="Primary_rot"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="OgasciGasTracker_lv"/>
+        <positionref ref="PrimaryOgasciGasTracker_lv_pos"/>
+        <rotationref ref="Primary_rot"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="StrawDetector2_lv"/>
+        <positionref ref="PrimaryStrawDetector2_lv_pos"/>
+        <rotationref ref="Primary_rot"/>
       </physvol>
     </volume>
     <volume name="DetEnclosure_lv">
       <materialref ref="Air"/>
       <solidref ref="DetEnclosure"/>
       <physvol>
-        <volumeref ref="idDetector_lv"/>
-        <positionref ref="idDetector_lv_pos"/>
+        <volumeref ref="Primary_lv"/>
+        <positionref ref="Primary_lv_pos"/>
         <rotationref ref="identity"/>
       </physvol>
     </volume>
     <volume name="World_lv">
-      <materialref ref="Air"/>
+      <materialref ref="Rock"/>
       <solidref ref="World"/>
       <physvol>
         <volumeref ref="DetEnclosure_lv"/>
-        <positionref ref="DetEnc_pos"/>
+        <positionref ref="DetEnclosure_lv_pos"/>
         <rotationref ref="identity"/>
       </physvol>
     </volume>

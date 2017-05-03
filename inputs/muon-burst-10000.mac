@@ -1,0 +1,27 @@
+####################################################################
+#
+# Generate a 10000 MeV muon beamed in the down stream direction.
+#
+
+# Create the first particle source.  This source will be used to
+# specify the position of the vertex.  The any of the GPS direction
+# and energy commands can be used.
+/gps/particle mu+
+/gps/energy 10000 MeV
+
+# This generates the position of the particle gun.  It can be
+# used for the other particle guns to create a multi particle event.  The
+# /gps/position command must come first.
+/gps/position 0.0 0.0 2.0 m
+/gps/pos/type Volume
+/gps/pos/shape Para
+/gps/pos/halfx 1 cm
+/gps/pos/halfy 1 cm
+/gps/pos/halfz 1 cm
+
+# This generates the burst of muons in all directions.
+/gps/ang/type iso
+
+/gps/number 100
+
+# Do not include /run/beamOn here.
