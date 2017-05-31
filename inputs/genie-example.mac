@@ -1,0 +1,21 @@
+/edep/random/timeRandomSeed
+
+## Replace this with the name of a GENIE rooTracker file
+/generator/kinematics/rooTracker/input FHC_numu.root
+
+## Use the T2K rooTracker input format.  This is directly supported by GENIE.
+/generator/kinematics/set rooTracker
+
+## Place one interaction per event
+/generator/count/fixed/number 1
+/generator/count/set fixed
+
+## Distribute the events based on the density of the material.  When done
+##   this way, the composition of the detector is ignored, so it's not the
+##   best way for physics, but it's good for an example since you don't
+##   need to syncronize the GENIE and EDEPSIM geometries.
+/generator/position/set density
+
+## Make sure EDEPSIM updates the kinematics generator.
+/generator/add
+
