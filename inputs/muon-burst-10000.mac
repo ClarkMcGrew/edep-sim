@@ -12,7 +12,7 @@
 # This generates the position of the particle gun.  It can be
 # used for the other particle guns to create a multi particle event.  The
 # /gps/position command must come first.
-/gps/position 0.0 0.0 2.0 m
+/gps/position 0.0 0.0 -1.0 m
 /gps/pos/type Volume
 /gps/pos/shape Para
 /gps/pos/halfx 1 cm
