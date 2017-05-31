@@ -145,7 +145,7 @@ void EDepSim::KinemPassThrough::CreateInternalTrees() {
     TIter files(gROOT->GetListOfFiles());
     TObject* object;
     while ((object = files.Next())) {
-	TFile* file = dynamic_cast<TFile*>(output);
+        TFile* file = dynamic_cast<TFile*>(object);
         if (!file) continue;
         if (!file->IsOpen()) continue;
         std::string fileOption(file->GetOption());
