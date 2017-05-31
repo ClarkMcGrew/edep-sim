@@ -348,9 +348,43 @@ edep-sim into a separate package.  The example main program
 (i.e. app/edepSim.cc) is commented and the library is started beginning at
 about line 230.
 
-## Using GPS (The General Particle Source)
+## Specifying the Primary Particle Kinematics
 
-This page describes how to use the GPS particle source provided by GEANT.
+The primary particle kinematics are controlled using the `/generator` macro
+commands.
+
+### Using GENIE inputs
+
+```
+## Don't repeat the random number sequence (not limited to GENIE input)
+/edep/random/timeRandomSeed
+
+## Replace this with the name of a GENIE rooTracker file
+/generator/kinematics/rooTracker/input <rooTracker-file>
+
+## Use the rooTracker input format.  This is directly supported by GENIE.
+/generator/kinematics/set rooTracker
+
+## Place one interaction per event
+/generator/count/fixed/number 1
+/generator/count/set fixed
+
+## Distribute the events based on the density of the material.  When done
+##   this way, the composition of the detector is ignored, so it's not the
+##   best way for physics, but it's good for an example since you don't
+##   need to syncronize the GENIE and EDEPSIM geometries.
+/generator/position/set density
+
+## Make sure EDEPSIM updates the kinematics generator.
+/generator/add
+```
+
+### Using GPS (The General Particle Source)
+
+This describes how to use the GPS particle source provided by GEANT.  It is
+part of GEANT, so deviates from the normal way that EDEPSIM accepts
+kinemtics.
+
 This particle source is incredibly useful, but extremely is idiosyncratic.
 It's also has relatively little documentation, and the documentation that
 exists is often misleading.  This page attempts to cover the basics of
@@ -368,7 +402,7 @@ of the source.  Once you get beyond the idiosyncratic definitions (which
 are at odds with the rest of GEANT), the GPS can be used to create almost
 any sort of particle distribution for testing programs.
 
-### Controlling the Simulated Particle
+#### Controlling the Simulated Particle
 
 The particle being simulated is set using the `/gps/particle` command.  The
 particles are set by name, and can be any of the ones simulated by GEANT.
@@ -382,13 +416,13 @@ The most common particles are `mu-`, `mu+`, `pi+`, `pi-, `e-`,
 /gps/particle proton
 ```
 
-### Controlling the Position Distribution
+#### Controlling the Position Distribution
 
 The vertex position is controlled using the commands in the /gps/pos/
 subdirectory.  The most useful distributions are the Point, Plane, and
 Volume.  To generate a point source the following commands are used
 
-#### Making a point source
+##### Making a point source
 
 ```
 /gps/position 0 0 -50 cm
@@ -403,7 +437,7 @@ GEANT is very inconsistent about the spelling of `centre` vs `center` with
 which version is being used by which class.  For consistency, avoid the
 problem by prefering `/gps/position` and avoiding `/gps/pos/centre`.
 
-#### Making a rectangular or circular source
+##### Making a rectangular or circular source
 
 Since a point source can bias tests, vertices should usually be spread over
 a plane or a volume.  The vertices can be distributed over a flat surface
@@ -419,7 +453,7 @@ by setting
 /gps/pos/rot2 0 1 0 
 ```
 
-#### Making a volume source
+##### Making a volume source
 
 To distribute the vertices over a volume the type is changed to Volume, and
 a volumetric shape must be chosen.  The following commands will generate a
@@ -455,7 +489,7 @@ and
 /gps/pos/halfz 1 cm
 ```
 
-### Controlling the Direction Distribution
+#### Controlling the Direction Distribution
 
 The direction distribution is set using the commands in the /gps/ang/
 subdirectory.  When specifying the direction, be aware that the code was
@@ -490,7 +524,7 @@ to travel along the positive X axis (i.e. along the local negative Z axis).
 Note: The default for /gps/ang/rot2 is [0 1 0], so it doesn't need to be
 specified.
 
-#### Setting a fixed particle direction
+##### Setting a fixed particle direction
 
 A fixed particle direction can be specified using
 
@@ -503,7 +537,7 @@ case, the particle is traveling along the positive Z axis.  Notice unlike
 the rest of the gps direction commands, this uses the same convention as
 the rest of GEANT.
 
-#### Making directions with a Gaussian spread
+##### Making directions with a Gaussian spread
 
 The problem with specifying a fixed direction is that it may bias a test.
 A Gaussian direction spread can be created using a one dimensional beam
@@ -528,7 +562,7 @@ the global Z axis).  You should be aware that (for reasons completely
 beyond me, but I've verified it in the source code) the /gps/ang/maxtheta
 and /gps/ang/mintheta commands have no effect on the beam distributions.
 
-#### Generating directions in a cone
+##### Generating directions in a cone
 
 To spread the directions isotropically over all direction, the following
 command is used
@@ -559,7 +593,7 @@ or alternatively
 
 where the final line deals with the wacky angle convention.
 
-### Controlling the Energy Distribution
+#### Controlling the Energy Distribution
 
 The energy distribution is set using the commands in the /gps/ene/
 subdirectory.  There are many options available, but for testing programs
@@ -567,7 +601,7 @@ the most useful ones are to create a mono-energetic, Gaussian, or uniform
 energy source.  By default the energy is specified as the kinetic energy of
 the created particle.
 
-#### Making a monoenergetic source
+##### Making a monoenergetic source
 
 To create a monoenergetic source, the energy is specified
 like this:
@@ -579,7 +613,7 @@ like this:
 where you must specify both the energy value and the unit.  This create a
 monoenergetic source with 100 MeV of kinetic energy.
 
-#### Making a uniform energy distribution.
+##### Making a uniform energy distribution.
 
 A uniform energy distribution can be created using:
 
@@ -596,7 +630,7 @@ between 100 MeV and 500 MeV of kinetic energy.  The gradient is specified
 in MeV^{-1}.  The intercept is a pure number, and the final distribution
 does not need to be normalized.
 
-#### Making a Gaussian energy distribution
+##### Making a Gaussian energy distribution
 
 A Gaussian energy distribution can be created using
 
@@ -608,7 +642,7 @@ A Gaussian energy distribution can be created using
 
 where this create a source with a Gaussian spread of 30 MeV around 400 MeV.
 
-### Creating Multiple Particle Events
+#### Creating Multiple Particle Events
 
 The GPS is very inflexible when it comes to handling multiple particles in
 a single event, so it's not possible to handle the general case with
