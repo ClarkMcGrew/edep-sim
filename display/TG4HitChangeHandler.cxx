@@ -57,10 +57,13 @@ void EDep::TG4HitChangeHandler::Apply() {
             double dEdX = energy;
             if (length>0.01) dEdX /= length;
 
+            int contrib = g4Hit->Contrib.front();
+            std::string particle = gEDepSimEvent->Trajectories[contrib].Name;
+            
             TEveLine* eveHit = new TEveLine(2);
             eveHit->SetName(detector->first.c_str());
             std::ostringstream title;
-            title << "G4 Hit";
+            title << "Hit(" << particle << ")";
             title << std::fixed << std::setprecision(2)
                   << " " << dEdX << " MeV/mm";
             title << " for " << length << " mm"
@@ -70,7 +73,7 @@ void EDep::TG4HitChangeHandler::Apply() {
                   << ")";
 
             eveHit->SetTitle(title.str().c_str());
-
+            eveHit->SetLineWidth(5);
             eveHit->SetLineColor(TEventDisplay::Get().LogColor(
                                      dEdX,
                                      minEnergy,

@@ -61,7 +61,7 @@ namespace {
                 std::cout << "Show volume " << node->GetName() << std::endl;
                 TEveGeoShape *shape = GeometryClone(node->GetVolume());
                 shape->SetMainColor(node->GetVolume()->GetLineColor());
-                shape->SetMainTransparency(90);
+                shape->SetMainTransparency(70);
                 fEveList->AddElement(shape);
                 break;
             }
