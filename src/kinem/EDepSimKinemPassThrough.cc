@@ -66,7 +66,12 @@ bool EDepSim::KinemPassThrough::AddInputTree(const TTree * inputTreePtr,
                     " tree to the list of input trees that can be used."); 
 
     CreateInternalTrees();
-  
+
+    if (!fInputFilesTree || !fInputKinemTree) {
+        EDepSimError("Pass-through trees not created.");  
+        return false;
+    }
+    
     if (inputTreePtr == NULL) {
         EDepSimError("NULL input tree pointer.  TTree not saved.");  
         return false;
@@ -141,12 +146,17 @@ void EDepSim::KinemPassThrough::CreateInternalTrees() {
     TObject* object;
     while ((object = files.Next())) {
 	TFile* file = dynamic_cast<TFile*>(output);
+        if (!file) continue;
         if (!file->IsOpen()) continue;
         std::string fileOption(file->GetOption());
         if (fileOption.find("CREATE") != std::string::npos) {
             output = file;
             continue;
         }
+    }
+    
+    if (!output) {
+        return;
     }
     
     output->cd();
@@ -235,6 +245,7 @@ int EDepSim::KinemPassThrough::LastEntryNumber() {
     // persistent tree.
     if (!fPersistentTree) {
         EDepSimError("No entries in fPersistent tree.");
+        return -1;
     }
     return fPersistentTree->GetEntries() - 1;
 }

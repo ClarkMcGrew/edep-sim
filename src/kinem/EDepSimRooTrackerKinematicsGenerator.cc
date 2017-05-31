@@ -75,6 +75,8 @@ EDepSim::RooTrackerKinematicsGenerator::RooTrackerKinematicsGenerator(
     fTree->SetBranchAddress("StdHepLd",        fStdHepLd);
     fTree->SetBranchAddress("StdHepFm",        fStdHepFm);
     fTree->SetBranchAddress("StdHepLm",        fStdHepLm);
+#define PARENT_PARTICLE_PASS_THROUGH
+#ifdef PARENT_PARTICLE_PASS_THROUGH
     fTree->SetBranchAddress("NuParentPdg",    &fNuParentPdg);
     fTree->SetBranchAddress("NuParentDecMode",&fNuParentDecMode);
     fTree->SetBranchAddress("NuParentDecP4",   fNuParentDecP4);
@@ -82,7 +84,8 @@ EDepSim::RooTrackerKinematicsGenerator::RooTrackerKinematicsGenerator(
     fTree->SetBranchAddress("NuParentProP4",   fNuParentProP4);
     fTree->SetBranchAddress("NuParentProX4",   fNuParentProX4);
     fTree->SetBranchAddress("NuParentProNVtx",&fNuParentProNVtx);
-
+#endif
+    
     // Set the input tree to the current rootracker tree that this class is
     // using.
     EDepSim::KinemPassThrough::GetInstance()->AddInputTree(fTree,
@@ -274,11 +277,13 @@ bool EDepSim::RooTrackerKinematicsGenerator::GeneratePrimaryVertex(
         
         if (fStdHepStatus[cnt] == 0) {
             theIncomingVertex->SetPrimary(theParticle);
-        }else if (fStdHepStatus[cnt] == 1){
+        }
+        else if (fStdHepStatus[cnt] == 1){
             theVertex->SetPrimary(theParticle);
         }
     }
 
+#ifdef PARENT_PARTICLE_PASS_THROUGH
     // Fill the particles at the decay vertex.  These are the first info
     // vertex.
     G4PrimaryVertex* theDecayVertex 
@@ -325,8 +330,8 @@ bool EDepSim::RooTrackerKinematicsGenerator::GeneratePrimaryVertex(
                                 fNuParentProP4[1]*GeV,
                                 fNuParentProP4[2]*GeV);
     theProductionVertex->SetPrimary(theProductionParticle);
-
-
+#endif
+    
     return true;
 }
 
