@@ -65,6 +65,11 @@ public:
     /// G4VisAttributes object.
     G4Color GetG4Color(G4Material* material);
 
+    /// A method to request that a volume mass should be printed;
+    virtual void ShouldPrintMass(std::string name) {
+        fPrintMass.push_back(name);
+    }
+
 protected:
     /// use Get() instead
     RootGeometryManager();
@@ -156,11 +161,6 @@ private:
 
     /// A method to flag that a volume mass should be printed.
     virtual bool PrintMass(const G4VPhysicalVolume* theVol);
-
-    /// A method to request that a volume mass should be printed;
-    virtual void ShouldPrintMass(std::string name) {
-        fPrintMass.push_back(name);
-    }
 
     /// A method to translate from the local volume material to the right
     /// material for the root geometry.  This is required for volumes where

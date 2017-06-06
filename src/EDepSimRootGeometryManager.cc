@@ -482,7 +482,7 @@ bool EDepSim::RootGeometryManager::PrintMass(const G4VPhysicalVolume* theVol) {
     for (std::vector<G4String>::iterator n = fPrintMass.begin();
          n != fPrintMass.end();
          ++n) {
-        if (theFullName == (*n)) {
+        if (theFullName.find(*n) != std::string::npos) {
             if (fPrintedMass.find(*n) != fPrintedMass.end()) continue;
             fPrintedMass.insert(*n);
             return true;
@@ -609,8 +609,8 @@ bool EDepSim::RootGeometryManager::CreateEnvelope(
     G4LogicalVolume* theLog = theG4PhysVol->GetLogicalVolume();
 
     if (PrintMass(theG4PhysVol)) {
-        EDepSimLog("%%% Mass: " << theLog->GetMass(true)/CLHEP::kg/1000.0
-                   << " ton"
+        EDepSimLog("%%% Mass: "
+                   << G4BestUnit(theLog->GetMass(true),"Mass")
                    << " Volume: " << theG4PhysVol->GetName());
     }
     
