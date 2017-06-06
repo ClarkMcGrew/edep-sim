@@ -27,6 +27,7 @@ private:
     G4UIdirectory*             fEDepSimDir;
 
     G4UIcmdWithoutParameter*   fUpdateCmd;
+    G4UIcmdWithAString*        fPrintMassCmd;
     G4UIcmdWithoutParameter*   fValidateCmd;
     G4UIcmdWithAString*        fExportCmd;
     G4UIcmdWithAString*        fGDMLCmd;

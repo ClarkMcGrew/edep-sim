@@ -33,6 +33,13 @@ EDepSim::DetectorMessenger::DetectorMessenger(EDepSim::UserDetectorConstruction*
                             "  This MUST be applied before \"/run/beamOn\".");
     fUpdateCmd->AvailableForStates(G4State_PreInit);
 
+    fPrintMassCmd = new G4UIcmdWithAString("/edep/printMass",this);
+    fPrintMassCmd->SetParameterName("volume-name", false);
+    fPrintMassCmd->SetGuidance(
+        "Print the mass of the first physical volume containing the sub-string."
+        " (set before update)");
+    fPrintMassCmd->AvailableForStates(G4State_PreInit);
+
     fValidateCmd = new G4UIcmdWithoutParameter("/edep/validateGeometry",this);
     fValidateCmd->SetGuidance(
         "Check the geometry for overlaps (set before update).");
@@ -77,6 +84,7 @@ EDepSim::DetectorMessenger::DetectorMessenger(EDepSim::UserDetectorConstruction*
 EDepSim::DetectorMessenger::~DetectorMessenger()
 {
     delete fUpdateCmd;
+    delete fPrintMassCmd;
     delete fValidateCmd;
     delete fExportCmd;
     delete fGDMLCmd;
@@ -90,6 +98,9 @@ void EDepSim::DetectorMessenger::SetNewValue(G4UIcommand * cmd,
                                              G4String newValue) {
     if (cmd == fUpdateCmd) {
         fConstruction->UpdateGeometry();
+    }
+    else if (cmd == fPrintMassCmd) {
+        EDepSim::RootGeometryManager::Get()->ShouldPrintMass(newValue);
     }
     else if (cmd == fValidateCmd) {
         EDepSimLog("Geometry will be validated");
