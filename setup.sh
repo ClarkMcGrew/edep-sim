@@ -32,9 +32,15 @@ ___edep_root() {
 	cd ..
     done
 }
+
 export EDEP_ROOT
 EDEP_ROOT=$(___edep_root)
 unset -f ___edep_root
+
+if [ ${EDEP_ROOT} = "invalid-directory" ]; then
+    echo EDEP-SIM setup.sh must be sourced in edep-sim directory.
+    return
+fi
 
 ___edep_target () {
     target="edep"
@@ -68,5 +74,5 @@ alias edep-setup=". ${EDEP_ROOT}/setup.sh"
 
 alias edep-build="${EDEP_ROOT}/build/edep-build.sh"
 
-echo Defined edep-setup to re-setup the edep-sim package
-echo Define edep-build to build the the edep-sim package.
+echo Defined edep-setup to re-setup the edep-sim package.
+echo Defined edep-build to build the the edep-sim package.
