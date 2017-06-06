@@ -3289,6 +3289,7 @@ EDepSim detector control.
    /edep/db/   Output file control commands.
  Commands : 
    update * Do the run manager initialization.  This causes the geometry to be built.  This MUST be applied before "/run/beamOn".
+   printMass * Print the mass of the first physical volume containing the sub-string. (set before update)
    validateGeometry * Check the geometry for overlaps (set before update).
    export * Export the geometry to a file.  This is not compatible with event
 generation, or reading of kinematics files.
@@ -3304,6 +3305,16 @@ in the <package-root>/src directory (e.g. src/baseline-1.0.mac).
 Command /edep/update
 Guidance :
 Do the run manager initialization.  This causes the geometry to be built.  This MUST be applied before "/run/beamOn".
+
+
+
+Command /edep/printMass
+Guidance :
+Print the mass of the first physical volume containing the sub-string. (set before update)
+
+Parameter : volume-name
+ Parameter type  : s
+ Omittable       : False
 
 
 
