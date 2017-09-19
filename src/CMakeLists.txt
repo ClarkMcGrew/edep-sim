@@ -22,7 +22,7 @@ target_link_libraries(edepsim PUBLIC ${Geant4_LIBRARIES} ${ROOT_LIBRARIES})
 # Install the G4 macro files used to control the MC.
 install(FILES edepsim-defaults-1.0.mac DESTINATION lib/edep-sim)
 
-# Install the library for edep-sime
+# Install the library for edep-sim
 install(TARGETS edepsim LIBRARY DESTINATION lib)
 
 # Install the header files.
