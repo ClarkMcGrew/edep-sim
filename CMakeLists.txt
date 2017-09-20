@@ -15,11 +15,10 @@ message("Energy Deposition Simulation -- ${VERSION}")
 set(CMAKE_VERBOSE_MAKEFILE TRUE)
 
 # Configure the dependencies
-find_package(ROOT REQUIRED COMPONENTS Geom)
+find_package(ROOT REQUIRED
+  COMPONENTS Geom Physics Matrix MathCore Tree RIO
+  OPTIONAL_COMPONENTS Eve TreePlayer Ged RGL Gui Graf Graf3d) 
 include(${ROOT_USE_FILE})
-
-# Check if ROOT is compiled with Eve
-find_library(ROOT_EVE_LIBRARY NAME Eve libEve HINTS ${ROOT_LIBRARY_DIRS})
 
 # Configure GEANT4
 find_package(Geant4)
@@ -46,12 +45,12 @@ add_definitions(-DDETSIM_INSTALL_PREFIX=\"${CMAKE_INSTALL_PREFIX}\")
 # Build the subdirectories
 add_subdirectory(src)
 add_subdirectory(app)
-if(ROOT_EVE_LIBRARY)
+if(ROOT_Eve_LIBRARY)
   message("Building the edep-disp event display")
   add_subdirectory(display)
-else(ROOT_EVE_LIBRARY)
+else(ROOT_Eve_LIBRARY)
   message("Not building edep-disp event display")
-endif(ROOT_EVE_LIBRARY)
+endif(ROOT_Eve_LIBRARY)
 
 # Install some extra files.
 install(DIRECTORY inputs DESTINATION share/EDepSim

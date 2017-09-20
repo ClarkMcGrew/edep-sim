@@ -17,15 +17,13 @@ ROOT_GENERATE_DICTIONARY(G__edepdisp
 # Build the library.
 add_library(edepdisp SHARED ${source} G__edepdisp.cxx)
 target_include_directories(edepdisp PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
-target_link_libraries(edepdisp PUBLIC ${ROOT_EVE_LIBRARY} ${ROOT_LIBRARIES})
+target_link_libraries(edepdisp PUBLIC edepsim)
+target_link_libraries(edepdisp PUBLIC ${ROOT_LIBRARIES})
 install(TARGETS edepdisp LIBRARY DESTINATION lib)
-
-message(${ROOT_LIBRARIES})
 
 # Build the display
 add_executable(edep-disp eventDisplay.cxx)
 target_link_libraries(edep-disp LINK_PUBLIC edepdisp)
-target_link_libraries(edep-disp LINK_PUBLIC edepsim)
 install(TARGETS edep-disp RUNTIME DESTINATION bin)
 
 # If this is ROOT6 or later, then install the rootmap and pcm files.
