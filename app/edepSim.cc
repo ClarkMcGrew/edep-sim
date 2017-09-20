@@ -27,6 +27,7 @@ void usage () {
     std::cout << "    -g      -- Set a GDML file" << std::endl;
     std::cout << "    -o      -- Set the output file" << std::endl;
     std::cout << "    -p      -- Select the physics list" << std::endl;
+    std::cout << "    -s      -- Set the seed from the time" << std::endl;
     std::cout << "    -u      -- Do update before running the macros"
               << std::endl;
     std::cout << "    -U      -- Start an interactive run after the macros"
@@ -52,6 +53,7 @@ int main(int argc,char** argv) {
     int errflg = 0;
     int c = 0;
     bool useUI = false;
+    bool setSeed=false;
     bool doUpdate=false;
     bool validateGeometry=true;
     int debugLevel = 0;
@@ -68,7 +70,7 @@ int main(int argc,char** argv) {
     
     if (argc<2) usage();
     
-    while (!errflg && ((c=getopt(argc,argv,"CdD:e:g:o:p:quUvV:h")) != -1)) {
+    while (!errflg && ((c=getopt(argc,argv,"CdD:e:g:o:p:qsuUvV:h")) != -1)) {
         switch (c) {
         case 'C': {
             // Toggle the validateGeometry flag.  The default value is set
@@ -133,6 +135,11 @@ int main(int argc,char** argv) {
         }
         case 'p': {
             physicsList = optarg;
+            break;
+        }
+        case 's': {
+            // Force a '/edep/random/timeRandomSeed'
+            setSeed = true;
             break;
         }
         case 'u': {
@@ -289,6 +296,9 @@ int main(int argc,char** argv) {
     // exception if the geometry has overlaps.
     if (validateGeometry) UI->ApplyCommand("/edep/validateGeometry");
     
+    // Set the random seed from the time.
+    if (setSeed) UI->ApplyCommand("/edep/random/timeRandomSeed");
+
     // Set the defaults for the simulation and get ready to run.  This needs
     // to be done before the first event is generated, but can also be done in
     // the users macro file.  It's executed here if the "-u" option was
