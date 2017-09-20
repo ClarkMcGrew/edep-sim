@@ -21,7 +21,7 @@
 EDepSim::SegmentSD::SegmentSD(G4String name)
     :G4VSensitiveDetector(name),
      fHits(NULL), fHCID(-1),
-     fMaximumHitSagitta(1*CLHEP::mm), fMaximumHitLength(10*CLHEP::mm),
+     fMaximumHitSagitta(1*CLHEP::mm), fMaximumHitLength(3*CLHEP::mm),
      fLastHit(0) {
     // In an unbelievably poor interface, the G4VSensitiveDetector class
     // exposes the protected field "std::vector<G4String> collectionName" to
