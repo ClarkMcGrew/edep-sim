@@ -18,16 +18,10 @@ set(CMAKE_VERBOSE_MAKEFILE TRUE)
 find_package(ROOT REQUIRED
   COMPONENTS Geom Physics Matrix MathCore Tree RIO
   OPTIONAL_COMPONENTS Eve TreePlayer Ged RGL Gui Graf Graf3d) 
-include(${ROOT_USE_FILE})
+if(ROOT_FOUND)
+  include(${ROOT_USE_FILE})
+endif(ROOT_FOUND)
 
-# Configure GEANT4
-find_package(Geant4)
-include(${Geant4_USE_FILE})
-
-# Make sure we have at least G4.9.6
-if(${Geant4_VERSION} VERSION_LESS "9.6")
-  message(FATAL_ERROR "Incompatible version of geant4")
-endif(${Geant4_VERSION} VERSION_LESS "9.6")
 
 # Add a target to generate API documentation with Doxygen
 find_package(Doxygen)
@@ -40,11 +34,18 @@ if(DOXYGEN_FOUND)
     COMMENT "Generating API documentation with Doxygen" VERBATIM)
 endif(DOXYGEN_FOUND)
 
-add_definitions(-DDETSIM_INSTALL_PREFIX=\"${CMAKE_INSTALL_PREFIX}\")
-
-# Build the subdirectories
-add_subdirectory(src)
-add_subdirectory(app)
+# Configure GEANT4.  If it's found, then build the simulation.
+find_package(Geant4)
+if(Geant4_FOUND)
+  include(${Geant4_USE_FILE})
+  # Make sure we have at least G4.9.6
+  if(${Geant4_VERSION} VERSION_LESS "9.6")
+    message(FATAL_ERROR "Incompatible version of geant4")
+  endif(${Geant4_VERSION} VERSION_LESS "9.6")
+  add_subdirectory(src)
+  add_subdirectory(app)
+endif(Geant4_FOUND)
+  
 if(ROOT_Eve_LIBRARY)
   message("Building the edep-disp event display")
   add_subdirectory(display)

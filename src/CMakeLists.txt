@@ -12,6 +12,9 @@ ROOT_GENERATE_DICTIONARY(G__edepsim
   TG4PrimaryVertex.h TG4Trajectory.h TG4HitSegment.h TG4Event.h
   LINKDEF edepsim_LinkDef.h)
 
+# Where the macro files can be found.
+add_definitions(-DDETSIM_INSTALL_PREFIX=\"${CMAKE_INSTALL_PREFIX}\")
+
 # Build the library.
 add_library(edepsim SHARED ${source}
   TG4PrimaryVertex.cxx  TG4Trajectory.cxx TG4HitSegment.cxx TG4Event.cxx
