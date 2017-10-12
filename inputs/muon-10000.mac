@@ -12,11 +12,11 @@
 # This generates the position of the particle gun.  It can be
 # used for the other particle guns to create a multi particle event.  The
 # /gps/position command must come first.
-/gps/position 0.0 0.0 -3.0 m
+/gps/position 0.0 0.0 -8.0 m
 /gps/pos/type Volume
 /gps/pos/shape Para
-/gps/pos/halfx 1 cm
-/gps/pos/halfy 1 cm
+/gps/pos/halfx 1000 cm
+/gps/pos/halfy 1000 cm
 /gps/pos/halfz 1 cm
 
 # This generates the direction of the muon.  This aims
@@ -26,5 +26,10 @@
 /gps/ang/maxtheta 15 deg
 /gps/ang/rot1 1 0 0 
 /gps/ang/rot2 0 -1 0
+
+/generator/count/fixed/number 100
+/generator/count/set fixed
+
+/generator/add
 
 # Do not include /run/beamOn here.
