@@ -100,6 +100,7 @@ public:
     /// Check if this trajectory should be saved.
     bool SaveTrajectory() const { return fSaveTrajectory;}
 
+    // Add a new step to the trajectory.
     virtual void AppendStep(const G4Step* aStep);
 
     /// Get the number of trajectory points saved with this trajectory.

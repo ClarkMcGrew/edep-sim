@@ -43,12 +43,13 @@
 EDepSim::UserDetectorConstruction::UserDetectorConstruction() {
     fDetectorMessenger = new EDepSim::DetectorMessenger(this);
     fWorldBuilder = NULL;
+#define BUILD_CAPTAIN
 #ifdef BUILD_CAPTAIN
     fWorldBuilder = new CaptWorldBuilder("/Captain",this);
 #endif
     fDefaultMaterial = NULL;
     fValidateGeometry = false;
-    fGDMLParser = new G4GDMLParser;
+    fGDMLParser = NULL;
     fPhysicalWorld = NULL;
     new G4UnitDefinition("volt/cm","V/cm","Electric field",volt/cm);
 }
@@ -59,15 +60,53 @@ EDepSim::UserDetectorConstruction::~UserDetectorConstruction() {
     if (fGDMLParser) delete fGDMLParser;
 }
  
-G4VPhysicalVolume* EDepSim::UserDetectorConstruction::Construct() {
-    fPhysicalWorld =  fGDMLParser->GetWorldVolume();
-    
-    if (!fPhysicalWorld) {
-        EDepSimLog("Using a Custom Geometry");
-        fPhysicalWorld = ConstructDetector();
+namespace {
+    double ParseFloat(std::string value) {
+        std::istringstream theStream(value);
+        double val;
+        theStream >> val;
+        return val;
     }
-    else {
+
+    // Parse a string containing an RGBA color.
+    G4Color ParseColor(std::string value) {
+
+        std::size_t pos = value.find("("); 
+        if (pos == std::string::npos) return G4Color(1,1,1,1);
+
+        value = value.substr(pos+1);
+        pos = value.find(","); 
+        if (pos == std::string::npos) return G4Color(1,1,1,1);
+        std::string elem = value.substr(0,pos);
+        double r = ParseFloat(elem);
+
+        value = value.substr(pos+1);
+        pos = value.find(","); 
+        if (pos == std::string::npos) return G4Color(1,1,1,1);
+        elem = value.substr(0,pos);
+        double g = ParseFloat(elem);
+
+        value = value.substr(pos+1);
+        pos = value.find(","); 
+        if (pos == std::string::npos) {
+            double b = ParseFloat(value);
+            return G4Color(r,g,b,1.0);
+        }
+        elem = value.substr(0,pos);
+        double b = ParseFloat(elem);
+
+        value = value.substr(pos+1);
+        double a = ParseFloat(value);
+        
+        return G4Color(r,g,b,a);
+    }
+}
+
+G4VPhysicalVolume* EDepSim::UserDetectorConstruction::Construct() {
+    if (fGDMLParser) {
         EDepSimLog("Using a GDML Geometry");
+        
+        fPhysicalWorld =  fGDMLParser->GetWorldVolume();
         
         // Use auxilliary information to set the visual attributes for logical
         // volumes.
@@ -75,19 +114,45 @@ G4VPhysicalVolume* EDepSim::UserDetectorConstruction::Construct() {
                  aux = fGDMLParser->GetAuxMap()->begin();
              aux != fGDMLParser->GetAuxMap()->end();
              ++aux) {
+            G4Color color(0,0,0,0);
             for (G4GDMLAuxListType::const_iterator auxItem
                      = aux->second.begin();
                  auxItem != aux->second.end();
                  ++auxItem) {
-                if (auxItem->type != "Color") continue;
-                EDepSimLog("Set volume " << aux->first->GetName()
-                           << " color to " << auxItem->value);
-                G4Color color;
-                if (G4Color::GetColour(auxItem->value,color)) {
-                    aux->first->SetVisAttributes(new G4VisAttributes(color));
+                if (auxItem->type == "Color") {
+                    // Set the color while keeping the original alpha.
+                    EDepSimLog("Set volume " << aux->first->GetName()
+                               << " color to " << auxItem->value);
+                    G4Color tmp;
+                    if (G4Color::GetColour(auxItem->value,tmp)) {
+                        color = G4Color(tmp.GetRed(),
+                                        tmp.GetGreen(),
+                                        tmp.GetBlue(),
+                                        color.GetAlpha());
+                    }
+                    else {
+                        color = ParseColor(auxItem->value);
+                    }
+                }
+                if (auxItem->type == "Opacity") {
+                    // Set the color while keeping the original alpha.
+                    EDepSimLog("Set volume " << aux->first->GetName()
+                               << " opacity to " << auxItem->value);
+                    double opacity = ParseFloat(auxItem->value);
+                    color = G4Color(color.GetRed(),
+                                    color.GetGreen(),
+                                    color.GetBlue(),
+                                    opacity);
+                    
                 }
             }
+            aux->first->SetVisAttributes(new G4VisAttributes(color));
         }
+    }
+
+    if (!fPhysicalWorld) {
+        EDepSimLog("Try to construct a custom geometry");
+        fPhysicalWorld = ConstructDetector();
     }
 
     if (!fPhysicalWorld) {

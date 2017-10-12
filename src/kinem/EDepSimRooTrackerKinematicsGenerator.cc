@@ -23,10 +23,12 @@
 #include <TTree.h>
 
 #include "EDepSimVertexInfo.hh"
-#include "EDepSimLog.hh"
 #include "EDepSimKinemPassThrough.hh"
 
 #include "kinem/EDepSimRooTrackerKinematicsGenerator.hh"
+
+#include "EDepSimLog.hh"
+
 
 EDepSim::RooTrackerKinematicsGenerator::RooTrackerKinematicsGenerator(
     const G4String& name, const G4String& filename, 
@@ -150,7 +152,7 @@ bool EDepSim::RooTrackerKinematicsGenerator::GeneratePrimaryVertex(
     
     /// Check to see if the next event is there.
     if (fNextEntry >= fEntryVector.size()) {
-        EDepSimLog("EDepSim::RooTrackerKinematicsGenerator: end of input file.");
+        EDepSimLog("EDepSim::RooTrackerKinematicsGenerator: input file end.");
         throw EDepSim::NoMoreEvents();
     }
 
