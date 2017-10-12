@@ -21,7 +21,7 @@
 #include <G4StepLimiter.hh>
 
 EDepSim::ExtraPhysics::ExtraPhysics() 
-    : G4VPhysicsConstructor("EDepSim:: Extra"), fIonizationModel(1) { }
+    : G4VPhysicsConstructor("EDepSimExtra"), fIonizationModel(1) { }
 
 EDepSim::ExtraPhysics::~ExtraPhysics() { }
 
