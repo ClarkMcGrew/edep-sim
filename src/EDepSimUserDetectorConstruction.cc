@@ -72,17 +72,17 @@ namespace {
     G4Color ParseColor(std::string value) {
 
         std::size_t pos = value.find("("); 
-        if (pos == std::string::npos) return G4Color(1,1,1,1);
+        if (pos == std::string::npos) return G4Color(0.5,0.5,0.5,1.0);
 
         value = value.substr(pos+1);
         pos = value.find(","); 
-        if (pos == std::string::npos) return G4Color(1,1,1,1);
+        if (pos == std::string::npos) return G4Color(0.5,0.5,0.5,1.0);
         std::string elem = value.substr(0,pos);
         double r = ParseFloat(elem);
 
         value = value.substr(pos+1);
         pos = value.find(","); 
-        if (pos == std::string::npos) return G4Color(1,1,1,1);
+        if (pos == std::string::npos) return G4Color(0.5,0.5,0.5,1.0);
         elem = value.substr(0,pos);
         double g = ParseFloat(elem);
 
@@ -114,7 +114,7 @@ G4VPhysicalVolume* EDepSim::UserDetectorConstruction::Construct() {
                  aux = fGDMLParser->GetAuxMap()->begin();
              aux != fGDMLParser->GetAuxMap()->end();
              ++aux) {
-            G4Color color(0,0,0,0);
+            G4Color color(0.5,0.5,0.5,1.0);
             for (G4GDMLAuxListType::const_iterator auxItem
                      = aux->second.begin();
                  auxItem != aux->second.end();
@@ -135,7 +135,7 @@ G4VPhysicalVolume* EDepSim::UserDetectorConstruction::Construct() {
                     }
                 }
                 if (auxItem->type == "Opacity") {
-                    // Set the color while keeping the original alpha.
+                    // Set the alpha while keeping the original color.
                     EDepSimLog("Set volume " << aux->first->GetName()
                                << " opacity to " << auxItem->value);
                     double opacity = ParseFloat(auxItem->value);
