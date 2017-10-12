@@ -80,6 +80,9 @@ protected:
     /// should be invisible.
     int GetColor(const G4VPhysicalVolume* vol);
 
+    // Get the opacity of the physical volume.
+    double GetOpacity(const G4VPhysicalVolume* vol);
+    
 private:
     /// The pointer to the instantiation of this object.
     static EDepSim::RootGeometryManager* fThis;

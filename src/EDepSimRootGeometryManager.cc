@@ -671,8 +671,15 @@ bool EDepSim::RootGeometryManager::CreateEnvelope(
         if (!theVolume) theVolume = theMother;
         theVolume->SetTitle(theVolumeName.c_str());
         int color = GetColor(theG4PhysVol);
-        theVolume->SetLineColor(color);
-    
+        double opacity = GetOpacity(theG4PhysVol);
+        
+        theVolume->SetLineColorAlpha(color,opacity);
+        theVolume->SetFillColorAlpha(color,opacity);
+        theVolume->SetVisibility(true);
+        theVolume->SetVisDaughters(true);
+        theVolume->SetVisContainers(true);
+        theVolume->SetTransparency(100*opacity);
+        
         // There is no mother so set this as the top volume.
         if (!theMother) {
             EDepSimLog("Making \"" << theVolume->GetName() << "\" the top\n");
@@ -811,6 +818,16 @@ G4Color EDepSim::RootGeometryManager::GetG4Color(G4Material* material) {
 
     return G4Color(color.GetRed(),color.GetGreen(),color.GetBlue(),
                    color.GetAlpha()*alpha);
+}
+
+double EDepSim::RootGeometryManager::GetOpacity(const G4VPhysicalVolume* vol) {
+    const G4LogicalVolume* log = vol->GetLogicalVolume();
+    std::string theFullName = vol->GetName();
+
+    const G4VisAttributes* visAttributes = log->GetVisAttributes();
+
+    G4Color g4Color = visAttributes->GetColor();
+    return g4Color.GetAlpha();
 }
 
 int EDepSim::RootGeometryManager::GetColor(const G4VPhysicalVolume* vol) {
