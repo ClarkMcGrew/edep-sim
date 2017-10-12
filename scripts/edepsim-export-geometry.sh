@@ -46,7 +46,7 @@ EOF
 
 set -e
 
-edep-sim $MACRO 
+edep-sim -C $MACRO 
 
 rm $MACRO
 
