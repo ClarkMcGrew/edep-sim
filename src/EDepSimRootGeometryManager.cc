@@ -825,7 +825,11 @@ double EDepSim::RootGeometryManager::GetOpacity(const G4VPhysicalVolume* vol) {
     std::string theFullName = vol->GetName();
 
     const G4VisAttributes* visAttributes = log->GetVisAttributes();
-
+    if (!visAttributes) {
+        // If the visual attributes are missing...
+        return 0.5;
+    }
+    
     G4Color g4Color = visAttributes->GetColor();
     return g4Color.GetAlpha();
 }
