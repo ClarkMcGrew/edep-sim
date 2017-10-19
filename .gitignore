@@ -13,3 +13,4 @@ Makefile
 *.root
 *_C.*
 *.pcm
+*.png
