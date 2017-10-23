@@ -114,7 +114,7 @@ G4VPhysicalVolume* EDepSim::UserDetectorConstruction::Construct() {
                  aux = fGDMLParser->GetAuxMap()->begin();
              aux != fGDMLParser->GetAuxMap()->end();
              ++aux) {
-            G4Color color(0.5,0.5,0.5,1.0);
+            G4Color color(0.5,0.5,0.5,0.5);
             for (G4GDMLAuxListType::const_iterator auxItem
                      = aux->second.begin();
                  auxItem != aux->second.end();
