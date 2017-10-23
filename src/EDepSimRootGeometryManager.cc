@@ -119,6 +119,7 @@ void EDepSim::RootGeometryManager::Update(const G4VPhysicalVolume* aWorld,
     // Create the new geometry.
     gGeoManager = new TGeoManager("EDepSimGeometry",
                                   "Simulated Detector Geometry");
+    gGeoManager->SetVisLevel(20);
     // Create all of the materials.
     EDepSimLog("Create materials");
     CreateMaterials(aWorld);
@@ -446,10 +447,11 @@ TGeoShape* EDepSim::RootGeometryManager::CreateShape(const G4VSolid* theSolid,
     return theShape;
 }
 
-TGeoVolume* EDepSim::RootGeometryManager::CreateVolume(TGeoManager* theEnvelope, 
-                                                   const G4VSolid* theSolid, 
-                                                   std::string theName,
-                                                   TGeoMedium* theMedium) {
+TGeoVolume*
+EDepSim::RootGeometryManager::CreateVolume(TGeoManager* theEnvelope, 
+                                           const G4VSolid* theSolid, 
+                                           std::string theName,
+                                           TGeoMedium* theMedium) {
     TGeoShape* theShape = CreateShape(theSolid);
     TGeoVolume* theVolume = new TGeoVolume(theName.c_str(),
                                            theShape,
@@ -670,15 +672,25 @@ bool EDepSim::RootGeometryManager::CreateEnvelope(
                                  theShortName, theMedium);
         if (!theVolume) theVolume = theMother;
         theVolume->SetTitle(theVolumeName.c_str());
+
+        // Set the visual properties of the new volume
         int color = GetColor(theG4PhysVol);
         double opacity = GetOpacity(theG4PhysVol);
-        
-        theVolume->SetLineColorAlpha(color,opacity);
-        theVolume->SetFillColorAlpha(color,opacity);
-        theVolume->SetVisibility(true);
-        theVolume->SetVisDaughters(true);
         theVolume->SetVisContainers(true);
-        theVolume->SetTransparency(100*opacity);
+        if (color < 0 || opacity < 0.001) {
+            theVolume->SetVisibility(false);
+        }
+        else {
+            int i = 100.0*(1.0-opacity);
+            if (i>100) i = 100;
+            EDepSimLog("Set color of " << theShortName
+                       << " to " << color
+                       << " " << opacity
+                       << " " << i);
+            theVolume->SetLineColor(color);
+            theVolume->SetTransparency(i);
+            theVolume->SetVisibility(true);
+        }
         
         // There is no mother so set this as the top volume.
         if (!theMother) {
@@ -826,12 +838,15 @@ double EDepSim::RootGeometryManager::GetOpacity(const G4VPhysicalVolume* vol) {
 
     const G4VisAttributes* visAttributes = log->GetVisAttributes();
     if (!visAttributes) {
-        // If the visual attributes are missing...
-        return 0.5;
+        // Invisible if the visual attributes are missing...
+        return 0.0;
     }
     
     G4Color g4Color = visAttributes->GetColor();
-    return g4Color.GetAlpha();
+    double opacity = g4Color.GetAlpha();
+    if (opacity > 1.0) opacity = 1.0;
+
+    return opacity;
 }
 
 int EDepSim::RootGeometryManager::GetColor(const G4VPhysicalVolume* vol) {
@@ -840,28 +855,88 @@ int EDepSim::RootGeometryManager::GetColor(const G4VPhysicalVolume* vol) {
 
     const G4VisAttributes* visAttributes = log->GetVisAttributes();
     if (!visAttributes) {
-        return kOrange+1;
+        return -1;
     }
     
-#include "rootColorToG4ColorMap.hxx"
-
     int index = -1;
     double minDist = 10000;
     G4Color g4Color = visAttributes->GetColor();
-    for(std::map<int,G4Color>::iterator c = sRootColorToG4ColorMap.begin();
-        c != sRootColorToG4ColorMap.end(); ++c) {
-        G4Color rootColor = c->second;
-        double dR = (rootColor.GetRed() - g4Color.GetRed());
-        double dG = (rootColor.GetGreen() - g4Color.GetGreen());
-        double dB = (rootColor.GetBlue() - g4Color.GetBlue());
+
+    // Check the primary color wheel.
+    const int rootPrimaryColors[] = {
+        kRed, kMagenta, kBlue, kCyan, kGreen, kYellow, -1
+    };
+    for(const int* rootBaseColor = rootPrimaryColors;
+        0 <= *rootBaseColor;
+        ++rootBaseColor) {
+        for (int i = -10; i<5; ++i) {
+            int iColor = *rootBaseColor + i;
+            TColor* rootColor = gROOT->GetColor(iColor);
+            if (!rootColor) continue;
+            double dR = (rootColor->GetRed() - g4Color.GetRed());
+            double dG = (rootColor->GetGreen() - g4Color.GetGreen());
+            double dB = (rootColor->GetBlue() - g4Color.GetBlue());
+            double dist = std::sqrt(dR*dR + dG*dG + dB*dB);
+            if (dist > minDist) continue;
+            index = iColor;
+            minDist = dist;
+        }
+    }
+
+    // Check the secondary colors defined by ROOT.  
+    const int rootSecondaryColors[] = {
+        kPink, kMagenta, kViolet, kTeal, kSpring, kOrange, -1
+    };
+    for(const int* rootBaseColor = rootSecondaryColors;
+        0 <= *rootBaseColor;
+        ++rootBaseColor) {
+        for (int i = -9; i<=10; ++i) {
+            int iColor = *rootBaseColor + i;
+            TColor* rootColor = gROOT->GetColor(iColor);
+            if (!rootColor) continue;
+            double dR = (rootColor->GetRed() - g4Color.GetRed());
+            double dG = (rootColor->GetGreen() - g4Color.GetGreen());
+            double dB = (rootColor->GetBlue() - g4Color.GetBlue());
+            double dist = std::sqrt(dR*dR + dG*dG + dB*dB);
+            if (dist > minDist) continue;
+            index = iColor;
+            minDist = dist;
+        }
+    }
+
+    // Check the different colors of "black"
+    const int rootBlackColors[] = {
+        kGray, kGray+1, kGray+2, kGray+3, kBlack, -1
+    };
+    for(const int* rootBaseColor = rootBlackColors;
+        0 <= *rootBaseColor;
+        ++rootBaseColor) {
+        TColor* rootColor = gROOT->GetColor(*rootBaseColor);
+        if (!rootColor) continue;
+        double dR = (rootColor->GetRed() - g4Color.GetRed());
+        double dG = (rootColor->GetGreen() - g4Color.GetGreen());
+        double dB = (rootColor->GetBlue() - g4Color.GetBlue());
         double dist = std::sqrt(dR*dR + dG*dG + dB*dB);
         if (dist > minDist) continue;
-        index = c->first;
+        index = *rootBaseColor;
         minDist = dist;
     }
 
-    if (index < 0) return kOrange + 1;
-
+    // Check the basic colors (the first 50 colors in root).
+    for(int rootBaseColor = 1; 
+        rootBaseColor < 50; 
+        ++rootBaseColor) {
+        TColor* rootColor = gROOT->GetColor(rootBaseColor);
+        if (!rootColor) continue;
+        double dR = (rootColor->GetRed() - g4Color.GetRed());
+        double dG = (rootColor->GetGreen() - g4Color.GetGreen());
+        double dB = (rootColor->GetBlue() - g4Color.GetBlue());
+        double dist = std::sqrt(dR*dR + dG*dG + dB*dB);
+        if (dist > minDist) continue;
+        index = rootBaseColor;
+        minDist = dist;
+    }
+    
     return index;
 }
 

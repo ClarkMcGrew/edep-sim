@@ -80,7 +80,8 @@ protected:
     /// should be invisible.
     int GetColor(const G4VPhysicalVolume* vol);
 
-    // Get the opacity of the physical volume.
+    /// Get the opacity of the physical volume.  This will return an opacity of
+    /// zero (i.e. transparent) if the volume should be invisible.
     double GetOpacity(const G4VPhysicalVolume* vol);
     
 private:
