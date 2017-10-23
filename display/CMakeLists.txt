@@ -1,3 +1,34 @@
+cmake_minimum_required(VERSION 3.0)
+
+set(CMAKE_BUILD_TYPE Debug)
+
+# Set the project name and version
+project(edep-disp)
+set(VERSION_MAJOR "1")
+set(VERSION_MINOR "0")
+set(VERSION_PATCH "0")
+set(VERSION "${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_PATCH}")
+
+message("Energy Deposition Display -- ${VERSION}")
+
+# Set the default verbosity of the compilation...
+set(CMAKE_VERBOSE_MAKEFILE TRUE)
+
+# Configure the dependencies
+find_package(ROOT REQUIRED
+  COMPONENTS Geom Physics Matrix MathCore Tree RIO
+  Eve TreePlayer Ged RGL Gui Graf Graf3d) 
+if(ROOT_FOUND)
+  include(${ROOT_USE_FILE})
+endif(ROOT_FOUND)
+
+if(ROOT_Eve_LIBRARY)
+  message("Building the edep-disp event display")
+else(ROOT_Eve_LIBRARY)
+  message("NOT BUILDING THE EVENT DISPLAY: eve not found")
+  return()
+endif(ROOT_Eve_LIBRARY)
+
 # Suck up all of the source files.  This isn't good CMAKE practice,
 # but it makes maintaining this file easier.
 file(GLOB_RECURSE source *.cxx)

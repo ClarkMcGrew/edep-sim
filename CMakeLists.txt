@@ -16,12 +16,10 @@ set(CMAKE_VERBOSE_MAKEFILE TRUE)
 
 # Configure the dependencies
 find_package(ROOT REQUIRED
-  COMPONENTS Geom Physics Matrix MathCore Tree RIO
-  OPTIONAL_COMPONENTS Eve TreePlayer Ged RGL Gui Graf Graf3d) 
+  COMPONENTS Geom Physics Matrix MathCore Tree RIO)
 if(ROOT_FOUND)
   include(${ROOT_USE_FILE})
 endif(ROOT_FOUND)
-
 
 # Add a target to generate API documentation with Doxygen
 find_package(Doxygen)
@@ -30,8 +28,10 @@ if(DOXYGEN_FOUND)
     ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile @ONLY)
   add_custom_target(doc
     ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile
-    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
     COMMENT "Generating API documentation with Doxygen" VERBATIM)
+else(DOXYGEN_FOUND)
+  add_custom_target(doc
+    COMMENT "Not generating API documentation with Doxygen" VERBATIM)
 endif(DOXYGEN_FOUND)
 
 # Configure GEANT4.  If it's found, then build the simulation.
@@ -46,12 +46,7 @@ if(Geant4_FOUND)
   add_subdirectory(app)
 endif(Geant4_FOUND)
   
-if(ROOT_Eve_LIBRARY)
-  message("Building the edep-disp event display")
-  add_subdirectory(display)
-else(ROOT_Eve_LIBRARY)
-  message("Not building edep-disp event display")
-endif(ROOT_Eve_LIBRARY)
+add_subdirectory(display)
 
 # Install some extra files.
 install(DIRECTORY inputs DESTINATION share/EDepSim
