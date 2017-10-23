@@ -61,7 +61,7 @@ namespace {
                 std::cout << "Show volume " << node->GetName() << std::endl;
                 TEveGeoShape *shape = GeometryClone(node->GetVolume());
                 shape->SetMainColor(node->GetVolume()->GetLineColor());
-                shape->SetMainTransparency(70);
+                shape->SetMainTransparency(90);
                 fEveList->AddElement(shape);
                 break;
             }
@@ -100,12 +100,6 @@ EDep::TEventChangeManager::TEventChangeManager() {
     }
 
     ClearVolumesToShow();
-    AddVolumeToShow("LArTracker");
-    AddVolumeToShow("LArD");
-    AddVolumeToShow("Ogasci_lv");
-    AddVolumeToShow("StrawDetector");
-    AddVolumeToShow("GasTracker_lv");
-    AddVolumeToShow("TrackerMod_lv");
 }
 
 EDep::TEventChangeManager::~TEventChangeManager() {}

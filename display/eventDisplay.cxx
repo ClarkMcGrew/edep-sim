@@ -21,6 +21,8 @@ void usage() {
               << std::endl
               << "             a few, or it's horribly slow."
               << std::endl;
+    std::cout << "   -S    Clear the volumes that will be shown."
+              << std::endl;
     std::cout << "   -h    This message." << std::endl;
 }
 
@@ -30,7 +32,7 @@ int main(int argc, char **argv) {
     std::vector<std::string> volumesToShow;
     
     while (1) {
-        int c = getopt(argc, argv, "?hgs:");
+        int c = getopt(argc, argv, "?hgs:S");
         if (c == -1) break;
         switch (c) {
         case 'g': {
@@ -40,6 +42,10 @@ int main(int argc, char **argv) {
         }
         case 's': {
             volumesToShow.push_back(optarg);
+            break;
+        }
+        case 'S': {
+            volumesToShow.clear();
             break;
         }
         case '?':
