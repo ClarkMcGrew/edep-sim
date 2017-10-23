@@ -20,15 +20,15 @@ GENIE input is read using the RooTracker format.
 
 ## Working with the source distribution
 
-Most people will probably use `edep-sim` after it's already been installed
-(check your local guide).  However, if you are installing it from source,
-you need to run the local setup and then build it.  Assuming you've already
-cloned it from someplace and have the source directories, then `source` the
-setup script in the top level directory to define some simple aliases and
-define necessary environment variables.  The only explicitly external
-requirements are that GEANT and ROOT must be available (and found by cmake).
-The setup script will make sure that root and GEANT can be located (using
-`thisroot.sh` and `geant4.sh`).
+It's quite possible that you are working in an environment where `edep-sim`
+has already been installed (check with your local expert).  However, if you
+are installing it from source, you need to run the local setup and then
+build it.  Assuming you've already cloned it from someplace and have the
+source directories, then `source` the setup script in the top level
+directory to define some simple aliases and define necessary environment
+variables.  The only explicitly external requirements are that GEANT and
+ROOT must be available (and found by cmake).  The setup script will make
+sure that they can be located (using `thisroot.sh` and `geant4.sh`).
 
 ```bash
 . setup.sh
@@ -46,7 +46,31 @@ you can compile using
 edep-build doc
 ```
 
-which will create the html directory containing Doxygen class documentation.
+which will create the html sub-directory containing Doxygen class
+documentation.  The html is in the build directory.
+
+### Expert Compilation
+
+This is actually just a generic cmake build system, so everything can be
+done by hand.  It's a usual cmake build, but you need to make sure root and
+geant are "in the path".  Assuming that you have the source in
+"the-edep-sim-directory", will build in "the-build-directory", and want to
+install in "the-install-directory", the commands are:
+
+```bash
+cd the-build-directory
+cmake -DCMAKE_INSTALL_PREFIX=the-install-directory the-edep-sim-directory 
+make
+make doc
+make install
+```
+
+You can make sure that ROOT and GEANT are correctly setup using
+
+``` bash
+source thisroot.sh
+source geant4.sh
+```
 
 ## Running the Detector Simulation
 
@@ -56,7 +80,7 @@ can be run in any directory.  You will need to provide some sort of event
 kinematics generator (NEUT, NUANCE, NEUGEN, GPS, &c).  The preferred input
 format is a rooTracker tree, but you can also use the text based tracker
 input format (NUANCE may be the only program in the world still using this
-format.  It was developed as a standard kinematics format for the IMB III
+format.  It was developed as a standard kinematics format for the IMB3
 experiment in about 1990)
 
 The program is generally run from the command line:
@@ -317,19 +341,34 @@ and has both an electric and a magnetic field.
     </volume>
 ```
 
+#### Auxiliary field to set a sensitive volume
+
 Sensitive logical volumes recording energy deposition are specified using
 the "SensDet" type.  It takes a value which is the name of the sensitive
-detector that will record the deposition.  In the example above, the energy
-is recorded in a sensitive detector named `LArD`.  After an event is
-simulated, the deposited energy is recorded in an internal map keyed by the
-sensitive detector name, and with a value that is a vector of TG4HitSegment
-objects.  See the example in the `./test` subdirectory for how to read this
-information from the output tree.
+detector that will record the deposition.
+
+```
+<auxiliary auxtype="SensDet" auxvalue="MySensDetName"/>
+```
+
+In the example above, the energy is recorded in a sensitive detector named
+`MySensDetName`.  After an event is simulated, the deposited energy is
+recorded in an internal map keyed by the sensitive detector name, and with
+a value that is a vector of TG4HitSegment objects.  See the example in the
+`./test` subdirectory for how to read this information from the output
+tree.
+
+#### Auxiliary field to define the electric and magnetic field.
 
 Uniform electric and magnetic fields can be set using the `EField` and
 `BField` auxiliary types.  The value for each is the field vector in the
 volume specified by the X, Y and Z components (global coordinates).  It is
 assumed that the field applies to all of the daughter volumes.
+
+```
+<auxiliary auxtype="EField" auxvalue="(500.0 V/cm, 1.0 V/cm, 500.0 V/cm)"/>
+<auxiliary auxtype="BField" auxvalue="(2.0 T, 3.0 T, 1.0 G)"/>
+```
 
 The possible units for the electric field are `volt/cm`, `volt/m`, `V/cm`,
 and `V/m`.  You should specify a unit.  If no units are provided, it is
@@ -337,6 +376,36 @@ assumed that the units are `volt/cm`.
 
 The possible units for the magnetic field are `tesla`, `gauss`, `T`, and
 `G`.  If no units are provided, it is assumed that the units are `tesla`.
+
+#### Auxiliary field to set the drawing color for the volume
+
+The display properties for the logical volume can be set using the `Color`
+and `Opacity` auxiliary types.
+
+The color of a volume can be set in two forms.  The first form allows a few
+primary colors to be set by names.  These colors are defined by the
+G4Colour class and are one of the list "white", "gray", "grey", "black",
+"brown", "red", "green", "blue", "cyan", "magenta", and "yellow".  A color
+can be set with one of these as the value.
+
+```
+<auxiliary auxtype="Color" auxvalue="red"/>
+```
+
+The color can also be set as an RGB triplet, or an RGBA quartet.
+
+```
+<auxiliary auxtype="Color" auxvalue="(1.0,0.0,0.0)"/>
+<auxiliary auxtype="Color" auxvalue="(1.0,0.0,0.0,0.5)"/>
+```
+
+The fourth component of the color is the "alpha" which can run between zero
+and one.  A value of zero is transparent, and a value of one is opaque.
+The alpha value can also be set using the opacity auxiliary type.
+
+```
+<auxiliary auxtype="Opacity" auxvalue="0.5"/>
+```
 
 ## Running as a library
 
