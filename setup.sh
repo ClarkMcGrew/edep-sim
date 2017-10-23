@@ -1,4 +1,28 @@
 #!/bin/sh
+#
+# Setup the edep-sim directory for development (or simply running the
+# simulation).  This makes sure that the ROOT and GEANT4 environment
+# variables are set (using thisroot.sh and geant4.sh), and then
+# defines a couple of conveniences commands:
+#
+#  edep-build == Source ./build/edep-build.sh which will conveniently
+#           run cmake/make/make install from any place so that it's
+#           really easy to recompile.
+#
+#  edep-setup == Source this file.  You probably never have to use
+#           this one.
+#
+# This setup script is not needed.  You can also do it by hand.  It's
+# a usual cmake build, but you need to make sure root and geant are
+# "in the path".
+#
+# source thisroot.sh
+# source geant4.sh
+# cd the-build-directory
+# cmake -DCMAKE_INSTALL_PREFIX=the-install-directory the-edep-sim-directory 
+# make
+# make install
+
 
 # Try to setup root.  ROOT installs thisroot.sh in the bin directory
 # to setup the environment.  The first "thisroot.sh" in the path will
