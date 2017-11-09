@@ -1,7 +1,7 @@
 # Suck up all of the .cc files for the source.  This isn't good CMAKE
 # practice, but it makes maintaining this file easier.
-file(GLOB_RECURSE source *.cc)
-file(GLOB_RECURSE includes EDepSim*.hh TG4*.h)
+file(GLOB_RECURSE source RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} *.cc)
+file(GLOB_RECURSE includes RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} EDepSim*.hh TG4*.h)
 
 # Make sure the current directories are available for the root
 # dictionary generation.

@@ -31,7 +31,8 @@ endif(ROOT_Eve_LIBRARY)
 
 # Suck up all of the source files.  This isn't good CMAKE practice,
 # but it makes maintaining this file easier.
-file(GLOB_RECURSE source *.cxx)
+file(GLOB_RECURSE source RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} *.cxx)
+
 
 # Suck up the output definition files from the edepsim library.  Don't
 # ever do this!!!!  The I/O should really be broken into a separate
