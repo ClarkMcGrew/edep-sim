@@ -1,7 +1,7 @@
 # Suck up all of the .cc files for the source.  This isn't good CMAKE
 # practice, but it makes maintaining this file easier.
-file(GLOB_RECURSE source RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} *.cc)
-file(GLOB_RECURSE includes RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} EDepSim*.hh TG4*.h)
+file(GLOB_RECURSE source *.cc)
+file(GLOB_RECURSE includes EDepSim*.hh TG4*.h)
 
 # Make sure the current directories are available for the root
 # dictionary generation.
@@ -10,6 +10,7 @@ include_directories(${CMAKE_CURRENT_LIST_DIR} ${CMAKE_CURRENT_SOURCE_DIR})
 # Build the dictionary for the i/o classes.
 ROOT_GENERATE_DICTIONARY(G__edepsim
   TG4PrimaryVertex.h TG4Trajectory.h TG4HitSegment.h TG4Event.h
+  OPTIONS -inlineInputHeader
   LINKDEF edepsim_LinkDef.h)
 
 # Where the macro files can be found.

@@ -31,7 +31,7 @@ endif(ROOT_Eve_LIBRARY)
 
 # Suck up all of the source files.  This isn't good CMAKE practice,
 # but it makes maintaining this file easier.
-file(GLOB_RECURSE source RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} *.cxx)
+file(GLOB_RECURSE source *.cxx)
 
 
 # Suck up the output definition files from the edepsim library.  Don't
@@ -51,11 +51,13 @@ message("The stolen source is ${stolenSource}")
 # Build the dictionary for the i/o classes.
 ROOT_GENERATE_DICTIONARY(G__edepdisp
   TEventChangeManager.hxx
+  OPTIONS -inlineInputHeader
   LINKDEF edepdisp_LinkDef.h)
 
 # Build the dictionary for the i/o classes.
 ROOT_GENERATE_DICTIONARY(G__edepdisp_edepsim
   ${stolenIncludes}
+  OPTIONS -inlineInputHeader
   LINKDEF ../src/edepsim_LinkDef.h)
 
 # Build the library.
