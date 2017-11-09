@@ -10,6 +10,7 @@ include_directories(${CMAKE_CURRENT_LIST_DIR} ${CMAKE_CURRENT_SOURCE_DIR})
 # Build the dictionary for the i/o classes.
 ROOT_GENERATE_DICTIONARY(G__edepsim
   TG4PrimaryVertex.h TG4Trajectory.h TG4HitSegment.h TG4Event.h
+  OPTIONS -inlineInputHeader
   LINKDEF edepsim_LinkDef.h)
 
 # Where the macro files can be found.
