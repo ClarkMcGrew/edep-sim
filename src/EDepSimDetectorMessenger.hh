@@ -33,7 +33,8 @@ private:
     G4UIcmdWithAString*        fExportCmd;
     G4UIcmdWithAString*        fGDMLCmd;
     G4UIcommand*               fControlCmd;
-    G4UIcmdWithADoubleAndUnit* fMagneticFieldCmd;
+    G4UIcommand*               fHitSagittaCmd;
+    G4UIcommand*               fHitLengthCmd;
 
 };
 

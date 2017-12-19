@@ -5,6 +5,10 @@
 #include "EDepSimDetectorMessenger.hh"
 #include "EDepSimRootGeometryManager.hh"
 #include "EDepSimException.hh"
+#include "EDepSimSDFactory.hh"
+#include "EDepSimSegmentSD.hh"
+
+#include "EDepSimLog.hh"
 
 #include "globals.hh"
 
@@ -15,7 +19,7 @@
 #include "G4UIcmdWithADoubleAndUnit.hh"
 #include "G4UIcmdWithoutParameter.hh"
 #include "G4GDMLParser.hh"
-#include "EDepSimLog.hh"
+#include "G4UnitsTable.hh"
 
 #include <cstdlib>
 #include <sstream>
@@ -51,18 +55,12 @@ EDepSim::DetectorMessenger::DetectorMessenger(EDepSim::UserDetectorConstruction*
         "generation, or reading of kinematics files.");
     fExportCmd->SetParameterName("RootFile", false);
 
-    fGDMLDir = new G4UIdirectory("/edep/gdml");
+    fGDMLDir = new G4UIdirectory("/edep/gdml/");
     fGDMLDir->SetGuidance("Control over the gdml file.");
 
     fGDMLCmd = new G4UIcmdWithAString("/edep/gdml/read",this);
     fGDMLCmd->SetGuidance("Define a GDML file to be used for the geometry.");
     fGDMLCmd->AvailableForStates(G4State_PreInit);
-
-    fMagneticFieldCmd = new G4UIcmdWithADoubleAndUnit("/edep/field",this);
-    fMagneticFieldCmd->SetGuidance("Set the field strength in the UA1 magnet.");
-    fMagneticFieldCmd->SetParameterName("field", false);
-    fMagneticFieldCmd->SetUnitCategory("Magnetic flux density");
-    fMagneticFieldCmd->AvailableForStates(G4State_PreInit);
 
     fControlCmd = new G4UIcommand("/edep/control",this);
     fControlCmd->SetGuidance(
@@ -81,6 +79,41 @@ EDepSim::DetectorMessenger::DetectorMessenger(EDepSim::UserDetectorConstruction*
     par = new G4UIparameter('s');
     par->SetParameterName("Version");
     fControlCmd->SetParameter(par);
+
+    fHitSagittaCmd = new G4UIcommand("/edep/hitSagitta",this);
+    fHitSagittaCmd->SetGuidance(
+        "Set the maximum sagitta for hit segments.");
+    fHitSagittaCmd->AvailableForStates(G4State_PreInit);
+
+    // The name of the sensitive detector.
+    par = new G4UIparameter("Sensitive", 's', false);
+    fHitSagittaCmd->SetParameter(par);
+
+    // The name of the sensitive detector.
+    par = new G4UIparameter("Sagitta", 'd', false);
+    fHitSagittaCmd->SetParameter(par);
+    
+    // The name of the sensitive detector.
+    par = new G4UIparameter("Unit", 's', false);
+    fHitSagittaCmd->SetParameter(par);
+
+    fHitLengthCmd = new G4UIcommand("/edep/hitLength",this);
+    fHitLengthCmd->SetGuidance(
+        "Set the maximum sagitta for hit segments.");
+    fHitLengthCmd->AvailableForStates(G4State_PreInit);
+
+    // The name of the sensitive detector.
+    par = new G4UIparameter("Sensitive", 's', false);
+    fHitLengthCmd->SetParameter(par);
+
+    // The name of the sensitive detector.
+    par = new G4UIparameter("Length", 'd', false);
+    fHitLengthCmd->SetParameter(par);
+    
+    // The name of the sensitive detector.
+    par = new G4UIparameter("Unit", 's', false);
+    fHitLengthCmd->SetParameter(par);
+
 }
 
 
@@ -91,8 +124,9 @@ EDepSim::DetectorMessenger::~DetectorMessenger()
     delete fValidateCmd;
     delete fExportCmd;
     delete fGDMLCmd;
-    delete fMagneticFieldCmd;
     delete fControlCmd;
+    delete fHitSagittaCmd;
+    delete fHitLengthCmd;
     delete fEDepSimDir;
     delete fGDMLDir;
 }
@@ -141,6 +175,38 @@ void EDepSim::DetectorMessenger::SetNewValue(G4UIcommand * cmd,
         EDepSimLog("%%     Version:        " << version);
         G4UImanager* UI = G4UImanager::GetUIpointer();
         UI->ApplyCommand("/control/execute " + file);
+    }
+    else if (cmd == fHitSagittaCmd) {
+        std::istringstream input((const char*)newValue);
+        std::string sdName;
+        double sagitta;
+        std::string unitName;
+        input >> sdName >> sagitta >> unitName;
+        sagitta *= G4UnitDefinition::GetValueOf(unitName);
+        SDFactory factory("segment");
+        SegmentSD* sd = dynamic_cast<SegmentSD*>(factory.MakeSD(sdName));
+        if (sd) {
+            sd->SetMaximumHitSagitta(sagitta);
+        }
+        else {
+            std::cout << "Invalid sensitive detector" << std::endl;
+        }
+    }
+    else if (cmd == fHitLengthCmd) {
+        std::istringstream input((const char*)newValue);
+        std::string sdName;
+        double length;
+        std::string unitName;
+        input >> sdName >> length >> unitName;
+        length *= G4UnitDefinition::GetValueOf(unitName);
+        SDFactory factory("segment");
+        SegmentSD* sd = dynamic_cast<SegmentSD*>(factory.MakeSD(sdName));
+        if (sd) {
+            sd->SetMaximumHitLength(length);
+        }
+        else {
+            std::cout << "Invalid sensitive detector" << std::endl;
+        }
     }
 
 }
