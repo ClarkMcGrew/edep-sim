@@ -64,6 +64,13 @@ EDepSim::TrajectoryPoint::TrajectoryPoint(const G4Track* aTrack)
         fPhysVolName == "OutOfWorld";
     }
     fPrevPosition = aTrack->GetPosition();
+    const G4VProcess* proc = aTrack->GetCreatorProcess();
+    if (proc) {
+        fProcessType = proc->GetProcessType();
+        fProcessSubType = proc->GetProcessSubType();
+        fProcessName = proc->GetProcessName();
+        fProcessDeposit =  0.0;
+    }
 }
 
 EDepSim::TrajectoryPoint::TrajectoryPoint(const EDepSim::TrajectoryPoint &right)
