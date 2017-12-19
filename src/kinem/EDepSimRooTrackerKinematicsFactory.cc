@@ -10,7 +10,7 @@ EDepSim::RooTrackerKinematicsFactory::RooTrackerKinematicsFactory(
     EDepSim::UserPrimaryGeneratorMessenger* parent) 
     : EDepSim::VKinematicsFactory("rooTracker",parent),
       fInputFile("not-open"), fTreeName("gRooTracker"), 
-      fGeneratorName("GENIE"), fOrder("stride"), fFirstEvent(0) {
+      fGeneratorName("GENIE"), fOrder("consecutive"), fFirstEvent(0) {
 
     fInputFileCMD = new G4UIcmdWithAString(CommandName("input"),this);
     fInputFileCMD->SetGuidance("Set the input file.");
