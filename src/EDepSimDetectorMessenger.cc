@@ -51,6 +51,9 @@ EDepSim::DetectorMessenger::DetectorMessenger(EDepSim::UserDetectorConstruction*
         "generation, or reading of kinematics files.");
     fExportCmd->SetParameterName("RootFile", false);
 
+    fGDMLDir = new G4UIdirectory("/edep/gdml");
+    fGDMLDir->SetGuidance("Control over the gdml file.");
+
     fGDMLCmd = new G4UIcmdWithAString("/edep/gdml/read",this);
     fGDMLCmd->SetGuidance("Define a GDML file to be used for the geometry.");
     fGDMLCmd->AvailableForStates(G4State_PreInit);
@@ -91,6 +94,7 @@ EDepSim::DetectorMessenger::~DetectorMessenger()
     delete fMagneticFieldCmd;
     delete fControlCmd;
     delete fEDepSimDir;
+    delete fGDMLDir;
 }
 
 

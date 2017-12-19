@@ -25,6 +25,7 @@ private:
     EDepSim::UserDetectorConstruction* fConstruction;
 
     G4UIdirectory*             fEDepSimDir;
+    G4UIdirectory*             fGDMLDir;
 
     G4UIcmdWithoutParameter*   fUpdateCmd;
     G4UIcmdWithAString*        fPrintMassCmd;
