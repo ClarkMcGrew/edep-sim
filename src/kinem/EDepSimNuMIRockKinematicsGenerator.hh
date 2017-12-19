@@ -22,15 +22,6 @@ public:
     virtual bool GeneratePrimaryVertex(G4Event* evt,
                                        G4LorentzVector& position);
 
-    /// Return the mean event rate per mass per 10^21 pot at a particular
-    /// position and in a particular material.  The first parameter is the
-    /// position to calculate the event rate at, and the second is the
-    /// material at that position. 
-    virtual double EventRate(const G4ThreeVector&,
-                             const G4Material&) {
-        return 1.0/kg;
-    }
-
 private:
     /// The static part of the file name field.
     std::string fFluxName;

@@ -13,33 +13,28 @@ class G4Event;
 
 /// A base class used by EDepSim::PrimaryGenerator to construct the primary
 /// vertex, and generate the kinematics of the primary particles.  Classes
-/// derived from EDepSim::VKinematicsGenerator are responsible for constructing
-/// an primary vertex, adding particles to the primary vertex, and adding the
-/// vertex to the current G4Event.  The derived classes must override two
-/// (pure virtual) methods.  The first,
-/// EDepSim::VKinematicsGenerator::GeneratePrimaryVertex() does the actual work of
-/// creating the new primary vertex.  The second,
-/// EDepSim::VKinematicsGenerator::EventRate() is used to by EDepSim::mc to estimate
-/// the number of events to be generated in a spill, and is only used by some
-/// of the EDepSim::VCountGenerator derived classes.
+/// derived from EDepSim::VKinematicsGenerator are responsible for
+/// constructing an primary vertex, adding particles to the primary vertex,
+/// and adding the vertex to the current G4Event.  The derived classes must
+/// override the pure virtual methods.  The first,
+/// EDepSim::VKinematicsGenerator::GeneratePrimaryVertex() does the actual
+/// work of creating the new primary vertex. 
 ///
-/// The EDepSim::VKinematicsGenerator derived class should throw an ENoMoreEvents.
+/// The EDepSim::VKinematicsGenerator derived class should throw an
+/// ENoMoreEvents when it runs out of input events.
 namespace EDepSim {class VKinematicsGenerator;}
 class EDepSim::VKinematicsGenerator {
 public:
     VKinematicsGenerator(const G4String& name) : fName(name) {}
     virtual ~VKinematicsGenerator() {}
 
-    /// Add a primary vertex to the event.  
+    /// Add a primary vertex to the event.  This should return false if a
+    /// vertex could not be generated for some reason (e.g. an event was
+    /// discarded due to event weighting probabilities, or occurred on an
+    /// illegal target).
     virtual bool GeneratePrimaryVertex(G4Event* evt,
                                        G4LorentzVector& position) = 0;
     
-    /// Return the mean event rate per mass per 10^21 pot at a particular
-    /// position and in a particular material.
-    virtual double EventRate(const G4ThreeVector& pos,
-                             const G4Material& material) = 0;
-
-
     /// Return the name of the generator.
     G4String GetName() const {return fName;}
 

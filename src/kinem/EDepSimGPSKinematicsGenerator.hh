@@ -23,13 +23,6 @@ public:
     virtual bool GeneratePrimaryVertex(G4Event* evt,
                                        G4LorentzVector& position);
 
-    /// Return the mean event rate per mass per 10^21 pot at a particular
-    /// position and in a particular material.
-    virtual double EventRate(const G4ThreeVector& pos,
-                             const G4Material& material) {
-        return 1.0/kg;
-    }
-
 private:
     G4VPrimaryGenerator* fGenerator;
 };
