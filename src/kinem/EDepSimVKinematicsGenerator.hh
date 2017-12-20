@@ -11,14 +11,13 @@
 
 class G4Event;
 
-/// A base class used by EDepSim::PrimaryGenerator to construct the primary
-/// vertex, and generate the kinematics of the primary particles.  Classes
-/// derived from EDepSim::VKinematicsGenerator are responsible for
-/// constructing an primary vertex, adding particles to the primary vertex,
-/// and adding the vertex to the current G4Event.  The derived classes must
-/// override the pure virtual methods.  The first,
-/// EDepSim::VKinematicsGenerator::GeneratePrimaryVertex() does the actual
-/// work of creating the new primary vertex. 
+/// A base class for specific kinematics generators used by
+/// EDepSim::PrimaryGenerator to construct G4PrimaryVertex, and the kinematics
+/// for primary particles from that vertex.  Classes derived from
+/// EDepSim::VKinematicsGenerator are responsible for constructing a
+/// G4PrimaryVertex, adding particles to the primary vertex, and adding the
+/// vertex to the current G4Event.  The derived classes must override the pure
+/// virtual methods.  The GeneratePrimaryVertex() method does the actual work.
 ///
 /// The EDepSim::VKinematicsGenerator derived class should throw an
 /// ENoMoreEvents when it runs out of input events.
@@ -28,12 +27,26 @@ public:
     VKinematicsGenerator(const G4String& name) : fName(name) {}
     virtual ~VKinematicsGenerator() {}
 
-    /// Add a primary vertex to the event.  This should return false if a
-    /// vertex could not be generated for some reason (e.g. an event was
-    /// discarded due to event weighting probabilities, or occurred on an
-    /// illegal target).
-    virtual bool GeneratePrimaryVertex(G4Event* evt,
-                                       G4LorentzVector& position) = 0;
+    /// A status value that can be returned by GeneratePrimaryVertex.
+    typedef enum {
+        /// The generation failed and should be tried again.
+        kFail = 0,
+        /// A vertex was successfully generated.
+        kSuccess,
+        /// The new vertex should be the last one for the event.  This only
+        /// has an effect if the EDepSim::PrimaryGenerator object is building
+        /// a multiple vertex event.
+        kLast,
+    } GeneratorStatus;
+
+    /// Add a G4PrimaryVertex object to the event.  This should return
+    /// EDepSim::VKinematicsGenerator::kFail if a vertex could not be
+    /// generated for some reason (e.g. an event was discarded due to event
+    /// weighting probabilities, or occurred on an illegal target).  The
+    /// vertex will be constructed as normal for G4, and added using the
+    /// G4Event::AddPrimaryVertex(G4PrimaryVertex*) method.
+    virtual GeneratorStatus GeneratePrimaryVertex(
+        G4Event* evt, const G4LorentzVector& position) = 0;
     
     /// Return the name of the generator.
     G4String GetName() const {return fName;}

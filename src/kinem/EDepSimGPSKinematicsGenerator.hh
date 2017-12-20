@@ -20,8 +20,9 @@ public:
     virtual ~GPSKinematicsGenerator();
 
     /// Add a primary vertex to the event.  
-    virtual bool GeneratePrimaryVertex(G4Event* evt,
-                                       G4LorentzVector& position);
+    virtual GeneratorStatus
+    GeneratePrimaryVertex(G4Event* evt,
+                          const G4LorentzVector& position);
 
 private:
     G4VPrimaryGenerator* fGenerator;

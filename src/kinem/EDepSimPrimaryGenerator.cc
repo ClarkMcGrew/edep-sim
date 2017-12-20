@@ -46,7 +46,9 @@ void EDepSim::PrimaryGenerator::GeneratePrimaryVertex(G4Event* evt) {
         vertex.setT(fTime->GetTime(vertex));
         // Generate the new kinematics.  This will add new primary vertices to
         // the G4Event.
-        if (!fKinematics->GeneratePrimaryVertex(evt,vertex)) {
+        EDepSim::VKinematicsGenerator::GeneratorStatus generatorStatus
+            = fKinematics->GeneratePrimaryVertex(evt,vertex);
+        if (generatorStatus == EDepSim::VKinematicsGenerator::kFail) {
             ++brake; // Apply the brakes
             continue;
         }
@@ -82,6 +84,11 @@ void EDepSim::PrimaryGenerator::GeneratePrimaryVertex(G4Event* evt) {
         }
         brake = 0;  // Remove the brakes.
         --count;
+
+        // Check if the generator flagged that this vertex must end an event.
+        if (generatorStatus == EDepSim::VKinematicsGenerator::kLast) {
+            break;
+        }
     }
 }
 

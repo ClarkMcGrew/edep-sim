@@ -143,9 +143,10 @@ G4String EDepSim::RooTrackerKinematicsGenerator::GetInputName() {
     return G4String(fInput->GetName());
 }
 
-bool EDepSim::RooTrackerKinematicsGenerator::GeneratePrimaryVertex(
+EDepSim::VKinematicsGenerator::GeneratorStatus
+EDepSim::RooTrackerKinematicsGenerator::GeneratePrimaryVertex(
     G4Event* anEvent,
-    G4LorentzVector&) {
+    const G4LorentzVector&) {
     if (!fInput) {
         throw std::runtime_error("EDepSim::RooTrackerKinematicsGenerator:: File Not Open");
     }
@@ -334,6 +335,6 @@ bool EDepSim::RooTrackerKinematicsGenerator::GeneratePrimaryVertex(
     theProductionVertex->SetPrimary(theProductionParticle);
 #endif
     
-    return true;
+    return kSuccess;
 }
 

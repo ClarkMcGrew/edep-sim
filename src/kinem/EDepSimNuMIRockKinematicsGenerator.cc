@@ -26,9 +26,10 @@ EDepSim::NuMIRockKinematicsGenerator::NuMIRockKinematicsGenerator(
 
 EDepSim::NuMIRockKinematicsGenerator::~NuMIRockKinematicsGenerator() { }
 
-bool EDepSim::NuMIRockKinematicsGenerator::GeneratePrimaryVertex(
+EDepSim::VKinematicsGenerator::GeneratorStatus
+EDepSim::NuMIRockKinematicsGenerator::GeneratePrimaryVertex(
     G4Event* anEvent,
-    G4LorentzVector&) {
+    const G4LorentzVector&) {
 
     // Make a position vertex...
     double boxSize = 300*cm;
@@ -86,6 +87,6 @@ bool EDepSim::NuMIRockKinematicsGenerator::GeneratePrimaryVertex(
                                 momentum*dir.z());
     theVertex->SetPrimary(theParticle);
 
-    return true;
+    return kSuccess;
 }
 

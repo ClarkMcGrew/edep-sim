@@ -64,9 +64,9 @@ void EDepSim::RooTrackerKinematicsFactory::SetNewValue(G4UIcommand* command,
 EDepSim::VKinematicsGenerator* EDepSim::RooTrackerKinematicsFactory::GetGenerator() {
     EDepSim::VKinematicsGenerator* kine
         = new EDepSim::RooTrackerKinematicsGenerator(GetGeneratorName(),
-                                                 GetInputFile(), 
-                                                 GetTreeName(),
-                                                 GetOrder(),
-                                                 GetFirstEvent());
+                                                     GetInputFile(), 
+                                                     GetTreeName(),
+                                                     GetOrder(),
+                                                     GetFirstEvent());
     return kine;
 }

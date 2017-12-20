@@ -9,8 +9,9 @@ EDepSim::GPSKinematicsGenerator::GPSKinematicsGenerator(
 
 EDepSim::GPSKinematicsGenerator::~GPSKinematicsGenerator() {}
 
-bool EDepSim::GPSKinematicsGenerator::GeneratePrimaryVertex(
-    G4Event* evt, G4LorentzVector& position) {
+EDepSim::VKinematicsGenerator::GeneratorStatus
+EDepSim::GPSKinematicsGenerator::GeneratePrimaryVertex(
+    G4Event* evt, const G4LorentzVector& position) {
     fGenerator->GeneratePrimaryVertex(evt);
-    return true;
+    return kSuccess;
 }
