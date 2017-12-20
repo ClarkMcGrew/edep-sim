@@ -18,12 +18,19 @@ namespace EDepSim {class RooTrackerKinematicsGenerator;}
 class EDepSim::RooTrackerKinematicsGenerator : public EDepSim::VKinematicsGenerator {
 public:
     ///  Construct a new generator.  The name is the name of the generator
-    ///  (e.g. GENIE, NEUT, &c).  The fileName is the name of the root file
+    ///  (e.g. NEUT, GENIE, &c).  The fileName is the name of the root file
     ///  containing the tree of kinematic information.  The treeName is the
     ///  path of the rooTracker tree in the input file.  The order is a string
     ///  specifying the order that events in the input files should be used.
     ///  The current legal values are "consecutive", "stride", or
     ///  "random". The firstEvent is the first event to use in the file.
+    ///
+    ///  While NEUT and GENIE produce files with single interactions in each
+    ///  event, the individual events can be built into spill using another
+    ///  program (a so called overlay program).  The divisions between the
+    ///  spills can be specified by adding in a fake event that has a single
+    ///  particle with a HepStatus value of -1.  The fake event will be
+    ///  dropped from generation, so it should not contain a real particle.
     RooTrackerKinematicsGenerator(const G4String& name, 
                                       const G4String& fileName,
                                       const G4String& treeName,

@@ -150,7 +150,7 @@ EDepSim::RooTrackerKinematicsGenerator::GeneratePrimaryVertex(
     if (!fInput) {
         throw std::runtime_error("EDepSim::RooTrackerKinematicsGenerator:: File Not Open");
     }
-    
+
     /// Check to see if the next event is there.
     if (fNextEntry >= fEntryVector.size()) {
         EDepSimLog("EDepSim::RooTrackerKinematicsGenerator: input file end.");
@@ -172,6 +172,15 @@ EDepSim::RooTrackerKinematicsGenerator::GeneratePrimaryVertex(
     // Increment the next entry counter.
     ++fNextEntry;
 
+    // Set the default generator status.  This should be overridden if the
+    // state changes.
+    GeneratorStatus generatorStatus = kSuccess;
+
+    // Check if this is an end-of-sequence marker.
+    if (fStdHepN == 1 && fStdHepStatus[0]<0) {
+        return kEndEvent;
+    }
+        
     // Create a new vertex to add the new particles, and add the vertex to the
     // event.
     G4PrimaryVertex* theVertex 
@@ -335,6 +344,6 @@ EDepSim::RooTrackerKinematicsGenerator::GeneratePrimaryVertex(
     theProductionVertex->SetPrimary(theProductionParticle);
 #endif
     
-    return kSuccess;
+    return generatorStatus;
 }
 
