@@ -1,0 +1,26 @@
+################################
+# Add the GENIE events
+################################
+
+## Replace this with the name of a GENIE rooTracker file
+/generator/kinematics/rooTracker/input rooTracker_overlay.root
+
+## Use the T2K rooTracker input format.  This is directly supported by GENIE.
+/generator/kinematics/set rooTracker
+
+## Distribute the events based on the vertex in the rooTracker file.
+/generator/position/set free
+
+## The overlay file will have markers at the end of each event.  This tells
+## edep-sim to generate vertices until it runs into an end-of-event marker.
+## The value doesn't matter, but it needs to be larger than the maximum number
+## of vertices in an event. 
+/generator/count/fixed/number 100000
+/generator/count/set fixed
+
+## Distribute the event times based onn the time in the rooTracker file.
+/generator/time/set free
+
+## Make sure EDEPSIM updates the kinematics generator.
+/generator/add
+
