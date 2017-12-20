@@ -33,10 +33,14 @@ public:
         kFail = 0,
         /// A vertex was successfully generated.
         kSuccess,
-        /// The new vertex should be the last one for the event.  This only
-        /// has an effect if the EDepSim::PrimaryGenerator object is building
-        /// a multiple vertex event.
-        kLast,
+        /// The new vertex should be generated, but it is te last one for the
+        /// event.  This only has an effect if the EDepSim::PrimaryGenerator
+        /// object is building a multiple vertex event.
+        kLastVertex,
+        /// A new vertex should not be generated and EDepSim::PrimaryGenerator
+        /// should return.  It is the users responsibility to make sure that
+        /// at least one primary vertex will have been generated.
+        kEndEvent,
     } GeneratorStatus;
 
     /// Add a G4PrimaryVertex object to the event.  This should return

@@ -52,10 +52,13 @@ void EDepSim::PrimaryGenerator::GeneratePrimaryVertex(G4Event* evt) {
             ++brake; // Apply the brakes
             continue;
         }
+        if (generatorStatus == EDepSim::VKinematicsGenerator::kEndEvent) {
+            break;
+        }
         // If the vertex should be forced, then make sure that it is.  This
         // updates the position and time for all of the vertices that were
-        // added to the event by the previous EDepSim::VKinematicsGenerator call.
-        // Get the first new vertex.
+        // added to the event by the previous EDepSim::VKinematicsGenerator
+        // call.  Get the first new vertex.
         if (!vtx) vtx = evt->GetPrimaryVertex();
         else vtx = vtx->GetNext();
         // Update the vertex for the new vertices.
@@ -86,7 +89,7 @@ void EDepSim::PrimaryGenerator::GeneratePrimaryVertex(G4Event* evt) {
         --count;
 
         // Check if the generator flagged that this vertex must end an event.
-        if (generatorStatus == EDepSim::VKinematicsGenerator::kLast) {
+        if (generatorStatus == EDepSim::VKinematicsGenerator::kLastVertex) {
             break;
         }
     }
