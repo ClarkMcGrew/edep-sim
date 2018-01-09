@@ -260,10 +260,8 @@ TG4HitSegment class.  This class records the starting and stopping position
 of for each energy deposition step (the energy is *not* deposited at a
 point).  It also records the particle depositing the energy, as well as the
 primary particle, or ultimate parent, associated with the energy deposit.
-The maximum length of the hit segment can be controlled using the GEANT4
-macros interface to `edep-sim`, but in general should be a little smaller
-than the resolution of the detector.  Hit segments will not cross geometry
-boundaries. 
+
+The generated hit segment contains fields with the following information.
 
   * Contrib: A vector of track identifiers which contributed to this hit
     segment.  There is almost always only one contributor, but for certain
@@ -280,7 +278,7 @@ boundaries.
 	
   * SecondaryDeposit: The "secondary" energy deposited over the length of
     the segment.  This is generally used to help simulate the energy
-    emitted as scintillation light vs the total dEdX of the track.  In
+    emitted as scintillation light vs the total dE/dX of the track.  In
     other words, when the secondary deposit simulation is turned on,  This
     is the energy deposited as optical photons.  The remaining energy is
     usually deposited as ionization.  For example, in liquid argon, the
@@ -296,6 +294,29 @@ boundaries.
   * Start, Stop: The starting and stopping points of the segment
     (TLorentzVector). 
 	
+
+##### Controlling the step size.  
+
+The hit segment length is determined by a combination the GEANT4 physics
+step and a segment target length.  The GEANT4 physics step length is
+determined by the interaction cross sections, the energy loss, and the
+multiple scattering.  The physics step length control parameters (but not
+explicitly the step length) can be controlled using the macro commands in
+the "/process/eLoss/" and "/process/msc/" directories.  The target length
+of the hit segment can be controlled using the "/edep/hitLength" macro, and
+the maximum sagitta of the segment can be controlled using the
+"/edep/hitSagitta" macro.  Typically, the hit length should be a little
+smaller than the resolution of the detector.  Hit segments will not cross
+geometry boundaries.
+
+It is important to notice that the hit segments can have a length that is
+long compared to the resolution of the detector, but the "diameter" of the
+segment controlled by the hitSagitta, energy loss and multiple scattering
+parameters will be small so the segment can be represented by a straight
+line between the starting and stopping points.  The hitSagitta and physics
+stepping parameters should be set so that that the maximum displacement of
+the track from a straight line is small compared to the detector
+resolution.
 
 ### Simple Debugging Display
 
