@@ -121,7 +121,7 @@ G4VPhysicalVolume* EDepSim::UserDetectorConstruction::Construct() {
                  ++auxItem) {
                 if (auxItem->type == "Color") {
                     // Set the color while keeping the original alpha.
-                    EDepSimLog("Set volume " << aux->first->GetName()
+                    EDepSimInfo("Set volume " << aux->first->GetName()
                                << " color to " << auxItem->value);
                     G4Color tmp;
                     if (G4Color::GetColour(auxItem->value,tmp)) {
@@ -136,7 +136,7 @@ G4VPhysicalVolume* EDepSim::UserDetectorConstruction::Construct() {
                 }
                 if (auxItem->type == "Opacity") {
                     // Set the alpha while keeping the original color.
-                    EDepSimLog("Set volume " << aux->first->GetName()
+                    EDepSimInfo("Set volume " << aux->first->GetName()
                                << " opacity to " << auxItem->value);
                     double opacity = ParseFloat(auxItem->value);
                     color = G4Color(color.GetRed(),
@@ -267,7 +267,7 @@ void EDepSim::UserDetectorConstruction::ConstructSDandField() {
 
             eField = ParseEField(auxItem->value);
 
-            EDepSimLog("Set the electric field for "
+            EDepSimInfo("Set the electric field for "
                        << logVolume->GetName()
                        << " to "
                        << " X=" << eField.x()/(volt/cm) << " V/cm"
@@ -284,7 +284,7 @@ void EDepSim::UserDetectorConstruction::ConstructSDandField() {
 
             bField = ParseBField(auxItem->value);
             
-            EDepSimLog("Set the magnetic field for "
+            EDepSimInfo("Set the magnetic field for "
                        << logVolume->GetName()
                        << " to "
                        << " X=" << bField.x()/(tesla) << " T"

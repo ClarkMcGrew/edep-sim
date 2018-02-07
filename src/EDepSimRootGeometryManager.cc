@@ -121,14 +121,14 @@ void EDepSim::RootGeometryManager::Update(const G4VPhysicalVolume* aWorld,
                                   "Simulated Detector Geometry");
     gGeoManager->SetVisLevel(20);
     // Create all of the materials.
-    EDepSimLog("Create materials");
+    EDepSimInfo("Create materials");
     CreateMaterials(aWorld);
 
     //Check to see if we can create all of the volumes.  This is done by
     //traversing the GEANT physical volume tree.
     fCreateAllVolumes = false;
     if (CountVolumes(aWorld->GetLogicalVolume()) < 100000) {
-        EDepSimLog("Create all volumes");
+        EDepSimInfo("Create all volumes");
         fCreateAllVolumes = true;
     }
     
@@ -136,9 +136,9 @@ void EDepSim::RootGeometryManager::Update(const G4VPhysicalVolume* aWorld,
     fPrintedMass.clear();
     fNameStack.clear();
     fKnownVolumes.clear();
-    EDepSimLog("Start defining envelope");
+    EDepSimInfo("Start defining envelope");
     CreateEnvelope(aWorld,gGeoManager,NULL);
-    EDepSimLog("Geometry is Filled");
+    EDepSimInfo("Geometry is Filled");
     
     gGeoManager->CloseGeometry("di");
 
@@ -683,7 +683,7 @@ bool EDepSim::RootGeometryManager::CreateEnvelope(
         else {
             int i = 100.0*(1.0-opacity);
             if (i>100) i = 100;
-            EDepSimLog("Set color of " << theShortName
+            EDepSimInfo("Set color of " << theShortName
                        << " to " << color
                        << " " << opacity
                        << " " << i);
