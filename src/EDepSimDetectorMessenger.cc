@@ -162,9 +162,16 @@ void EDepSim::DetectorMessenger::SetNewValue(G4UIcommand * cmd,
         std::string name;
         std::string version;
         input >> name >> version;
+        std::string packageroot;
+        const char *rootEnv = std::getenv("EDEPSIM_ROOT");
+        if (rootEnv) {
+            packageroot=rootEnv;
+        }
+        else {
 #define STRINGIFY(s) #s
 #define STRINGIFY_DEFINITION(s) STRINGIFY(s)
-        std::string packageroot(STRINGIFY_DEFINITION(DETSIM_INSTALL_PREFIX));
+            packageroot = STRINGIFY_DEFINITION(DETSIM_INSTALL_PREFIX);
+        }
         std::string::iterator new_end
             = std::remove(packageroot.begin(), packageroot.end(), '"');
         packageroot.erase(new_end, packageroot.end());

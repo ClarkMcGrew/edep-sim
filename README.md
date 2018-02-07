@@ -11,8 +11,8 @@ write GEANT4 macro control files.
 
 Where it's available (and in particular for argon), the simulation
 implements a fairly detailed model of the energy deposited as ionization
-and scintillation.  This is implemented using the NEST model (Sorry Matt, I
-need reference here!).
+and scintillation.  This is implemented using the NEST model (M Szydagis et
+al 2013 JINST 8 C10003 and references therein).
 
 Input file translators are provided for several standard input file
 formats.  In particular, this support input from both NEUT and GENIE.  The
@@ -108,10 +108,22 @@ Some important options:
 If `edep-sim` is run with the `-h` option, it will print a help message.
 There are example macro files in the "inputs" subdirectory.
 
+EDepSim uses some GEANT4 macro files to control how it is run.  These are
+not usually visible to the user, but occasionally the executable can't find
+them.  In that case, you can specify the location by setting the
+EDEPSIM_ROOT environment variable to the root of the INSTALLATION area.
+For example
+
+```bash
+export EDEPSIM_ROOT=$(dirname $(which edep-sim))/..
+```
+
+should find the right location for the necessary files.
+
 An example of a command line is 
 
 ```bash
-	edep-sim -o my-output.root -g geometry.gdml -u -e 100 muon-10000.mac
+edep-sim -o my-output.root -g geometry.gdml -u -e 100 muon-10000.mac
 ```
 
 which will write 100 events to `my-output.root` using the geometry in
