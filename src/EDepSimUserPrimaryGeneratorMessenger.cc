@@ -21,6 +21,7 @@
 
 #include "kinem/EDepSimVTimeFactory.hh"
 #include "kinem/EDepSimFixedTimeFactory.hh"
+#include "kinem/EDepSimFreeTimeFactory.hh"
 #include "kinem/EDepSimSpillTimeFactory.hh"
 
 
@@ -76,6 +77,7 @@ EDepSim::UserPrimaryGeneratorMessenger::UserPrimaryGeneratorMessenger(
     AddPositionFactory(new EDepSim::DensityPositionFactory(this));
     
     AddTimeFactory(new EDepSim::FixedTimeFactory(this));
+    AddTimeFactory(new EDepSim::FreeTimeFactory(this));
     AddTimeFactory(new EDepSim::SpillTimeFactory(this));
 
     /////////////////////////////////////////
