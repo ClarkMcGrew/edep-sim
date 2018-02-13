@@ -11,6 +11,9 @@ set(VERSION "${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_PATCH}")
 
 message("Energy Deposition Simulation -- ${VERSION}")
 
+# Set the default compilation flags
+set(EDEPSIM_DISPLAY TRUE CACHE BOOL "Compile the edep-disp event display")
+
 # Set the default verbosity of the compilation...
 set(CMAKE_VERBOSE_MAKEFILE TRUE)
 
@@ -34,9 +37,21 @@ else(DOXYGEN_FOUND)
     COMMENT "Not generating API documentation with Doxygen" VERBATIM)
 endif(DOXYGEN_FOUND)
 
+# Compile the input/output classes needed to read edep-sim output.
+# This does not depend on geant4.
+add_subdirectory(io)
+
+# Compile the really simple debugging display.  There are better
+# displays out there, but this is what I use to debug the code.  This
+# does not depend on geant4.
+if(EDEPSIM_DISPLAY)
+  message("Building edep-disp event display")
+  add_subdirectory(display)
+endif(EDEPSIM_DISPLAY)
+
 # Configure GEANT4.  If it's found, then build the simulation.
 find_package(Geant4)
-if(Geant4_FOUND)
+if(Geant4_FOUND AND NOT EDEPSIM_READONLY)
   include(${Geant4_USE_FILE})
   # Make sure we have at least G4.9.6
   if(${Geant4_VERSION} VERSION_LESS "9.6")
@@ -44,9 +59,7 @@ if(Geant4_FOUND)
   endif(${Geant4_VERSION} VERSION_LESS "9.6")
   add_subdirectory(src)
   add_subdirectory(app)
-endif(Geant4_FOUND)
-  
-add_subdirectory(display)
+endif(Geant4_FOUND AND NOT EDEPSIM_READONLY)
 
 # Install some extra files.
 install(DIRECTORY inputs DESTINATION share/EDepSim
