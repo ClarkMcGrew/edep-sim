@@ -52,13 +52,13 @@ void EDep::TG4HitChangeHandler::Apply() {
         for (TG4HitSegmentContainer::iterator g4Hit = detector->second.begin();
              g4Hit != detector->second.end();
              ++g4Hit) {
-            double energy = g4Hit->EnergyDeposit;
-            double length = g4Hit->TrackLength;
+            double energy = g4Hit->GetEnergyDeposit();
+            double length = g4Hit->GetTrackLength();
             double dEdX = energy;
             if (length>0.01) dEdX /= length;
 
             int contrib = g4Hit->Contrib.front();
-            std::string particle = gEDepSimEvent->Trajectories[contrib].Name;
+            std::string particle = gEDepSimEvent->Trajectories[contrib].GetName();
             
             TEveLine* eveHit = new TEveLine(2);
             eveHit->SetName(detector->first.c_str());
@@ -67,9 +67,9 @@ void EDep::TG4HitChangeHandler::Apply() {
             title << std::fixed << std::setprecision(2)
                   << " " << dEdX << " MeV/mm";
             title << " for " << length << " mm"
-                  << " at (" << g4Hit->Start.X() << " mm"
-                  << "," <<  g4Hit->Start.Y() << " mm"
-                  << "," <<  g4Hit->Start.Z() << " mm"
+                  << " at (" << g4Hit->GetStart().X() << " mm"
+                  << "," <<  g4Hit->GetStart().Y() << " mm"
+                  << "," <<  g4Hit->GetStart().Z() << " mm"
                   << ")";
 
             eveHit->SetTitle(title.str().c_str());
@@ -80,13 +80,13 @@ void EDep::TG4HitChangeHandler::Apply() {
                                      maxEnergy,
                                      3));
             eveHit->SetPoint(0,
-                             g4Hit->Start.X(),
-                             g4Hit->Start.Y(),
-                             g4Hit->Start.Z());
+                             g4Hit->GetStart().X(),
+                             g4Hit->GetStart().Y(),
+                             g4Hit->GetStart().Z());
             eveHit->SetPoint(1,
-                             g4Hit->Stop.X(),
-                             g4Hit->Stop.Y(),
-                             g4Hit->Stop.Z());
+                             g4Hit->GetStop().X(),
+                             g4Hit->GetStop().Y(),
+                             g4Hit->GetStop().Z());
             hitList->AddElement(eveHit);
         }
         fG4HitList->AddElement(hitList);

@@ -8,6 +8,7 @@
 #include <TLorentzVector.h>
 #include <TObject.h>
 
+namespace EDepSim {class PersistencyManager;}
 class TG4Trajectory;
 class TG4TrajectoryPoint;
 
@@ -23,9 +24,10 @@ typedef std::vector<TG4Trajectory> TG4TrajectoryContainer;
 /// this particle, the initial momentum of the particle, and the path followed
 /// by the particle in the detector.  
 class TG4Trajectory : public TObject {
+    friend class EDepSim::PersistencyManager;
 public:
     typedef std::vector<TG4TrajectoryPoint> TrajectoryPoints;
-
+     
     TG4Trajectory(void)
         : TrackId(-1), ParentId(-1), 
           Name("none"), PDGCode(0),
@@ -33,6 +35,35 @@ public:
 
     virtual ~TG4Trajectory();
 
+    /// The TrackId of this trajectory.
+    int GetTrackId() const {return TrackId;}
+    
+    /// The unique Id of the parent trajectory (The TrackId of the parent).
+    int GetParentId() const {return ParentId;}
+    
+    /// The name of the particle.
+    const char* GetName() const {return Name.c_str();}
+
+    /// The PDG encoding of the particle.
+    int GetPDGCode() const {return PDGCode;}
+    
+    /// The initial momentum of the particle
+    const TLorentzVector& GetInitialMomentum() const {return InitialMomentum;}
+
+    /// The trajectory points for this trajectory.
+    TrajectoryPoints Points;
+
+// The public fields are deprecated but still supported by default in the
+// current version.
+#define EDEPSIM_USE_PUBLIC_FIELDS
+    
+#if defined(EDEPSIM_USE_PUBLIC_FIELDS)&&!defined(EDEPSIM_FORCE_PRIVATE_FIELDS)&&!defined(__CINT__)
+public:
+#warning Using deprecated public fields.  Please consider using the accessor.  For example, to access PrimaryId, use GetPrimaryId().
+#else
+private:
+#endif
+    
     /// The TrackId of this trajectory.
     Int_t TrackId;
     
@@ -48,9 +79,6 @@ public:
     /// The initial momentum of the particle
     TLorentzVector InitialMomentum;
 
-    /// The trajectory points for this trajectory.
-    TrajectoryPoints Points;
-
     ClassDef(TG4Trajectory,1)
 };
 
@@ -62,6 +90,7 @@ public:
 /// good record of the energy deposition.  Use the TG4HitSegment objects for a
 /// record of the energy deposition.
 class TG4TrajectoryPoint : public TObject {
+    friend class EDepSim::PersistencyManager;
 public:
     TG4TrajectoryPoint()
         : Position(0,0,0,0), Momentum(0,0,0),
@@ -116,6 +145,27 @@ public:
         // General subtypes
         kSubtypeGeneralStepLimit = 401,
     };
+
+    /// The position of this trajectory point.
+    const TLorentzVector& GetPosition() const {return Position;}
+
+    /// The momentum of the particle at this trajectory point.
+    const TVector3& GetMomentum() const {return Momentum;}
+
+    /// The interaction process type associated with this trajectory point.
+    /// The possible values are defined in the G4ProcessType enum.
+    int GetProcess() const {return Process;}
+
+    /// The interaction process type associated with this trajectory point.
+    /// The possible values are defined in the G4ProcessSubtype enum.
+    int GetSubprocess() const {return Subprocess;}
+    
+#if defined(EDEPSIM_USE_PUBLIC_FIELDS)&&!defined(EDEPSIM_FORCE_PRIVATE_FIELDS)&&!defined(__CINT__)
+public:
+#warning Using deprecated public fields.  Please consider using the accessor.  For example, to access PrimaryId, use GetPrimaryId().
+#else
+private:
+#endif
     
     /// The position of this trajectory point.
     TLorentzVector Position;

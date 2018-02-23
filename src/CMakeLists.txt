@@ -10,6 +10,9 @@ include_directories(${CMAKE_CURRENT_LIST_DIR} ${CMAKE_CURRENT_SOURCE_DIR})
 # Where the macro files can be found.
 add_definitions(-DDETSIM_INSTALL_PREFIX=\"${CMAKE_INSTALL_PREFIX}\")
 
+# Compile the base library with private I/O fields.
+add_definitions(-DEDEPSIM_FORCE_PRIVATE_FIELDS)
+
 # Build the library.
 add_library(edepsim SHARED ${source})
 target_include_directories(edepsim PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})

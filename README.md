@@ -217,7 +217,8 @@ here.
 #### The TG4Event Class
 
 The main event class (TG4Event) is a data-only class defined in the
-`TG4Event.h` include file.  It has the following public user fields:
+`TG4Event.h` include file.  It has the following fields which should be
+access using the matching accessor:
 
    * EventId: The event number
    
@@ -231,39 +232,45 @@ The main event class (TG4Event) is a data-only class defined in the
 	 
    * SegmentDetectors: The energy deposition information (A map keyed by
      sensitive detector name, containing a vector of TG4HitSegments).
-   
+
 #### The Trajectory Class (and Friends)
 
 The trajectory information for each particle simulated in GEANT4 is
 contained in a TG4Trajectory object.  This is a data-only class defined in
-TG4Trajectory.h.  It has the public user fields:
+TG4Trajectory.h.  It has the deprecated public fields, and accessor that
+should be used instead of the field:
 
-  * TrackId: The track identifier for this particular trajectory.  This is
-      a positive integer.
+  * TrackId [GetTrackId()]: The track identifier for this particular
+      trajectory.  This is a positive integer.
 
-  * ParentId: The track identifier for the parent of this trajectory.
-     This is an integer.  If the track is from a primary particle, the
-     parent identifier will be zero.
+  * ParentId [GetParentId()]: The track identifier for the parent of this
+     trajectory.  This is an integer.  If the track is from a primary
+     particle, the parent identifier will be zero.
 	  
-  * Name: The type of particle creating this track.
+  * Name [GetName()]: The type of particle creating this track.
 	
-  * PDGCode: The PDG MC code for the type of particle creating this track.
+  * PDGCode [GetPDGCode()]: The PDG MC code for the type of particle
+    creating this track.
 	  
-  * InitialMomentum: The initial momentum of track (A TLorentzVector).
+  * InitialMomentum [GetInitialMomentum()]: The initial momentum of track
+    (A TLorentzVector).
 	
-  * Points: A vector of TG4TrajectoryPoints along the track.
+  * Points: This has type TrajectoryPoitns and is equivalent to vector of
+    TG4TrajectoryPoints along the track.
 	
 The TG4TrajectoryPoint is a data-only class with the following information.
 
-  * Position: The position of the trajectory point (A TLorentzVector)
+  * Position [GetPosition()]: The position of the trajectory point (A
+    TLorentzVector)
   
-  * Momentum: The momentum (a TVector3) as the trajectory leaves the point.
+  * Momentum [GetMomentum()]: The momentum (a TVector3) as the trajectory
+    leaves the point.
 
-  * Process: The process type which created this point.  These are defined
-    by GEANT4.
+  * Process [GetProcess()]: The process type which created this point.
+    These are defined by GEANT4.
 	
-  * Subprocess: The subprocess type which create this point.  These are
-    defined by GEANT4.
+  * Subprocess [GetSubprocess()]: The subprocess type which create this
+    point.  These are defined by GEANT4.
 	
 #### The Energy Deposition Class (and Friends).
 
@@ -274,37 +281,42 @@ point).  It also records the particle depositing the energy, as well as the
 primary particle, or ultimate parent, associated with the energy deposit.
 
 The generated hit segment contains fields with the following information.
+It has the deprecated public fields, and accessor that should be used
+instead of the field:
 
   * Contrib: A vector of track identifiers which contributed to this hit
     segment.  There is almost always only one contributor, but for certain
     run settings there may be several particles associated with one segment
-    (this is a very unusual situation).
+    (this is a very unusual situation).  This has type
+    TG4HitSegment::Contributors and is equivalent to a vector of integers.
 	
-  * PrimaryId: The track identifier for the primary particle creating this
-    hit.
+  * PrimaryId [GetPrimaryId()]: The track identifier for the primary
+    particle creating this hit.
 	
-  * EnergyDeposit: The total energy deposited over the length of this
-    track.  The energy should be assumed to have been uniformly deposited
-    along the segment (*not* at the beginning or the end).  This is the
-    total dEdX of the track between the start and stop position of the segment.
+  * EnergyDeposit [GetEnergyDeposit()]: The total energy deposited over the
+    length of this track.  The energy should be assumed to have been
+    uniformly deposited along the segment (*not* at the beginning or the
+    end).  This is the total dEdX of the track between the start and stop
+    position of the segment.
 	
-  * SecondaryDeposit: The "secondary" energy deposited over the length of
-    the segment.  This is generally used to help simulate the energy
-    emitted as scintillation light vs the total dE/dX of the track.  In
-    other words, when the secondary deposit simulation is turned on,  This
-    is the energy deposited as optical photons.  The remaining energy is
-    usually deposited as ionization.  For example, in liquid argon, the
-    mean number of quanta crated will be N~q~ = (EnergyDeposit/W~Ar~),
-    where W~Ar~ is the work function for argon (typically 19.5 eV). The number
-    of optical photons is N~ph~ = N~q~ * SecondaryDeposit/EnergyDeposit,
-    and the number of ionization electrons is N~e~ = N~q~ - N~ph~.  For
-    liquid argon the Doke-Birks model as implemented by NEST used.
+  * SecondaryDeposit [GetSecondaryDeposit()]: The "secondary" energy
+    deposited over the length of the segment.  This is generally used to
+    help simulate the energy emitted as scintillation light vs the total
+    dE/dX of the track.  In other words, when the secondary deposit
+    simulation is turned on, This is the energy deposited as optical
+    photons.  The remaining energy is usually deposited as ionization.  For
+    example, in liquid argon, the mean number of quanta crated will be N~q~
+    = (EnergyDeposit/W~Ar~), where W~Ar~ is the work function for argon
+    (typically 19.5 eV). The number of optical photons is N~ph~ = N~q~ *
+    SecondaryDeposit/EnergyDeposit, and the number of ionization electrons
+    is N~e~ = N~q~ - N~ph~.  For liquid argon the Doke-Birks model as
+    implemented by NEST used.
 	
-  * TrackLength: The total track length between the start and stop points
-    (as estimated by GEANT4)
+  * TrackLength [GetTrackLength()]: The total track length between the
+    start and stop points (as estimated by GEANT4)
 	
-  * Start, Stop: The starting and stopping points of the segment
-    (TLorentzVector). 
+  * Start, Stop [GetStart(), GetStop()]: The starting and stopping points
+    of the segment (TLorentzVector).
 	
 
 ##### Controlling the step size.  

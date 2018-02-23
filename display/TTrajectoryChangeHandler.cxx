@@ -42,8 +42,8 @@ void EDep::TTrajectoryChangeHandler::Apply() {
         const TG4Trajectory::TrajectoryPoints& points = traj->Points;
 
         std::ostringstream label;
-        label << traj->Name 
-              << " (" << traj->InitialMomentum.E() << " MeV)";
+        label << traj->GetName()
+              << " (" << traj->GetInitialMomentum().E() << " MeV)";
 
         bool charged = true;
         
@@ -61,9 +61,9 @@ void EDep::TTrajectoryChangeHandler::Apply() {
 
         for (std::size_t p = 0; p < points.size(); ++p) {
             track->SetPoint(p, 
-                            points[p].Position.X(),
-                            points[p].Position.Y(),
-                            points[p].Position.Z());
+                            points[p].GetPosition().X(),
+                            points[p].GetPosition().Y(),
+                            points[p].GetPosition().Z());
         }
         fTrajectoryList->AddElement(track);
     }

@@ -35,6 +35,9 @@ set(includes
   TG4HitSegment.h
   TG4Event.h)
 
+# Compile the base library with private I/O fields.
+add_definitions(-DEDEPSIM_FORCE_PRIVATE_FIELDS)
+
 # Make sure the current directories are available for the later compilation
 include_directories(${CMAKE_CURRENT_LIST_DIR} ${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_CURRENT_SOURCE_DIR}/../io)

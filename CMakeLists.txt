@@ -1,21 +1,16 @@
 cmake_minimum_required(VERSION 3.0)
 
-set(CMAKE_BUILD_TYPE Debug)
-
 # Set the project name and version
-project(edep-sim)
-set(VERSION_MAJOR "1")
-set(VERSION_MINOR "0")
-set(VERSION_PATCH "0")
-set(VERSION "${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_PATCH}")
+project(EDepSim VERSION 1.0.0)
 
 message("Energy Deposition Simulation -- ${VERSION}")
 
 # Set the default compilation flags
+set(CMAKE_BUILD_TYPE Debug)
 set(EDEPSIM_DISPLAY TRUE CACHE BOOL "Compile the edep-disp event display")
 
 # Set the default verbosity of the compilation...
-set(CMAKE_VERBOSE_MAKEFILE TRUE)
+# set(CMAKE_VERBOSE_MAKEFILE TRUE)
 
 # Configure the dependencies
 find_package(ROOT REQUIRED

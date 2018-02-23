@@ -33,6 +33,9 @@ endif(ROOT_Eve_LIBRARY)
 # but it makes maintaining this file easier.
 file(GLOB_RECURSE source *.cxx)
 
+# Compile the base library with private I/O fields.
+add_definitions(-DEDEPSIM_FORCE_PRIVATE_FIELDS)
+
 # Make sure the current directories are available for the root
 # dictionary generation.
 include_directories(${CMAKE_CURRENT_LIST_DIR}
