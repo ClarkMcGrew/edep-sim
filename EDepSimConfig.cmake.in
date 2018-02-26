@@ -1,0 +1,25 @@
+@PACKAGE_INIT@
+
+##########################
+# Add any specific packages that are needed to make this one compile here.
+##########################
+
+# We need ROOT
+find_package(ROOT REQUIRED
+  COMPONENTS Geom Physics Matrix MathCore Tree RIO)
+if(ROOT_FOUND)
+  include(${ROOT_USE_FILE})
+endif(ROOT_FOUND)
+
+# We need GEANT4
+if(NOT @EDEPSIM_READONLY@)
+  find_package(Geant4 @Geant4_VERSION@ REQUIRED)
+  if(Geant4_FOUND)
+    include(${Geant4_USE_FILE})
+  endif(Geant4_FOUND)
+endif(NOT @EDEPSIM_READONLY@)
+
+# The specific EDepSimTarget definitions.
+include("@CMAKE_INSTALL_PREFIX@/lib/cmake/EDepSim/EDepSimTargets.cmake")
+
+check_required_components("@PROJECT_NAME@")
