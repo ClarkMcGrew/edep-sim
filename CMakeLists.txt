@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 3.0)
 
-# Set the project name and version
+# Set the project name and version.  The project name will be used to
+# import this into other CMAKE files.
 project(EDepSim VERSION 1.0.0)
 
 message("Energy Deposition Simulation -- ${VERSION}")
@@ -88,14 +89,20 @@ install(DIRECTORY inputs DESTINATION share/EDepSim
 #   PATTERN *.C
 #   PATTERN *.py)
 
+#############################################################
+#
+# Prepare the package so that it can be used with the find_package interface.
+#
+#############################################################
+
+# Include module with function 'write_basic_package_version_file'
+include(CMakePackageConfigHelpers)
+
 # Build the targets description so that the package can be configured
 # using find_package.
 install(EXPORT EDepSimTargets
   NAMESPACE EDepSim::
   DESTINATION lib/cmake/EDepSim)
-
-# Include module with function 'write_basic_package_version_file'
-include(CMakePackageConfigHelpers)
 
 # Write the 'EDepSimConfigVersion.cmake' file which can be used to
 # check if a version meets the requested properties.
@@ -106,7 +113,7 @@ write_basic_package_version_file(
 # Write the 'EDepSimConfig.cmake' file so that a user package can
 # access this with find_package.
 configure_package_config_file(
-  EDepSimConfig.cmake.in
+  PackageConfig.cmake.in
   EDepSimConfig.cmake
   PATH_VARS CMAKE_INSTALL_PREFIX
   INSTALL_DESTINATION lib/cmake/EDepSim)
