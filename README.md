@@ -174,6 +174,32 @@ masses and densities are also in CLHEP units, so that 1 kilogram equals
 6.24x10^24^ MeV ns^2^ mm^-2^, and densities are in units of 6.24x^24^ MeV
 ns^2^ mm^-5^.
 
+#### Using the edepsim_io library
+
+In addition to accessing the tree using "normal" root methods, you can also
+directly line the edepsim_io library.  The i/o library can be compiled
+without depending on GEANT4, and can be used via CMAKE.  If the EDepSim
+package is in your path, the
+
+```
+find_package(EDepSim)
+```
+
+in a CMakeLists.text file will include the edepsim_io library as the
+EDepSim::edepsim_io.  For example
+
+```
+# Configure the dependencies
+find_package(EDepSim)
+
+add_executable(my-code myCode.cc)
+target_link_libraries(my-code
+  PUBLIC EDepSim::edepsim_io)
+```
+
+This will automatically include any ROOT dependencies needed by edepsim_io,
+and GEANT4 if necessary.
+
 ### Output Tree Format
 
 The `edep-sim` executable produces a root `TTree` containing a single
@@ -461,6 +487,26 @@ simulation.  It is relatively straight forward to take this and include
 edep-sim into a separate package.  The example main program
 (i.e. app/edepSim.cc) is commented and the library is started beginning at
 about line 230.
+
+### Using as a CMAKE package
+
+The simulation is available for CMake projects using the find_package
+macro.  It can be included using
+```
+find_package(EDepSim)
+```
+and then added to an executable using the
+```
+target_add_library(your-target PUBLIC EDepSim::edepsim)
+```
+which will add all of the required dependencies.
+
+If you only want to use the i/o library, and don't need access to geant4,
+you can use
+```
+target_add_library(your-target PUBLIC EDepSim::edepsim_io)
+```
+which only depends on ROOT.
 
 ## Specifying the Primary Particle Kinematics
 
