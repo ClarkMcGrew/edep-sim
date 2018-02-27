@@ -1,0 +1,42 @@
+This software comprises of portions covered different licenses:
+
+1) The portions derived from GEANT4 are distributed under the GEANT4
+software license reproduced in the "licenses" subdirectory.
+
+2) The portions derived from NEST are distributed under the NEST software
+license reproduced in the "licenses" subdirectory.
+
+3) The software presented here derives from software that has been
+maintained in multiple HEP collaborations.  To the best of my knowledge,
+all of the code can be freely distributed for (at least) academic
+purposes. If you find portions of your code in this distribution which are
+not covered by the licenses mentioned above, please contact me for proper
+attribution.
+
+4) It is requested, but not required, that any discussion using the EDepSim
+source acknowledge that use.
+
+5) The portions unique to this distribution, and which are not otherwise
+attributed, are distributed under the license below.
+
+MIT License
+
+Copyright (c) 2018 Clark McGrew
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.

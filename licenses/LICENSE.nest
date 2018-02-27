@@ -1,0 +1,87 @@
+rsion 1.0, 9 September 2011
+Portions unique to NEST Copyright
+(c) 2011 NEST Developers.
+Portions identical to the Geant4 license Copyright
+(c) Copyright Holders of the Geant4 Collaboration, 1994-2006.
+Rights not expressly granted are reserved by NEST and/or Geant4.
+
+Installation, use, reproduction, display, modification, and redistribution
+of the NEST software, with or without modification, in source or binary
+forms, are permitted on a non-exclusive basis. However, NEST plots from
+papers or the website must be credited, and exercise of rights by you under
+this license is subject to the following conditions:
+
+1. Redistributions of this software, in whole or in part, with or without
+modification, must reproduce the above copyright notice and these license
+conditions for this software, as well as the copyright notice and license
+conditions of Geant4, the NEST user documentation, and any other materials
+provided with the official distribution.
+
+2. Your own user documentation, if any, included with a redistribution must
+include the following notice: "This product includes software developed by
+members of the NEST team (http://nest.physics.ucdavis.edu)."  This
+acknowledgment must be reproduced in the modified version of the software
+itself, if it is where third-party acknowledgments normally appear.
+
+3. This software is a partial redistribution of Geant4 in a modified form,
+and is therefore subject to the conditions of the Geant4 license agreement
+as well. Furthermore, if the NEST software is again redistributed, in a
+modified form, the name and reference of the modified version must be
+clearly distinguishable from that of this software.
+
+4. If you use the output of this software in any publication or
+presentation, including but not limited to the publishing of comparison(s)
+of the result(s) from an experiment to NEST, then you are required to cite
+all of the NEST papers listed on the website
+(http://nest.physics.ucdavis.edu) OR just the latest NEST paper together
+with the parenthetical remark “and ref. therein.” You must also cite the
+latest Geant4 overview publications, enumerated on the above website as
+well.
+
+5. The code has been made openly available, for ease of use
+(compiling/linking) and for easy understanding of what physics is being
+utilized in the simulation; however, any significant changes which you make
+resulting in different simulated physics leading to results and/or
+conclusions distinct from the official public version of NEST, as well as
+changes which you distribute of your own accord outside of your home
+institution and/or your own collaboration or experimental group, must be
+shared with the NEST team and its community of users (via e-mail to
+mmszydagis@ucdavis.edu and the NEST listhost: nest@physics.ucdavis.edu ).
+
+6. Please concisely list in your publication(s) or talk(s) all
+modifications which you may have developed on your own, including but not
+limited to bug fixes, patches, upgrades, improvements, or other
+enhancements or derivatives of the features, functionality, or performance
+of this software. By creating any modifications, you are deemed to have
+granted NEST a license to said modifications, including modifications
+protected by any patent owned by you, under the conditions of this license.
+
+7. You may not include this software in whole or in part in any patent or
+patent application in respect of any modification of this software
+developed by you.
+
+8. DISCLAIMER
+
+THIS SOFTWARE IS PROVIDED BY THE MEMBERS OF THE NEST TEAM AND CONTRIBUTORS
+"AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED
+TO, IMPLIED WARRANTIES OF MERCHANTABILITY, OF SATISFACTORY QUALITY, AND
+FITNESS FOR A PARTICULAR PURPOSE OR USE ARE DISCLAIMED. THE MEMBERS OF THE
+NEST TEAM AND CONTRIBUTORS MAKE NO REPRESENTATION THAT THE SOFTWARE AND
+MODIFICATIONS THEREOF, WILL NOT INFRINGE ANY PATENT, COPYRIGHT, TRADE
+SECRET, OR OTHER PROPRIETARY RIGHT.
+
+9. LIMITATION OF LIABILITY
+
+THE MEMBERS OF THE NEST TEAM AND CONTRIBUTORS SHALL HAVE NO LIABILITY FOR
+DIRECT, INDIRECT, SPECIAL, INCIDENTAL, CONSEQUENTIAL, EXEMPLARY, OR
+PUNITIVE DAMAGES OF ANY CHARACTER INCLUDING, WITHOUT LIMITATION,
+PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES, LOSS OF USE, DATA OR PROFITS,
+OR BUSINESS INTERRUPTION, HOWEVER CAUSED AND ON ANY THEORY OF CONTRACT,
+WARRANTY, TORT (INCLUDING NEGLIGENCE), PRODUCT LIABILITY OR OTHERWISE,
+ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+POSSIBILITY OF SUCH DAMAGES.
+
+10. This license shall terminate with immediate effect and without notice
+if you fail to comply with any of the terms of this license, or if you
+institute litigation against any member of the NEST development team with
+regard to this software.
