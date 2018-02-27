@@ -2,6 +2,10 @@
 #
 # Generate a 10000 MeV muon beamed in the down stream direction.
 #
+# To generate 10 events, this can be run using edep-sim with the command
+#
+#  edep-sim -C -u -e 10 muon-cone-10000.mac
+#
 
 # Create the first particle source.  This source will be used to
 # specify the position of the vertex.  The any of the GPS direction

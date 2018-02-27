@@ -2,6 +2,11 @@
 # A macro that uses the G4 particle gun to create two particles per event.
 ##################################################################
 
+# To generate 10 events, this can be run using edep-sim with the command
+#
+#  edep-sim -C -u -e 10 double-particle-gun.mac
+#
+
 # Make sure that the GPS generator is it's default state.
 /gps/source/clear
 

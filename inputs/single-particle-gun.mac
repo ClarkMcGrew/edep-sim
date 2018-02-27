@@ -2,6 +2,11 @@
 # Macro that use G4 particle gun to create a single particle
 ##################################################################
 
+# To generate 10 events, this can be run using edep-sim with the command
+#
+#  edep-sim -C -u -e 10 single-particle-gun.mac
+#
+
 # Create the first particle source.  This source will be used to
 # specify the position of the vertex.  The any of the GPS direction
 # and energy commands can be used.

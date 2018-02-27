@@ -2,6 +2,10 @@
 #
 # Generate a 100 MeV muon with an isotropic distribution.
 #
+# To generate 10 events, this can be run using edep-sim with the command
+#
+#  edep-sim -C -u -e 10 muon-100.mac
+#
 
 # Create the first particle source.  This source will be used to
 # specify the position of the vertex.  The any of the GPS direction
