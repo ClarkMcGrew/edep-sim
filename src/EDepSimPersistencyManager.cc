@@ -168,27 +168,33 @@ void EDepSim::PersistencyManager::SummarizePrimaries(
         vtx.Position.SetY(src->GetY0());
         vtx.Position.SetZ(src->GetZ0());
         vtx.Position.SetT(src->GetT0());
-        
-#define SUMMARIZE_PARTICLES
-#ifdef SUMMARIZE_PARTICLES
+
+        // Add the particles associated with the vertex to the summary.
         for (int i=0; i< src->GetNumberOfParticle(); ++i) {
             TG4PrimaryParticle prim;
             G4PrimaryParticle *g4Prim = src->GetPrimary(i);
-            prim.Name = g4Prim->GetG4code()->GetParticleName();
+            double E = 0.0;
+            if (g4Prim->GetG4code()) {
+                prim.Name = g4Prim->GetG4code()->GetParticleName();
+                E = pow(g4Prim->GetG4code()->GetPDGMass(),2);
+            }
+            else {
+                prim.Name = "unknown";
+            }
             prim.PDGCode = g4Prim->GetPDGcode();
             prim.TrackId = g4Prim->GetTrackID() - 1;
             prim.Momentum.SetX(g4Prim->GetPx());
             prim.Momentum.SetY(g4Prim->GetPy());
             prim.Momentum.SetZ(g4Prim->GetPz());
-            double E = pow(prim.Momentum.P(),2) 
-                + pow(g4Prim->GetG4code()->GetPDGMass(),2);
+            E += pow(prim.Momentum.P(),2);
             if (E>0) E = std::sqrt(E);
             else E = 0;
             prim.Momentum.SetE(E);
             vtx.Particles.push_back(prim);
         }
-#endif
-        
+
+        // Check to see if there is anyu user information associated with the
+        // vertex.
         EDepSim::VertexInfo* srcInfo 
             = dynamic_cast<EDepSim::VertexInfo*>(src->GetUserInformation());
         if (srcInfo) {
@@ -200,12 +206,13 @@ void EDepSim::PersistencyManager::SummarizePrimaries(
             vtx.DiffCrossSection = srcInfo->GetDiffCrossSection();
             vtx.Weight = srcInfo->GetWeight();
             vtx.Probability = srcInfo->GetProbability();
-#ifdef SUMMARY_INFO_VERTEX
-            if (srcInfo->GetInformationalVertex()) {
+
+            const G4PrimaryVertex* infoVertex
+                = srcInfo->GetInformationalVertex();
+            if (infoVertex) {
                 SummarizePrimaries(vtx.Informational,
                                    srcInfo->GetInformationalVertex());
             }
-#endif
         }
 
         dest.push_back(vtx);
