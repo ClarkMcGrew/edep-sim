@@ -175,7 +175,7 @@ void EDepSim::DetectorMessenger::SetNewValue(G4UIcommand * cmd,
         std::string::iterator new_end
             = std::remove(packageroot.begin(), packageroot.end(), '"');
         packageroot.erase(new_end, packageroot.end());
-        std::string file = packageroot + "/lib/edep-sim/"
+        std::string file = packageroot + "/lib/EDepSim/"
             + name + "-" + version + ".mac";
         EDepSimLog("%%%% Set Run Conditions");
         EDepSimLog("%%     Condition Name: "<< name);
