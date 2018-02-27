@@ -8,7 +8,7 @@
 
 namespace EDep {
     class TMatrixElement;
-};
+}
 
 /// A Eve Element object to represent a 3x3 matrix (either the moments of a
 /// distribution, or the covariance) at a position.  This can be used to
