@@ -130,8 +130,7 @@ private:
     TGeoShape* CreateShape(const G4VSolid* theSolid, TGeoMatrix **mat = NULL);
     
     /// Create a new ROOT volume object.
-    TGeoVolume* CreateVolume(TGeoManager* theEnvelope,
-                             const G4VSolid* theSolid,
+    TGeoVolume* CreateVolume(const G4VSolid* theSolid,
                              std::string theName,
                              TGeoMedium* theMedium);
 

@@ -302,6 +302,10 @@ void EDepSim::UserDetectorConstruction::ConstructSDandField() {
                          = new EDepSim::UniformField(bField, eField);
         EDepSim::EMFieldSetup* fieldSetup
                          = new EDepSim::EMFieldSetup(field,manager);
+        if (!fieldSetup) {
+            EDepSimError("Field not created");
+            throw std::runtime_error("Field not created");
+        }
         logVolume->SetFieldManager(manager,true);
     }
 }
@@ -326,19 +330,19 @@ void EDepSim::UserDetectorConstruction::DefineMaterials() {
 
     G4Element* elO = nistMan->FindOrBuildElement(8);
 
-    G4Element* elF = nistMan->FindOrBuildElement(9);
+    // G4Element* elF = nistMan->FindOrBuildElement(9);
 
     G4Element* elNa = nistMan->FindOrBuildElement(11);
 
-    G4Element* elAl = nistMan->FindOrBuildElement(13);
+    // G4Element* elAl = nistMan->FindOrBuildElement(13);
 
     G4Element* elSi = nistMan->FindOrBuildElement(14);
 
-    G4Element* elCl = nistMan->FindOrBuildElement(17);
+    // G4Element* elCl = nistMan->FindOrBuildElement(17);
 
     G4Element* elAr = nistMan->FindOrBuildElement(18);
 
-    G4Element* elTi = nistMan->FindOrBuildElement(22);
+    // G4Element* elTi = nistMan->FindOrBuildElement(22);
 
     G4Element* elFe = nistMan->FindOrBuildElement(26);
 
@@ -346,11 +350,11 @@ void EDepSim::UserDetectorConstruction::DefineMaterials() {
 
     G4Element* elCu = nistMan->FindOrBuildElement(29);
 
-    G4Element* elZn = nistMan->FindOrBuildElement(30);
+    // G4Element* elZn = nistMan->FindOrBuildElement(30);
 
-    G4Element* elSn = nistMan->FindOrBuildElement(50);
+    // G4Element* elSn = nistMan->FindOrBuildElement(50);
 
-    G4Element* elPb = nistMan->FindOrBuildElement(82);
+    // G4Element* elPb = nistMan->FindOrBuildElement(82);
 
     //Air
     G4Material* air 

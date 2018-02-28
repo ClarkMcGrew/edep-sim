@@ -82,7 +82,7 @@ EDepSim::UniformField::operator = (const EDepSim::UniformField &p)
 
 // ------------------------------------------------------------------------
 
-void EDepSim::UniformField::GetFieldValue (const G4double* pos,
+void EDepSim::UniformField::GetFieldValue (const G4double* /* position */,
                                            G4double *fieldBandE ) const 
 {
     for (G4int i=0; i<6; ++i) {

@@ -23,7 +23,7 @@ public:
     public:
         PositionTest() {}
         virtual ~PositionTest() {}
-        virtual bool Apply(const G4LorentzVector& vtx) {return true;}
+        virtual bool Apply(const G4LorentzVector& /* vtx */) {return true;}
     };
     typedef std::vector<PositionTest*> PositionTests;
 

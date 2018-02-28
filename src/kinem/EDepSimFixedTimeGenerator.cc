@@ -6,7 +6,7 @@ EDepSim::FixedTimeGenerator::FixedTimeGenerator(G4String name, double time)
 
 EDepSim::FixedTimeGenerator::~FixedTimeGenerator() {}
 
-double EDepSim::FixedTimeGenerator::GetTime(const G4LorentzVector& vtx) {
+double EDepSim::FixedTimeGenerator::GetTime(const G4LorentzVector& /* vtx */) {
     return fTime;
 }
 

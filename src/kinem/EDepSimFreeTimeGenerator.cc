@@ -6,7 +6,7 @@ EDepSim::FreeTimeGenerator::FreeTimeGenerator(G4String name)
 
 EDepSim::FreeTimeGenerator::~FreeTimeGenerator() {}
 
-double EDepSim::FreeTimeGenerator::GetTime(const G4LorentzVector& vtx) {
+double EDepSim::FreeTimeGenerator::GetTime(const G4LorentzVector& /* vtx */) {
     return 0.0;
 }
 

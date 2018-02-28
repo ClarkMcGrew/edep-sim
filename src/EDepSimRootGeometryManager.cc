@@ -448,8 +448,7 @@ TGeoShape* EDepSim::RootGeometryManager::CreateShape(const G4VSolid* theSolid,
 }
 
 TGeoVolume*
-EDepSim::RootGeometryManager::CreateVolume(TGeoManager* theEnvelope, 
-                                           const G4VSolid* theSolid, 
+EDepSim::RootGeometryManager::CreateVolume(const G4VSolid* theSolid, 
                                            std::string theName,
                                            TGeoMedium* theMedium) {
     TGeoShape* theShape = CreateShape(theSolid);
@@ -668,8 +667,7 @@ bool EDepSim::RootGeometryManager::CreateEnvelope(
     
     if (!theVolume) {
         // Create the root volume (the solid in G4 lingo).
-        theVolume = CreateVolume(theEnvelope, theSolid,
-                                 theShortName, theMedium);
+        theVolume = CreateVolume(theSolid, theShortName, theMedium);
         if (!theVolume) theVolume = theMother;
         theVolume->SetTitle(theVolumeName.c_str());
 

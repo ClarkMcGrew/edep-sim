@@ -155,6 +155,10 @@ G4LogicalVolume *CaptDriftRegionBuilder::GetPiece(void) {
         G4ThreeVector(0,0,0), G4ThreeVector(0.0,0.0,500.0*volt/cm));
     EDepSim::EMFieldSetup* fieldSetup
         = new EDepSim::EMFieldSetup(field,manager);
+    if (!fieldSetup) {
+        EDepSimError("Field not properly created");
+        throw std::runtime_error("Field not properly created");
+    }
     logVolume->SetFieldManager(manager,true);
     if (GetSensitiveDetector()) {
         logVolume->SetSensitiveDetector(GetSensitiveDetector());
