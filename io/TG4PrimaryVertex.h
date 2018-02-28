@@ -107,7 +107,7 @@ private:
     /// material, etc.  This should be one if it is not filled.
     Float_t Probability;
 
-    ClassDef(TG4PrimaryVertex,1)
+    ClassDef(TG4PrimaryVertex,2)
 };
 
 /// A class to save a G4 primary particle into a root output file without
