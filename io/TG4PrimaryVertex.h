@@ -70,7 +70,9 @@ public:
     
 #if defined(EDEPSIM_USE_PUBLIC_FIELDS)&&!defined(EDEPSIM_FORCE_PRIVATE_FIELDS)&&!defined(__CINT__)
 public:
+#ifdef EDEPSIM_WARN_PUBLIC_FIELDS
 #warning Using deprecated public fields.  Please consider using the accessor.  For example, to access PrimaryId, use GetPrimaryId().
+#endif
 #else
 private:
 #endif
@@ -134,7 +136,9 @@ public:
 
 #if defined(EDEPSIM_USE_PUBLIC_FIELDS)&&!defined(EDEPSIM_FORCE_PRIVATE_FIELDS)&&!defined(__CINT__)
 public:
+#ifdef EDEPSIM_WARN_PUBLIC_FIELDS
 #warning Using deprecated public fields.  Please consider using the accessor.  For example, to access PrimaryId, use GetPrimaryId().
+#endif
 #else
 private:
 #endif
