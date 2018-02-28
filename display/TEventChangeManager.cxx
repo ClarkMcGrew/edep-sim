@@ -51,7 +51,7 @@ namespace {
         std::vector<std::string> fVolumesToShow;
         TEveElementList* fEveList;
         PickVolumes(TEveElementList* eveList) : fEveList(eveList) {}
-        bool Action(int depth) {
+        bool Action(int) {
             if (!fEveList) return true;
             TGeoNode* node = gGeoManager->GetCurrentNode();
             std::string name(node->GetName());

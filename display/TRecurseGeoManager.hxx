@@ -41,22 +41,26 @@ public:
         extension = node->GetUserExtension();
         if (extension) {
             std::cout << "Have node user extension " << node->GetName()
+                      << " depth " << depth
                       << std::endl;
         }
         extension = node->GetFWExtension();
         if (extension) {
             std::cout << "Have node FW extension " << node->GetName()
+                      << " depth " << depth
                       << std::endl;
         }
         TGeoVolume* volume = node->GetVolume();
         extension = volume->GetUserExtension();
         if (extension) {
             std::cout << "Have volume user extension " << volume->GetName()
+                      << " depth " << depth
                       << std::endl;
         }
         extension = volume->GetFWExtension();
         if (extension) {
             std::cout << "Have volume FW extension " << volume->GetName()
+                      << " depth " << depth
                       << std::endl;
         }
         return true;
