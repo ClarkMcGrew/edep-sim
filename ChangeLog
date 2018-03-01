@@ -1,0 +1,57 @@
+Changes in 3.0.0rc (a.k.a master)
+
+* Add a change log!
+
+* The CMake infrastructure has been improved so that it will now support
+  the find_package interface.  The package name is EDepSim, so in general
+  it will be used as "find_package(EDepSim)".  The exported library targets
+  are "EDepSim::edepsim_io" and "EDepSim::edepsim".
+
+* Separate the summary classes out of the main edepsim library.  These
+  classes are filled with a summary of an event, and are suitable for
+  writing to a file using ROOT.  If EDepSim is being used as a library, then
+  the edepsim_io provides the external API that can be used to access the
+  results of the simulation.
+
+* EDepSim::edepsim_io: Provide accessors for the internal data fields.  The
+  original plan was to "let" users access the data using the ROOT
+  MakeProject infrastructure, but this has proven to unwieldy.  As a
+  result, the public fields are being deprecated and should be accessed
+  using accessors.  See README.md for more documentation.  By default, the
+  public fields are still visible, but they can be made private by defining
+  EDEPSIM_FORCE_PRIVATE_FIELDS before including the edepsim_io include
+  file (i.e. TG4Event.h).
+
+* EDepSim depends on accessing some internally defined geant4 macros.
+  These macros are installed into the "shared/EDepSim" area, but in some
+  environments the location cannot be set at compile time.  A new
+  environment variable ("EDEPSIM_ROOT") is used to define the root location
+  of the shared/EDepSim directory.
+
+* The rooTracker kinematics input classes have been enhanced to allow
+  multiple vertices per event.  These is used by directing edepsim to
+  generate a large number of vertices in each event, and then adding a
+  marker in the rooTracker file flagging the end of an event.  The
+  rooTracker file can mark the end of an event by adding a dummy
+  interaction with HepStdN = 1 and HepStdStatus[0] = -1 (see the rooTracker
+  documentation for details on the rooTracker fields, and see GENIE for
+  it's particular incarnation).  This is used in a macro file with the
+  lines
+
+  # Use the T2K rooTracker input format.  This is directly supported by GENIE.
+  /generator/kinematics/set rooTracker
+
+  # Distribute the events based on the vertex in the rooTracker file.
+  /generator/position/set free
+
+  # Distribute the event times based onn the time in the rooTracker file.
+  /generator/time/set free
+
+  # Set a fixed number of interactions per event.  The number is not
+  # important, but should be larger than the largest possible number of
+  # interactions per event provided by rootTracker.
+  /generator/count/fixed/number 100000
+  /generator/count/set fixed
+
+  # Update the kinematics generator.
+  /generator/add
