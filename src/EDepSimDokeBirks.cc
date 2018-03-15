@@ -17,7 +17,8 @@
 // the physics described in NEST paper".
 EDepSim::DokeBirks::DokeBirks(const G4String& processName,
                              G4ProcessType type)
-    : G4VRestDiscreteProcess(processName, type)
+    : G4VRestDiscreteProcess(processName, type),
+      fEmSaturation(nullptr)
 {
     SetProcessSubType(fScintillation);
     
@@ -25,8 +26,6 @@ EDepSim::DokeBirks::DokeBirks(const G4String& processName,
         G4cout << GetProcessName() << " is created " << G4endl;
     }
 
-    fElectricField = 500*volt/cm;
-    
 }
 
 EDepSim::DokeBirks::~DokeBirks () {} //destructor needed to avoid linker error
@@ -63,7 +62,8 @@ EDepSim::DokeBirks::PostStepDoIt(const G4Track& aTrack, const G4Step& aStep)
     aParticleChange.Initialize(aTrack);
         
     const G4Material* aMaterial = aTrack.GetMaterial();
-    
+
+    bool inLiquidArgon = true;
     // Check that we are in liquid argon.
     if (aMaterial->GetState() != kStateLiquid) {
         // Do Nothing
@@ -71,15 +71,15 @@ EDepSim::DokeBirks::PostStepDoIt(const G4Track& aTrack, const G4Step& aStep)
             EDepSimError("Undefined material state for "
                          << aMaterial->GetName());
         }
-        return G4VRestDiscreteProcess::PostStepDoIt(aTrack, aStep);
+        inLiquidArgon = false;
     }
     if (aMaterial->GetNumberOfElements() > 1) {
         // Do Nothing
-        return G4VRestDiscreteProcess::PostStepDoIt(aTrack, aStep);
+        inLiquidArgon = false;
     }
     if (std::abs(aMaterial->GetElement(0)->GetZ()-18.0) > 0.5) {
         // Do Nothing
-        return G4VRestDiscreteProcess::PostStepDoIt(aTrack, aStep);
+        inLiquidArgon = false;
     }
     
     const G4DynamicParticle* aParticle = aTrack.GetDynamicParticle();
@@ -96,37 +96,46 @@ EDepSim::DokeBirks::PostStepDoIt(const G4Track& aTrack, const G4Step& aStep)
         return G4VRestDiscreteProcess::PostStepDoIt(aTrack, aStep);        
     }
     
-    // Figure out the electric field.
-    G4double electricField = fElectricField;
+    if (!inLiquidArgon) {
+        if (!fEmSaturation) fEmSaturation = new G4EmSaturation(0);
+        G4double nonIonizingEnergy
+            = fEmSaturation->VisibleEnergyDepositionAtAStep(&aStep);
+        aParticleChange.ProposeNonIonizingEnergyDeposit(nonIonizingEnergy);
+        return G4VRestDiscreteProcess::PostStepDoIt(aTrack, aStep);
+    }
+
+    // Figure out the electric field for the volume.
     G4StepPoint* pPostStepPoint = aStep.GetPostStepPoint();
     const G4VPhysicalVolume* aVolume = pPostStepPoint->GetPhysicalVolume();
     const G4LogicalVolume* aLogVolume = aVolume->GetLogicalVolume();
     const G4FieldManager* aFieldManager = aLogVolume->GetFieldManager();
-    if (aFieldManager && aFieldManager->DoesFieldExist()) {
-        const G4Field* aField = aFieldManager->GetDetectorField();
-        if (!aField) {
-            EDepSimError("LAr Volume "
-                         << aLogVolume->GetName()
-                         << " should have field!");
-            return G4VRestDiscreteProcess::PostStepDoIt(aTrack, aStep);        
-        }
-        G4ThreeVector thePosition = pPostStepPoint->GetPosition();
-        double theTime = pPostStepPoint->GetGlobalTime();
-        double point[4] = {
-            thePosition.x(), thePosition.y(), thePosition.z(), theTime};
-        double bField[6];
-        aField->GetFieldValue(point,bField);
-        
-        electricField = bField[3]*bField[3];
-        electricField += bField[4]*bField[4];
-        electricField += bField[5]*bField[5];
-        if (electricField > 0) {
-            electricField = std::sqrt(electricField);
-        }
+    if (!aFieldManager) {
+        return G4VRestDiscreteProcess::PostStepDoIt(aTrack, aStep);
+    }
+    if (!aFieldManager->DoesFieldExist()) {
+        return G4VRestDiscreteProcess::PostStepDoIt(aTrack, aStep);
+    }
+    const G4Field* aField = aFieldManager->GetDetectorField();
+    if (!aField) {
+        EDepSimError("LAr Volume "
+                     << aLogVolume->GetName()
+                     << " should have field!");
+        return G4VRestDiscreteProcess::PostStepDoIt(aTrack, aStep);        
     }
 
-    electricField = std::abs(electricField/(kilovolt/cm));
+    G4ThreeVector thePosition = pPostStepPoint->GetPosition();
+    double theTime = pPostStepPoint->GetGlobalTime();
+    double point[4] = {
+        thePosition.x(), thePosition.y(), thePosition.z(), theTime};
+    double bField[6];
+    aField->GetFieldValue(point,bField);
     
+    double electricField = bField[3]*bField[3];
+    electricField += bField[4]*bField[4];
+    electricField += bField[5]*bField[5];
+    if (electricField > 0) {
+        electricField = std::sqrt(electricField);
+    }
     // The code below is pulled from G4S1Light and is simplified to be
     // Doke-Birks only, in LAr only, and for an electric field only.  This is
     // for ARGON only.  The Doke-Birks constants are in kilovolt/cm

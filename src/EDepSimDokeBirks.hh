@@ -10,30 +10,31 @@
 #include "G4VRestDiscreteProcess.hh"
 #include "G4DynamicParticle.hh"
 #include "G4Material.hh"
+#include "G4EmSaturation.hh"
 
 /// Implement the Doke-Birk recombination probability found in NEST in an
-/// optimized form for a LArTPC.  The Doke-Birk parameterization is quite
+/// optimized form for a LAr.  The Doke-Birk parameterization is quite
 /// accurate for LAr over the important energy ranges for a LArTPC (E more
 /// than about an MeV).
 ///
-/// This file should always be accompanied by
-/// the full NEST implementation since this is a direct modification of the
-/// NEST code.  The NEST code needs to be provided since it is the arbitor of
-/// the performance of this code.  Where this code deviates from NEST, NEST is
-/// right.  Finally, if this is used, the NEST authors should be cited.  They
-/// did all of the physics.  This is just an adaptation of their work to LAr
-/// so it's faster, but with much less capability.
+/// When this is called for a material other than LAr, then the G4 Birk's Law
+/// implementation (G4EmSaturation) is used.
+///
+/// This file should always be accompanied by the full NEST implementation
+/// since this is a direct modification of the NEST code.  The NEST code needs
+/// to be provided since it is the arbitor of the performance of this code.
+/// Where this code deviates from NEST, NEST is right.  Finally, if this is
+/// used, the NEST authors should be cited.  They did all of the physics.
+/// This is just an adaptation of their work to LAr so it's faster, but with
+/// much less capability.
 namespace EDepSim {class DokeBirks;}
 class EDepSim::DokeBirks : public G4VRestDiscreteProcess //class definition
 {
-private:
 public:
 
     DokeBirks(const G4String& processName = "Doke-Birks",
                   G4ProcessType type = fElectromagnetic);
     ~DokeBirks();
-
-public:
 
     /// Determine which particles this process should be applied too.
     G4bool IsApplicable(const G4ParticleDefinition& aParticleType);
@@ -66,9 +67,8 @@ private:
     /// is normalized to denstity.  The energy must be in MeV.
     G4double CalculateElectronLET ( G4double E);
 
-    // The default electric field in the liquid argon
-    G4double fElectricField;
+    // The EM Saturation model for when the material is not LAr.
+    G4EmSaturation* fEmSaturation;
   
 };
-
 #endif
