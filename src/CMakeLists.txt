@@ -16,6 +16,7 @@ add_library(edepsim SHARED ${source})
 
 target_include_directories(edepsim PUBLIC
   "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>"
+  "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}../io>"
   "$<INSTALL_INTERFACE:include/EDepSim>")
 
 target_link_libraries(edepsim PUBLIC
