@@ -14,6 +14,13 @@ set(EDEPSIM_DISPLAY TRUE CACHE BOOL
 set(EDEPSIM_READONLY FALSE CACHE BOOL
   "If true, then DO NOT use GEANT4")
 
+# Check to see if this is MACOS
+if(APPLE)
+set(CMAKE_MACOSX_RPATH 1)
+set(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
+set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
+endif (APPLE)
+
 # Add a target to generate API documentation with Doxygen.  The build
 # works fine if this is not found.
 find_package(Doxygen)
