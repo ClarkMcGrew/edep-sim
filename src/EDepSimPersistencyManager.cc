@@ -42,7 +42,7 @@
 // then it will create a simple tree that can be analyzed using root.  The
 // best way to access the tree is with the root interface to python (no
 // headers needed), or by using ROOT TFile::MakeProject.
-EDepSim::PersistencyManager::PersistencyManager() 
+EDepSim::PersistencyManager::PersistencyManager()
     : G4VPersistencyManager(), fFilename("/dev/null"),
       fLengthThreshold(10*mm),
       fGammaThreshold(5*MeV), fNeutronThreshold(50*MeV),
@@ -77,7 +77,7 @@ G4bool EDepSim::PersistencyManager::Store(const G4Event* anEvent) {
 // This is called by the G4RunManager during AnalyzeEvent.
 G4bool EDepSim::PersistencyManager::Store(const G4Run* aRun) {
     if (!aRun) return false;
-    EDepSimSevere(" -- Run store called without a save method for " 
+    EDepSimSevere(" -- Run store called without a save method for "
                << "GEANT4 run " << aRun->GetRunID());
     return false;
 }
@@ -132,7 +132,7 @@ bool EDepSim::PersistencyManager::SaveTrajectoryBoundary(G4VTrajectory* g4Traj,
 }
 
 void EDepSim::PersistencyManager::UpdateSummaries(const G4Event* event) {
-    
+
     const G4Run* runInfo = G4RunManager::GetRunManager()->GetCurrentRun();
 
     fEventSummary.RunId = runInfo->GetRunID();
@@ -158,12 +158,12 @@ void EDepSim::PersistencyManager::SummarizePrimaries(
     std::vector<TG4PrimaryVertex>& dest,
     const G4PrimaryVertex* src) {
     dest.clear();
-        
+
     if (!src) return;
 
     while (src) {
         TG4PrimaryVertex vtx;
-        
+
         vtx.Position.SetX(src->GetX0());
         vtx.Position.SetY(src->GetY0());
         vtx.Position.SetZ(src->GetZ0());
@@ -195,7 +195,7 @@ void EDepSim::PersistencyManager::SummarizePrimaries(
 
         // Check to see if there is anyu user information associated with the
         // vertex.
-        EDepSim::VertexInfo* srcInfo 
+        EDepSim::VertexInfo* srcInfo
             = dynamic_cast<EDepSim::VertexInfo*>(src->GetUserInformation());
         if (srcInfo) {
             vtx.GeneratorName = srcInfo->GetName();
@@ -225,7 +225,7 @@ void EDepSim::PersistencyManager::SummarizeTrajectories(
     const G4Event* event) {
     dest.clear();
     MarkTrajectories(event);
-    
+
     const G4TrajectoryContainer* trajectories = event->GetTrajectoryContainer();
 
     // Build a map of the original G4 TrackID to the new relocated TrackId
@@ -245,7 +245,7 @@ void EDepSim::PersistencyManager::SummarizeTrajectories(
         if (!ndTraj->SaveTrajectory()) continue;
 
         // Set the particle type information.
-        G4ParticleDefinition* part 
+        G4ParticleDefinition* part
             = G4ParticleTable::GetParticleTable()->FindParticle(
                 ndTraj->GetParticleName());
         if (!part) {
@@ -301,7 +301,7 @@ void EDepSim::PersistencyManager::SummarizeTrajectories(
 
     // TrackID zero maps to the non-existent -1.
     fTrackIdMap[0] = -1;
-    
+
     /// Rewrite the track ids so that they are consecutive.
     for (TG4TrajectoryContainer::iterator
              t = dest.begin();
@@ -309,8 +309,8 @@ void EDepSim::PersistencyManager::SummarizeTrajectories(
         t->TrackId = fTrackIdMap[t->TrackId];
         t->ParentId = fTrackIdMap[t->ParentId];
     }
-  
-}    
+
+}
 
 void EDepSim::PersistencyManager::MarkTrajectories(const G4Event* event) {
     const G4TrajectoryContainer* trajectories = event->GetTrajectoryContainer();
@@ -322,14 +322,14 @@ void EDepSim::PersistencyManager::MarkTrajectories(const G4Event* event) {
     // Go through all of the trajectories and save:
     //
     //   ** Trajectories from primary particles if
-    //       1) a daughter depeosited energy in a sensitive detector
+    //       1) a daughter deposited energy in a sensitive detector
     //       2) or, SaveAllPrimaryTrajectories() is true
     //
     //   ** Trajectories created by a particle decay.
     //
     //   ** Charged particle trajectories that pass through a sensitive
     //         detector.
-    // 
+    //
     //   ** Gamma-rays and neutrons above a threshold which have daughters
     //         depositing energy in a sensitive detector.
     //
@@ -347,7 +347,7 @@ void EDepSim::PersistencyManager::MarkTrajectories(const G4Event* event) {
         // didn't deposit energy in a sensitive detector, then it will only be
         // saved if SaveAllPrimaryTrajectories is true.
         if (ndTraj->GetParentID() == 0) {
-            if (ndTraj->GetSDTotalEnergyDeposit()>1*eV 
+            if (ndTraj->GetSDTotalEnergyDeposit()>1*eV
                 || GetSaveAllPrimaryTrajectories()) {
                 ndTraj->MarkTrajectory();
                 continue;
@@ -391,7 +391,7 @@ void EDepSim::PersistencyManager::MarkTrajectories(const G4Event* event) {
 
         // Save higher energy neutrons that have descendents depositing energy
         // in a sensitive detector.
-        if (particleName == "neutron" 
+        if (particleName == "neutron"
             && initialMomentum > GetNeutronThreshold()) {
             ndTraj->MarkTrajectory(false);
             continue;
@@ -420,7 +420,7 @@ void EDepSim::PersistencyManager::MarkTrajectories(const G4Event* event) {
             // is saved.  The primary trajectories are defined by
             // EDepSim::TrajectoryMap::FindPrimaryId().
             int primaryId = g4Hit->GetPrimaryTrajectoryId();
-            EDepSim::Trajectory* ndTraj 
+            EDepSim::Trajectory* ndTraj
                 = dynamic_cast<EDepSim::Trajectory*>(
                     EDepSim::TrajectoryMap::Get(primaryId));
             if (ndTraj) {
@@ -433,7 +433,7 @@ void EDepSim::PersistencyManager::MarkTrajectories(const G4Event* event) {
     }
 }
 
-void EDepSim::PersistencyManager::CopyTrajectoryPoints(TG4Trajectory& traj, 
+void EDepSim::PersistencyManager::CopyTrajectoryPoints(TG4Trajectory& traj,
                                                   G4VTrajectory* g4Traj) {
     std::vector<int> selected;
 
@@ -448,9 +448,9 @@ void EDepSim::PersistencyManager::CopyTrajectoryPoints(TG4Trajectory& traj,
     ////////////////////////////////////
     // Save the trajectories.
     ////////////////////////////////////
-    for (std::vector<int>::iterator tp = selected.begin(); 
+    for (std::vector<int>::iterator tp = selected.begin();
          tp != selected.end(); ++tp) {
-        EDepSim::TrajectoryPoint* edepPoint 
+        EDepSim::TrajectoryPoint* edepPoint
             = dynamic_cast<EDepSim::TrajectoryPoint*>(g4Traj->GetPoint(*tp));
         TG4TrajectoryPoint point;
         point.Position.SetXYZT(edepPoint->GetPosition().x(),
@@ -520,9 +520,9 @@ EDepSim::PersistencyManager::SummarizeHitSegments(TG4HitSegmentContainer& dest,
 
 void EDepSim::PersistencyManager::CopyHitContributors(std::vector<int>& dest,
                                                  const std::vector<int>& src) {
-    
+
     dest.clear();
-    
+
     for (std::vector<int>::const_iterator c = src.begin();
          c != src.end(); ++c) {
         // Check each contributor to make sure that it is a valid
@@ -556,7 +556,7 @@ void EDepSim::PersistencyManager::CopyHitContributors(std::vector<int>& dest,
 double EDepSim::PersistencyManager::FindTrajectoryAccuracy(
     G4VTrajectory* g4Traj, int point1, int point2) {
     if ((point2-point1) < 2) return 0;
-    
+
     G4ThreeVector p1 = g4Traj->GetPoint(point1)->GetPosition();
     G4ThreeVector p2 = g4Traj->GetPoint(point2)->GetPosition();
 
@@ -624,12 +624,12 @@ EDepSim::PersistencyManager::SelectTrajectoryPoints(std::vector<int>& selected,
     // starting and stopping point of the particle are recorded in the
     // trajectory.
     //////////////////////////////////////////////
-    EDepSim::Trajectory* ndTraj = dynamic_cast<EDepSim::Trajectory*>(g4Traj);    
+    EDepSim::Trajectory* ndTraj = dynamic_cast<EDepSim::Trajectory*>(g4Traj);
     if (ndTraj->GetSDTotalEnergyDeposit() < 1*eV) return;
 
     // Find the trajectory points where particles are entering and leaving the
     // detectors.
-    EDepSim::TrajectoryPoint* edepPoint 
+    EDepSim::TrajectoryPoint* edepPoint
         = dynamic_cast<EDepSim::TrajectoryPoint*>(g4Traj->GetPoint(0));
     G4String prevVolumeName = edepPoint->GetPhysVolName();
     for (int tp = 1; tp < lastIndex; ++tp) {
@@ -667,9 +667,9 @@ EDepSim::PersistencyManager::SelectTrajectoryPoints(std::vector<int>& selected,
 
     // Make sure there aren't any duplicates in the selected trajectory points.
     std::sort(selected.begin(), selected.end());
-    selected.erase(std::unique(selected.begin(), selected.end()), 
+    selected.erase(std::unique(selected.begin(), selected.end()),
                    selected.end());
-    
+
     if (ndTraj->GetSDEnergyDeposit() < 1*eV) return;
 
     double desiredAccuracy = GetTrajectoryPointAccuracy();
@@ -690,7 +690,7 @@ EDepSim::PersistencyManager::SelectTrajectoryPoints(std::vector<int>& selected,
             break;
         }
         std::sort(selected.begin(), selected.end());
-        selected.erase(std::unique(selected.begin(), selected.end()), 
+        selected.erase(std::unique(selected.begin(), selected.end()),
                        selected.end());
         if (!addPoint) break;
     }
