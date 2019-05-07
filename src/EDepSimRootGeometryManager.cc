@@ -44,6 +44,7 @@
 #include <G4Trap.hh>
 #include <G4SubtractionSolid.hh>
 #include <G4UnionSolid.hh>
+#include <G4IntersectionSolid.hh>
 #include <G4ExtrudedSolid.hh>
 
 #include <G4SystemOfUnits.hh>
@@ -54,6 +55,7 @@
 #include <cmath>
 #include <cstdlib>
 #include <set>
+#include <string>
 
 EDepSim::RootGeometryManager* EDepSim::RootGeometryManager::fThis = NULL;
 
@@ -121,14 +123,14 @@ void EDepSim::RootGeometryManager::Update(const G4VPhysicalVolume* aWorld,
                                   "Simulated Detector Geometry");
     gGeoManager->SetVisLevel(20);
     // Create all of the materials.
-    EDepSimInfo("Create materials");
+    EDepSimLog("Create materials");
     CreateMaterials(aWorld);
 
     //Check to see if we can create all of the volumes.  This is done by
     //traversing the GEANT physical volume tree.
     fCreateAllVolumes = false;
     if (CountVolumes(aWorld->GetLogicalVolume()) < 100000) {
-        EDepSimInfo("Create all volumes");
+        EDepSimLog("Create all volumes");
         fCreateAllVolumes = true;
     }
     
@@ -136,9 +138,9 @@ void EDepSim::RootGeometryManager::Update(const G4VPhysicalVolume* aWorld,
     fPrintedMass.clear();
     fNameStack.clear();
     fKnownVolumes.clear();
-    EDepSimInfo("Start defining envelope");
+    EDepSimLog("Start defining envelope");
     CreateEnvelope(aWorld,gGeoManager,NULL);
-    EDepSimInfo("Geometry is Filled");
+    EDepSimLog("Geometry is Filled");
     
     gGeoManager->CloseGeometry("di");
 
@@ -391,6 +393,18 @@ TGeoShape* EDepSim::RootGeometryManager::CreateShape(const G4VSolid* theSolid,
                                              matrixA, matrixB);
         theShape = new TGeoCompositeShape("name",unionNode);
     }
+    else if(geometryType =="G4IntersectionSolid"){
+      const G4IntersectionSolid* iso = dynamic_cast<const G4IntersectionSolid*>(theSolid);
+      const G4VSolid* solidA = iso->GetConstituentSolid(0);
+      const G4VSolid* solidB = iso->GetConstituentSolid(1);
+      // solidA - solidB
+      TGeoMatrix* matrixA = NULL;
+      TGeoShape* shapeA = CreateShape(solidA, &matrixA);
+      TGeoMatrix* matrixB = NULL;
+      TGeoShape* shapeB = CreateShape(solidB, &matrixB);
+      TGeoIntersection* intersectionNode = new TGeoIntersection(shapeA, shapeB, matrixA, matrixB);
+      theShape = new TGeoCompositeShape("name", intersectionNode);
+    }
     else if (geometryType == "G4ExtrudedSolid"){
         //This following only works when using the 'standard'
         //G4ExtrudedSolid Constructor.
@@ -441,14 +455,17 @@ TGeoShape* EDepSim::RootGeometryManager::CreateShape(const G4VSolid* theSolid,
         theShape = xtru;
     }
     else {
-        EDepSimThrow("shape not implemented");
+      std::string the_problem="shape '";
+      the_problem+=geometryType; the_problem+="' has not been implemented";
+      EDepSimThrow(the_problem.c_str());
     }
     
     return theShape;
 }
 
 TGeoVolume*
-EDepSim::RootGeometryManager::CreateVolume(const G4VSolid* theSolid, 
+EDepSim::RootGeometryManager::CreateVolume(TGeoManager* theEnvelope, 
+                                           const G4VSolid* theSolid, 
                                            std::string theName,
                                            TGeoMedium* theMedium) {
     TGeoShape* theShape = CreateShape(theSolid);
@@ -667,7 +684,8 @@ bool EDepSim::RootGeometryManager::CreateEnvelope(
     
     if (!theVolume) {
         // Create the root volume (the solid in G4 lingo).
-        theVolume = CreateVolume(theSolid, theShortName, theMedium);
+        theVolume = CreateVolume(theEnvelope, theSolid,
+                                 theShortName, theMedium);
         if (!theVolume) theVolume = theMother;
         theVolume->SetTitle(theVolumeName.c_str());
 
@@ -681,7 +699,7 @@ bool EDepSim::RootGeometryManager::CreateEnvelope(
         else {
             int i = 100.0*(1.0-opacity);
             if (i>100) i = 100;
-            EDepSimInfo("Set color of " << theShortName
+            EDepSimLog("Set color of " << theShortName
                        << " to " << color
                        << " " << opacity
                        << " " << i);
