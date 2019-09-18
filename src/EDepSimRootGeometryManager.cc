@@ -44,6 +44,7 @@
 #include <G4Trap.hh>
 #include <G4SubtractionSolid.hh>
 #include <G4UnionSolid.hh>
+#include <G4IntersectionSolid.hh>
 #include <G4ExtrudedSolid.hh>
 
 #include <G4SystemOfUnits.hh>
@@ -391,6 +392,21 @@ TGeoShape* EDepSim::RootGeometryManager::CreateShape(const G4VSolid* theSolid,
                                              matrixA, matrixB);
         theShape = new TGeoCompositeShape("name",unionNode);
     }
+    else if (geometryType == "G4IntersectionSolid") {
+        const G4IntersectionSolid* sub
+	  = dynamic_cast<const G4IntersectionSolid*>(theSolid);
+        const G4VSolid* solidA = sub->GetConstituentSolid(0);
+        const G4VSolid* solidB = sub->GetConstituentSolid(1);
+        // solidA - solidB
+        TGeoMatrix* matrixA = NULL;
+        TGeoShape* shapeA = CreateShape(solidA, &matrixA);
+        TGeoMatrix* matrixB = NULL;
+        TGeoShape* shapeB = CreateShape(solidB, &matrixB);
+        TGeoIntersection* intersectionNode = new TGeoIntersection(shapeA,  shapeB,
+								  matrixA, matrixB);
+        theShape = new TGeoCompositeShape("name",intersectionNode);
+    }
+    
     else if (geometryType == "G4ExtrudedSolid"){
         //This following only works when using the 'standard'
         //G4ExtrudedSolid Constructor.
@@ -441,7 +457,7 @@ TGeoShape* EDepSim::RootGeometryManager::CreateShape(const G4VSolid* theSolid,
         theShape = xtru;
     }
     else {
-        EDepSimThrow("shape not implemented");
+        EDepSimThrow(geometryType+" --> shape not implemented");
     }
     
     return theShape;
