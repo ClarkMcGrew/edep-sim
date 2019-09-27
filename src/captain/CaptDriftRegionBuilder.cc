@@ -30,7 +30,7 @@ private:
     G4UIcmdWithADoubleAndUnit* fWirePlaneSpacingCMD;
 
 public:
-    CaptDriftRegionMessenger(CaptDriftRegionBuilder* c) 
+    CaptDriftRegionMessenger(CaptDriftRegionBuilder* c)
         : EDepSim::BuilderMessenger(c,"Control the drift region geometry."),
           fBuilder(c) {
 
@@ -136,9 +136,9 @@ G4LogicalVolume *CaptDriftRegionBuilder::GetPiece(void) {
 
     double rInner[] = {0.0, 0.0};
     double rOuter[] = {GetApothem(), GetApothem()};
-    double zPlane[] = {-GetHeight()/2, GetHeight()/2};
+    double zPlane[] = {GetHeight()/2, -GetHeight()/2};
 
-    EDepSimLog("Construct " << GetName() 
+    EDepSimLog("Construct " << GetName()
             << " with " << GetHeight()/mm << " mm height"
             << " and " <<  GetDriftLength()/mm << " mm drift");
 
@@ -168,7 +168,7 @@ G4LogicalVolume *CaptDriftRegionBuilder::GetPiece(void) {
     // The wire planes are rotated so that the local Z axis points into the
     // drift volume, and the local X axis points along the original X axis
     // (this puts the local Y axis along the -Y global axis.
-    G4RotationMatrix* xRotation = new G4RotationMatrix(); 
+    G4RotationMatrix* xRotation = new G4RotationMatrix();
     xRotation->rotateX(180*degree);
 
     CaptWirePlaneBuilder& xPlane = Get<CaptWirePlaneBuilder>("XPlane");
@@ -176,19 +176,19 @@ G4LogicalVolume *CaptDriftRegionBuilder::GetPiece(void) {
     G4LogicalVolume *logX = xPlane.GetPiece();
     new G4PVPlacement(xRotation,                // rotation.
                       G4ThreeVector(0,0,
-                                    (GetHeight()/2 - GetXPlaneOffset())), 
+                                    (GetHeight()/2 - GetXPlaneOffset())),
                       logX,                     // logical volume
                       logX->GetName(),          // name
                       logVolume,                // mother  volume
                       false,                    // (not used)
                       0,                        // Copy number (zero)
                       Check());                 // Check overlaps.
-    
 
-    G4RotationMatrix* vRotation = new G4RotationMatrix(); 
+
+    G4RotationMatrix* vRotation = new G4RotationMatrix();
     vRotation->rotateX(180*degree);
     vRotation->rotateZ(-60*degree);
-                       
+
     CaptWirePlaneBuilder& vPlane = Get<CaptWirePlaneBuilder>("VPlane");
     vPlane.SetApothem(GetApothem());
     G4LogicalVolume *logV = vPlane.GetPiece();
@@ -203,10 +203,10 @@ G4LogicalVolume *CaptDriftRegionBuilder::GetPiece(void) {
                       Check());                 // Check overlaps.
 
 
-    G4RotationMatrix* uRotation = new G4RotationMatrix(); 
+    G4RotationMatrix* uRotation = new G4RotationMatrix();
     uRotation->rotateX(180*degree);
     uRotation->rotateZ(60*degree);
-    
+
     CaptWirePlaneBuilder& uPlane = Get<CaptWirePlaneBuilder>("UPlane");
     uPlane.SetApothem(GetApothem());
     G4LogicalVolume *logU = uPlane.GetPiece();
@@ -219,7 +219,7 @@ G4LogicalVolume *CaptDriftRegionBuilder::GetPiece(void) {
                       false,                    // (not used)
                       0,                        // Copy number (zero)
                       Check());                 // Check overlaps.
-    
+
     CaptWirePlaneBuilder& gridPlane = Get<CaptWirePlaneBuilder>("GridPlane");
     gridPlane.SetApothem(GetApothem());
     G4LogicalVolume *logGrid = gridPlane.GetPiece();
@@ -232,7 +232,7 @@ G4LogicalVolume *CaptDriftRegionBuilder::GetPiece(void) {
                       false,                    // (not used)
                       0,                        // Copy number (zero)
                       Check());                 // Check overlaps.
-    
+
     CaptWirePlaneBuilder& grndPlane = Get<CaptWirePlaneBuilder>("GroundPlane");
     grndPlane.SetApothem(GetApothem());
     G4LogicalVolume *logGrnd = grndPlane.GetPiece();
@@ -245,6 +245,6 @@ G4LogicalVolume *CaptDriftRegionBuilder::GetPiece(void) {
                       false,                    // (not used)
                       0,                        // Copy number (zero)
                       Check());                 // Check overlaps.
-    
+
     return logVolume;
 }
