@@ -132,7 +132,7 @@ void EDepSim::RootGeometryManager::Update(const G4VPhysicalVolume* aWorld,
         EDepSimInfo("Create all volumes");
         fCreateAllVolumes = true;
     }
-    
+
     // Create the ROOT geometry definitions.
     fPrintedMass.clear();
     fNameStack.clear();
@@ -140,7 +140,7 @@ void EDepSim::RootGeometryManager::Update(const G4VPhysicalVolume* aWorld,
     EDepSimInfo("Start defining envelope");
     CreateEnvelope(aWorld,gGeoManager,NULL);
     EDepSimInfo("Geometry is Filled");
-    
+
     gGeoManager->CloseGeometry("di");
 
     EDepSimLog("Geometry initialized and closed");
@@ -221,7 +221,7 @@ void EDepSim::RootGeometryManager::Validate() {
     EDepSimLog("Geometry validated");
 }
 
-TGeoShape* EDepSim::RootGeometryManager::CreateShape(const G4VSolid* theSolid, 
+TGeoShape* EDepSim::RootGeometryManager::CreateShape(const G4VSolid* theSolid,
                                                  TGeoMatrix **returnMatrix) {
     const G4String geometryType = theSolid->GetEntityType();
     TGeoShape* theShape = NULL;
@@ -259,7 +259,7 @@ TGeoShape* EDepSim::RootGeometryManager::CreateShape(const G4VSolid* theSolid,
                                   minPhiDeg, maxPhiDeg);
     }
     else if (geometryType == "G4Polyhedra") {
-        const G4Polyhedra* polyhedra 
+        const G4Polyhedra* polyhedra
             = dynamic_cast<const G4Polyhedra*>(theSolid);
         double phi = polyhedra->GetStartPhi();
         double dPhi = polyhedra->GetEndPhi() - phi;
@@ -270,12 +270,16 @@ TGeoShape* EDepSim::RootGeometryManager::CreateShape(const G4VSolid* theSolid,
         // Factor to take into account that ROOT uses the circle that can be
         // inscribed inside the polygon, and G4 uses the corner
         double g4Factor = std::cos(0.5*dPhi/sides);
-        TGeoPgon* pgon = new TGeoPgon(phi/CLHEP::degree, dPhi/CLHEP::degree, sides, numZ);
+        TGeoPgon* pgon = new TGeoPgon(phi/CLHEP::degree,
+                                      dPhi/CLHEP::degree, sides, numZ);
         for (int i = 0; i< numZ; ++i) {
+            double rMin = g4Factor*polyhedra->GetCorner(numZ-i-1).r;
+            double rMax = g4Factor*polyhedra->GetCorner(numZ+i).r;
+            if (rMax < rMin) std::swap(rMin,rMax);
             pgon->DefineSection(i,
                                 polyhedra->GetCorner(numZ-i-1).z/CLHEP::mm,
-                                g4Factor*polyhedra->GetCorner(numZ-i-1).r/CLHEP::mm,
-                                g4Factor*polyhedra->GetCorner(numZ+i).r/CLHEP::mm);
+                                rMin/CLHEP::mm,
+                                rMax/CLHEP::mm);
         }
         theShape = pgon;
     }
@@ -406,19 +410,19 @@ TGeoShape* EDepSim::RootGeometryManager::CreateShape(const G4VSolid* theSolid,
 								  matrixA, matrixB);
         theShape = new TGeoCompositeShape("name",intersectionNode);
     }
-    
+
     else if (geometryType == "G4ExtrudedSolid"){
         //This following only works when using the 'standard'
         //G4ExtrudedSolid Constructor.
 
         const G4ExtrudedSolid* extr
             = dynamic_cast<const G4ExtrudedSolid*>(theSolid);
-        
+
         //number of z planes
         const G4int nZ = extr->GetNofZSections();
         //number of vertices in the polygon
         const G4int nV = extr->GetNofVertices();
-        
+
         //define and pointers
         const int maxVertices = 1000;
         double vertices_x[maxVertices];
@@ -426,25 +430,25 @@ TGeoShape* EDepSim::RootGeometryManager::CreateShape(const G4VSolid* theSolid,
         if (maxVertices < nV) {
             EDepSimThrow("Polygon with more than maxVertices");
         }
-        
-        
+
+
         //define an intermediate extrusion constructor with nZ z planes.
         TGeoXtru *xtru = new TGeoXtru(nZ);
-        
+
         //Get the polygons points.
         std::vector<G4TwoVector> polyPoints = extr->GetPolygon();
-        
+
         //fill the vertices arrays
         for(int i = 0 ; i < nV ; i++){
             vertices_x[i]= polyPoints[i].x();
             vertices_y[i]= polyPoints[i].y();
         }
-        
+
         //Define the polygon
         xtru->DefinePolygon(nV, vertices_x, vertices_y);
-        
+
         double z_pos, x_off, y_off, scale;
-        
+
         //fill the parameters to define the Root extruded solid
         for(int i = 0 ; i < nZ ; i++){
             z_pos = extr->GetZSection(i).fZ;
@@ -459,12 +463,12 @@ TGeoShape* EDepSim::RootGeometryManager::CreateShape(const G4VSolid* theSolid,
     else {
         EDepSimThrow(geometryType+" --> shape not implemented");
     }
-    
+
     return theShape;
 }
 
 TGeoVolume*
-EDepSim::RootGeometryManager::CreateVolume(const G4VSolid* theSolid, 
+EDepSim::RootGeometryManager::CreateVolume(const G4VSolid* theSolid,
                                            std::string theName,
                                            TGeoMedium* theMedium) {
     TGeoShape* theShape = CreateShape(theSolid);
@@ -473,7 +477,7 @@ EDepSim::RootGeometryManager::CreateVolume(const G4VSolid* theSolid,
                                            theMedium);
     return theVolume;
 }
-                                                   
+
 // Determine if a volume should copied to the ROOT geometry representation.
 // If this returns true, then the volume and all of it's children will not be
 // exported.
@@ -622,7 +626,7 @@ bool EDepSim::RootGeometryManager::CreateEnvelope(
 
     // The new volume that will be added to the mother volume.  This is
     // created in this function.
-    TGeoVolume* theVolume = NULL; 
+    TGeoVolume* theVolume = NULL;
     G4LogicalVolume* theLog = theG4PhysVol->GetLogicalVolume();
 
     if (PrintMass(theG4PhysVol)) {
@@ -630,7 +634,7 @@ bool EDepSim::RootGeometryManager::CreateEnvelope(
                    << G4BestUnit(theLog->GetMass(true),"Mass")
                    << " Volume: " << theG4PhysVol->GetName());
     }
-    
+
     // Get the name of the expected name of the volume.
     std::string theVolumeName;
     for (std::vector<G4String>::iterator n = fNameStack.begin();
@@ -680,7 +684,7 @@ bool EDepSim::RootGeometryManager::CreateEnvelope(
         seenVolume = fKnownVolumes.find(theLog);
         if (seenVolume != fKnownVolumes.end()) theVolume = seenVolume->second;
     }
-    
+
     if (!theVolume) {
         // Create the root volume (the solid in G4 lingo).
         theVolume = CreateVolume(theSolid, theShortName, theMedium);
@@ -705,13 +709,13 @@ bool EDepSim::RootGeometryManager::CreateEnvelope(
             theVolume->SetTransparency(i);
             theVolume->SetVisibility(true);
         }
-        
+
         // There is no mother so set this as the top volume.
         if (!theMother) {
             EDepSimLog("Making \"" << theVolume->GetName() << "\" the top\n");
             theEnvelope->SetTopVolume(theVolume);
         }
-        
+
         // Push the name of this volume onto the stack before creating the
         // children.
         fNameStack.push_back(theShortName);
@@ -757,12 +761,12 @@ bool EDepSim::RootGeometryManager::CreateEnvelope(
 
     // Apply the rotation for theMother volume.  This is only done if the
     // theMother is not the top level volume for the envelope so that the
-    // detector has the proper orientation. 
+    // detector has the proper orientation.
     if (theMother && (theMother != theVolume)) {
         G4ThreeVector trans = theG4PhysVol->GetObjectTranslation();
         G4RotationMatrix* rot = theG4PhysVol->GetObjectRotation();
-        TGeoRotation* rotate = 
-            new TGeoRotation("rot", 
+        TGeoRotation* rotate =
+            new TGeoRotation("rot",
                              TMath::RadToDeg()*rot->thetaX(),
                              TMath::RadToDeg()*rot->phiX(),
                              TMath::RadToDeg()*rot->thetaY(),
@@ -777,29 +781,29 @@ bool EDepSim::RootGeometryManager::CreateEnvelope(
             case kXAxis: axis.set(1,0,0); break;
             case kYAxis: axis.set(0,1,0); break;
             case kZAxis: axis.set(0,0,1); break;
-            default: 
+            default:
                 EDepSimThrow("EDepSim::RootGeometryManager::CreateEnvelope:"
                             "Bad replication data.");
             }
             for (int i=0; i<nRep; ++i) {
                 G4ThreeVector pos = axis*w*(i-0.5*(nRep-1));
-                TGeoCombiTrans* combi 
+                TGeoCombiTrans* combi
                     = new TGeoCombiTrans(pos.x()/CLHEP::mm,
                                          pos.y()/CLHEP::mm,
                                          pos.z()/CLHEP::mm,
                                          rotate);
-                int index = HowManySimilarNodesInVolume(theMother, 
+                int index = HowManySimilarNodesInVolume(theMother,
                                                         theVolume->GetName());
                 theMother->AddNode(theVolume,index,combi);
             }
         }
         else {
-            TGeoCombiTrans* combi 
+            TGeoCombiTrans* combi
                 = new TGeoCombiTrans(trans.x()/CLHEP::mm,
                                      trans.y()/CLHEP::mm,
                                      trans.z()/CLHEP::mm,
                                      rotate);
-            int index = HowManySimilarNodesInVolume(theMother, 
+            int index = HowManySimilarNodesInVolume(theMother,
                                                     theVolume->GetName());
             theMother->AddNode(theVolume,index,combi);
         }
@@ -810,7 +814,7 @@ bool EDepSim::RootGeometryManager::CreateEnvelope(
 
 void EDepSim::RootGeometryManager::SetDrawAtt(G4Material* material,
                                               int color, double opacity) {
-    G4String materialName = material->GetName();    
+    G4String materialName = material->GetName();
     fColorMap[materialName].color = color;
     fColorMap[materialName].alpha = opacity;
     if (opacity<0.01) fColorMap[materialName].fill = 0;
@@ -819,7 +823,7 @@ void EDepSim::RootGeometryManager::SetDrawAtt(G4Material* material,
         fColorMap[materialName].fill = 4000+100*opacity;
     }
 }
-                                          
+
 G4Color EDepSim::RootGeometryManager::GetG4Color(G4Material* material) {
     G4String materialName = material->GetName();
     AttributeMap::const_iterator colorPair = fColorMap.find(materialName);
@@ -855,7 +859,7 @@ double EDepSim::RootGeometryManager::GetOpacity(const G4VPhysicalVolume* vol) {
         // Invisible if the visual attributes are missing...
         return 0.0;
     }
-    
+
     G4Color g4Color = visAttributes->GetColor();
     double opacity = g4Color.GetAlpha();
     if (opacity > 1.0) opacity = 1.0;
@@ -871,7 +875,7 @@ int EDepSim::RootGeometryManager::GetColor(const G4VPhysicalVolume* vol) {
     if (!visAttributes) {
         return -1;
     }
-    
+
     int index = -1;
     double minDist = 10000;
     G4Color g4Color = visAttributes->GetColor();
@@ -897,7 +901,7 @@ int EDepSim::RootGeometryManager::GetColor(const G4VPhysicalVolume* vol) {
         }
     }
 
-    // Check the secondary colors defined by ROOT.  
+    // Check the secondary colors defined by ROOT.
     const int rootSecondaryColors[] = {
         kPink, kMagenta, kViolet, kTeal, kSpring, kOrange, -1
     };
@@ -937,8 +941,8 @@ int EDepSim::RootGeometryManager::GetColor(const G4VPhysicalVolume* vol) {
     }
 
     // Check the basic colors (the first 50 colors in root).
-    for(int rootBaseColor = 1; 
-        rootBaseColor < 50; 
+    for(int rootBaseColor = 1;
+        rootBaseColor < 50;
         ++rootBaseColor) {
         TColor* rootColor = gROOT->GetColor(rootBaseColor);
         if (!rootColor) continue;
@@ -950,7 +954,7 @@ int EDepSim::RootGeometryManager::GetColor(const G4VPhysicalVolume* vol) {
         index = rootBaseColor;
         minDist = dist;
     }
-    
+
     return index;
 }
 
@@ -984,7 +988,7 @@ TGeoMedium* EDepSim::RootGeometryManager::AverageMaterial(
     double totalVolume = theLog->GetSolid()->GetCubicVolume();
     double totalDensity = totalMass/totalVolume;
     std::ostringstream nameStream;
-    nameStream << MaterialName(thePhys) 
+    nameStream << MaterialName(thePhys)
                << "Avg" << totalDensity/(CLHEP::g/CLHEP::cm3);
     std::string averageName = nameStream.str();
     TGeoMedium* avgMedium = fMedium[averageName];
@@ -1041,7 +1045,7 @@ TGeoMedium* EDepSim::RootGeometryManager::AverageMaterial(
     double massSum = 0;
     for (std::map<const G4Material*,double>::iterator
              mat = materialMass.begin();
-         mat != materialMass.end(); 
+         mat != materialMass.end();
          ++mat) {
         const G4Material* material = mat->first;
         double mass = mat->second;
