@@ -460,6 +460,7 @@ void EDepSim::PersistencyManager::CopyTrajectoryPoints(TG4Trajectory& traj,
         point.Momentum.SetXYZ(edepPoint->GetMomentum().x(),
                               edepPoint->GetMomentum().y(),
                               edepPoint->GetMomentum().z());
+        point.ProcessName = edepPoint->GetProcessName();
         point.Process = edepPoint->GetProcessType();
         point.Subprocess = edepPoint->GetProcessSubType();
         traj.Points.push_back(point);

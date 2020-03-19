@@ -22,14 +22,14 @@ typedef std::vector<TG4Trajectory> TG4TrajectoryContainer;
 /// geant.  A trajectory is the truth information about the path of a particle
 /// through the G4 simulation. It saves the parent trajectory that generated
 /// this particle, the initial momentum of the particle, and the path followed
-/// by the particle in the detector.  
+/// by the particle in the detector.
 class TG4Trajectory : public TObject {
     friend class EDepSim::PersistencyManager;
 public:
     typedef std::vector<TG4TrajectoryPoint> TrajectoryPoints;
-     
+
     TG4Trajectory(void)
-        : TrackId(-1), ParentId(-1), 
+        : TrackId(-1), ParentId(-1),
           Name("none"), PDGCode(0),
           InitialMomentum(0,0,0,0) {}
 
@@ -37,16 +37,16 @@ public:
 
     /// The TrackId of this trajectory.
     int GetTrackId() const {return TrackId;}
-    
+
     /// The unique Id of the parent trajectory (The TrackId of the parent).
     int GetParentId() const {return ParentId;}
-    
+
     /// The name of the particle.
     const char* GetName() const {return Name.c_str();}
 
     /// The PDG encoding of the particle.
     int GetPDGCode() const {return PDGCode;}
-    
+
     /// The initial momentum of the particle
     const TLorentzVector& GetInitialMomentum() const {return InitialMomentum;}
 
@@ -56,7 +56,7 @@ public:
 // The public fields are deprecated but still supported by default in the
 // current version.
 #define EDEPSIM_USE_PUBLIC_FIELDS
-    
+
 #if defined(EDEPSIM_USE_PUBLIC_FIELDS)&&!defined(EDEPSIM_FORCE_PRIVATE_FIELDS)&&!defined(__CINT__)
 public:
 #ifdef EDEPSIM_WARN_PUBLIC_FIELDS
@@ -65,19 +65,19 @@ public:
 #else
 private:
 #endif
-    
+
     /// The TrackId of this trajectory.
     Int_t TrackId;
-    
+
     /// The unique Id of the parent trajectory (The TrackId of the parent).
     Int_t ParentId;
-    
+
     /// The name of the particle.
     std::string Name;
 
     /// The PDG encoding of the particle.
     Int_t PDGCode;
-    
+
     /// The initial momentum of the particle
     TLorentzVector InitialMomentum;
 
@@ -95,9 +95,9 @@ class TG4TrajectoryPoint : public TObject {
     friend class EDepSim::PersistencyManager;
 public:
     TG4TrajectoryPoint()
-        : Position(0,0,0,0), Momentum(0,0,0),
+        : Position(0,0,0,0), Momentum(0,0,0), ProcessName(""),
           Process(0), Subprocess(0) {}
-          
+
     virtual ~TG4TrajectoryPoint();
 
     /// Process types copied from the G4 definitions so that this can be
@@ -117,7 +117,7 @@ public:
         kProcessParameterization = 8,
         kProcessUserDefined = 9
     };
-    
+
     /// Several important process sub-types as defined by geant4.  These are
     /// copied so that reading the files does not directly depend on having
     /// geant4 installed.  Check the geant4 documentation for the
@@ -137,7 +137,7 @@ public:
         kSubtypeEMPhotoelectric = 12,
         kSubtypeEMComptonScattering = 13,
         kSubtypeEMGammaConversion = 14,
-        
+
         // Hadronic subtypes
         kSubtypeHadronElastic = 111,
         kSubtypeHadronInelastic = 121,
@@ -154,6 +154,9 @@ public:
     /// The momentum of the particle at this trajectory point.
     const TVector3& GetMomentum() const {return Momentum;}
 
+    /// The interaction process name associated with this trajectory point.
+    std::string GetProcessName() const {return ProcessName;}
+
     /// The interaction process type associated with this trajectory point.
     /// The possible values are defined in the G4ProcessType enum.
     int GetProcess() const {return Process;}
@@ -161,7 +164,7 @@ public:
     /// The interaction process type associated with this trajectory point.
     /// The possible values are defined in the G4ProcessSubtype enum.
     int GetSubprocess() const {return Subprocess;}
-    
+
 #if defined(EDEPSIM_USE_PUBLIC_FIELDS)&&!defined(EDEPSIM_FORCE_PRIVATE_FIELDS)&&!defined(__CINT__)
 public:
 #ifdef EDEPSIM_WARN_PUBLIC_FIELDS
@@ -170,12 +173,15 @@ public:
 #else
 private:
 #endif
-    
+
     /// The position of this trajectory point.
     TLorentzVector Position;
 
     /// The momentum of the particle at this trajectory point.
     TVector3 Momentum;
+
+    /// The interaction process name associated with this trajectory point.
+    std::string ProcessName;
 
     /// The interaction process type associated with this trajectory point.
     /// The possible values are defined in the G4ProcessType enum.
@@ -184,7 +190,7 @@ private:
     /// The interaction process type associated with this trajectory point.
     /// The possible values are defined in the G4ProcessSubtype enum.
     Int_t Subprocess;
-    
+
     ClassDef(TG4TrajectoryPoint,1)
 };
 #endif
