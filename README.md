@@ -59,7 +59,7 @@ install in "the-install-directory", the commands are:
 
 ```bash
 cd the-build-directory
-cmake -DCMAKE_INSTALL_PREFIX=the-install-directory the-edep-sim-directory 
+cmake -DCMAKE_INSTALL_PREFIX=the-install-directory the-edep-sim-directory
 make
 make doc
 make install
@@ -120,7 +120,7 @@ export EDEPSIM_ROOT=$(dirname $(which edep-sim))/..
 
 should find the right location for the necessary files.
 
-An example of a command line is 
+An example of a command line is
 
 ```bash
 edep-sim -o my-output.root -g geometry.gdml -u -e 100 muon-10000.mac
@@ -148,7 +148,7 @@ The muon-10000.mac might contain:
 # a 5 deg cone around the Z axis.
 /gps/ang/type iso
 /gps/ang/maxtheta 5 deg
-/gps/ang/rot1 1 0 0 
+/gps/ang/rot1 1 0 0
 /gps/ang/rot2 0 -1 0
 ```
 
@@ -205,7 +205,7 @@ and GEANT4 if necessary.
 The `edep-sim` executable produces a root `TTree` containing a single
 branch.  You can access this from either C++, a root macro or python.  For
 C++ based access, you must include the TG4Event.h header, and then attach
-to the tree. 
+to the tree.
 
 ```C++
 #include "TG4Event.h"
@@ -247,15 +247,15 @@ The main event class (TG4Event) is a data-only class defined in the
 access using the matching accessor:
 
    * EventId: The event number
-   
+
    * RunId: The run number
-   
+
    * Primaries: The GEANT4 primary particles (A vector of
      TG4PrimaryVertex)
-	 
+
    * Trajectories: The GEANT4 particle trajectories (A vector of
-     TG4Trajectory) 
-	 
+     TG4Trajectory)
+
    * SegmentDetectors: The energy deposition information (A map keyed by
      sensitive detector name, containing a vector of TG4HitSegments).
 
@@ -272,32 +272,35 @@ should be used instead of the field:
   * ParentId [GetParentId()]: The track identifier for the parent of this
      trajectory.  This is an integer.  If the track is from a primary
      particle, the parent identifier will be zero.
-	  
+
   * Name [GetName()]: The type of particle creating this track.
-	
+
   * PDGCode [GetPDGCode()]: The PDG MC code for the type of particle
     creating this track.
-	  
+
   * InitialMomentum [GetInitialMomentum()]: The initial momentum of track
     (A TLorentzVector).
-	
+
   * Points: This has type TrajectoryPoitns and is equivalent to vector of
     TG4TrajectoryPoints along the track.
-	
+
 The TG4TrajectoryPoint is a data-only class with the following information.
 
   * Position [GetPosition()]: The position of the trajectory point (A
     TLorentzVector)
-  
+
   * Momentum [GetMomentum()]: The momentum (a TVector3) as the trajectory
     leaves the point.
 
+  * ProcessName [GetProcessName()]: The process name (std::string) which created this point.
+    These are defined by GEANT4.
+
   * Process [GetProcess()]: The process type which created this point.
     These are defined by GEANT4.
-	
+
   * Subprocess [GetSubprocess()]: The subprocess type which create this
     point.  These are defined by GEANT4.
-	
+
 #### The Energy Deposition Class (and Friends).
 
 The energy deposition in each sensitive detector is recorded using the
@@ -315,16 +318,16 @@ instead of the field:
     run settings there may be several particles associated with one segment
     (this is a very unusual situation).  This has type
     TG4HitSegment::Contributors and is equivalent to a vector of integers.
-	
+
   * PrimaryId [GetPrimaryId()]: The track identifier for the primary
     particle creating this hit.
-	
+
   * EnergyDeposit [GetEnergyDeposit()]: The total energy deposited over the
     length of this track.  The energy should be assumed to have been
     uniformly deposited along the segment (*not* at the beginning or the
     end).  This is the total dEdX of the track between the start and stop
     position of the segment.
-	
+
   * SecondaryDeposit [GetSecondaryDeposit()]: The "secondary" energy
     deposited over the length of the segment.  This is generally used to
     help simulate the energy emitted as scintillation light vs the total
@@ -337,13 +340,13 @@ instead of the field:
     SecondaryDeposit/EnergyDeposit, and the number of ionization electrons
     is N~e~ = N~q~ - N~ph~.  For liquid argon the Doke-Birks model as
     implemented by NEST used.
-	
+
   * TrackLength [GetTrackLength()]: The total track length between the
     start and stop points (as estimated by GEANT4)
-	
+
   * Start, Stop [GetStart(), GetStop()]: The starting and stopping points
     of the segment (TLorentzVector).
-	
+
 
 ##### Controlling the step size.  
 
@@ -389,7 +392,7 @@ edep-sim -g geometry.gdml -o output.root macro-file.mac
 ```
 
 ### GDML Auxiliary Fields
-	
+
 Several auxiliary fields are parsed to help describe the detector geometry
 and attach more meaning to the GDML description.  For example, here is a
 simple LAr detector description that is attached as a sensitive detector,
@@ -405,7 +408,7 @@ and has both an electric and a magnetic field.
         <rotationref ref="identity"/>
       </physvol>
       <auxiliary auxtype="SensDet" auxvalue="LArD"/>
-      <auxiliary auxtype="EField" 
+      <auxiliary auxtype="EField"
 		  auxvalue="(500.0 V/cm, 1.0 V/m, 500.0 V/cm)"/>
       <auxiliary auxtype="BField
 		  " auxvalue="(2.0 tesla, 3.0 T, 1.0 G)"/>
@@ -609,8 +612,8 @@ by setting
 /gps/pos/shape Rectangle
 /gps/pos/halfx 1 cm
 /gps/pos/halfy 1 cm
-/gps/pos/rot1 0 0 -1 
-/gps/pos/rot2 0 1 0 
+/gps/pos/rot1 0 0 -1
+/gps/pos/rot2 0 1 0
 ```
 
 ##### Making a volume source
@@ -639,7 +642,7 @@ which are specified as
 /gps/pos/radius 1 cm
 ```
 
-and 
+and
 
 ```
 /gps/position 0 0 -50 cm
@@ -671,7 +674,7 @@ the XY plane is determined by the /gps/ang/rot2 command.  Neither of the
 axes need to be unit vectors, and the rot2 vector doesn't need to be
 perpendicular to rot1 (the normal will be determined by rot1 cross rot2).
 The directions will then be distributed around the negative Z axis in the
-rotated coordinate system.  This means that 
+rotated coordinate system.  This means that
 
 ```
 /gps/ang/rot1 0 0 1
@@ -811,7 +814,7 @@ multiple particles coming from the same vertex.  This is overcome in detSim by i
 For the simple case of generating multiple particles
 drawn from the same angle and energy distributions, but with the same position, use `/gps/number` command.  For instance
 
-``` 
+```
 /gps/number 2
 ```
 
@@ -826,11 +829,11 @@ same position coordinates), you could create a macro:
 
 ```
 # Clear the source and tell GPS to make multiple vertices
-/gps/source/clear 
+/gps/source/clear
 /gps/source/multiplevertex true
 
 # Create the first particle.  This can be done using any of the GPS macro
-# commands. 
+# commands.
 /gps/source/add 1
 /gps/particle mu-
 /gps/energy 500 MeV
@@ -858,7 +861,7 @@ same position coordinates), you could create a macro:
 # second.  Notice that the vertices in GPS are numbered from one, but that
 # the G4PrimaryVertex objects are numbered from zero.
 
-/generator/combine 0 1 
+/generator/combine 0 1
 ```
 
 The `/generator/combine` command copies the vertex position from the first
@@ -872,4 +875,3 @@ the second particle is adjusted to be relative to the position of the first
 example, if the optional third argument is true, the first vertex position
 is [1,1,1], and the second vertex position is [0,1,0], then the simulated
 vertex positions will be [1,1,1] and [1,2,1].
-
