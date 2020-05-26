@@ -1,4 +1,3 @@
-//
 // ********************************************************************
 // * License and Disclaimer                                           *
 // *                                                                  *
@@ -26,60 +25,79 @@
 //
 // $Id$
 //
-// 
-// class EDepSim::UniformElectricField
 //
-// Class description:
 //
-// Class for creation of Uniform electric Magnetic Field.
-
+// Class for storing and handling an arbitrary EM field.
+//
 // History:
-// - 30.01.97 V.Grichine, Created.
+// - 2020.04.14 A.Cudd created
+//
 // -------------------------------------------------------------------
 
-#ifndef G4UNIFORMELECTRICFIELD_HH
-#define G4UNIFORMELECTRICFIELD_HH
+#include "EDepSimArbEMField.hh"
 
-#include "G4Types.hh"
-#include "G4ThreeVector.hh"
-#include "G4ElectricField.hh"
-
-namespace EDepSim {class UniformField;}
-
-class EDepSim::UniformField : public G4ElectricField
+EDepSim::ArbEMField::ArbEMField()
+    : efield(nullptr)
+    , bfield(nullptr)
 {
-  public:
+}
 
-    UniformField();
+EDepSim::ArbEMField::ArbEMField(G4ElectroMagneticField* efield_in, G4ElectroMagneticField* bfield_in)
+    : efield(efield_in)
+    , bfield(bfield_in)
+{
+}
 
-    /// Define a uniform magnetic field.  The electric field will be set to
-    /// zero.  This is equivalent to G4UniformMagneticField().  
-    UniformField(const G4ThreeVector bField);
+EDepSim::ArbEMField::ArbEMField(const EDepSim::ArbEMField& cpy)
+    : EDepSim::ArbEMField(cpy.efield, cpy.bfield)
+{
+    efield = cpy.efield;
+    bfield = cpy.bfield;
+}
 
-    /// Define a uniform magnetic and electric field.
-    UniformField(const G4ThreeVector bField, const G4ThreeVector eField);
+EDepSim::ArbEMField& EDepSim::ArbEMField::operator=(const ArbEMField& rhs)
+{
+    if(&rhs == this)
+        return *this;
+    else
+    {
+        efield = rhs.efield;
+        bfield = rhs.bfield;
+        return *this;
+    }
+}
 
-    virtual ~UniformField() ;
+EDepSim::ArbEMField::~ArbEMField()
+{
+    delete bfield;
+    delete efield;
+}
 
-    // Copy constructor and assignment operator
-    UniformField(const UniformField &p);
-    UniformField& operator = (const UniformField &p);
-    
-    /// Provide the field value at a point [x,y,z,t].  The field follows the
-    /// G4 standard so that the magnetic field is in field[0], field[1], and
-    /// field[2] while the electric field is in field[3], field[3], and
-    /// field[5].
-    virtual void GetFieldValue(const G4double pos[4], G4double *field) const;
+void EDepSim::ArbEMField::GetFieldValue(const G4double pos[4], G4double *field) const
+{
+    //GetFieldValue always expects an array with six elements for both the EField
+    //and BField, even if it only fills one of them.
+    double tmp_bfield[6] = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
+    double tmp_efield[6] = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
 
-    virtual void SetBField(const G4ThreeVector bField);
-    virtual void SetEField(const G4ThreeVector eField);
+    //std::cout << "pos: (" << pos[0] << ", " << pos[1] << ", " << pos[2] << std::endl;
 
-  private:
-  
-    /// The field components follows the G4 standard so that the magnetic
-    /// field is in [0], [1], and [2] while the electric field is in [3], [4],
-    /// and [5].
-    G4double fFieldComponents[6] ;
-};
+    if(bfield != nullptr)
+        bfield->GetFieldValue(pos, tmp_bfield);
 
-#endif
+    if(efield != nullptr)
+        efield->GetFieldValue(pos, tmp_efield);
+
+    field[0] = tmp_bfield[0];
+    field[1] = tmp_bfield[1];
+    field[2] = tmp_bfield[2];
+
+    field[3] = tmp_efield[3];
+    field[4] = tmp_efield[4];
+    field[5] = tmp_efield[5];
+
+    //std::cout << "field: ";
+    //for(int i = 0; i < 6; ++i)
+    //    std::cout << field[i] << " ";
+    //std::cout << std::endl;
+}
