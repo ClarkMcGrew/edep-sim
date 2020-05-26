@@ -26,60 +26,45 @@
 //
 // $Id$
 //
-// 
-// class EDepSim::UniformElectricField
+//
+// class EDepSim::ArbEMField
 //
 // Class description:
 //
-// Class for creation of Uniform electric Magnetic Field.
-
+// Class for storing and handling an arbitrary EM field.
+//
 // History:
-// - 30.01.97 V.Grichine, Created.
+// - 2020.04.14 A.Cudd created
 // -------------------------------------------------------------------
 
-#ifndef G4UNIFORMELECTRICFIELD_HH
-#define G4UNIFORMELECTRICFIELD_HH
+#ifndef EDEPSIMARBEMFIELD_H
+#define EDEPSIMARBEMFIELD_H
 
 #include "G4Types.hh"
-#include "G4ThreeVector.hh"
-#include "G4ElectricField.hh"
+#include "G4ElectroMagneticField.hh"
 
-namespace EDepSim {class UniformField;}
+namespace EDepSim { class ArbEMField; }
 
-class EDepSim::UniformField : public G4ElectricField
+class EDepSim::ArbEMField : public G4ElectroMagneticField
 {
-  public:
+    public:
+        ArbEMField();
+        ArbEMField(G4ElectroMagneticField* efield_in, G4ElectroMagneticField* bfield_in);
 
-    UniformField();
+        ArbEMField(const ArbEMField& cpy);
+        ArbEMField& operator=(const ArbEMField& rhs);
 
-    /// Define a uniform magnetic field.  The electric field will be set to
-    /// zero.  This is equivalent to G4UniformMagneticField().  
-    UniformField(const G4ThreeVector bField);
+        virtual ~ArbEMField();
 
-    /// Define a uniform magnetic and electric field.
-    UniformField(const G4ThreeVector bField, const G4ThreeVector eField);
+        virtual void GetFieldValue(const G4double pos[4], G4double *field) const;
+        virtual G4bool DoesFieldChangeEnergy() const { return true; };
 
-    virtual ~UniformField() ;
+        void SetEField(G4ElectroMagneticField* efield_in) { efield = efield_in; };
+        void SetBField(G4ElectroMagneticField* bfield_in) { bfield = bfield_in; };
 
-    // Copy constructor and assignment operator
-    UniformField(const UniformField &p);
-    UniformField& operator = (const UniformField &p);
-    
-    /// Provide the field value at a point [x,y,z,t].  The field follows the
-    /// G4 standard so that the magnetic field is in field[0], field[1], and
-    /// field[2] while the electric field is in field[3], field[3], and
-    /// field[5].
-    virtual void GetFieldValue(const G4double pos[4], G4double *field) const;
-
-    virtual void SetBField(const G4ThreeVector bField);
-    virtual void SetEField(const G4ThreeVector eField);
-
-  private:
-  
-    /// The field components follows the G4 standard so that the magnetic
-    /// field is in [0], [1], and [2] while the electric field is in [3], [4],
-    /// and [5].
-    G4double fFieldComponents[6] ;
+    private:
+        G4ElectroMagneticField* efield;
+        G4ElectroMagneticField* bfield;
 };
 
 #endif

@@ -36,6 +36,16 @@
 #include "EDepSimUniformField.hh"
 #include "G4PhysicalConstants.hh"
 
+EDepSim::UniformField::UniformField()
+{
+    fFieldComponents[0] = 0.0;
+    fFieldComponents[1] = 0.0;
+    fFieldComponents[2] = 0.0;
+    fFieldComponents[3] = 0.0;
+    fFieldComponents[4] = 0.0;
+    fFieldComponents[5] = 0.0;
+}
+
 EDepSim::UniformField::UniformField(
     const G4ThreeVector bField,
     const G4ThreeVector eField )
@@ -88,4 +98,18 @@ void EDepSim::UniformField::GetFieldValue (const G4double* /* position */,
     for (G4int i=0; i<6; ++i) {
         fieldBandE[i] = fFieldComponents[i];
     }
+}
+
+void EDepSim::UniformField::SetBField(const G4ThreeVector bField)
+{
+    fFieldComponents[0] = bField.x();
+    fFieldComponents[1] = bField.y();
+    fFieldComponents[2] = bField.z();
+}
+
+void EDepSim::UniformField::SetEField(const G4ThreeVector eField)
+{
+    fFieldComponents[3] = eField.x();
+    fFieldComponents[4] = eField.y();
+    fFieldComponents[5] = eField.z();
 }
