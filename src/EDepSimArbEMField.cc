@@ -76,11 +76,9 @@ EDepSim::ArbEMField::~ArbEMField()
 void EDepSim::ArbEMField::GetFieldValue(const G4double pos[4], G4double *field) const
 {
     //GetFieldValue always expects an array with six elements for both the EField
-    //and BField, even if it only fills one of them.
+    //and BField, even if it only fills one of the fields.
     double tmp_bfield[6] = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
     double tmp_efield[6] = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
-
-    //std::cout << "pos: (" << pos[0] << ", " << pos[1] << ", " << pos[2] << std::endl;
 
     if(bfield != nullptr)
         bfield->GetFieldValue(pos, tmp_bfield);
@@ -88,6 +86,8 @@ void EDepSim::ArbEMField::GetFieldValue(const G4double pos[4], G4double *field) 
     if(efield != nullptr)
         efield->GetFieldValue(pos, tmp_efield);
 
+    //Geant4 convention is the first three elements are Bx, By, Bz
+    //and the next three are Ex, Ey, Ez
     field[0] = tmp_bfield[0];
     field[1] = tmp_bfield[1];
     field[2] = tmp_bfield[2];
@@ -95,9 +95,4 @@ void EDepSim::ArbEMField::GetFieldValue(const G4double pos[4], G4double *field) 
     field[3] = tmp_efield[3];
     field[4] = tmp_efield[4];
     field[5] = tmp_efield[5];
-
-    //std::cout << "field: ";
-    //for(int i = 0; i < 6; ++i)
-    //    std::cout << field[i] << " ";
-    //std::cout << std::endl;
 }

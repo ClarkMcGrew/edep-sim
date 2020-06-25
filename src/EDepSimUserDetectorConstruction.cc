@@ -262,6 +262,7 @@ void EDepSim::UserDetectorConstruction::ConstructSDandField() {
         // Check the auxilliary items and add the field if necessary.
         const G4GDMLAuxListType& auxItems = aux->second;
 
+        // Find the electric field for the volume.
         bool HasEField = false;
         std::string eField_fname;
         G4ThreeVector eField(0,0,0);
@@ -323,50 +324,50 @@ void EDepSim::UserDetectorConstruction::ConstructSDandField() {
             }
         }
 
-        // Set the electromagnetic field.
-        //if (eField.mag()<0.1*volt/cm && bField.mag()<25e-3*tesla) continue;
-        if (!HasEField && !HasBField) continue;
+        // Set the electromagnetic field. But first check if there is one to set.
+        if (!HasEField && !HasBField)
+            continue;
 
         // The electric field can't be exactly zero, or the equation of
         // motion fails.
-        if (eField.mag()<0.01*volt/cm) eField.setY(0.01*volt/cm);
+        if (eField.mag() < 0.01 * volt/cm)
+            eField.setY(0.01 * volt/cm);
+
+        // Create new field manager and an arbitrary EM field. The ArbEMField
+        // can store fields that inherits from G4ElectroMagneticField.
         G4FieldManager* manager = new G4FieldManager();
-        //G4ElectroMagneticField* field
-        //                 = new EDepSim::UniformField(bField, eField);
-        EDepSim::ArbEMField* arb_field = new EDepSim::ArbEMField();
+        EDepSim::ArbEMField* arbField = new EDepSim::ArbEMField();
 
         if(!eField_fname.empty()) {
-            EDepSim::ArbElecField* e_field_ptr = new EDepSim::ArbElecField();
-            e_field_ptr->ReadFile(eField_fname);
-            e_field_ptr->PrintInfo();
+            EDepSim::ArbElecField* eFieldPtr = new EDepSim::ArbElecField();
+            eFieldPtr->ReadFile(eField_fname);
+            eFieldPtr->PrintInfo();
 
-            arb_field->SetEField(e_field_ptr);
+            arbField->SetEField(eFieldPtr);
         }
         else {
-            EDepSim::UniformField* e_field_ptr = new EDepSim::UniformField();
-            e_field_ptr->SetEField(eField);
+            EDepSim::UniformField* eFieldPtr = new EDepSim::UniformField();
+            eFieldPtr->SetEField(eField);
 
-            arb_field->SetEField(e_field_ptr);
+            arbField->SetEField(eFieldPtr);
         }
 
         if(!bField_fname.empty()) {
-            EDepSim::ArbMagField* b_field_ptr = new EDepSim::ArbMagField();
-            b_field_ptr->ReadFile(bField_fname);
-            b_field_ptr->PrintInfo();
+            EDepSim::ArbMagField* bFieldPtr = new EDepSim::ArbMagField();
+            bFieldPtr->ReadFile(bField_fname);
+            bFieldPtr->PrintInfo();
 
-            arb_field->SetBField(b_field_ptr);
+            arbField->SetBField(bFieldPtr);
         }
         else {
-            EDepSim::UniformField* b_field_ptr = new EDepSim::UniformField();
-            b_field_ptr->SetBField(bField);
+            EDepSim::UniformField* bFieldPtr = new EDepSim::UniformField();
+            bFieldPtr->SetBField(bField);
 
-            arb_field->SetBField(b_field_ptr);
+            arbField->SetBField(bFieldPtr);
         }
 
-        //EDepSim::EMFieldSetup* fieldSetup
-        //                 = new EDepSim::EMFieldSetup(field,manager);
         EDepSim::EMFieldSetup* fieldSetup
-                         = new EDepSim::EMFieldSetup(arb_field,manager);
+                         = new EDepSim::EMFieldSetup(arbField, manager);
         if (!fieldSetup) {
             EDepSimError("Field not created");
             throw std::runtime_error("Field not created");

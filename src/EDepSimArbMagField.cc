@@ -47,13 +47,11 @@ bool EDepSim::ArbMagField::ReadFile(const std::string& fname)
 
     if(!fin.is_open())
     {
-        //std::cout << "[ERROR]: Can't read " << fname << std::endl;
         EDepSimError("Can't read " << fname << std::endl);
         return false;
     }
     else
     {
-        //std::cout << "Reading " << fname << " ..." << std::endl;
         EDepSimLog("Reading " << fname << " ...");
         int xcount{-1}, ycount{-1}, zcount{-1};
         double xcurr{0}, ycurr{0}, zcurr{0};
@@ -122,7 +120,7 @@ void EDepSim::ArbMagField::GetFieldValue(const G4double pos[4], G4double* field)
     const double y = pos[1];
     const double z = pos[2];
 
-    EDepSim::Bicubic interp;
+    EDepSim::Cubic interp;
     field[0] = interp.interpolate(x, y, z, m_field_x, m_delta[0], m_delta[1], m_delta[2], m_offset[0], m_offset[1], m_offset[2]);
     field[1] = interp.interpolate(x, y, z, m_field_y, m_delta[0], m_delta[1], m_delta[2], m_offset[0], m_offset[1], m_offset[2]);
     field[2] = interp.interpolate(x, y, z, m_field_z, m_delta[0], m_delta[1], m_delta[2], m_offset[0], m_offset[1], m_offset[2]);
@@ -130,10 +128,6 @@ void EDepSim::ArbMagField::GetFieldValue(const G4double pos[4], G4double* field)
 
 void EDepSim::ArbMagField::PrintInfo() const
 {
-    //std::cout << "Printing values for magnetic field." << std::endl;
-    //std::cout << "m_filename : " << m_filename << std::endl
-    //          << "m_offset   : " << m_offset[0] << ", " << m_offset[1] << ", " << m_offset[2] << std::endl
-    //          << "m_delta    : " << m_delta[0] << ", " << m_delta[1] << ", " << m_delta[2] << std::endl;
     EDepSimLog("Printing values for magnetic field.");
     EDepSimLog("m_filename : " << m_filename
               << "\nm_offset   : " << m_offset[0] << ", " << m_offset[1] << ", " << m_offset[2]
