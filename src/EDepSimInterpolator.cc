@@ -36,17 +36,17 @@
 
 #include "EDepSimInterpolator.hh"
 
-EDepSim::Bicubic::Bicubic()
+EDepSim::Cubic::Cubic()
 {
 }
 
-double EDepSim::Bicubic::interpolate(const double* point, const std::vector<std::vector<std::vector<double>>>& g,
+double EDepSim::Cubic::interpolate(const double* point, const std::vector<std::vector<std::vector<double>>>& g,
                    const double* delta, const double* offset) const
 {
     return interpolate(point[0], point[1], point[2], g, delta[0], delta[1], delta[2], offset[0], offset[1], offset[2]);
 }
 
-double EDepSim::Bicubic::interpolate(double x, double y, double z, const std::vector<std::vector<std::vector<double>>>& g,
+double EDepSim::Cubic::interpolate(double x, double y, double z, const std::vector<std::vector<std::vector<double>>>& g,
                                      double hx, double hy, double hz, double xo, double yo, double zo) const
 {
     double v = 0;
@@ -86,7 +86,7 @@ double EDepSim::Bicubic::interpolate(double x, double y, double z, const std::ve
     return v;
 }
 
-double EDepSim::Bicubic::conv_kernel(double s) const
+double EDepSim::Cubic::conv_kernel(double s) const
 {
     double v = 0;
     double z = std::abs(s);

@@ -44,12 +44,12 @@
 #include <iostream>
 #include <vector>
 
-namespace EDepSim {class Bicubic;}
+namespace EDepSim {class Cubic;}
 
-class EDepSim::Bicubic
+class EDepSim::Cubic
 {
     public:
-        Bicubic();
+        Cubic();
 
         double interpolate(const double* point, const std::vector<std::vector<std::vector<double>>>& g,
                            const double* delta, const double* offset) const;
