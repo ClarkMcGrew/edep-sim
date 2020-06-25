@@ -482,6 +482,46 @@ assumed that the units are `volt/cm`.
 The possible units for the magnetic field are `tesla`, `gauss`, `T`, and
 `G`.  If no units are provided, it is assumed that the units are `tesla`.
 
+Arbitrary electric and magnetic fields can be set using the `ArbEField` and
+`BField` auxiliary types. The value for each is the name of the grid file which
+specifies the value of the field at a set of X, Y, and Z grid points (global
+coordinates).
+
+```
+<auxiliary auxtype="ArbEField" auxvalue="efield_grid_file.txt"/>
+<auxiliary auxtype="ArbBField" auxvalue="bfield_grid_file.txt"/>
+```
+
+The grid file is specified in the following format:
+
+```
+#First row is a header defining the origin offset and grid spacing
+#in each position coordinate X, Y, Z then hX, hY, hZ.
+-2600.00 -4200.00 12300.00 200.00 200.00 200.00
+
+#Next, each row contains one grid point: x,y,z,fx,fy,fz,f
+0.00 0.00 000.00 0.40 0.00 0.00 0.40
+0.00 0.00 200.00 0.40 0.40 0.00 0.57
+0.00 0.00 400.00 0.40 0.40 0.40 0.69
+...and so on...
+```
+
+The position, XYZ, is specified in `mm`, the electric field is specified in
+`V/cm`, and the magnetic field is specified in `T`. The grid spacing for each
+axis can be different.
+
+FX, FY, FZ are the magnitudes of the fields in the X,Y,Z directions and F is the
+total magnitude of the field vector. The Z coordinate iterates first, then Y, and
+finally X when incrementing the lines.
+
+To save space, the position of each point is not stored. Instead the position is
+calculated using the offset and the index of the array: `x = hx * i + offset_x`, where
+hx is the grid spacing in x, i is the ith element of the array, and offset_x is
+the offset specified in the first line for the x coordinate.
+
+Comment lines starting with the `#` character are supported in the grid file. They
+will be ignored when parsing the file.
+
 #### Auxiliary field to set the drawing color for the volume
 
 The display properties for the logical volume can be set using the `Color`
