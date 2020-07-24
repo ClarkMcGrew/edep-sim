@@ -42,7 +42,7 @@ EDepSim::ArbEMField::ArbEMField()
 {
 }
 
-EDepSim::ArbEMField::ArbEMField(G4ElectroMagneticField* efield_in, G4ElectroMagneticField* bfield_in)
+EDepSim::ArbEMField::ArbEMField(G4Field* efield_in, G4Field* bfield_in)
     : efield(efield_in)
     , bfield(bfield_in)
 {

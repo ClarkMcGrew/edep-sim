@@ -49,7 +49,7 @@ class EDepSim::ArbEMField : public G4ElectroMagneticField
 {
     public:
         ArbEMField();
-        ArbEMField(G4ElectroMagneticField* efield_in, G4ElectroMagneticField* bfield_in);
+        ArbEMField(G4Field* efield_in, G4Field* bfield_in);
 
         ArbEMField(const ArbEMField& cpy);
         ArbEMField& operator=(const ArbEMField& rhs);
@@ -59,12 +59,12 @@ class EDepSim::ArbEMField : public G4ElectroMagneticField
         virtual void GetFieldValue(const G4double pos[4], G4double *field) const;
         virtual G4bool DoesFieldChangeEnergy() const { return true; };
 
-        void SetEField(G4ElectroMagneticField* efield_in) { efield = efield_in; };
-        void SetBField(G4ElectroMagneticField* bfield_in) { bfield = bfield_in; };
+        void SetEField(G4Field* efield_in) { efield = efield_in; };
+        void SetBField(G4Field* bfield_in) { bfield = bfield_in; };
 
     private:
-        G4ElectroMagneticField* efield;
-        G4ElectroMagneticField* bfield;
+        G4Field* efield;
+        G4Field* bfield;
 };
 
 #endif
