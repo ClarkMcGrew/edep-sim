@@ -52,7 +52,7 @@ documentation.  The html is in the build directory.
 ### Required configuration for GEANT4 and ROOT
 
 The edep-sim code will build with very standard installations of
-GEANT4 and ROOT, but a cfew non-default options are needed:
+GEANT4 and ROOT, but a few non-default options are needed:
 
  * Requires GEANT4 GDML Persistence: "-DGEANT4_USE_GDML=ON"
 
