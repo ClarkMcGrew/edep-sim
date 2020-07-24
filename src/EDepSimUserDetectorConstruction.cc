@@ -247,7 +247,7 @@ void EDepSim::UserDetectorConstruction::ConstructSDandField() {
         // handled later.
         G4LogicalVolume* logVolume = remainingVolumes.front();
         remainingVolumes.pop();
-        for (int i = 0; i<logVolume->GetNoDaughters(); ++i) {
+        for (std::size_t i = 0; i<logVolume->GetNoDaughters(); ++i) {
             G4VPhysicalVolume* daughter = logVolume->GetDaughter(i);
             remainingVolumes.push(daughter->GetLogicalVolume());
         }
@@ -269,7 +269,9 @@ void EDepSim::UserDetectorConstruction::ConstructSDandField() {
         for (G4GDMLAuxListType::const_iterator auxItem = auxItems.begin();
              auxItem != auxItems.end();
              ++auxItem) {
-            if (auxItem->type != "EField" && auxItem->type != "ArbEField") continue;
+            if (auxItem->type != "EField" && auxItem->type != "ArbEField") {
+                continue;
+            }
 
             if (auxItem->type == "EField") {
                 eField = ParseEField(auxItem->value);
@@ -300,7 +302,9 @@ void EDepSim::UserDetectorConstruction::ConstructSDandField() {
         for (G4GDMLAuxListType::const_iterator auxItem = auxItems.begin();
              auxItem != auxItems.end();
              ++auxItem) {
-            if (auxItem->type != "BField" && auxItem->type != "ArbBField") continue;
+            if (auxItem->type != "BField" && auxItem->type != "ArbBField") {
+                continue;
+            }
 
             if (auxItem->type == "BField") {
                 bField = ParseBField(auxItem->value);
@@ -324,21 +328,22 @@ void EDepSim::UserDetectorConstruction::ConstructSDandField() {
             }
         }
 
-        // Set the electromagnetic field. But first check if there is one to set.
-        if (!HasEField && !HasBField)
-            continue;
+        // Set the electromagnetic field. But first check if there is one to
+        // set.
+        if (!HasEField && !HasBField) continue;
 
         // The electric field can't be exactly zero, or the equation of
         // motion fails.
-        if (eField.mag() < 0.01 * volt/cm)
+        if (eField.mag() < 0.01 * volt/cm) {
             eField.setY(0.01 * volt/cm);
+        }
 
         // Create new field manager and an arbitrary EM field. The ArbEMField
         // can store fields that inherits from G4ElectroMagneticField.
         G4FieldManager* manager = new G4FieldManager();
         EDepSim::ArbEMField* arbField = new EDepSim::ArbEMField();
 
-        if(!eField_fname.empty()) {
+        if (!eField_fname.empty()) {
             EDepSim::ArbElecField* eFieldPtr = new EDepSim::ArbElecField();
             eFieldPtr->ReadFile(eField_fname);
             eFieldPtr->PrintInfo();
@@ -352,7 +357,7 @@ void EDepSim::UserDetectorConstruction::ConstructSDandField() {
             arbField->SetEField(eFieldPtr);
         }
 
-        if(!bField_fname.empty()) {
+        if (!bField_fname.empty()) {
             EDepSim::ArbMagField* bFieldPtr = new EDepSim::ArbMagField();
             bFieldPtr->ReadFile(bField_fname);
             bFieldPtr->PrintInfo();
@@ -594,8 +599,7 @@ G4Element* EDepSim::UserDetectorConstruction::DefineElement(G4String name,
     G4int ncomponents = theDefaultIsotopes.GetNumberOfIsotopes(Z);
     G4Element* el = new G4Element(name, symbol, ncomponents);
     G4int first = theDefaultIsotopes.GetFirstIsotope(Z);
-    for (G4int i=0; i<ncomponents; i++)
-    {
+    for (G4int i=0; i<ncomponents; i++) {
         G4int A = theDefaultIsotopes.GetIsotopeNucleonCount(first+i);
         std::ostringstream os; os << symbol << A;
         G4Isotope* is = new G4Isotope(name=os.str(), Z, A,
