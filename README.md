@@ -49,6 +49,40 @@ edep-build doc
 which will create the html sub-directory containing Doxygen class
 documentation.  The html is in the build directory.
 
+### Required configuration for GEANT4 and ROOT
+
+The edep-sim code will build with very standard installations of
+GEANT4 and ROOT, but a cfew non-default options are needed:
+
+ * Requires GEANT4 GDML Persistence: "-DGEANT4_USE_GDML=ON"
+
+ * Recommended GEANT4 Datafiles: "-DGEANT4_INSTALL_DATA=ON"
+
+These options are already turned on in most GEANT4 and ROOT installations.
+
+If you are compiling ROOT and GEANT4 by hand, following will generally
+work (changed for your versions):
+
+```bash
+tar xvzf root_v6.22.00.source.tar.gz
+mkdir root-6.22.00-install root-6.22.00-build
+cd root-6.22.00-build
+cmake -DCMAKE_INSTALL_PREFIX=../root-6.22.00-install ../root-6.22.00
+make
+make install
+```
+
+```bash
+tar xzvf geant4.10.06.p02.tar.gz
+mkdir geant4.10.06.p02-install geant4.10.06.p02-build
+cd geant4.10.06.p02-build
+cmake -DCMAKE_INSTALL_PREFIX=../geant4.10.06.p02-install \
+      -DGEANT4_INSTALL_DATA=ON \
+      -DGEANT4_USE_GDML=ON ../geant4.10.06.p02
+make
+make install
+```
+
 ### Expert Compilation
 
 This is actually just a generic cmake build system, so everything can be
