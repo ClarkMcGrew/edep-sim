@@ -55,3 +55,8 @@ Changes in 3.0.0rc (a.k.a master)
 
   # Update the kinematics generator.
   /generator/add
+
+* Add a validation testharness.  This unifies some of the tests that
+  were accumulating in the test and tools directory.  The files in
+  those directories are largely out of date.
+
