@@ -4,8 +4,8 @@
 #include <TLorentzVector.h>
 #include <TObject.h>
 
-#include <map> 
-#include <vector> 
+#include <map>
+#include <vector>
 
 namespace EDepSim {class PersistencyManager;}
 class TG4HitSegment;
@@ -29,17 +29,17 @@ class TG4HitSegment : public TObject {
      friend class EDepSim::PersistencyManager;
 public:
      typedef std::vector<Int_t> Contributors;
-     
-     TG4HitSegment() 
+
+     TG4HitSegment()
         : PrimaryId(0), EnergyDeposit(0), SecondaryDeposit(0),
-          TrackLength(0), Start(0,0,0,0), Stop(0,0,0,0) {}
+          TrackLength(0), Start(0,0,0,0), Stop(0,0,0,0), EnergyVariance(0) {}
     virtual ~TG4HitSegment();
-    
+
     /// The track id of the most important particle associated with this hit
     /// segment.
     int GetPrimaryId() const {return PrimaryId;}
 
-    /// The total energy deposit in this hit.  
+    /// The total energy deposit in this hit.
     double GetEnergyDeposit() const {return EnergyDeposit;}
 
     /// The "secondary" energy deposit in this hit. Generally, this is used to
@@ -58,6 +58,10 @@ public:
     /// that are included in this hit.
     double GetTrackLength() const {return TrackLength;}
 
+    /// Return the variance of the fluctuation of the energy loss along the
+    /// segment.
+    double GetEnergyVariance() const {return EnergyVariance;}
+
     /// The starting position of the segment.
     const TLorentzVector& GetStart() const {return Start;}
 
@@ -66,13 +70,13 @@ public:
 
     /// The TrackId for each trajectory that contributed to this hit.  This
     /// could contain the TrackId of the primary particle, but not
-    /// necessarily.  
+    /// necessarily.
     Contributors Contrib;
 
 // The public fields are deprecated but still supported by default in the
 // current version.
 #define EDEPSIM_USE_PUBLIC_FIELDS
-    
+
 #if defined(EDEPSIM_USE_PUBLIC_FIELDS)&&!defined(EDEPSIM_FORCE_PRIVATE_FIELDS)&&!defined(__CINT__)
 public:
 #ifdef EDEPSIM_WARN_PUBLIC_FIELDS
@@ -81,12 +85,12 @@ public:
 #else
 private:
 #endif
-    
+
     /// The track id of the most important particle associated with this hit
     /// segment.
     Int_t PrimaryId;
 
-    /// The total energy deposit in this hit.  
+    /// The total energy deposit in this hit.
     Float_t EnergyDeposit;
 
     /// The "secondary" energy deposit in this hit. Generally, this is used to
@@ -111,6 +115,9 @@ private:
     /// The stopping position of the segment.
     TLorentzVector Stop;
 
-    ClassDef(TG4HitSegment,1);
+    /// The variance of the energy loss within the hit segment.
+    Float_t EnergyVariance;
+
+    ClassDef(TG4HitSegment,2);
 };
 #endif
