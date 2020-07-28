@@ -124,6 +124,10 @@ void EDepSim::HitSegment::AddStep(G4Step* theStep) {
                   << theStep->GetTrack()->GetTotalEnergy());
     }
 
+    // The trackLength (from G4Step::GetStepLength()) should always be longer
+    // than stepLength (the distance between start and stop).  This traps
+    // minor round-off problems and other problems.  An error will have been
+    // printed if this occurs.
     trackLength = std::max(trackLength,stepLength);
 
     EDepSimTrace("Add Step with " << energyDeposit
@@ -210,6 +214,9 @@ void EDepSim::HitSegment::AddStep(G4Step* theStep) {
     fEnergyDeposit += energyDeposit;
     fSecondaryDeposit += nonIonizingDeposit;
     fTrackLength += trackLength;
+    if (trackLength > 0.0) {
+        fEnergyDepositVarianceTerm += energyDeposit*energyDeposit/trackLength;
+    }
 
     EDepSimDebug("EDepSim::HitSegment:: Deposit " << particle->GetParticleName()
               << " adds " << energyDeposit/MeV << " MeV"
@@ -302,4 +309,13 @@ void EDepSim::HitSegment::Print(void) {
 
 double EDepSim::HitSegment::GetLength() const {
     return (fStop.vect()- fStart.vect()).mag();
+}
+
+double EDepSim::HitSegment::GetEnergyVariance(void) const {
+    if (fTrackLength < 1E-10) return 0.0;
+    double dEdX = fEnergyDeposit/fTrackLength;
+    double dEdX2 = fEnergyDepositVarianceTerm/fTrackLength;
+    double var = dEdX2 - dEdX*dEdX;
+    var *= fTrackLength;
+    return var;
 }

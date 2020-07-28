@@ -34,7 +34,7 @@ public:
     /// The default values are set so that normally, a scintillator element
     /// will only have a single hit for a through going track (& delta-rays).
     HitSegment(double maxSagitta = 1*CLHEP::mm,
-                   double maxLength = 5*CLHEP::mm);
+               double maxLength = 5*CLHEP::mm);
 
     HitSegment(const EDepSim::HitSegment& rhs);
     virtual ~HitSegment();
@@ -94,9 +94,6 @@ public:
     /// Get the total energy deposited in this hit.
     double GetEnergyDeposit(void) const {return fEnergyDeposit;}
 
-    /// Get the variance of the energy deposit in the hit.
-    double GetEnergyVariance(void) const {return 0.0;}
-
     /// Get the secondary energy deposited in this hit (see the field
     /// documentation).
     double GetSecondaryDeposit(void) const {return fSecondaryDeposit;}
@@ -105,6 +102,9 @@ public:
     /// the contributions from secondary particles that got lumped into this
     /// hit (e.g. the contributions from delta-rays).
     double GetTrackLength(void) const {return fTrackLength;}
+
+    /// Get the variance of the energy loss distribution along the track length
+    double GetEnergyVariance(void) const;
 
     /// The position of the starting point.
     const G4LorentzVector& GetStart() const {return fStart;}
@@ -216,6 +216,10 @@ private:
     /// contribution from all of the secondary particles (e.g. delta-rays)
     /// that are included in this hit.
     double fTrackLength;
+
+    /// A sum needed to calculate the variance of the energy loss along the
+    /// segment.  This is the sum of (delta E)^2/(delta L)
+    double fEnergyDepositVarianceTerm;
 
     /// The starting position of the segment.
     G4LorentzVector fStart;
