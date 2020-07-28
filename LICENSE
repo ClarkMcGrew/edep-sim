@@ -6,22 +6,22 @@ software license reproduced in the "licenses" subdirectory.
 2) The portions derived from NEST are distributed under the NEST software
 license reproduced in the "licenses" subdirectory.
 
-3) The software presented here derives from software that has been
-maintained in multiple HEP collaborations.  To the best of my knowledge,
-all of the code can be freely distributed for (at least) academic
-purposes. If you find portions of your code in this distribution which are
-not covered by the licenses mentioned above, please contact me for proper
+3) The software presented here mostly comes from software I
+authored and contributed to multiple HEP collaborations.  To the best
+of my knowledge, all of the code can be freely distributed for (at
+least) academic purposes.  If you find portions of code in this
+distribution that I have misattributed, please contact me for proper
 attribution.
 
 4) It is requested, but not required, that any discussion using the EDepSim
-source acknowledge that use.
+source acknowledge its use.
 
 5) The portions unique to this distribution, and which are not otherwise
 attributed, are distributed under the license below.
 
 MIT License
 
-Copyright (c) 2018 Clark McGrew
+Copyright (c) 2018, 2020 Clark McGrew
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
