@@ -28,6 +28,8 @@
 //
 // $Id: EDepSim::EMFieldSetup.hh 76247 2013-11-08 11:18:52Z gcosmo $
 //
+// History:
+//    - 2017.03.15 C.McGrew adapted for EDepSim
 //
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -60,41 +62,41 @@ public:
     /// example, G4UniformMagneticField, or G4UniformElectricField.  The
     /// second argument is the field manager to setup.
     EMFieldSetup(G4ElectroMagneticField* field, G4FieldManager* m=0);
-    
+
     /// Create a zero field for the field manager.
     EMFieldSetup(G4FieldManager* m=0);
-    
+
     virtual ~EMFieldSetup();
-    
+
     void SetStepperType(G4int i) { fStepperType = i ; }
-    
+
     void SetStepper();
-    
+
     void SetMinStep(G4double s) { fMinStep = s ; }
-    
+
 protected:
-    
+
     // Find the global Field Manager
-    
+
     G4FieldManager*         GetGlobalFieldManager();
-    
+
     void UpdateField();
-    
+
 private:
-    
+
     G4FieldManager*         fFieldManager;
-    
+
     G4ChordFinder*          fChordFinder;
-    
+
     G4EqMagElectricField*   fEquation;
-    
+
     G4ElectroMagneticField* fEMfield;
-    
+
     G4MagIntegratorStepper* fStepper;
     G4MagInt_Driver*        fIntgrDriver;
-    
+
     G4int                   fStepperType;
-    
+
     G4double                fMinStep;
 };
 #endif
