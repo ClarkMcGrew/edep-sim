@@ -221,6 +221,11 @@ private:
     /// segment.  This is the sum of (delta E)^2/(delta L)
     double fEnergyDepositVarianceTerm;
 
+#ifdef USE_G4VENERGYLOSSPROCESS_HH
+    /// The energy loss dispersion from the energy loss model.
+    double fEnergyDispersion;
+#endif
+
     /// The starting position of the segment.
     G4LorentzVector fStart;
 

@@ -16,6 +16,9 @@
 #include <G4TrajectoryContainer.hh>
 #include <G4TouchableHandle.hh>
 #include <G4Step.hh>
+#ifdef USE_G4VENERGYLOSSPROCESS_HH
+#include <G4VEnergyLossProcess.hh>
+#endif
 
 #include <G4UnitsTable.hh>
 #include <G4VisAttributes.hh>
@@ -36,6 +39,10 @@ G4Allocator<EDepSim::HitSegment> edepHitSegmentAllocator;
 EDepSim::HitSegment::HitSegment(double maxSagitta, double maxLength)
     : fMaxSagitta(maxSagitta), fMaxLength(maxLength),
       fPrimaryId(0), fEnergyDeposit(0), fSecondaryDeposit(0), fTrackLength(0),
+      fEnergyDepositVarianceTerm(0),
+#ifdef USE_G4VENERGYLOSSPROCESS_HH 
+      fEnergyDispersion(0),
+#endif
       fStart(0,0,0,0), fStop(0,0,0,0) {
     fPath.reserve(500);
 }
@@ -218,6 +225,36 @@ void EDepSim::HitSegment::AddStep(G4Step* theStep) {
         fEnergyDepositVarianceTerm += energyDeposit*energyDeposit/trackLength;
     }
 
+#ifdef USE_G4VENERGYLOSSPROCESS_HH
+    // Update the model based variance for the step.
+    do {
+        const G4VProcess* process = theStep->GetPostStepPoint()
+            ->GetProcessDefinedStep();
+        if (!process) break;
+        const G4VEnergyLossProcess* eLossProcess
+            = dynamic_cast<const G4VEnergyLossProcess*>(process);
+        if (!eLossProcess) break;
+        const G4MaterialCutsCouple* couple
+            = theStep->GetPostStepPoint()->GetMaterialCutsCouple();
+        if (!couple) break;
+        const G4Material* material = couple->GetMaterial();
+        if (!material) break;
+        const G4DynamicParticle* dp
+            = theStep->GetTrack()->GetDynamicParticle();
+        if (!dp) break;
+        double kinE = dp->GetKineticEnergy();
+        if (kinE < 1E-10) break;
+        std::size_t idx = 0;
+        G4VEmModel* emModel = eLossProcess->SelectModelForMaterial(kinE,idx);
+        if (!emModel) break;
+        double tmax = emModel->MaxSecondaryKinEnergy(dp);
+        G4VEmFluctuationModel* fluctuations = emModel->GetModelOfFluctuations();
+        if (!fluctuations) break;
+        double dispersion = fluctuations->Dispersion(material,dp,tmax,trackLength);
+        fEnergyDispersion += dispersion*dispersion;
+    } while (false);
+#endif
+
     EDepSimDebug("EDepSim::HitSegment:: Deposit " << particle->GetParticleName()
               << " adds " << energyDeposit/MeV << " MeV"
               << " to " << fContributors.front()
@@ -317,5 +354,6 @@ double EDepSim::HitSegment::GetEnergyVariance(void) const {
     double dEdX2 = fEnergyDepositVarianceTerm/fTrackLength;
     double var = dEdX2 - dEdX*dEdX;
     var *= fTrackLength;
+    var += fEnergyDispersion;
     return var;
 }
