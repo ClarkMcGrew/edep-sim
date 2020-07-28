@@ -40,7 +40,7 @@ EDepSim::HitSegment::HitSegment(double maxSagitta, double maxLength)
     : fMaxSagitta(maxSagitta), fMaxLength(maxLength),
       fPrimaryId(0), fEnergyDeposit(0), fSecondaryDeposit(0), fTrackLength(0),
       fEnergyDepositVarianceTerm(0),
-#ifdef USE_G4VENERGYLOSSPROCESS_HH 
+#ifdef USE_G4VENERGYLOSSPROCESS_HH
       fEnergyDispersion(0),
 #endif
       fStart(0,0,0,0), fStop(0,0,0,0) {
@@ -250,7 +250,8 @@ void EDepSim::HitSegment::AddStep(G4Step* theStep) {
         double tmax = emModel->MaxSecondaryKinEnergy(dp);
         G4VEmFluctuationModel* fluctuations = emModel->GetModelOfFluctuations();
         if (!fluctuations) break;
-        double dispersion = fluctuations->Dispersion(material,dp,tmax,trackLength);
+        double dispersion
+            = fluctuations->Dispersion(material,dp,tmax,trackLength);
         fEnergyDispersion += dispersion*dispersion;
     } while (false);
 #endif
@@ -354,6 +355,8 @@ double EDepSim::HitSegment::GetEnergyVariance(void) const {
     double dEdX2 = fEnergyDepositVarianceTerm/fTrackLength;
     double var = dEdX2 - dEdX*dEdX;
     var *= fTrackLength;
+#ifdef USE_G4VENERGYLOSSPROCESS_HH
     var += fEnergyDispersion;
+#endif
     return var;
 }
