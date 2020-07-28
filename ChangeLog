@@ -60,3 +60,8 @@ Changes in 3.0.0rc (a.k.a master)
   were accumulating in the test and tools directory.  The files in
   those directories are largely out of date.
 
+* Add arbitrary magnetic and electric field implementation from Andrew
+  Cudd.  The fields can be set in the GDML file.  The field values are
+  defined in auxilliary files containing the electric or magnetic
+  fields on a regular grid of points.
+  
