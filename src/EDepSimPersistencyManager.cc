@@ -492,10 +492,11 @@ EDepSim::PersistencyManager::SummarizeSegmentDetectors(
 
 void
 EDepSim::PersistencyManager::SummarizeHitSegments(TG4HitSegmentContainer& dest,
-                                             G4VHitsCollection* g4Hits) {
+                                                  G4VHitsCollection* g4Hits) {
     dest.clear();
 
-    EDepSim::HitSegment* g4Hit = dynamic_cast<EDepSim::HitSegment*>(g4Hits->GetHit(0));
+    EDepSim::HitSegment* g4Hit
+        = dynamic_cast<EDepSim::HitSegment*>(g4Hits->GetHit(0));
     if (!g4Hit) return;
 
     for (std::size_t h=0; h<g4Hits->GetSize(); ++h) {
@@ -514,6 +515,7 @@ EDepSim::PersistencyManager::SummarizeHitSegments(TG4HitSegmentContainer& dest,
                           g4Hit->GetStop().y(),
                           g4Hit->GetStop().z(),
                           g4Hit->GetStop().t());
+        hit.EnergyVariance = g4Hit->GetEnergyVariance();
         dest.push_back(hit);
     }
 }
