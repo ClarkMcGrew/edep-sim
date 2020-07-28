@@ -25,11 +25,12 @@
 //
 // $Id$
 //
-// 
 //
 // Class for creation of uniform Electric Field
 //
 // 30.1.97 V.Grichine
+// - 15.03.17 C.McGrew adapted for EDepSim
+// - 26.05.20 A.Cudd adapted for arbitrary fields
 //
 // -------------------------------------------------------------------
 
@@ -57,7 +58,7 @@ EDepSim::UniformField::UniformField(
     fFieldComponents[4] = eField.y();
     fFieldComponents[5] = eField.z();
 }
-   
+
 EDepSim::UniformField::UniformField(
     const G4ThreeVector bField )
 {
@@ -68,7 +69,7 @@ EDepSim::UniformField::UniformField(
     fFieldComponents[4] = 0.0;
     fFieldComponents[5] = 0.0;
 }
-   
+
 EDepSim::UniformField::~UniformField()
 {
 }
@@ -93,7 +94,7 @@ EDepSim::UniformField::operator = (const EDepSim::UniformField &p)
 // ------------------------------------------------------------------------
 
 void EDepSim::UniformField::GetFieldValue (const G4double* /* position */,
-                                           G4double *fieldBandE ) const 
+                                           G4double *fieldBandE ) const
 {
     for (G4int i=0; i<6; ++i) {
         fieldBandE[i] = fFieldComponents[i];
