@@ -41,12 +41,12 @@ void EDepSim::SegmentSD::Initialize(G4HCofThisEvent* HCE) {
     if (fHCID<0) {
         G4String hcName = GetName() + "/" + GetCollectionName(0);
         fHCID = G4SDManager::GetSDMpointer()->GetCollectionID(hcName);
-        EDepSimLog("Initialize SD for " 
+        EDepSimLog("Initialize SD for "
                   << GetName() << "/" << GetCollectionName(0)
                   << " w/ sagitta " << G4BestUnit(fMaximumHitSagitta,"Length")
                   << " & " << G4BestUnit(fMaximumHitLength,"Length"));
     }
-    HCE->AddHitsCollection(fHCID, fHits); 
+    HCE->AddHitsCollection(fHCID, fHits);
 }
 
 G4bool EDepSim::SegmentSD::ProcessHits(G4Step* theStep,
@@ -63,7 +63,7 @@ G4bool EDepSim::SegmentSD::ProcessHits(G4Step* theStep,
 
     // Check to see if the last hit in the vector of hits needs to be
     // expanded.
-    if (0<=fLastHit && fLastHit < fHits->entries()) {
+    if (0<=fLastHit && fLastHit < (int) fHits->entries()) {
         EDepSim::HitSegment *tmpHit = (*fHits)[fLastHit];
         if (tmpHit->SameHit(theStep)) {
             currentHit = tmpHit;
