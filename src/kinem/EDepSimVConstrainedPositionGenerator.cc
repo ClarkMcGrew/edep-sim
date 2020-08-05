@@ -16,7 +16,7 @@
 #include <queue>
 
 EDepSim::VConstrainedPositionGenerator::VConstrainedPositionGenerator(
-    const G4String& name) 
+    const G4String& name)
     : EDepSim::VPositionGenerator(name), fSampleVolume("Cryostat"),
       fLimitsFound(false) {
     fMaximumCorner.set(1000000*meter,1000000*meter,1000000*meter);
@@ -48,16 +48,16 @@ namespace {
         virtual ~InternalVolumeName() {};
         virtual bool Apply(const G4LorentzVector& vtx) {
             // Get the navigator.
-            G4Navigator* navigator 
+            G4Navigator* navigator
                 = G4TransportationManager::GetTransportationManager()
                 ->GetNavigatorForTracking();
-            
+
             // Get the volume that contains the point.
-            G4VPhysicalVolume* volume 
-                = navigator->LocateGlobalPointAndSetup(vtx); 
-            
+            G4VPhysicalVolume* volume
+                = navigator->LocateGlobalPointAndSetup(vtx);
+
             if (!volume) return false;
-            
+
             // Check that the point is inside the named volume.
             if (!volume->GetName().contains(fName)) {
                 return false;
@@ -88,16 +88,16 @@ namespace {
         virtual ~InternalVolumeMaterial() {};
         virtual bool Apply(const G4LorentzVector& vtx) {
             // Get the navigator.
-            G4Navigator* navigator 
+            G4Navigator* navigator
                 = G4TransportationManager::GetTransportationManager()
                 ->GetNavigatorForTracking();
-            
+
             // Get the volume that contains the point.
-            G4VPhysicalVolume* volume 
-                = navigator->LocateGlobalPointAndSetup(vtx); 
-            
+            G4VPhysicalVolume* volume
+                = navigator->LocateGlobalPointAndSetup(vtx);
+
             if (!volume) return false;
-            
+
             G4String matter = volume->GetLogicalVolume()
                 ->GetMaterial()->GetName();
 
@@ -125,7 +125,7 @@ namespace {
     class InternalMinimumCoordinate
         : public EDepSim::VConstrainedPositionGenerator::PositionTest {
     public:
-        InternalMinimumCoordinate(int coord, double minimum): 
+        InternalMinimumCoordinate(int coord, double minimum):
             fCoordinate(coord), fValue(minimum) {};
         virtual ~InternalMinimumCoordinate() {};
         virtual bool Apply(const G4LorentzVector& vtx) {
@@ -141,7 +141,7 @@ namespace {
     class InternalMaximumCoordinate
         : public EDepSim::VConstrainedPositionGenerator::PositionTest {
     public:
-        InternalMaximumCoordinate(int coord, double maximum): 
+        InternalMaximumCoordinate(int coord, double maximum):
             fCoordinate(coord), fValue(maximum) {};
         virtual ~InternalMaximumCoordinate() {};
         virtual bool Apply(const G4LorentzVector& vtx) {
@@ -210,7 +210,7 @@ namespace {
     public:
         QueueElement(G4VPhysicalVolume* v,
                      const G4ThreeVector& t,
-                     const G4RotationMatrix& r) 
+                     const G4RotationMatrix& r)
             : volume(v), translation(t), rotation(r) {}
         G4VPhysicalVolume* volume;
         G4ThreeVector translation;
@@ -228,8 +228,8 @@ void EDepSim::VConstrainedPositionGenerator::FindLimits() {
     }
 
     // Find the volume for sampling by something that is big enough to cover
-    // all of the possible vertex locations.  
-    G4Navigator* navigator 
+    // all of the possible vertex locations.
+    G4Navigator* navigator
         = G4TransportationManager::GetTransportationManager()
         ->GetNavigatorForTracking();
 
@@ -239,14 +239,14 @@ void EDepSim::VConstrainedPositionGenerator::FindLimits() {
                               G4RotationMatrix()));
     while (!volumes.empty()) {
         G4VPhysicalVolume* phyVolume = volumes.front().volume;
-        G4ThreeVector translation 
+        G4ThreeVector translation
             = volumes.front().translation + phyVolume->GetObjectTranslation();
         G4RotationMatrix rotation = volumes.front().rotation;
         rotation.transform(phyVolume->GetObjectRotationValue());
         volumes.pop();
 
         if (phyVolume->GetName().find(fSampleVolume) != std::string::npos) {
-            G4VisExtent volExtent 
+            G4VisExtent volExtent
                 = phyVolume->GetLogicalVolume()->GetSolid()->GetExtent();
             G4ThreeVector volMin;
             G4ThreeVector volMax;
@@ -265,10 +265,10 @@ void EDepSim::VConstrainedPositionGenerator::FindLimits() {
             if (fMinimumCorner.y()<volMin.y()) fMinimumCorner.setY(volMin.y());
             if (fMinimumCorner.z()<volMin.z()) fMinimumCorner.setZ(volMin.z());
             break;
-        } 
+        }
 
         G4LogicalVolume* logVolume = phyVolume->GetLogicalVolume();
-        for (int i=0; i< logVolume->GetNoDaughters(); ++i) {
+        for (std::size_t i=0; i< logVolume->GetNoDaughters(); ++i) {
             volumes.push(QueueElement(logVolume->GetDaughter(i),
                                       translation,
                                       rotation));
@@ -276,11 +276,11 @@ void EDepSim::VConstrainedPositionGenerator::FindLimits() {
     }
 
     EDepSimLog("Sampling volume extent:");
-    EDepSimLog("    X: " << G4BestUnit(fMinimumCorner[0],"Length") 
+    EDepSimLog("    X: " << G4BestUnit(fMinimumCorner[0],"Length")
              << "to " << G4BestUnit(fMaximumCorner[0],"Length"));
-    EDepSimLog("    Y: " << G4BestUnit(fMinimumCorner[1],"Length") 
+    EDepSimLog("    Y: " << G4BestUnit(fMinimumCorner[1],"Length")
              << "to " << G4BestUnit(fMaximumCorner[1],"Length"));
-    EDepSimLog("    Z: " << G4BestUnit(fMinimumCorner[2],"Length") 
+    EDepSimLog("    Z: " << G4BestUnit(fMinimumCorner[2],"Length")
              << "to " << G4BestUnit(fMaximumCorner[2],"Length"));
 }
 
