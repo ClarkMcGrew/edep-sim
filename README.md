@@ -553,6 +553,14 @@ The alpha value can also be set using the opacity auxiliary type.
 <auxiliary auxtype="Opacity" auxvalue="0.5"/>
 ```
 
+#### Auxiliary field to set the volume step limit.
+
+The step limit can be set using
+
+<auxiliary auxtype="StepLimit" auxValue="1.0 cm"/>
+
+The value takes a number and a unit.
+
 ## Running as a library
 
 The simulation is developed as a library separated from a main program

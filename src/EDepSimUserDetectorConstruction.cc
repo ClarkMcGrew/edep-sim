@@ -28,6 +28,7 @@
 #include <G4RunManager.hh>
 #include <G4VPersistencyManager.hh>
 #include <G4GDMLParser.hh>
+#include <G4UserLimits.hh>
 
 #include <G4SolidStore.hh>
 #include <G4LogicalVolumeStore.hh>
@@ -105,6 +106,46 @@ namespace {
     }
 }
 
+
+namespace {
+    double ParseUnit(std::string value, std::string unit) {
+        double val = 0.0;
+        std::istringstream theStream(value);
+        theStream >> val >> unit;
+        val *= G4UnitDefinition::GetValueOf(unit);
+        return val;
+    }
+
+    // Parse a string containing the electric field vector.
+    G4ThreeVector ParseEField(std::string value) {
+        G4ThreeVector field(0,0,0);
+        value = value.substr(value.find("(")+1);
+        std::string elem = value.substr(0,value.find(","));
+        field.setX(ParseUnit(elem,"V/cm"));
+        value = value.substr(value.find(",")+1);
+        elem = value.substr(0,value.find(","));
+        field.setY(ParseUnit(elem,"V/cm"));
+        value = value.substr(value.find(",")+1);
+        elem = value.substr(0,value.find(")"));
+        field.setZ(ParseUnit(elem,"V/cm"));
+        return field;
+    }
+
+    G4ThreeVector ParseBField(std::string value) {
+        G4ThreeVector field(0,0,0);
+        value = value.substr(value.find("(")+1);
+        std::string elem = value.substr(0,value.find(","));
+        field.setX(ParseUnit(elem,"tesla"));
+        value = value.substr(value.find(",")+1);
+        elem = value.substr(0,value.find(","));
+        field.setY(ParseUnit(elem,"tesla"));
+        value = value.substr(value.find(",")+1);
+        elem = value.substr(0,value.find(")"));
+        field.setZ(ParseUnit(elem,"tesla"));
+        return field;
+    }
+}
+
 G4VPhysicalVolume* EDepSim::UserDetectorConstruction::Construct() {
     if (fGDMLParser) {
         EDepSimLog("Using a GDML Geometry");
@@ -151,6 +192,26 @@ G4VPhysicalVolume* EDepSim::UserDetectorConstruction::Construct() {
             }
             aux->first->SetVisAttributes(new G4VisAttributes(color));
         }
+
+        // Check for step limits
+        for (G4GDMLAuxMapType::const_iterator
+                 aux = fGDMLParser->GetAuxMap()->begin();
+             aux != fGDMLParser->GetAuxMap()->end();
+             ++aux) {
+            for (G4GDMLAuxListType::const_iterator auxItem
+                     = aux->second.begin();
+                 auxItem != aux->second.end();
+                 ++auxItem) {
+                if (auxItem->type == "StepLimit") {
+                    double stepLimit = ParseUnit(auxItem->value,"mm");
+                    EDepSimInfo("Set volume " << aux->first->GetName()
+                                << " step limit to " << stepLimit
+                                << " from " << auxItem->value);
+                    aux->first->SetUserLimits(new G4UserLimits(stepLimit));
+                    break;
+                }
+            }
+        }
     }
 
     if (!fPhysicalWorld) {
@@ -173,45 +234,6 @@ G4VPhysicalVolume* EDepSim::UserDetectorConstruction::Construct() {
     if (pMan) pMan->Store(fPhysicalWorld);
 
     return fPhysicalWorld;
-}
-
-namespace {
-    double ParseUnit(std::string value, std::string unit) {
-        double val = 0.0;
-        std::istringstream theStream(value);
-        theStream >> val >> unit;
-        val *= G4UnitDefinition::GetValueOf(unit);
-        return val;
-    }
-
-    // Parse a string containing the electric field vector.
-    G4ThreeVector ParseEField(std::string value) {
-        G4ThreeVector field(0,0,0);
-        value = value.substr(value.find("(")+1);
-        std::string elem = value.substr(0,value.find(","));
-        field.setX(ParseUnit(elem,"V/cm"));
-        value = value.substr(value.find(",")+1);
-        elem = value.substr(0,value.find(","));
-        field.setY(ParseUnit(elem,"V/cm"));
-        value = value.substr(value.find(",")+1);
-        elem = value.substr(0,value.find(")"));
-        field.setZ(ParseUnit(elem,"V/cm"));
-        return field;
-    }
-
-    G4ThreeVector ParseBField(std::string value) {
-        G4ThreeVector field(0,0,0);
-        value = value.substr(value.find("(")+1);
-        std::string elem = value.substr(0,value.find(","));
-        field.setX(ParseUnit(elem,"tesla"));
-        value = value.substr(value.find(",")+1);
-        elem = value.substr(0,value.find(","));
-        field.setY(ParseUnit(elem,"tesla"));
-        value = value.substr(value.find(",")+1);
-        elem = value.substr(0,value.find(")"));
-        field.setZ(ParseUnit(elem,"tesla"));
-        return field;
-    }
 }
 
 void EDepSim::UserDetectorConstruction::ConstructSDandField() {
