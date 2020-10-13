@@ -204,9 +204,9 @@ G4VPhysicalVolume* EDepSim::UserDetectorConstruction::Construct() {
                  ++auxItem) {
                 if (auxItem->type == "StepLimit") {
                     double stepLimit = ParseUnit(auxItem->value,"mm");
-                    EDepSimInfo("Set volume " << aux->first->GetName()
-                                << " step limit to " << stepLimit
-                                << " from " << auxItem->value);
+                    EDepSimLog("Set volume " << aux->first->GetName()
+                               << " step limit to " << stepLimit
+                               << " from " << auxItem->value);
                     aux->first->SetUserLimits(new G4UserLimits(stepLimit));
                     break;
                 }
