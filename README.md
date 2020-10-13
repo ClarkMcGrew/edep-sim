@@ -381,17 +381,20 @@ instead of the field:
 
 ##### Controlling the step size.
 
-The hit segment length is determined by a combination the GEANT4 physics
-step and a segment target length.  The GEANT4 physics step length is
-determined by the interaction cross sections, the energy loss, and the
-multiple scattering.  The physics step length control parameters (but not
-explicitly the step length) can be controlled using the macro commands in
-the "/process/eLoss/" and "/process/msc/" directories.  The target length
-of the hit segment can be controlled using the "/edep/hitLength" macro, and
-the maximum sagitta of the segment can be controlled using the
-"/edep/hitSagitta" macro.  Typically, the hit length should be a little
-smaller than the resolution of the detector.  Hit segments will not cross
-geometry boundaries.
+The hit segment length is determined by a combination the GEANT4
+physics step and a segment target length.  The GEANT4 physics step
+length is determined by the interaction cross sections, the energy
+loss, and the multiple scattering.  The physics step length control
+parameters (but not explicitly the step length) can be controlled
+using the macro commands in the "/process/eLoss/" and "/process/msc/"
+directories.  A geometry can also set an explicit step length limit
+(see below).  The target length of the hit segment can be controlled
+using the "/edep/hitLength" macro, and the maximum sagitta of the
+segment can be controlled using the "/edep/hitSagitta" macro.  Notice
+that the segment will grow until it is at least as long as the target
+hit length value.  Typically, the hit length should be a little
+smaller than the resolution of the detector.  Hit segments will not
+cross geometry boundaries.
 
 It is important to notice that the hit segments can have a length that is
 long compared to the resolution of the detector, but the "diameter" of the
