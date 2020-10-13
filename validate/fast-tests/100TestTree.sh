@@ -10,6 +10,13 @@ if [ -f ${OUTPUT} ]; then
 fi
 
 cat > 100TestTree.mac <<EOF
+#######################################
+# Set the hit segment.
+#######################################
+/edep/hitSagitta drift 1.0 mm
+/edep/hitLength drift 1.0 mm
+/edep/update
+
 # Make sure that the GPS generator is it's default state.
 /gps/source/clear
 
@@ -37,10 +44,10 @@ cat > 100TestTree.mac <<EOF
 /gps/pos/halfy 20 cm
 /gps/pos/halfz 20 cm
 
-# This generates the direction of the muon. 
+# This generates the direction of the muon.
 /gps/ang/type iso
 # /gps/ang/maxtheta 15 deg
-/gps/ang/rot1 1 0 0 
+/gps/ang/rot1 1 0 0
 /gps/ang/rot2 0 -1 0
 
 #########################################
@@ -61,7 +68,7 @@ cat > 100TestTree.mac <<EOF
 
 # Copy the vertex position of the first particle into the second particle.
 /generator/combine 0 1
+
 EOF
 
-edep-sim -o ${OUTPUT} -C -e 100 -u 100TestTree.mac
-
+edep-sim -o ${OUTPUT} -C -e 100 100TestTree.mac
