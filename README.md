@@ -386,15 +386,26 @@ physics step and a segment target length.  The GEANT4 physics step
 length is determined by the interaction cross sections, the energy
 loss, and the multiple scattering.  The physics step length control
 parameters (but not explicitly the step length) can be controlled
-using the macro commands in the "/process/eLoss/" and "/process/msc/"
-directories.  A geometry can also set an explicit step length limit
-(see below).  The target length of the hit segment can be controlled
-using the "/edep/hitLength" macro, and the maximum sagitta of the
-segment can be controlled using the "/edep/hitSagitta" macro.  Notice
-that the segment will grow until it is at least as long as the target
-hit length value.  Typically, the hit length should be a little
-smaller than the resolution of the detector.  Hit segments will not
-cross geometry boundaries.
+using the macro commands in the ```/process/eLoss/``` and
+```/process/msc/``` directories.  A geometry can set an explicit step
+length limit for a logical volume (see below).  The steps taken by
+GEANT4 are summarized by hit segments (see above), that will combine
+steps until the next step would make the segment longer than the
+target length.  The target length of the hit segment can be controlled
+using the ```/edep/hitLength``` macro, and the maximum sagitta of the
+segment can be controlled using the ```/edep/hitSagitta``` macro.
+Notice that the segment will grow until it is approximately as long as
+the target hit length value, but depending on the underlying
+simulation, will probably be shorter, or longer than the target.  Typically,
+the segment length should be a little smaller than the resolution of the
+detector.  Hit segments will not cross geometry boundaries.
+
+Note: All of the step length controls must occur during the
+```PREINIT``` stage.  In practice, this means they need to occur
+before the ```/edep/update``` command has given.  You can explicitly
+add the ```/edep/update``` command to the job macro, or it will be
+added automatically using the -u command which will insert an
+```/edep/update``` *before* running the macro on the command line.
 
 It is important to notice that the hit segments can have a length that is
 long compared to the resolution of the detector, but the "diameter" of the
@@ -415,11 +426,13 @@ command.  A help message is printed if it is run without any arguments.
 
 ## Specifying The Detector Geometry.
 
-The detector geometry can be specified in more than one way.  The first is
-to compile it into the executable by defining the appropriate
-EDepSimBuilder classes.  There is an example of a simplified geometry for
-the CAPTAIN LArTPC contained in the source.  The alternative is to import a
-GDML definition using the `/edep/gdml/read` macro command.  The gdml file can be specified from the command line using the `-g` option
+The detector geometry can be specified in more than one way.  The
+first is to compile it into the executable by defining the appropriate
+EDepSimBuilder classes.  There is an example of a simplified geometry
+for the CAPTAIN LArTPC contained in the source.  The alternative is to
+import a GDML definition using the ```/edep/gdml/read``` macro
+command.  The gdml file can be specified from the command line using
+the ```-g``` option
 
 ```bash
 edep-sim -g geometry.gdml -o output.root macro-file.mac
