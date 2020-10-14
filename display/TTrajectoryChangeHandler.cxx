@@ -45,8 +45,15 @@ void EDep::TTrajectoryChangeHandler::Apply() {
         label << traj->GetName()
               << " (" << traj->GetInitialMomentum().E() << " MeV)";
 
+        if (traj->GetParentId() < 1) {
+            std::cout << "Primary " << traj->GetTrackId()
+                      << " " << traj->GetName()
+                      << " " << traj->GetInitialMomentum().P() << " MeV/c"
+                      << std::endl;
+        }
+
         bool charged = true;
-        
+
         TEveLine *track = new TEveLine();
         track->SetName("trajectory");
         track->SetTitle(label.str().c_str());
@@ -60,7 +67,7 @@ void EDep::TTrajectoryChangeHandler::Apply() {
         }
 
         for (std::size_t p = 0; p < points.size(); ++p) {
-            track->SetPoint(p, 
+            track->SetPoint(p,
                             points[p].GetPosition().X(),
                             points[p].GetPosition().Y(),
                             points[p].GetPosition().Z());
