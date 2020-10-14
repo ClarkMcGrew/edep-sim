@@ -402,9 +402,9 @@ detector.  Hit segments will not cross geometry boundaries.
 
 Note: All of the step length controls must occur during the
 ```PREINIT``` stage.  In practice, this means they need to occur
-before the ```/edep/update``` command has given.  You can explicitly
-add the ```/edep/update``` command to the job macro, or it will be
-added automatically using the -u command which will insert an
+before the ```/edep/update``` command has been given.  You can
+explicitly add the ```/edep/update``` command to the job macro, or it
+will be added automatically using the -u command which will insert an
 ```/edep/update``` *before* running the macro on the command line.
 
 It is important to notice that the hit segments can have a length that is
