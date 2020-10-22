@@ -46,7 +46,8 @@ EDepSim::PersistencyManager::PersistencyManager()
     : G4VPersistencyManager(), fFilename("/dev/null"),
       fLengthThreshold(10*mm),
       fGammaThreshold(5*MeV), fNeutronThreshold(50*MeV),
-      fTrajectoryPointAccuracy(1.*mm), fSaveAllPrimaryTrajectories(true) {
+      fTrajectoryPointAccuracy(1.*mm), fTrajectoryPointDeposit(0*MeV),
+      fSaveAllPrimaryTrajectories(true) {
     fPersistencyMessenger = new EDepSim::PersistencyMessenger(this);
 }
 
@@ -633,7 +634,8 @@ EDepSim::PersistencyManager::SelectTrajectoryPoints(std::vector<int>& selected,
         = dynamic_cast<EDepSim::TrajectoryPoint*>(g4Traj->GetPoint(0));
     G4String prevVolumeName = edepPoint->GetPhysVolName();
     for (int tp = 1; tp < lastIndex; ++tp) {
-        edepPoint = dynamic_cast<EDepSim::TrajectoryPoint*>(g4Traj->GetPoint(tp));
+        edepPoint
+            = dynamic_cast<EDepSim::TrajectoryPoint*>(g4Traj->GetPoint(tp));
         G4String volumeName = edepPoint->GetPhysVolName();
         // Save the point on a boundary crossing for volumes where we are
         // saving the entry and exit points.
@@ -646,11 +648,13 @@ EDepSim::PersistencyManager::SelectTrajectoryPoints(std::vector<int>& selected,
 
     // Save trajectory points where there is a "big" interaction.
     for (int tp = 1; tp < lastIndex; ++tp) {
-        edepPoint = dynamic_cast<EDepSim::TrajectoryPoint*>(g4Traj->GetPoint(tp));
+        edepPoint
+            = dynamic_cast<EDepSim::TrajectoryPoint*>(g4Traj->GetPoint(tp));
         // Just navigation....
         if (edepPoint->GetProcessType() == fTransportation) continue;
         // Not much energy deposit...
-        if (edepPoint->GetProcessDeposit() < 0.5*MeV) continue;
+        if (edepPoint->GetProcessDeposit() < GetTrajectoryPointDeposit())
+            continue;
         // Don't save optical photons...
         if (edepPoint->GetProcessType() == fOptical) continue;
         // Not a physics step...
