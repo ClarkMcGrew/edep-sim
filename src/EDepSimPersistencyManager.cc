@@ -227,13 +227,21 @@ void EDepSim::PersistencyManager::SummarizeTrajectories(
     dest.clear();
     MarkTrajectories(event);
 
-    const G4TrajectoryContainer* trajectories = event->GetTrajectoryContainer();
-
     // Build a map of the original G4 TrackID to the new relocated TrackId
     // (not capitalization).  This also uses the fact that maps are sorted as
     // a hack to prevent writing a predicate to sort TG4Trajectories (because
     // I'm lazy).
     fTrackIdMap.clear();
+
+    const G4TrajectoryContainer* trajectories = event->GetTrajectoryContainer();
+    if (!trajectories) {
+        EDepSimError("No trajectory container");
+        return;
+    }
+    if (!trajectories->GetVector()) {
+        EDepSimError("No trajectory vector in trajectory container");
+        return;
+    }
 
     int index = 0;
     TG4TrajectoryContainer tempContainer;
@@ -300,7 +308,7 @@ void EDepSim::PersistencyManager::SummarizeTrajectories(
         i->second = index++;
     }
 
-    // TrackID zero maps to the non-existent -1.
+    // Make double sure that TrackID zero maps to the non-existent -1.
     fTrackIdMap[0] = -1;
 
     /// Rewrite the track ids so that they are consecutive.
@@ -530,7 +538,8 @@ void EDepSim::PersistencyManager::CopyHitContributors(std::vector<int>& dest,
         // trajectory.  If it isn't in the trajectory map, then set it
         // to a parent that is.
         EDepSim::Trajectory* ndTraj
-            = dynamic_cast<EDepSim::Trajectory*>(EDepSim::TrajectoryMap::Get(*c));
+            = dynamic_cast<EDepSim::Trajectory*>(
+                EDepSim::TrajectoryMap::Get(*c));
         while (ndTraj && !ndTraj->SaveTrajectory()) {
             ndTraj = dynamic_cast<EDepSim::Trajectory*>(
                 EDepSim::TrajectoryMap::Get(ndTraj->GetParentID()));
@@ -601,10 +610,16 @@ int EDepSim::PersistencyManager::SplitTrajectory(G4VTrajectory* g4Traj,
 
 void
 EDepSim::PersistencyManager::SelectTrajectoryPoints(std::vector<int>& selected,
-                                               G4VTrajectory* g4Traj) {
+                                                    G4VTrajectory* g4Traj) {
 
     selected.clear();
-    if (g4Traj->GetPointEntries() < 1) return;
+    if (g4Traj->GetPointEntries() < 1) {
+        EDepSimError("Trajectory with no points"
+                     << " " << g4Traj->GetTrackID()
+                     << " " << g4Traj->GetParentID()
+                     << " " << g4Traj->GetParticleName());
+        return;
+    }
 
     ////////////////////////////////////
     // Save the first point of the trajectory.
@@ -615,7 +630,13 @@ EDepSim::PersistencyManager::SelectTrajectoryPoints(std::vector<int>& selected,
     // Save the last point of the trajectory.
     /////////////////////////////////////
     int lastIndex = g4Traj->GetPointEntries()-1;
-    if (lastIndex < 1) return;
+    if (lastIndex < 1) {
+        EDepSimError("Trajectory with one point"
+                     << " " << g4Traj->GetTrackID()
+                     << " " << g4Traj->GetParentID()
+                     << " " << g4Traj->GetParticleName());
+        return;
+    }
     selected.push_back(lastIndex);
 
     //////////////////////////////////////////////
