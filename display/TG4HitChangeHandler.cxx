@@ -59,13 +59,13 @@ void EDep::TG4HitChangeHandler::Apply() {
 
             int contrib = g4Hit->Contrib.front();
             std::string particle = gEDepSimEvent->Trajectories[contrib].GetName();
-            
+
             TEveLine* eveHit = new TEveLine(2);
             eveHit->SetName(detector->first.c_str());
             std::ostringstream title;
             title << "Hit(" << particle << ")";
-            title << std::fixed << std::setprecision(2)
-                  << " " << dEdX << " MeV/mm";
+            title << std::fixed << std::setprecision(1)
+                  << " " << dEdX*1000.0 << " keV/mm";
             title << " for " << length << " mm"
                   << " at (" << g4Hit->GetStart().X() << " mm"
                   << "," <<  g4Hit->GetStart().Y() << " mm"
