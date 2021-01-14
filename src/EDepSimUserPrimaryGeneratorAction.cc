@@ -39,7 +39,12 @@ void EDepSim::UserPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent) {
                 (*generator)->GeneratePrimaryVertex(anEvent);
             }
             catch (EDepSim::NoMoreEvents&) {
-                EDepSimLog("Run aborted.  No more input events.");
+                if (fAllowPartialEvents) {
+                    EDepSimLog("GeneratePrimaries: "
+                               << "Ran out of primaries will filling event.");
+                    continue;
+                }
+                EDepSimError("Run aborted.  No more input events.");
                 G4RunManager::GetRunManager()->AbortRun();
                 return;
             }
@@ -62,8 +67,8 @@ void EDepSim::UserPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent) {
         }
         if (anEvent->GetNumberOfPrimaryVertex()>0) break;
         if (fAllowEmptyEvents) continue;
-        EDepSimError("EDepSim::UserPrimaryGeneratorAction::GeneratePrimaries(): "
-                   << "Event generated without any primary verticies.");
+        EDepSimError("EDepSim::UserPrimaryGeneratorAction::GeneratePrimaries():"
+                   << " Event generated without any primary verticies.");
         EDepSimThrow("No primaries generated.");
     }
 }

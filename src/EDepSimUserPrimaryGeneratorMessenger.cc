@@ -39,7 +39,7 @@
 
 EDepSim::UserPrimaryGeneratorMessenger::UserPrimaryGeneratorMessenger(
     EDepSim::UserPrimaryGeneratorAction* gen)
-    : fAction(gen) { 
+    : fAction(gen) {
 
     /////////////////////////////////////////
     // The directories must be created first.
@@ -75,7 +75,7 @@ EDepSim::UserPrimaryGeneratorMessenger::UserPrimaryGeneratorMessenger(
     AddPositionFactory(new EDepSim::FixedPositionFactory(this));
     AddPositionFactory(new EDepSim::UniformPositionFactory(this));
     AddPositionFactory(new EDepSim::DensityPositionFactory(this));
-    
+
     AddTimeFactory(new EDepSim::FixedTimeFactory(this));
     AddTimeFactory(new EDepSim::FreeTimeFactory(this));
     AddTimeFactory(new EDepSim::SpillTimeFactory(this));
@@ -96,26 +96,26 @@ EDepSim::UserPrimaryGeneratorMessenger::UserPrimaryGeneratorMessenger(
     fCombineCMD->SetParameter(new G4UIparameter("dest",'i',false));
     fCombineCMD->SetParameter(new G4UIparameter("relative",'b',true));
     fCombineCMD->GetParameter(2)->SetDefaultValue("false");
-    
-    fSetKinematicsCMD 
+
+    fSetKinematicsCMD
         = new G4UIcmdWithAString("/generator/kinematics/set",this);
     fSetKinematicsCMD->SetGuidance("Set the current kinematics factory.");
     fSetKinematicsCMD->SetParameterName("Factory",false);
     fSetKinematicsCMD->SetCandidates(GetKinematicsFactories());
 
-    fSetCountCMD 
+    fSetCountCMD
         = new G4UIcmdWithAString("/generator/count/set",this);
     fSetCountCMD->SetGuidance("Set the current count factory.");
     fSetCountCMD->SetParameterName("Factory",false);
     fSetCountCMD->SetCandidates(GetCountFactories());
 
-    fSetPositionCMD 
+    fSetPositionCMD
         = new G4UIcmdWithAString("/generator/position/set",this);
     fSetPositionCMD->SetGuidance("Set the current position factory.");
     fSetPositionCMD->SetParameterName("Factory",false);
     fSetPositionCMD->SetCandidates(GetPositionFactories());
 
-    fSetTimeCMD 
+    fSetTimeCMD
         = new G4UIcmdWithAString("/generator/time/set",this);
     fSetTimeCMD->SetGuidance("Set the current time factory.");
     fSetTimeCMD->SetParameterName("Factory",false);
@@ -125,12 +125,18 @@ EDepSim::UserPrimaryGeneratorMessenger::UserPrimaryGeneratorMessenger(
         = new G4UIcmdWithABool("/generator/allowEmptyEvents",this);
     fAllowEmptyEventsCMD->SetGuidance("If true, then generate events even"
                                       " if they don't contain a vertex.");
-    
+
     fAddFakeGeantinoCMD
         = new G4UIcmdWithABool("/generator/addFakeGeantino",this);
     fAddFakeGeantinoCMD->SetGuidance("If true, then guarantee a primary vertex"
                                      " by adding a geantino.");
-    
+
+    fAllowPartialEventsCMD
+        = new G4UIcmdWithABool("/generator/allowPartialEvents",this);
+    fAllowEmptyEventsCMD->SetGuidance("If true, then generate the final event"
+                                      " even if it ran out of interactions"
+                                      " in the input kinematics file.");
+
     //////////////////////////////////
     // Set default values for the factories.
     SetKinematicsFactory("gps");
@@ -155,10 +161,11 @@ EDepSim::UserPrimaryGeneratorMessenger::~UserPrimaryGeneratorMessenger() {
     delete fSetTimeCMD;
     delete fAllowEmptyEventsCMD;
     delete fAddFakeGeantinoCMD;
+    delete fAllowPartialEventsCMD;
 }
 
-void EDepSim::UserPrimaryGeneratorMessenger::SetNewValue(G4UIcommand* command, 
-                                                    G4String newValue) { 
+void EDepSim::UserPrimaryGeneratorMessenger::SetNewValue(G4UIcommand* command,
+                                                    G4String newValue) {
     if (command == fClearCMD) {
         fAction->ClearGenerators();
     }
@@ -170,7 +177,7 @@ void EDepSim::UserPrimaryGeneratorMessenger::SetNewValue(G4UIcommand* command,
         int src, dest;
         std::string relative;
         std::istringstream is(newValue);
-        is >> src >> dest >> relative; 
+        is >> src >> dest >> relative;
         EDepSim::CombinationGenerator* generator
             = new EDepSim::CombinationGenerator(
                 src,dest,G4UIcommand::ConvertToBool(relative.c_str()));
@@ -196,6 +203,10 @@ void EDepSim::UserPrimaryGeneratorMessenger::SetNewValue(G4UIcommand* command,
         fAction->SetAddFakeGeantino(
             fAddFakeGeantinoCMD->GetNewBoolValue(newValue));
     }
+    else if (command == fAllowPartialEventsCMD) {
+        fAction->SetAllowPartialEvents(
+            fAllowPartialEventsCMD->GetNewBoolValue(newValue));
+    }
     else {
         EDepSimThrow("EDepSim::UserPrimaryGeneratorMessenger:: "
                     "Unimplemented command");
@@ -210,7 +221,7 @@ EDepSim::PrimaryGenerator* EDepSim::UserPrimaryGeneratorMessenger::CreateGenerat
     EDepSim::PrimaryGenerator* gen
         = new EDepSim::PrimaryGenerator(kine,count,position,time);
     EDepSimLog("#############################################");
-    EDepSimLog("# Create a new EDepSim_PrimaryGenerator: " 
+    EDepSimLog("# Create a new EDepSim_PrimaryGenerator: "
              << gen->GetName());
     EDepSimLog("#############################################");
     return gen;
@@ -240,7 +251,7 @@ void EDepSim::UserPrimaryGeneratorMessenger::SetKinematicsFactory(
 
 G4String EDepSim::UserPrimaryGeneratorMessenger::GetKinematicsFactories() {
     G4String list = "";
-    for (std::map<G4String,EDepSim::VKinematicsFactory*>::const_iterator p 
+    for (std::map<G4String,EDepSim::VKinematicsFactory*>::const_iterator p
              = fKinematicsFactories.begin();
          p != fKinematicsFactories.end();
          ++p) {
@@ -269,7 +280,7 @@ void EDepSim::UserPrimaryGeneratorMessenger::SetCountFactory(
 
 G4String EDepSim::UserPrimaryGeneratorMessenger::GetCountFactories() {
     G4String list = "";
-    for (std::map<G4String,EDepSim::VCountFactory*>::const_iterator p 
+    for (std::map<G4String,EDepSim::VCountFactory*>::const_iterator p
              = fCountFactories.begin();
          p != fCountFactories.end();
          ++p) {
@@ -298,7 +309,7 @@ void EDepSim::UserPrimaryGeneratorMessenger::SetPositionFactory(
 
 G4String EDepSim::UserPrimaryGeneratorMessenger::GetPositionFactories() {
     G4String list = "";
-    for (std::map<G4String,EDepSim::VPositionFactory*>::const_iterator p 
+    for (std::map<G4String,EDepSim::VPositionFactory*>::const_iterator p
              = fPositionFactories.begin();
          p != fPositionFactories.end();
          ++p) {
@@ -327,7 +338,7 @@ void EDepSim::UserPrimaryGeneratorMessenger::SetTimeFactory(
 
 G4String EDepSim::UserPrimaryGeneratorMessenger::GetTimeFactories() {
     G4String list = "";
-    for (std::map<G4String,EDepSim::VTimeFactory*>::const_iterator p 
+    for (std::map<G4String,EDepSim::VTimeFactory*>::const_iterator p
              = fTimeFactories.begin();
          p != fTimeFactories.end();
          ++p) {

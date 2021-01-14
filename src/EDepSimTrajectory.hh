@@ -28,16 +28,16 @@ namespace EDepSim {class Trajectory;}
 class EDepSim::Trajectory : public G4VTrajectory {
 public:
     Trajectory();
-    
+
     Trajectory(const G4Track* aTrack);
     Trajectory(EDepSim::Trajectory &);
     virtual ~Trajectory();
-    
+
     inline void* operator new(size_t);
     inline void  operator delete(void*);
     inline int operator == (const EDepSim::Trajectory& right) const {
         return (this==&right);
-    } 
+    }
 
     /// Get the track id described by this trajectory.
     inline G4int GetTrackID() const {return fTrackID;}
@@ -60,7 +60,7 @@ public:
 
     /// Get the initial momentum of the particle that created this trajectory.
     inline G4ThreeVector GetInitialMomentum() const {return fInitialMomentum;}
-    
+
     /// Get the initial kinetic energy of the particle that created this
     /// trajectory.
     G4double GetInitialKineticEnergy() const;
@@ -110,17 +110,17 @@ public:
     virtual G4VTrajectoryPoint* GetPoint(G4int i) const {
         return (*fPositionRecord)[i];
     }
-    
+
     virtual void MergeTrajectory(G4VTrajectory* secondTrajectory);
 
     /// Get the full definition of the particle.
     G4ParticleDefinition* GetParticleDefinition() const;
-    
+
     virtual const std::map<G4String,G4AttDef>* GetAttDefs() const;
     virtual std::vector<G4AttValue>* CreateAttValues() const;
-    
+
 private:
-    
+
     TrajectoryPointContainer* fPositionRecord;
     G4int                     fTrackID;
     G4int                     fParentID;
