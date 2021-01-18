@@ -252,6 +252,20 @@ void EDepSim::UserDetectorConstruction::ConstructSDandField() {
              auxItem != aux->second.end();
              ++auxItem) {
             if (auxItem->type != "SensDet") continue;
+            std::string logName(aux->first->GetName());
+            bool exclude = false;
+            for (std::vector<std::string>::iterator e
+                     = fExcludeAsSensitiveDetector.begin();
+                 e != fExcludeAsSensitiveDetector.end(); ++e) {
+                if (logName.find((*e)) != std::string::npos) {
+                    exclude = true;
+                    break;
+                }
+            }
+            if (exclude) {
+                EDepSimLog("Volume " << logName << "marked as sensitive, but"
+                           << " excluded");
+            }
             EDepSimLog("Collect energy deposition for " << aux->first->GetName()
                        << " in " << auxItem->value);
             EDepSim::SDFactory factory("segment");

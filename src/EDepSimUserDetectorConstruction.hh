@@ -20,7 +20,7 @@ namespace EDepSim {class UserDetectorConstruction;}
 /// construction.  In the first, the geometry is read from a GDML file which
 /// is expected to contain the SensDet, EField and BField auxiliary types for
 /// logical volumes that are sensitive, have an electric field, and have a
-/// magnetic field (respectively).  The alternative is to define a builder 
+/// magnetic field (respectively).  The alternative is to define a builder
 class EDepSim::UserDetectorConstruction : public G4VUserDetectorConstruction {
 public:
     UserDetectorConstruction();
@@ -33,14 +33,14 @@ public:
     /// The method to setup the sensitive detectors and fields.  In a multi
     /// thread application, this is called per thread.
     virtual void ConstructSDandField();
-    
+
     /// Return the detector construction messenger
     virtual EDepSim::DetectorMessenger* GetMessenger(void) {
         return fDetectorMessenger;
     };
 
     /// Update the geometry information to match stuff read from the macro
-    /// file.  
+    /// file.
     void UpdateGeometry();
 
     /// Set ValidateGeomtry to true
@@ -51,7 +51,13 @@ public:
 
     /// Get the GDML parser that this class is using.
     G4GDMLParser* GetGDMLParser() {return fGDMLParser;}
-    
+
+    /// Exclude a logical volume from being a sensitive detector (e.g. the
+    /// Rock around the detector).  This is used to override a gdml geometry.
+    void AddExcludedSensitiveDetector(std::string exclude) {
+        fExcludeAsSensitiveDetector.push_back(exclude);
+    }
+
 protected:
 
     /// Define the materials used in the detector.
@@ -75,7 +81,7 @@ protected:
 
     /// The constructed world volume.
     G4VPhysicalVolume* fPhysicalWorld;
-    
+
 private:
 
     /// The default material.
@@ -83,6 +89,9 @@ private:
 
     /// Apply Validation
     bool fValidateGeometry;
+
+    /// Vector of logical volumes to exclude being sensitive detectors.
+    std::vector<std::string> fExcludeAsSensitiveDetector;
 };
 
 #endif
