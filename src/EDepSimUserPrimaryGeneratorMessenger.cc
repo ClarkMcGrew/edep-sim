@@ -213,7 +213,8 @@ void EDepSim::UserPrimaryGeneratorMessenger::SetNewValue(G4UIcommand* command,
     }
 }
 
-EDepSim::PrimaryGenerator* EDepSim::UserPrimaryGeneratorMessenger::CreateGenerator() {
+EDepSim::PrimaryGenerator*
+EDepSim::UserPrimaryGeneratorMessenger::CreateGenerator() {
     EDepSim::VKinematicsGenerator* kine = fKinematics->GetGenerator();
     EDepSim::VCountGenerator* count = fCount->GetGenerator();
     EDepSim::VPositionGenerator* position = fPosition->GetGenerator();
