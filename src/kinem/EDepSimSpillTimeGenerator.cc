@@ -43,9 +43,11 @@ double EDepSim::SpillTimeGenerator::GetTime(const G4LorentzVector& vtx) {
 
     // Adjust the time in the bunch.
     double truncTime = G4RandGauss::shoot(0.0, 1.0);
-    truncTime = std::min(std::max(-2.0,truncTime),2.0); 
+    while (truncTime < -2.0 || truncTime > 2.0) {
+        truncTime = G4RandGauss::shoot(0.0, 1.0);
+    }
     time += fBunchLength*truncTime;
-    
+
     return time;
 }
 
