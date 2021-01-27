@@ -334,7 +334,8 @@ void EDepSim::PersistencyManager::MarkTrajectories(const G4Event* event) {
     //       1) a daughter deposited energy in a sensitive detector
     //       2) or, SaveAllPrimaryTrajectories() is true
     //
-    //   ** Trajectories created by a particle decay.
+    //   ** Trajectories created by a particle decay if
+    //       1) a daughter deposited energy in a sensitve detector
     //
     //   ** Charged particle trajectories that pass through a sensitive
     //         detector.
@@ -371,8 +372,8 @@ void EDepSim::PersistencyManager::MarkTrajectories(const G4Event* event) {
         if (particleName == "nu_mu") continue;
         if (particleName == "nu_tau") continue;
 
-        // Save any decay product
-        if (processName == "Decay") {
+        // Save any decay product if it caused any energy deposit.
+        if (processName == "Decay" && ndTraj->GetSDTotalEnergyDeposit > 1*eV) {
             ndTraj->MarkTrajectory(false);
             continue;
         }
@@ -392,14 +393,16 @@ void EDepSim::PersistencyManager::MarkTrajectories(const G4Event* event) {
         }
 
         // Save higher energy gamma rays that have descendents depositing
-        // energy in a sensitive detector.
+        // energy in a sensitive detector.  This only affects secondary
+        // photons since primary photons are handled above.
         if (particleName == "gamma" && initialMomentum > GetGammaThreshold()) {
             ndTraj->MarkTrajectory(false);
             continue;
         }
 
         // Save higher energy neutrons that have descendents depositing energy
-        // in a sensitive detector.
+        // in a sensitive detector.  This only affects secondary neutrons
+        // since primary neutrons are controlled above.
         if (particleName == "neutron"
             && initialMomentum > GetNeutronThreshold()) {
             ndTraj->MarkTrajectory(false);
