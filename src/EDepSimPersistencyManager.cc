@@ -336,6 +336,7 @@ void EDepSim::PersistencyManager::MarkTrajectories(const G4Event* event) {
     //
     //   ** Trajectories created by a particle decay if
     //       1) a daughter deposited energy in a sensitve detector
+    //       2) or, SaveAllPrimaryTrajectories() is true.
     //
     //   ** Charged particle trajectories that pass through a sensitive
     //         detector.
@@ -373,9 +374,12 @@ void EDepSim::PersistencyManager::MarkTrajectories(const G4Event* event) {
         if (particleName == "nu_tau") continue;
 
         // Save any decay product if it caused any energy deposit.
-        if (processName == "Decay" && ndTraj->GetSDTotalEnergyDeposit > 1*eV) {
-            ndTraj->MarkTrajectory(false);
-            continue;
+        if (processName == "Decay") {
+            if (ndTraj->GetSDTotalEnergyDeposit()>1*eV
+                || GetSaveAllPrimaryTrajectories()) {
+                ndTraj->MarkTrajectory(false);
+                continue;
+            }
         }
 
         // Save particles that produce charged track inside a sensitive

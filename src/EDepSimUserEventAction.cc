@@ -28,10 +28,10 @@ EDepSim::UserEventAction::UserEventAction() {}
 EDepSim::UserEventAction::~UserEventAction() {}
 
 void EDepSim::UserEventAction::BeginOfEventAction(const G4Event* evt) {
-    EDepSimNamedLog("Event", "Begin Event: " << evt->GetEventID() 
+    EDepSimNamedLog("Event", "Begin Event: " << evt->GetEventID()
                  << " w/ " << evt->GetNumberOfPrimaryVertex()
                  << " vertices");
-    
+
     // The last chance to create the user information object.  This should be
     // created in the primary particle generater
     if (!evt->GetUserInformation()) {
@@ -43,10 +43,10 @@ void EDepSim::UserEventAction::BeginOfEventAction(const G4Event* evt) {
         EDepSimError("The geometry manager is not defined.");
         EDepSimThrow("Missing Geometry Manager");
     }
-    
+
     int vtxNumber=0;
     for (G4PrimaryVertex* vtx = evt->GetPrimaryVertex();
-         vtx; 
+         vtx;
          vtx = vtx->GetNext()) {
         ++vtxNumber;
         gGeoManager->PushPath();
@@ -54,25 +54,25 @@ void EDepSim::UserEventAction::BeginOfEventAction(const G4Event* evt) {
             G4ThreeVector(vtx->GetX0(), vtx->GetY0(), vtx->GetZ0()));
         EDepSimNamedInfo(
             "Event",
-            "Vertex: " << vtxNumber  
+            "Vertex: " << vtxNumber
             << " w/ " << vtx->GetNumberOfParticle() << " primaries"
             " in " << gGeoManager->GetPath());
         gGeoManager->PopPath();
         EDepSimNamedVerbose(
             "Event",
-            "Position: " 
-            << " (" << G4BestUnit(vtx->GetX0(),"Length") 
-            << ", " << G4BestUnit(vtx->GetY0(),"Length") 
-            << ", " << G4BestUnit(vtx->GetZ0(),"Length") 
+            "Position: "
+            << " (" << G4BestUnit(vtx->GetX0(),"Length")
+            << ", " << G4BestUnit(vtx->GetY0(),"Length")
+            << ", " << G4BestUnit(vtx->GetZ0(),"Length")
             << ", " << G4BestUnit(vtx->GetT0(),"Time") << ")");
-        EDepSim::VertexInfo* vInfo 
+        EDepSim::VertexInfo* vInfo
             = dynamic_cast<EDepSim::VertexInfo*>(vtx->GetUserInformation());
         if (vInfo) {
             EDepSimNamedInfo("Event","Generator: " << vInfo->GetName());
             EDepSimNamedInfo("Event","Reaction:  " << vInfo->GetReaction());
             int infoVertices = vInfo->GetNumberOfInformationalVertex();
             for (int iVert = 0; iVert<infoVertices; ++iVert) {
-                const G4PrimaryVertex* ivtx 
+                const G4PrimaryVertex* ivtx
                     = vInfo->GetInformationalVertex(iVert);
                 for (int p=0; p<ivtx->GetNumberOfParticle(); ++p) {
                     G4PrimaryParticle* prim = ivtx->GetPrimary(p);
@@ -147,7 +147,7 @@ void EDepSim::UserEventAction::EndOfEventAction(const G4Event* evt) {
         int HCId = sdM->GetCollectionID(SDname+"/"+HCname);
         G4VHitsCollection* g4Hits = HCofEvent->GetHC(HCId);
         if (g4Hits->GetSize()<1) {
-            EDepSimWarn("No hits for " << SDname << "/" << HCname); 
+            EDepSimWarn("No hits for " << SDname << "/" << HCname);
             continue;
         }
         for (unsigned int h=0; h<g4Hits->GetSize(); ++h) {
@@ -160,7 +160,8 @@ void EDepSim::UserEventAction::EndOfEventAction(const G4Event* evt) {
                 EDepSimError("Missing trackId " << trackId);
                 continue;
             }
-            EDepSim::Trajectory* traj = dynamic_cast<EDepSim::Trajectory*>(g4Traj);
+            EDepSim::Trajectory* traj
+                = dynamic_cast<EDepSim::Trajectory*>(g4Traj);
             if (!traj) {
                 EDepSimError("Not a EDepSim::Trajectory  " << trackId);
                 continue;
