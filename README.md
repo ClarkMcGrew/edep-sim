@@ -332,6 +332,13 @@ The TG4TrajectoryPoint is a data-only class with the following information.
   * Subprocess [GetSubprocess()]: The subprocess type which create this
     point.  These are defined by GEANT4.
 
+##### Controlling which trajectories are saved
+
+There are several macro commands provided which will allow the saved
+trajectories to be filtered before they are saved to an output file.
+Check the edep-sim-command-list.txt file and search for the 
+"/edep/db/set/" directory for details.
+
 #### The Energy Deposition Class (and Friends).
 
 The energy deposition in each sensitive detector is recorded using the
@@ -638,6 +645,42 @@ commands.
 ## Make sure EDEPSIM updates the kinematics generator.
 /generator/add
 ```
+
+### Controlling the primary vertex timing
+
+The primary vertex timing is often taken directly from the kinematics
+generator, or set to be at time equal to zero, but it can be
+overridden to simulation the event spill.  To control the primary
+vertex timing distribution use the following macro commands
+(substitute the values you want.
+
+Set the vertices to occur at a specific time
+```
+/generator/time/fixed/time 100 ns
+/generator/time/set fixed
+```
+
+Let the vertex use the time provided by the kinematics generator.
+This is the default behavior, and usually results in a vertex time of
+zero
+
+```
+/generator/time/set free
+```
+
+Distribute the event according to a beam spill timing distribution.
+The following macros will approximate the FNAL beam structure.
+
+```
+/generator/time/spill/start 0 ns
+/generator/time/spill/bunchCount 1000
+/generator/time/spill/bunchSep 10 ns
+/generator/time/spill/bunchLength 5 ns
+/generator/time/set spill
+```
+
+There are further commands to provide limited control over the power
+of each bunch.
 
 ### Using GPS (The General Particle Source)
 
