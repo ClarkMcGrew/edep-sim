@@ -6,6 +6,8 @@
 #include <string>
 #include <algorithm>
 #include <stdexcept>
+#include <random>
+#include <chrono>
 
 #include <globals.hh>
 #include <G4Event.hh>
@@ -123,7 +125,8 @@ EDepSim::RooTrackerKinematicsGenerator::RooTrackerKinematicsGenerator(
         entry = (entry + stride)%entries;
     }
     if (order == "random") {
-        std::random_shuffle(fEntryVector.begin(), fEntryVector.end());
+        unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
+        std::shuffle(fEntryVector.begin(), fEntryVector.end(),std::default_random_engine(seed));
     }
 
     if (firstEvent > 0) {
