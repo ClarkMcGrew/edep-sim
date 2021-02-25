@@ -30,6 +30,9 @@ Changes in 3.1.0rc
   std::random_shuffle, and make sure that the G4 random number
   generator is used when a vector is being shuffled.
 
+* Support the G4EllipticalTube solid.  This translates it into a
+  TGeoEltu object in the root geometry.
+
 Changes in 3.0.0
 
 * Add a change log!
