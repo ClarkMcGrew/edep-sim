@@ -16,6 +16,7 @@
 #include <G4ParticleDefinition.hh>
 #include <G4Tokenizer.hh>
 #include <G4UnitsTable.hh>
+#include <Randomize.hh>
 
 #include <TFile.h>
 #include <TBits.h>
@@ -123,7 +124,10 @@ EDepSim::RooTrackerKinematicsGenerator::RooTrackerKinematicsGenerator(
         entry = (entry + stride)%entries;
     }
     if (order == "random") {
-        std::random_shuffle(fEntryVector.begin(), fEntryVector.end());
+        for (std::size_t i = fEntryVector.size()-1; i > 0; --i) {
+            int j = (i+1)*G4UniformRand();
+            std::swap(fEntryVector[i],fEntryVector[j]);
+        }
     }
 
     if (firstEvent > 0) {
