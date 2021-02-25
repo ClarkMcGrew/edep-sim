@@ -1,4 +1,4 @@
-Changes in 3.1.0rc
+Changes in 3.1.0
 
 * Bug fixes in the example macros.
 
@@ -32,6 +32,12 @@ Changes in 3.1.0rc
 
 * Support the G4EllipticalTube solid.  This translates it into a
   TGeoEltu object in the root geometry.
+
+* Bug Fix (EDepSimPersistencyManager): This makes the code match the
+  documentation.  The documentation claimed that all trajectories
+  contributing to a hit segment were saved, but the code only saved
+  the "primary" trajectory.  This now saves all of the contributors
+  like it claims.
 
 Changes in 3.0.0
 
