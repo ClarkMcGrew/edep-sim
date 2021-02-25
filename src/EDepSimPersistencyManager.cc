@@ -432,9 +432,9 @@ void EDepSim::PersistencyManager::MarkTrajectories(const G4Event* event) {
                 continue;
             }
 
-            // Make sure that the primary trajectory associated with this hit
-            // is saved.  The primary trajectories are defined by
-            // EDepSim::TrajectoryMap::FindPrimaryId().
+            // Explicitly save the primary.  It will probably be marked again
+            // with the contributors, but that's OK.  This catches some corner
+            // cases where the primary isn't what you would expect.
             int primaryId = g4Hit->GetPrimaryTrajectoryId();
             EDepSim::Trajectory* ndTraj
                 = dynamic_cast<EDepSim::Trajectory*>(
@@ -444,6 +444,21 @@ void EDepSim::PersistencyManager::MarkTrajectories(const G4Event* event) {
             }
             else {
                 EDepSimError("Primary trajectory not found");
+            }
+
+            // Make sure that all the contributors associated with this hit
+            // are saved.
+            for (int j = 0; j < g4Hit->GetContributorCount(); ++j) {
+                int contribId = g4Hit->GetContributor(j);
+                EDepSim::Trajectory* contribTraj
+                    = dynamic_cast<EDepSim::Trajectory*>(
+                        EDepSim::TrajectoryMap::Get(contribId));
+                if (contribTraj) {
+                    contribTraj->MarkTrajectory(false);
+                }
+                else {
+                    EDepSimError("Contributor trajectory not found");
+                }
             }
         }
     }
