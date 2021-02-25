@@ -1,7 +1,5 @@
 Changes in 3.1.0
 
-* Bug fixes in the example macros.
-
 * Improve documentation for the GDML StepLimit auxiliary, and add
   tests.  This is now being actively used in the SAND TPC implemention
   to make sure step by step fluctuctuations are correctly handled.
@@ -17,6 +15,11 @@ Changes in 3.1.0
   clarify the documentation, but there were minor bug fixes in the
   handling minimum deposit required to save a trajectory.
 
+* Support the G4EllipticalTube solid.  This translates it into a
+  TGeoEltu object in the root geometry.
+
+* Bug fix: Corrections in the example macros.
+
 * Bug Fix: Trajectories for decay products were being saved when they
   should not have been.  This makes them follow the same "rules" as
   other trajectories.  Decay products can still be treated as a
@@ -29,9 +32,6 @@ Changes in 3.1.0
 * Bug Fix (EDepSimRooTrackerKinematicsGenerator): Avoid the deprecated
   std::random_shuffle, and make sure that the G4 random number
   generator is used when a vector is being shuffled.
-
-* Support the G4EllipticalTube solid.  This translates it into a
-  TGeoEltu object in the root geometry.
 
 * Bug Fix (EDepSimPersistencyManager): This makes the code match the
   documentation.  The documentation claimed that all trajectories
