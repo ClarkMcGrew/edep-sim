@@ -90,13 +90,17 @@ ___path_remove ()  {
 ___path_prepend PATH ${EDEP_ROOT}/${EDEP_TARGET}/bin
 ___path_prepend LD_LIBRARY_PATH ${EDEP_ROOT}/${EDEP_TARGET}/lib
 
+# Uncomment the next line to automatically add edep-sim to the cmake path
+# ___path_prepend CMAKE_PREFIX_PATH ${EDEP_ROOT}/${EDEP_TARGET}
+
 unset -f ___path_prepend
 unset -f ___path_remove
-
 
 alias edep-setup=". ${EDEP_ROOT}/setup.sh"
 
 alias edep-build="${EDEP_ROOT}/build/edep-build.sh"
 
+echo Declare edep-sim to cmake using
+echo "  $" export CMAKE_PREFIX_PATH='${EDEP_ROOT}/${EDEP_TARGET}'
 echo Defined edep-setup to re-setup the edep-sim package.
 echo Defined edep-build to build the the edep-sim package.
