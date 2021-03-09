@@ -26,7 +26,7 @@
 //
 // $Id$
 //
-// 
+//
 // class EDepSim::UniformElectricField
 //
 // Class description:
@@ -35,6 +35,9 @@
 
 // History:
 // - 30.01.97 V.Grichine, Created.
+// - 15.03.17 C.McGrew adapted for EDepSim
+// - 26.05.20 A.Cudd adapted for arbitrary fields
+//
 // -------------------------------------------------------------------
 
 #ifndef G4UNIFORMELECTRICFIELD_HH
@@ -50,8 +53,10 @@ class EDepSim::UniformField : public G4ElectricField
 {
   public:
 
+    UniformField();
+
     /// Define a uniform magnetic field.  The electric field will be set to
-    /// zero.  This is equivalent to G4UniformMagneticField().  
+    /// zero.  This is equivalent to G4UniformMagneticField().
     UniformField(const G4ThreeVector bField);
 
     /// Define a uniform magnetic and electric field.
@@ -62,15 +67,18 @@ class EDepSim::UniformField : public G4ElectricField
     // Copy constructor and assignment operator
     UniformField(const UniformField &p);
     UniformField& operator = (const UniformField &p);
-    
+
     /// Provide the field value at a point [x,y,z,t].  The field follows the
     /// G4 standard so that the magnetic field is in field[0], field[1], and
     /// field[2] while the electric field is in field[3], field[3], and
     /// field[5].
     virtual void GetFieldValue(const G4double pos[4], G4double *field) const;
 
+    virtual void SetBField(const G4ThreeVector bField);
+    virtual void SetEField(const G4ThreeVector eField);
+
   private:
-  
+
     /// The field components follows the G4 standard so that the magnetic
     /// field is in [0], [1], and [2] while the electric field is in [3], [4],
     /// and [5].

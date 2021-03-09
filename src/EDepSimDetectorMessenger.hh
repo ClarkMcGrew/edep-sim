@@ -12,7 +12,7 @@ class G4UIcmdWithADoubleAndUnit;
 class G4UIcmdWithoutParameter;
 
 /// Handle the command line interface to change the geometry and other
-/// parameters associated with the EDepSim::m detector.  
+/// parameters associated with the EDepSim::m detector.
 namespace EDepSim {class DetectorMessenger;}
 class EDepSim::DetectorMessenger: public G4UImessenger {
 public:
@@ -35,6 +35,7 @@ private:
     G4UIcommand*               fControlCmd;
     G4UIcommand*               fHitSagittaCmd;
     G4UIcommand*               fHitLengthCmd;
+    G4UIcommand*               fHitExcludedCmd;
 
 };
 

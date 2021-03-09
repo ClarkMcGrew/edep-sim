@@ -1,4 +1,45 @@
-Changes in 3.0.0rc (a.k.a master)
+Changes in 3.1.0
+
+* Improve documentation for the GDML StepLimit auxiliary, and add
+  tests.  This is now being actively used in the SAND TPC implemention
+  to make sure step by step fluctuctuations are correctly handled.
+
+* Add macro commands to override logical volumes marked with a
+  sensitive detectors.  When ```/edep/hitExclude [logicalVolume]``` is
+  set segments will not be saved in that volume.
+
+* Allow a threshold for the minimum energy required to save a
+  trajectory point.
+
+* Improvements in the trajectory pruning.  This was mostly changes to
+  clarify the documentation, but there were minor bug fixes in the
+  handling minimum deposit required to save a trajectory.
+
+* Support the G4EllipticalTube solid.  This translates it into a
+  TGeoEltu object in the root geometry.
+
+* Bug fix: Corrections in the example macros.
+
+* Bug Fix: Trajectories for decay products were being saved when they
+  should not have been.  This makes them follow the same "rules" as
+  other trajectories.  Decay products can still be treated as a
+  primary particle.
+
+* Bug Fix: Protect against NULL pointers in the persistency manager.
+  Fix the bunch length simulation to avoid discontinuities.  Improve
+  trajectory drawing edep-disp for very large events. 
+
+* Bug Fix (EDepSimRooTrackerKinematicsGenerator): Avoid the deprecated
+  std::random_shuffle, and make sure that the G4 random number
+  generator is used when a vector is being shuffled.
+
+* Bug Fix (EDepSimPersistencyManager): This makes the code match the
+  documentation.  The documentation claimed that all trajectories
+  contributing to a hit segment were saved, but the code only saved
+  the "primary" trajectory.  This now saves all of the contributors
+  like it claims.
+
+Changes in 3.0.0
 
 * Add a change log!
 
@@ -60,3 +101,8 @@ Changes in 3.0.0rc (a.k.a master)
   were accumulating in the test and tools directory.  The files in
   those directories are largely out of date.
 
+* Add arbitrary magnetic and electric field implementation from Andrew
+  Cudd.  The fields can be set in the GDML file.  The field values are
+  defined in auxilliary files containing the electric or magnetic
+  fields on a regular grid of points.
+  

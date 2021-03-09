@@ -35,46 +35,46 @@ public:
 
     /// Add a new kinematics factory to the messenger.
     void AddKinematicsFactory(EDepSim::VKinematicsFactory* factory);
-    
+
     /// Set the current kinematics factory for the messenger.
     void SetKinematicsFactory(const G4String& factory);
-    
+
     /// Get the list of kinematics factories available to the messenger.
     G4String GetKinematicsFactories();
-    
+
     /// Add a new count factory to the messenger.
     void AddCountFactory(EDepSim::VCountFactory* factory);
-    
+
     /// Set the current count factory for the messenger.
     void SetCountFactory(const G4String& factory);
-    
+
     /// Get the list of count factories available to the messenger.
     G4String GetCountFactories();
-    
+
     /// Add a new position factory to the messenger.
     void AddPositionFactory(EDepSim::VPositionFactory* factory);
-    
+
     /// Set the current position factory for the messenger.
     void SetPositionFactory(const G4String& factory);
-    
+
     /// Get the list of position factories available to the messenger.
     G4String GetPositionFactories();
 
     /// Add a new time factory to the messenger.
     void AddTimeFactory(EDepSim::VTimeFactory* factory);
-    
+
     /// Set the current time factory for the messenger.
     void SetTimeFactory(const G4String& factory);
-    
+
     /// Get the list of time factories available to the messenger.
     G4String GetTimeFactories();
-    
+
     /// Create a new generator using the current generator factories.
     EDepSim::PrimaryGenerator* CreateGenerator();
 
 private:
-    EDepSim::UserPrimaryGeneratorAction*  fAction; 
-    
+    EDepSim::UserPrimaryGeneratorAction*  fAction;
+
     /// The list of available kinematics factories;
     std::map<G4String,EDepSim::VKinematicsFactory*> fKinematicsFactories;
 
@@ -114,6 +114,7 @@ private:
     G4UIcmdWithAString* fSetTimeCMD;
     G4UIcmdWithABool* fAllowEmptyEventsCMD;
     G4UIcmdWithABool* fAddFakeGeantinoCMD;
+    G4UIcmdWithABool* fAllowPartialEventsCMD;
 
 };
 #endif

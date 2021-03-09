@@ -985,6 +985,7 @@
         <rotationref ref="LArTracker_rot"/>
       </physvol>
       <auxiliary auxtype="SensDet" auxvalue="LArTracker"/>
+      <auxiliary auxtype="StepLimit" auxvalue="1.0 mm" />
     </volume>
     <volume name="STBar_straw_lv">
       <materialref ref="Kapton"/>
@@ -1008,6 +1009,7 @@
         <rotationref ref="identity"/>
       </physvol>
       <auxiliary auxtype="SensDet" auxvalue="StrawTracker"/>
+      <auxiliary auxtype="StepLimit" auxvalue="1.0 cm" />
     </volume>
     <volume name="STPlane_lv">
       <materialref ref="Air"/>
@@ -1296,6 +1298,7 @@
       <materialref ref="Oil"/>
       <solidref ref="DoubleRectBar"/>
       <auxiliary auxtype="SensDet" auxvalue="Ogasci"/>
+      <auxiliary auxtype="StepLimit" auxvalue="5.0" />
     </volume>
     <volume name="DoubleArrPlane_lv">
       <materialref ref="Scintillator"/>
@@ -1430,6 +1433,7 @@
       <materialref ref="Scintillator"/>
       <solidref ref="SingleRectBar"/>
       <auxiliary auxtype="SensDet" auxvalue="Ogasci"/>
+      <auxiliary auxtype="StepLimit" auxvalue="5.0" />
     </volume>
     <volume name="SingleArrPlane_lv">
       <materialref ref="epoxy_resin"/>
@@ -1643,6 +1647,7 @@
       <materialref ref="Scintillator"/>
       <solidref ref="GasBar"/>
       <auxiliary auxtype="SensDet" auxvalue="GasTracker"/>
+      <auxiliary auxtype="StepLimit" auxvalue="5.0" />
     </volume>
     <volume name="GasPlane_lv">
       <materialref ref="Air"/>

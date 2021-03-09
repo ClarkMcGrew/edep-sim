@@ -2,8 +2,6 @@ Command directory path : /
  Sub-directories : 
    /control/   UI control commands.
    /units/   Available units.
-   /process/   Process Table control commands.
-   /analysis/   ...Title not available...
    /particle/   Particle control commands.
    /geometry/   Geometry control commands.
    /tracking/   TrackingManager and SteppingManager control commands.
@@ -11,10 +9,10 @@ Command directory path : /
    /cuts/   Commands for G4VUserPhysicsList.
    /run/   Run control commands.
    /random/   Random number status control commands.
+   /process/   Process Table control commands.
    /edep/   EDepSim detector control.
    /Captain/   Control the world geometry.
    /hits/   Sensitive detectors and Hits
-   /persistency/   UI commands specific to persistency.
    /material/   Commands for materials
    /physics_lists/   commands related to the physics simulation engine.
    /generator/   Control of the particle generator.
@@ -30,12 +28,13 @@ UI control commands.
    /control/cout/   Control cout/cerr for local thread.
    /control/matScan/   Material scanner commands.
  Commands : 
-   macroPath * Set macro search pathwith colon-separated list.
+   macroPath * Set macro search path with colon-separated list.
    execute * Execute a macro file.
    loop * Execute a macro file more than once.
    foreach * Execute a macro file more than once.
    suppressAbortion * Suppress the program abortion caused by G4Exception.
    verbose * Applied command will also be shown on screen.
+   useDoublePrecision * Use double precision for printing out the current parameter value(s).
    saveHistory * Store command history to a file.
    stopSavingHistory * Stop saving history file.
    alias * Set an alias.
@@ -49,17 +48,23 @@ UI control commands.
    createHTML * Generate HTML files for all of sub-directories and commands.
    maximumStoredHistory * Set maximum number of stored UI commands.
    if * Execute a macro file if the expression is true.
-   doif * Execute a macro file if the expression is true.
+   doif * Execute a UI command if the expression is true.
    add * Define a new alias as the sum of two values.
    subtract * Define a new alias as the subtraction of two values.
-   multiply * Define a new alias as the multiplification of two values.
+   multiply * Define a new alias as the multiplication of two values.
    divide * Define a new alias as the division of two values.
    remainder * Define a new alias as the remainder of two values.
+   strif * Execute a macro file if the expression is true.
+   strdoif * Execute a UI command if the expression is true.
+   ifBatch * Execute a macro file if program is running in batch mode.
+   ifInteractive * Execute a macro file if program is running in interactive mode.
+   doifBatch * Execute a UI command if program is running in batch mode.
+   doifInteractive * Execute a UI command if program is running in interactive mode.
 
 
 Command /control/macroPath
 Guidance :
-Set macro search pathwith colon-separated list.
+Set macro search path with colon-separated list.
 
 Parameter : path
  Parameter type  : s
@@ -158,6 +163,17 @@ Parameter : switch
 
 
 
+Command /control/useDoublePrecision
+Guidance :
+Use double precision for printing out the current parameter value(s).
+
+Parameter : useDoublePrecision
+ Parameter type  : b
+ Omittable       : True
+ Default value   : 1
+
+
+
 Command /control/saveHistory
 Guidance :
 Store command history to a file.
@@ -183,7 +199,7 @@ String can be aliased by this command.
 The string may contain one or more spaces,
 the string must be enclosed by double quotes (").
 To use an alias, enclose the alias name with
-parenthis "{" and "}".
+parenthesis "{" and "}".
 
 Parameter : aliasName
  Parameter type  : s
@@ -225,7 +241,7 @@ Command /control/getVal
 Guidance :
 Get the current value of the UI command and define it as an alias.
 Command is ignored if the UI command does not support GetCurrentValue().
- Syntax : <alias_name> <UI_command>
+ Syntax : <alias_name> <UI_command> <iIdx>
 
 Parameter : alias_name
  Parameter type  : s
@@ -234,6 +250,11 @@ Parameter : alias_name
 Parameter : UI_command
  Parameter type  : s
  Omittable       : False
+
+Parameter : iIdx
+ Parameter type  : i
+ Omittable       : True
+ Default value   : 0
 
 
 
@@ -310,7 +331,7 @@ Parameter : right
  Parameter type  : d
  Omittable       : False
 
-Parameter : aliasValue
+Parameter : macroFile
  Parameter type  : s
  Omittable       : False
 
@@ -318,7 +339,7 @@ Parameter : aliasValue
 
 Command /control/doif
 Guidance :
-Execute a macro file if the expression is true.
+Execute a UI command if the expression is true.
  Syntax : <double> <comp> <double> <UI_command>
 
 Parameter : left
@@ -384,7 +405,7 @@ Parameter : value2
 
 Command /control/multiply
 Guidance :
-Define a new alias as the multiplification of two values.
+Define a new alias as the multiplication of two values.
  Syntax : <new_alias> <value1> <value2>
  <new_alias> may be an already existing alias. If it is the case,
  aliased value is alternated.
@@ -444,6 +465,94 @@ Parameter : value2
  Parameter type  : i
  Omittable       : False
 
+
+
+Command /control/strif
+Guidance :
+Execute a macro file if the expression is true.
+ Syntax : <string> <comp> <string> <macro_file>
+
+Parameter : left
+ Parameter type  : s
+ Omittable       : False
+
+Parameter : comp
+ Parameter type  : s
+ Omittable       : False
+ Candidates      : == !=
+
+Parameter : right
+ Parameter type  : s
+ Omittable       : False
+
+Parameter : macroFile
+ Parameter type  : s
+ Omittable       : False
+
+
+
+Command /control/strdoif
+Guidance :
+Execute a UI command if the expression is true.
+ Syntax : <string> <comp> <string> <UI_command>
+
+Parameter : left
+ Parameter type  : s
+ Omittable       : False
+
+Parameter : comp
+ Parameter type  : s
+ Omittable       : False
+ Candidates      : == !=
+
+Parameter : right
+ Parameter type  : s
+ Omittable       : False
+
+Parameter : UI_command
+ Parameter type  : s
+ Omittable       : False
+
+
+
+Command /control/ifBatch
+Guidance :
+Execute a macro file if program is running in batch mode.
+
+Parameter : macroFile
+ Parameter type  : s
+ Omittable       : False
+
+
+
+Command /control/ifInteractive
+Guidance :
+Execute a macro file if program is running in interactive mode.
+
+Parameter : macroFile
+ Parameter type  : s
+ Omittable       : False
+
+
+
+Command /control/doifBatch
+Guidance :
+Execute a UI command if program is running in batch mode.
+
+Parameter : UIcommand
+ Parameter type  : s
+ Omittable       : False
+
+
+
+Command /control/doifInteractive
+Guidance :
+Execute a UI command if program is running in interactive mode.
+
+Parameter : UIcommand
+ Parameter type  : s
+ Omittable       : False
+
 Command directory path : /control/cout/
 
 
@@ -457,7 +566,7 @@ Control cout/cerr for local thread.
    useBuffer * Send cout and/or cerr stream to a buffer.
    prefixString * Set the prefix string for each cout/cerr line from a thread.
    ignoreThreadsExcept * Omit cout from threads except the specified one.
-   ignoreInitializationCout * Omit cout from threads during initialization, as they should be identical to the masther thread.
+   ignoreInitializationCout * Omit cout from threads during initialization, as they should be identical to the master thread.
 
 
 Command /control/cout/setCoutFile
@@ -540,7 +649,7 @@ Parameter : threadID
 
 Command /control/cout/ignoreInitializationCout
 Guidance :
-Omit cout from threads during initialization, as they should be identical to the masther thread.
+Omit cout from threads during initialization, as they should be identical to the master thread.
 This command takes effect only if cout destination is screen without buffering.
 This command does not affect to cerr.
 
@@ -561,7 +670,7 @@ Material scanner commands.
    theta * Define theta range.
    phi * Define phi range.
    singleMeasure * Measure thickness for one particular direction.
-   singleTo * Measure thicknesss for one direction defined by a unit vector.
+   singleTo * Measure thickness for one direction defined by a unit vector.
    eyePosition * Define the eye position.
    regionSensitive * Set region sensitivity.
    region * Define region name to be scanned.
@@ -660,7 +769,7 @@ Parameter : unit
 
 Command /control/matScan/singleTo
 Guidance :
-Measure thicknesss for one direction defined by a unit vector.
+Measure thickness for one direction defined by a unit vector.
 
 Parameter : X
  Parameter type  : d
@@ -742,1216 +851,6 @@ Command /units/list
 Guidance :
 full list of available units.
 
-Command directory path : /process/
-
-
-Guidance :
-Process Table control commands.
-
- Sub-directories : 
-   /process/had/   ...Title not available...
-   /process/eLoss/   Commands for EM processes.
-   /process/msc/   Commands for EM scattering processes.
-   /process/em/   General commands for EM processes.
-   /process/optical/   Commands related to the optical physics simulation engine.
- Commands : 
-   list * List up process names
-   verbose * Set Verbose Level for Process Table
-   setVerbose * Set verbose level for processes
-   dump * Dump process information
-   activate * Activate processes  
-   inactivate * Inactivate process  
-
-
-Command /process/list
-Guidance :
-List up process names
-  list [type] 
-    type: process type [all:for all proceeses]
-
-Parameter : type
- Parameter type  : s
- Omittable       : True
- Default value   : all
- Candidates      : all NotDefined Transportation Electromagnetic Optical Hadronic Photolepton_hadron Decay General Parameterisation UserDefined
-
-
-
-Command /process/verbose
-Guidance :
-Set Verbose Level for Process Table
-  verbose [level]
-   level: verbose level
- Range of parameters : verbose >=0
-
-Parameter : verbose
- Parameter type  : i
- Omittable       : True
- Default value   : 1
-
-
-
-Command /process/setVerbose
-Guidance :
-Set verbose level for processes
-  setVerbose level [type or name] 
-    level: verbose level 
-    name : process name 
-    type : process type 
-       [all] for all proceeses 
-
-Parameter : verbose
- Parameter type  : i
- Omittable       : False
-
-Parameter : type
- Parameter type  : s
- Omittable       : True
- Default value   : all
-
-
-
-Command /process/dump
-Guidance :
-Dump process information
- dump name [particle]
-   name:     process name or type name
-   particle: particle name [all: for all particles]
-
-Parameter : procName
- Parameter type  : s
- Omittable       : False
-
-Parameter : particle
- Parameter type  : s
- Omittable       : True
- Default value   : all
-
-
-
-Command /process/activate
-Guidance :
-Activate processes  
- Activate  name [particle]
-   name:     process name or type name
-   particle: particle name [all: for all particles]
-
-Parameter : procName
- Parameter type  : s
- Omittable       : False
-
-Parameter : particle
- Parameter type  : s
- Omittable       : True
- Default value   : all
-
-
-
-Command /process/inactivate
-Guidance :
-Inactivate process  
-Inactivate processes  
- Inactivate  name [particle]
-   name:     process name or type name
-   particle: particle name [all: for all particles]
-
-Parameter : procName
- Parameter type  : s
- Omittable       : False
-
-Parameter : particle
- Parameter type  : s
- Omittable       : True
- Default value   : all
-
-Command directory path : /process/had/
- Sub-directories : 
-   /process/had/particle_hp/   UI commands of ParticleHP
- Commands : 
-Command directory path : /process/had/particle_hp/
-
-
-Guidance :
-UI commands of ParticleHP
-
- Sub-directories : 
- Commands : 
-   use_photo_evaporation *  Force the use of the Photon Evaporation model, instead of the neutron capture final state data.
-   skip_missing_isotopes * Use only exact isotope data files, instead of allowing nearby isotope files to be used.
-   neglect_Doppler_broadening * Switch off the Doppler broadening due to the thermal motion of the target nucleus.
-   do_not_adjust_final_state * Disable to adjust final state for getting better conservation.
-   produce_fission_fragment * Enable to generate fission fragments.
-   verbose * Set Verbose level of ParticleHP package
-
-
-Command /process/had/particle_hp/use_photo_evaporation
-Guidance :
- Force the use of the Photon Evaporation model, instead of the neutron capture final state data.
-
-Parameter : choice
- Parameter type  : s
- Omittable       : False
- Candidates      : true false
-
-
-
-Command /process/had/particle_hp/skip_missing_isotopes
-Guidance :
-Use only exact isotope data files, instead of allowing nearby isotope files to be used.
-In this case if the exact file is not available, the cross section will be set to zero.
-
-Parameter : choice
- Parameter type  : s
- Omittable       : False
- Candidates      : true false
-
-
-
-Command /process/had/particle_hp/neglect_Doppler_broadening
-Guidance :
-Switch off the Doppler broadening due to the thermal motion of the target nucleus.
-This option provides a significant CPU performance advantage.
-
-Parameter : choice
- Parameter type  : s
- Omittable       : False
- Candidates      : true false
-
-
-
-Command /process/had/particle_hp/do_not_adjust_final_state
-Guidance :
-Disable to adjust final state for getting better conservation.
-
-Parameter : choice
- Parameter type  : s
- Omittable       : False
- Candidates      : true false
-
-
-
-Command /process/had/particle_hp/produce_fission_fragment
-Guidance :
-Enable to generate fission fragments.
-
-Parameter : choice
- Parameter type  : s
- Omittable       : False
- Candidates      : true false
-
-
-
-Command /process/had/particle_hp/verbose
-Guidance :
-Set Verbose level of ParticleHP package
- Range of parameters : verbose_level >=0
-
-Parameter : verbose_level
- Parameter type  : i
- Omittable       : True
- Default value   : 1
-
-Command directory path : /process/eLoss/
-
-
-Guidance :
-Commands for EM processes.
-
- Sub-directories : 
- Commands : 
-   fluct * Enable/disable energy loss fluctuations.
-   CSDARange * Enable/disable CSDA range calculation
-   LPM * Enable/disable LPM effect calculation
-   useCutAsFinalRange * Enable?disable use of cut in range as a final range
-   UseAngularGenerator * Enable usage of angular generator
-   minsubsec * Set the ratio subcut/cut 
-   minKinEnergy * Set the min kinetic energy for EM tables
-   maxKinEnergy * Set the max kinetic energy for EM tables
-   maxKinEnergyCSDA * Set the max kinetic energy for CSDA table
-   linLossLimit * Set linearLossLimit parameter
-   bremThreshold * Set bremsstrahlung energy threshold
-   LambdaFactor * Set lambdaFactor parameter for integral option
-   binsDEDX * Set number of bins for EM tables
-   binsLambda * Set number of bins for EM tables
-   binsPerDecade * Set number of bins per decade for EM tables
-   verbose * Set verbose level for EM physics
-   subsec * Switch true/false the subcutoff generation.
-   StepFunction * Set the energy loss step limitation parameters.
-   integral * Switch true/false the integral option
-
-
-Command /process/eLoss/fluct
-Guidance :
-Enable/disable energy loss fluctuations.
-
-Parameter : choice
- Parameter type  : b
- Omittable       : True
- Default value   : 1
-
-
-
-Command /process/eLoss/CSDARange
-Guidance :
-Enable/disable CSDA range calculation
-
-Parameter : range
- Parameter type  : b
- Omittable       : True
- Default value   : 0
-
-
-
-Command /process/eLoss/LPM
-Guidance :
-Enable/disable LPM effect calculation
-
-Parameter : lpm
- Parameter type  : b
- Omittable       : True
- Default value   : 1
-
-
-
-Command /process/eLoss/useCutAsFinalRange
-Guidance :
-Enable?disable use of cut in range as a final range
-
-Parameter : choice
- Parameter type  : b
- Omittable       : True
- Default value   : 0
-
-
-
-Command /process/eLoss/UseAngularGenerator
-Guidance :
-Enable usage of angular generator
-
-Parameter : del
- Parameter type  : b
- Omittable       : True
- Default value   : 0
-
-
-
-Command /process/eLoss/minsubsec
-Guidance :
-Set the ratio subcut/cut 
-
-Parameter : rcmin
- Parameter type  : d
- Omittable       : True
-
-
-
-Command /process/eLoss/minKinEnergy
-Guidance :
-Set the min kinetic energy for EM tables
-
-Parameter : emin
- Parameter type  : d
- Omittable       : True
-
-Parameter : Unit
- Parameter type  : s
- Omittable       : False
- Candidates      : eV keV MeV GeV TeV PeV J eV keV MeV GeV TeV PeV J electronvolt kiloelectronvolt megaelectronvolt gigaelectronvolt teraelectronvolt petaelectronvolt joule electronvolt kiloelectronvolt megaelectronvolt gigaelectronvolt teraelectronvolt petaelectronvolt joule
-
-
-
-Command /process/eLoss/maxKinEnergy
-Guidance :
-Set the max kinetic energy for EM tables
-
-Parameter : emax
- Parameter type  : d
- Omittable       : True
-
-Parameter : Unit
- Parameter type  : s
- Omittable       : False
- Candidates      : eV keV MeV GeV TeV PeV J eV keV MeV GeV TeV PeV J electronvolt kiloelectronvolt megaelectronvolt gigaelectronvolt teraelectronvolt petaelectronvolt joule electronvolt kiloelectronvolt megaelectronvolt gigaelectronvolt teraelectronvolt petaelectronvolt joule
-
-
-
-Command /process/eLoss/maxKinEnergyCSDA
-Guidance :
-Set the max kinetic energy for CSDA table
-
-Parameter : emaxCSDA
- Parameter type  : d
- Omittable       : True
-
-Parameter : Unit
- Parameter type  : s
- Omittable       : False
- Candidates      : eV keV MeV GeV TeV PeV J eV keV MeV GeV TeV PeV J electronvolt kiloelectronvolt megaelectronvolt gigaelectronvolt teraelectronvolt petaelectronvolt joule electronvolt kiloelectronvolt megaelectronvolt gigaelectronvolt teraelectronvolt petaelectronvolt joule
-
-
-
-Command /process/eLoss/linLossLimit
-Guidance :
-Set linearLossLimit parameter
-
-Parameter : linlim
- Parameter type  : d
- Omittable       : True
-
-
-
-Command /process/eLoss/bremThreshold
-Guidance :
-Set bremsstrahlung energy threshold
-
-Parameter : emaxBrem
- Parameter type  : d
- Omittable       : True
-
-Parameter : Unit
- Parameter type  : s
- Omittable       : False
- Candidates      : eV keV MeV GeV TeV PeV J eV keV MeV GeV TeV PeV J electronvolt kiloelectronvolt megaelectronvolt gigaelectronvolt teraelectronvolt petaelectronvolt joule electronvolt kiloelectronvolt megaelectronvolt gigaelectronvolt teraelectronvolt petaelectronvolt joule
-
-
-
-Command /process/eLoss/LambdaFactor
-Guidance :
-Set lambdaFactor parameter for integral option
-
-Parameter : Fl
- Parameter type  : d
- Omittable       : True
-
-
-
-Command /process/eLoss/binsDEDX
-Guidance :
-Set number of bins for EM tables
-
-Parameter : binsDEDX
- Parameter type  : i
- Omittable       : True
- Default value   : 77
-
-
-
-Command /process/eLoss/binsLambda
-Guidance :
-Set number of bins for EM tables
-
-Parameter : binsL
- Parameter type  : i
- Omittable       : True
- Default value   : 77
-
-
-
-Command /process/eLoss/binsPerDecade
-Guidance :
-Set number of bins per decade for EM tables
-
-Parameter : bins
- Parameter type  : i
- Omittable       : True
- Default value   : 7
-
-
-
-Command /process/eLoss/verbose
-Guidance :
-Set verbose level for EM physics
-
-Parameter : verb
- Parameter type  : i
- Omittable       : True
- Default value   : 1
-
-
-
-Command /process/eLoss/subsec
-Guidance :
-Switch true/false the subcutoff generation.
-
-Parameter : choice
- Parameter type  : b
- Omittable       : True
- Default value   : 1
-
-
-
-Command /process/eLoss/StepFunction
-Guidance :
-Set the energy loss step limitation parameters.
-  dRoverR   : max Range variation per step
-  finalRange: range for final step
-
-Parameter : dRoverR
-max Range variation per step (fractional number)
- Parameter type  : d
- Omittable       : False
- Parameter range : dRoverR>0. && dRoverR<=1.
-
-Parameter : finalRange
-range for final step
- Parameter type  : d
- Omittable       : False
- Parameter range : finalRange>0.
-
-Parameter : unit
-unit of finalRange
- Parameter type  : s
- Omittable       : True
- Default value   : mm
- Candidates      : pc km m cm mm um nm Ang fm pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
-
-
-
-Command /process/eLoss/integral
-Guidance :
-Switch true/false the integral option
-
-Parameter : integ
- Parameter type  : b
- Omittable       : True
- Default value   : 1
-
-Command directory path : /process/msc/
-
-
-Guidance :
-Commands for EM scattering processes.
-
- Sub-directories : 
- Commands : 
-   LateralDisplacement * Enable/disable sampling of lateral displacement
-   MuHadLateralDisplacement * Enable/disable sampling of lateral displacement for muons and hadrons
-   DisplacementBeyondSafety * Enable/disable displacement at geometry boundary
-   UseMottCorrection * Enable usage of Mott corrections for e- elastic scattering
-   FactorForAngleLimit * Set factor for computation of a limit for -t (invariant trasfer)
-   ThetaLimit * Set the limit on the polar angle for msc and single scattering
-   RangeFactor * Set RangeFactor for msc processes of e+-
-   RangeFactorMuHad * Set RangeFactor for msc processes of muons/hadrons
-   GeomFactor * Set GeomFactor parameter for msc processes
-   Skin * Set skin parameter for msc processes
-   StepLimit * Set msc step limitation type
-   StepLimitMuHad * Set msc step limitation type for muons/hadrons
-
-
-Command /process/msc/LateralDisplacement
-Guidance :
-Enable/disable sampling of lateral displacement
-
-Parameter : lat
- Parameter type  : b
- Omittable       : True
- Default value   : 1
-
-
-
-Command /process/msc/MuHadLateralDisplacement
-Guidance :
-Enable/disable sampling of lateral displacement for muons and hadrons
-
-Parameter : mulat
- Parameter type  : b
- Omittable       : True
- Default value   : 1
-
-
-
-Command /process/msc/DisplacementBeyondSafety
-Guidance :
-Enable/disable displacement at geometry boundary
-
-Parameter : cat
- Parameter type  : b
- Omittable       : True
- Default value   : 0
-
-
-
-Command /process/msc/UseMottCorrection
-Guidance :
-Enable usage of Mott corrections for e- elastic scattering
-
-Parameter : mott
- Parameter type  : b
- Omittable       : True
- Default value   : 0
-
-
-
-Command /process/msc/FactorForAngleLimit
-Guidance :
-Set factor for computation of a limit for -t (invariant trasfer)
- Range of parameters : Fact>0
-
-Parameter : Fact
- Parameter type  : d
- Omittable       : True
- Default value   : 1
-
-
-
-Command /process/msc/ThetaLimit
-Guidance :
-Set the limit on the polar angle for msc and single scattering
-
-Parameter : theta
- Parameter type  : d
- Omittable       : True
-
-Parameter : Unit
- Parameter type  : s
- Omittable       : False
- Candidates      : rad mrad deg rad mrad deg radian milliradian degree radian milliradian degree
-
-
-
-Command /process/msc/RangeFactor
-Guidance :
-Set RangeFactor for msc processes of e+-
- Range of parameters : Fr>0
-
-Parameter : Fr
- Parameter type  : d
- Omittable       : True
- Default value   : 0.04
-
-
-
-Command /process/msc/RangeFactorMuHad
-Guidance :
-Set RangeFactor for msc processes of muons/hadrons
- Range of parameters : Fr>0
-
-Parameter : Fr1
- Parameter type  : d
- Omittable       : True
- Default value   : 0.2
-
-
-
-Command /process/msc/GeomFactor
-Guidance :
-Set GeomFactor parameter for msc processes
- Range of parameters : Fg>0
-
-Parameter : Fg
- Parameter type  : d
- Omittable       : True
- Default value   : 3.5
-
-
-
-Command /process/msc/Skin
-Guidance :
-Set skin parameter for msc processes
-
-Parameter : skin
- Parameter type  : d
- Omittable       : True
-
-
-
-Command /process/msc/StepLimit
-Guidance :
-Set msc step limitation type
-
-Parameter : StepLim
- Parameter type  : s
- Omittable       : True
- Candidates      : Minimal UseSafety UseSafetyPlus UseDistanceToBoundary
-
-
-
-Command /process/msc/StepLimitMuHad
-Guidance :
-Set msc step limitation type for muons/hadrons
-
-Parameter : StepLim1
- Parameter type  : s
- Omittable       : True
- Candidates      : fMinimal fUseSafety fUseSafetyPlus fUseDistanceToBoundary
-
-Command directory path : /process/em/
-
-
-Guidance :
-General commands for EM processes.
-
- Sub-directories : 
- Commands : 
-   spline * Enable/disable usage spline for Physics Vectors
-   applyCuts * Enable/disable applying cuts for gamma processes
-   fluo * Enable/disable atomic deexcitation
-   fluoBearden * Enable/disable usage of Bearden fluorescence files
-   auger * Enable/disable Auger electrons production
-   augerCascade * Enable/disable simulation of cascade of Auger electrons
-   pixe * Enable/disable PIXE simulation
-   deexcitationIgnoreCut * Enable/Disable usage of cuts in de-excitation module
-   lowestElectronEnergy * Set the lowest kinetic energy for e+-
-   lowestMuHadEnergy * Set the lowest kinetic energy for muons and hadrons
-   verbose * Set verbose level for EM physics
-   workerVerbose * Set worker verbose level for EM physics
-   pixeXSmodel * The name of PIXE cross section
-   pixeElecXSmodel * The name of PIXE cross section for electron
-   AddPAIRegion * Activate PAI in the G4Region.
-   AddMicroElecRegion * Activate MicroElec model in the G4Region
-   AddDNARegion * Activate DNA in the G4Region.
-   printParameters * Print all EM parameters.
-   deexcitation * Set deexcitation flags per G4Region.
-   setBiasingFactor * Set factor for the process cross section.
-   setForcedInteraction * Set factor for the process cross section.
-   setSecBiasing * Set bremsstrahlung or delta-e- splitting/Russian roullette per region.
-
-
-Command /process/em/spline
-Guidance :
-Enable/disable usage spline for Physics Vectors
-
-Parameter : spl
- Parameter type  : b
- Omittable       : True
- Default value   : 0
-
-
-
-Command /process/em/applyCuts
-Guidance :
-Enable/disable applying cuts for gamma processes
-
-Parameter : apl
- Parameter type  : b
- Omittable       : True
- Default value   : 0
-
-
-
-Command /process/em/fluo
-Guidance :
-Enable/disable atomic deexcitation
-
-Parameter : fluoFlag
- Parameter type  : b
- Omittable       : True
- Default value   : 0
-
-
-
-Command /process/em/fluoBearden
-Guidance :
-Enable/disable usage of Bearden fluorescence files
-
-Parameter : fluoBeardenFlag
- Parameter type  : b
- Omittable       : True
- Default value   : 0
-
-
-
-Command /process/em/auger
-Guidance :
-Enable/disable Auger electrons production
-
-Parameter : augerFlag
- Parameter type  : b
- Omittable       : True
- Default value   : 0
-
-
-
-Command /process/em/augerCascade
-Guidance :
-Enable/disable simulation of cascade of Auger electrons
-
-Parameter : augerCascadeFlag
- Parameter type  : b
- Omittable       : True
- Default value   : 0
-
-
-
-Command /process/em/pixe
-Guidance :
-Enable/disable PIXE simulation
-
-Parameter : pixeFlag
- Parameter type  : b
- Omittable       : True
- Default value   : 0
-
-
-
-Command /process/em/deexcitationIgnoreCut
-Guidance :
-Enable/Disable usage of cuts in de-excitation module
-
-Parameter : deexcut
- Parameter type  : b
- Omittable       : True
- Default value   : 0
-
-
-
-Command /process/em/lowestElectronEnergy
-Guidance :
-Set the lowest kinetic energy for e+-
-
-Parameter : elow
- Parameter type  : d
- Omittable       : True
-
-Parameter : Unit
- Parameter type  : s
- Omittable       : False
- Candidates      : eV keV MeV GeV TeV PeV J eV keV MeV GeV TeV PeV J electronvolt kiloelectronvolt megaelectronvolt gigaelectronvolt teraelectronvolt petaelectronvolt joule electronvolt kiloelectronvolt megaelectronvolt gigaelectronvolt teraelectronvolt petaelectronvolt joule
-
-
-
-Command /process/em/lowestMuHadEnergy
-Guidance :
-Set the lowest kinetic energy for muons and hadrons
-
-Parameter : elowh
- Parameter type  : d
- Omittable       : True
-
-Parameter : Unit
- Parameter type  : s
- Omittable       : False
- Candidates      : eV keV MeV GeV TeV PeV J eV keV MeV GeV TeV PeV J electronvolt kiloelectronvolt megaelectronvolt gigaelectronvolt teraelectronvolt petaelectronvolt joule electronvolt kiloelectronvolt megaelectronvolt gigaelectronvolt teraelectronvolt petaelectronvolt joule
-
-
-
-Command /process/em/verbose
-Guidance :
-Set verbose level for EM physics
-
-Parameter : verb1
- Parameter type  : i
- Omittable       : True
- Default value   : 1
-
-
-
-Command /process/em/workerVerbose
-Guidance :
-Set worker verbose level for EM physics
-
-Parameter : verb2
- Parameter type  : i
- Omittable       : True
- Default value   : 1
-
-
-
-Command /process/em/pixeXSmodel
-Guidance :
-The name of PIXE cross section
-
-Parameter : pixeXS
- Parameter type  : s
- Omittable       : True
- Candidates      : ECPSSR_Analytical Empirical ECPSSR_FormFactor
-
-
-
-Command /process/em/pixeElecXSmodel
-Guidance :
-The name of PIXE cross section for electron
-
-Parameter : pixeEXS
- Parameter type  : s
- Omittable       : True
- Candidates      : ECPSSR_Analytical Empirical Livermore Penelope
-
-
-
-Command /process/em/AddPAIRegion
-Guidance :
-Activate PAI in the G4Region.
-  partName  : particle name (default - all)
-  regName   : G4Region name
-  paiType   : PAI, PAIphoton
-
-Parameter : partName
- Parameter type  : s
- Omittable       : False
-
-Parameter : regName
- Parameter type  : s
- Omittable       : False
-
-Parameter : type
- Parameter type  : s
- Omittable       : False
-
-
-
-Command /process/em/AddMicroElecRegion
-Guidance :
-Activate MicroElec model in the G4Region
-
-Parameter : MicroElec
- Parameter type  : s
- Omittable       : True
-
-
-
-Command /process/em/AddDNARegion
-Guidance :
-Activate DNA in the G4Region.
-  regName   : G4Region name
-  dnaType   : opt0, opt1, opt2
-
-Parameter : regName
- Parameter type  : s
- Omittable       : False
-
-Parameter : type
- Parameter type  : s
- Omittable       : False
-
-
-
-Command /process/em/printParameters
-Guidance :
-Print all EM parameters.
-
-
-
-Command /process/em/deexcitation
-Guidance :
-Set deexcitation flags per G4Region.
-  regName   : G4Region name
-  flagFluo  : Fluorescence
-  flagAuger : Auger
-  flagPIXE  : PIXE
-
-Parameter : regName
- Parameter type  : s
- Omittable       : False
-
-Parameter : flagFluo
- Parameter type  : s
- Omittable       : False
-
-Parameter : flagAuger
- Parameter type  : s
- Omittable       : False
-
-Parameter : flagPIXE
- Parameter type  : s
- Omittable       : False
-
-
-
-Command /process/em/setBiasingFactor
-Guidance :
-Set factor for the process cross section.
-  procName   : process name
-  procFact   : factor
-  flagFact   : flag to change weight
-
-Parameter : procName
- Parameter type  : s
- Omittable       : False
-
-Parameter : procFact
- Parameter type  : d
- Omittable       : False
-
-Parameter : flagFact
- Parameter type  : s
- Omittable       : False
-
-
-
-Command /process/em/setForcedInteraction
-Guidance :
-Set factor for the process cross section.
-  procNam    : process name
-  regNam     : region name
-  tlength    : fixed target length
-  tflag      : flag to change weight
-
-Parameter : procNam
- Parameter type  : s
- Omittable       : False
-
-Parameter : regNam
- Parameter type  : s
- Omittable       : False
-
-Parameter : tlength
- Parameter type  : d
- Omittable       : False
-
-Parameter : unitT
-unit of tlength
- Parameter type  : s
- Omittable       : True
-
-Parameter : tflag
- Parameter type  : s
- Omittable       : True
-
-
-
-Command /process/em/setSecBiasing
-Guidance :
-Set bremsstrahlung or delta-e- splitting/Russian roullette per region.
-  bProcNam : process name
-  bRegNam  : region name
-  bFactor  : number of splitted gamma or probability of Russian roulette
-  bEnergy  : max energy of a secondary for this biasing method
-unit of energy
-
-Parameter : bProcNam
- Parameter type  : s
- Omittable       : False
-
-Parameter : bRegNam
- Parameter type  : s
- Omittable       : False
-
-Parameter : bFactor
- Parameter type  : d
- Omittable       : False
-
-Parameter : bEnergy
- Parameter type  : d
- Omittable       : False
-
-Parameter : bUnit
- Parameter type  : s
- Omittable       : True
-
-Command directory path : /process/optical/
-
-
-Guidance :
-Commands related to the optical physics simulation engine.
-
- Sub-directories : 
-   /process/optical/defaults/   Commands related to the optical physics simulation engine.
- Commands : 
-   processActivation * Activate/deactivate the specified optical process
-   verbose * Set default verbosity level for optical processes
-   setTrackSecondariesFirst * Activate/deactivate tracking of secondaries before finishing their parent track
-
-
-Command /process/optical/processActivation
-Guidance :
-Activate/deactivate the specified optical process
-
-Parameter : proc_name
-the process name
- Parameter type  : s
- Omittable       : False
- Candidates      : Cerenkov Scintillation OpAbsorption OpRayleigh OpMieHG OpBoundary OpWLS 
-
-Parameter : flag
-activation flag
- Parameter type  : b
- Omittable       : True
- Default value   : 1
-
-
-
-Command /process/optical/verbose
-Guidance :
-Set default verbosity level for optical processes
- Range of parameters : ver>=0
-
-Parameter : ver
- Parameter type  : i
- Omittable       : True
- Default value   : 1
-
-
-
-Command /process/optical/setTrackSecondariesFirst
-Guidance :
-Activate/deactivate tracking of secondaries before finishing their parent track
-
-Parameter : proc_name
- Parameter type  : s
- Omittable       : False
- Candidates      : Cerenkov Scintillation OpAbsorption OpRayleigh OpMieHG OpBoundary OpWLS 
-
-Parameter : flag
- Parameter type  : b
- Omittable       : False
- Default value   : 1
-
-Command directory path : /process/optical/defaults/
-
-
-Guidance :
-Commands related to the optical physics simulation engine.
-
- Sub-directories : 
-   /process/optical/defaults/cerenkov/   ...Title not available...
-   /process/optical/defaults/scintillation/   ...Title not available...
-   /process/optical/defaults/wls/   ...Title not available...
- Commands : 
-Command directory path : /process/optical/defaults/cerenkov/
- Sub-directories : 
- Commands : 
-   setMaxPhotons * Set default maximum number of photons per step
-   setMaxBetaChange * Set default maximum change of beta of parent particle per step
-
-
-Command /process/optical/defaults/cerenkov/setMaxPhotons
-Guidance :
-Set default maximum number of photons per step
-Note this command is used to set the default value,
-if process is not active command will not have effect.
- Range of parameters : CerenkovMaxPhotons>=0
-
-Parameter : CerenkovMaxPhotons
- Parameter type  : i
- Omittable       : False
-
-
-
-Command /process/optical/defaults/cerenkov/setMaxBetaChange
-Guidance :
-Set default maximum change of beta of parent particle per step
-Note this command is used to set the default value,
-if process is not active command will not have effect.
- Range of parameters : CerenkovMaxBetaChange>=0
-
-Parameter : CerenkovMaxBetaChange
- Parameter type  : d
- Omittable       : False
-
-Command directory path : /process/optical/defaults/scintillation/
- Sub-directories : 
- Commands : 
-   setYieldFactor * Set scintillation yield factor
-   setByParticleType * Activate/Inactivate scintillation process by particle type
-   setFiniteRiseTime * Set option of a finite rise-time for G4Scintillation
-
-
-Command /process/optical/defaults/scintillation/setYieldFactor
-Guidance :
-Set scintillation yield factor
-Note this command is used to set the default value,
-if process is not active command will not have effect.
- Range of parameters : ScintillationYieldFactor>=0
-
-Parameter : ScintillationYieldFactor
- Parameter type  : d
- Omittable       : False
-
-
-
-Command /process/optical/defaults/scintillation/setByParticleType
-Guidance :
-Activate/Inactivate scintillation process by particle type
-Note this command is used to set the default value,
-if process is not active command will not have effect.
-
-Parameter : ScintillationByParticleTypeActivation
- Parameter type  : b
- Omittable       : False
-
-
-
-Command /process/optical/defaults/scintillation/setFiniteRiseTime
-Guidance :
-Set option of a finite rise-time for G4Scintillation
-If set, the G4Scintillation process expects the user to have set the constant material property FAST/SLOWSCINTILLATIONRISETIME
-Note this command is used to set the default value,
-if process is not active command will not have effect.
-
-Parameter : FiniteRiseTime
- Parameter type  : b
- Omittable       : False
-
-Command directory path : /process/optical/defaults/wls/
- Sub-directories : 
- Commands : 
-   setTimeProfile * Set the WLS time profile (delta or exponential)
-
-
-Command /process/optical/defaults/wls/setTimeProfile
-Guidance :
-Set the WLS time profile (delta or exponential)
-
-Parameter : WLSTimeProfile
- Parameter type  : s
- Omittable       : False
- Candidates      : delta exponential
-
-Command directory path : /analysis/
- Sub-directories : 
-   /analysis/plot/   lD profile control
- Commands : 
-Command directory path : /analysis/plot/
-
-
-Guidance :
-lD profile control
-
- Sub-directories : 
- Commands : 
-   setStyle * Only one plotting style is available in low resolution: 
-   setLayout * Set page layout (number of columns and rows per page).
-   setDimensions * Set the plotter window size (width and height) in pixels.
-
-
-Command /analysis/plot/setStyle
-Guidance :
-Only one plotting style is available in low resolution: 
-  inlib_default: PAW style with low resolution fonts
-
-Parameter : Style
- Parameter type  : s
- Omittable       : False
- Candidates      : inlib_default
-
-
-
-Command /analysis/plot/setLayout
-Guidance :
-Set page layout (number of columns and rows per page).
-   Suported layouts: 
-  columns = 1 .. 2
-  rows    = 1 .. 3 and  >= columns
-
-Parameter : columns
-The number of columns in the page layout.
- Parameter type  : i
- Omittable       : False
- Parameter range : columns>=1 && columns<=2
-
-Parameter : rows
-The number of rows in the page layout.
- Parameter type  : i
- Omittable       : False
- Parameter range : rows>=1 && rows<=3
-
-
-
-Command /analysis/plot/setDimensions
-Guidance :
-Set the plotter window size (width and height) in pixels.
-
-Parameter : width
-The page width.
- Parameter type  : i
- Omittable       : False
-
-Parameter : height
-The page height.
- Parameter type  : i
- Omittable       : False
-
 Command directory path : /particle/
 
 
@@ -1959,7 +858,7 @@ Guidance :
 Particle control commands.
 
  Sub-directories : 
-   /particle/manage/   ...Title not available...
+   /particle/nuclideTable/   Nuclide table control commands.
    /particle/property/   Paricle Table control commands.
  Commands : 
    select * Select particle 
@@ -2030,11 +929,7 @@ Parameter : verbose_level
  Omittable       : True
  Default value   : 0
 
-Command directory path : /particle/manage/
- Sub-directories : 
-   /particle/manage/nuclideTable/   Nuclide table control commands.
- Commands : 
-Command directory path : /particle/manage/nuclideTable/
+Command directory path : /particle/nuclideTable/
 
 
 Guidance :
@@ -2043,10 +938,10 @@ Nuclide table control commands.
  Sub-directories : 
  Commands : 
    min_halflife * Set threshold of half-life.
-   level_tolerance * Set tolerance in level seaching.
+   level_tolerance * Set tolerance in level searching.
 
 
-Command /particle/manage/nuclideTable/min_halflife
+Command /particle/nuclideTable/min_halflife
 Guidance :
 Set threshold of half-life.
 Unit of the time can be :
@@ -2062,13 +957,13 @@ Parameter : Unit
  Parameter type  : s
  Omittable       : True
  Default value   : ns
- Candidates      : s ms mus ns ps second millisecond microsecond nanosecond picosecond
+ Candidates      : s ms us ns ps second millisecond microsecond nanosecond picosecond
 
 
 
-Command /particle/manage/nuclideTable/level_tolerance
+Command /particle/nuclideTable/level_tolerance
 Guidance :
-Set tolerance in level seaching.
+Set tolerance in level searching.
 Unit of the energy can be :
  MeV, keV, eV (default)
  Range of parameters : lTolerance >0.0
@@ -2132,7 +1027,7 @@ Parameter : Unit
  Parameter type  : s
  Omittable       : True
  Default value   : ns
- Candidates      : s ms mus ns ps second millisecond microsecond nanosecond picosecond
+ Candidates      : s ms us ns ps second millisecond microsecond nanosecond picosecond
 
 
 
@@ -2432,12 +1327,12 @@ Guidance :
 Set Verbose level of tracking category.
  -1 : Silent.
  0 : Silent.
- 1 : Minium information of each Step.
+ 1 : Minimum information of each Step.
  2 : Addition to Level=1, info of secondary particles.
  3 : Addition to Level=1, pre/postStepoint information
      after all AlongStep/PostStep process executions.
  4 : Addition to Level=3, pre/postStepoint information
-     at each AlongStepPostStep process execuation.
+     at each AlongStepPostStep process execution.
  5 : Addition to Level=4, proposed Step length information
      from each AlongStepPostStep process.
  Range of parameters : verbose_level >=-1  
@@ -2484,8 +1379,8 @@ Parameter : level
 Command /event/keepCurrentEvent
 Guidance :
 Store the current event to G4Run object instead of deleting it at the end of event.
-Stored event is available through G4Run until the begining of next run.
-Given the potential large memory size of G4Event and its datamember objects stored in G4Event,
+Stored event is available through G4Run until the beginning of next run.
+Given the potential large memory size of G4Event and its data-member objects stored in G4Event,
 the user must be careful and responsible for not to store too many G4Event objects.
 
 Command directory path : /event/stack/
@@ -2645,15 +1540,16 @@ Run control commands.
    dumpRegion * Dump region information.
    dumpCouples * Dump material-cuts-couple information.
    optimizeGeometry * Set the optimization flag for geometry.
-   breakAtBeginOfEvent * Set a break point at the begining of every event.
+   breakAtBeginOfEvent * Set a break point at the beginning of every event.
    breakAtEndOfEvent * Set a break point at the end of every event.
    abort * Abort current run processing.
    abortCurrentEvent * Abort currently processing event.
    geometryModified * Force geometry to be closed (re-voxellized) again.
    reinitializeGeometry * Force geometry to be rebuilt once again.
    physicsModified * Force all physics tables recalculated again.
-   constructScoringWorlds * Constrct scoring parallel world(s) if defined.
+   constructScoringWorlds * Construct scoring parallel world(s) if defined.
    storeRndmStatToEvent * Flag to store rndm status to G4Event object.
+   workersProcessCmds * Force workers to process current stack of UI commands.
    setCut * Set default cut value 
    setCutForAGivenParticle * Set a cut value to a specific particle 
    getCutForAGivenParticle * Get a cut value to a specific particle 
@@ -2781,21 +1677,21 @@ If it is set to zero (default value), N is roughly given by this.
 The value N may affect on the computing performance in particular
 if N is too small compared to the total number of events.
 The second parameter seedOnce specifies how frequently each worker
-thread is seeded by the random number sequence contrally managed
+thread is seeded by the random number sequence centrally managed
 by the master G4MTRunManager.
  - If seedOnce is set to 0 (default), seeds that are centrally managed
    by G4MTRunManager are set for every event of every worker thread.
-   This option guarantees event reproducability regardless of number
+   This option guarantees event reproducibility regardless of number
    of threads.
  - If seedOnce is set to 1, seeds are set only once for the first
-   event of each run of each worker thread. Event reproducability is
+   event of each run of each worker thread. Event reproducibility is
    guaranteed only if the same number of worker threads are used.
    On the other hand, this option offers better computing performance
    in particular for applications with relatively small primary
    particle energy and large number of events.
  - If seedOnce is set to 2, seeds are set only for the first event of
    group of N events. This option is reserved for the future use when
-   Geant4 allows number of threads to be dynatically changed during an
+   Geant4 allows number of threads to be dynamically changed during an
    event loop.
 This command is valid only for multi-threaded mode.
 This command is ignored if it is issued in sequential mode.
@@ -2850,7 +1746,7 @@ Parameter : optimizeFlag
 
 Command /run/breakAtBeginOfEvent
 Guidance :
-Set a break point at the begining of every event.
+Set a break point at the beginning of every event.
 
 Parameter : flag
  Parameter type  : b
@@ -2922,7 +1818,7 @@ This command must be applied
 
 Command /run/constructScoringWorlds
 Guidance :
-Constrct scoring parallel world(s) if defined.
+Construct scoring parallel world(s) if defined.
 This command is not mandatory, but automatically called when a run starts.
 But the user may use this to visualize the scoring world(s) before a run to start.
 
@@ -2937,12 +1833,19 @@ Flag to store rndm status to G4Event object.
  flag = 3 : both are stored
 Note: Some performance overhead may be seen by storing rndm status, in particular
 for the case of simplest geometry and small number of tracks per event.
- Range of parameters : flag>=0 && flag<3
+ Range of parameters : flag>=0 && flag<=3
 
 Parameter : flag
  Parameter type  : i
  Omittable       : True
  Default value   : 0
+
+
+
+Command /run/workersProcessCmds
+Guidance :
+Force workers to process current stack of UI commands.
+This commands is meaningful only in MT mode.
 
 
 
@@ -2960,7 +1863,7 @@ Parameter : Unit
  Parameter type  : s
  Omittable       : True
  Default value   : mm
- Candidates      : pc km m cm mm um nm Ang fm pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
+ Candidates      : pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
 
 
 
@@ -2984,6 +1887,7 @@ Parameter : unit
  Parameter type  : s
  Omittable       : False
  Default value   : mm
+ Candidates      : pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
 
 
 
@@ -3016,7 +1920,7 @@ Parameter : Unit
  Parameter type  : s
  Omittable       : True
  Default value   : mm
- Candidates      : pc km m cm mm um nm Ang fm pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
+ Candidates      : pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
 
 Command directory path : /run/particle/
 
@@ -3032,7 +1936,7 @@ Commands for G4VUserPhysicsList.
    buildPhysicsTable * build physics table of specified particle type
    storePhysicsTable * Store Physics Table
    retrievePhysicsTable * Retrieve Physics Table
-   setStoredInAscii * Switch on/off ascii mode in store/retreive Physics Table
+   setStoredInAscii * Switch on/off ascii mode in store/retrieve Physics Table
    applyCuts * Set applyCuts flag for a particle.
    dumpCutValues * Dump a list of production threshold values in range and energy
    dumpOrderingParam * Dump a list of ordering parameter 
@@ -3103,7 +2007,7 @@ Parameter : dirName
 
 Command /run/particle/setStoredInAscii
 Guidance :
-Switch on/off ascii mode in store/retreive Physics Table
+Switch on/off ascii mode in store/retrieve Physics Table
   Enter 0(binary) or 1(ascii)
  Range of parameters : ascii ==0 || ascii ==1
 
@@ -3149,7 +2053,7 @@ for all registered material-cuts-couples.
 Dumping a list takes place when you issue 'beamOn' and
 actual conversion tables from range to energy are available.
 If you want a list 'immediately', use '/run/dumpRegion' for threshold
-list given in gange only. Also, '/run/dumpCouples' gives you the
+list given in range only. Also, '/run/dumpCouples' gives you the
 current list if you have already issued 'run/beamOn' at least once.
 
 Parameter : particle
@@ -3191,7 +2095,6 @@ Guidance :
 Initialize the random number generator with integer seed stream.
 Number of integers should be more than 1.
 Actual number of integers to be used depends on the individual random number engine.
-This command sets the seeds for the master thread.
 
 Parameter : IntArray
  Parameter type  : s
@@ -3214,7 +2117,7 @@ Parameter : fileName
 Command /random/setSavingFlag
 Guidance :
 The randomNumberStatus will be saved at :
-begining of run (currentRun.rndm) and begining of event (currentEvent.rndm) 
+beginning of run (currentRun.rndm) and beginning of event (currentEvent.rndm) 
 
 Parameter : flag
  Parameter type  : b
@@ -3276,6 +2179,1855 @@ Parameter : flag
  Omittable       : True
  Default value   : 1
 
+Command directory path : /process/
+
+
+Guidance :
+Process Table control commands.
+
+ Sub-directories : 
+   /process/gconv/   Commands for EM gamma conversion BH5D model.
+   /process/eLoss/   Commands for EM processes.
+   /process/msc/   Commands for EM scattering processes.
+   /process/em/   General commands for EM processes.
+   /process/dna/   Commands for DNA processes.
+   /process/optical/   Commands related to the optical physics simulation engine.
+ Commands : 
+   list * List up process names
+   verbose * Set Verbose Level for Process Table
+   setVerbose * Set verbose level for processes
+   dump * Dump process information
+   activate * Activate processes  
+   inactivate * Inactivate process  
+
+
+Command /process/list
+Guidance :
+List up process names
+  list [type] 
+    type: process type [all:for all processes]
+
+Parameter : type
+ Parameter type  : s
+ Omittable       : True
+ Default value   : all
+ Candidates      : all NotDefined Transportation Electromagnetic Optical Hadronic Photolepton_hadron Decay General Parameterisation UserDefined
+
+
+
+Command /process/verbose
+Guidance :
+Set Verbose Level for Process Table
+  verbose [level]
+   level: verbose level
+ Range of parameters : verbose >=0
+
+Parameter : verbose
+ Parameter type  : i
+ Omittable       : True
+ Default value   : 1
+
+
+
+Command /process/setVerbose
+Guidance :
+Set verbose level for processes
+  setVerbose level [type or name] 
+    level: verbose level 
+    name : process name 
+    type : process type 
+       [all] for all processes 
+
+Parameter : verbose
+ Parameter type  : i
+ Omittable       : False
+
+Parameter : type
+ Parameter type  : s
+ Omittable       : True
+ Default value   : all
+
+
+
+Command /process/dump
+Guidance :
+Dump process information
+ dump name [particle]
+   name:     process name or type name
+   particle: particle name [all: for all particles]
+
+Parameter : procName
+ Parameter type  : s
+ Omittable       : False
+
+Parameter : particle
+ Parameter type  : s
+ Omittable       : True
+ Default value   : all
+
+
+
+Command /process/activate
+Guidance :
+Activate processes  
+ Activate  name [particle]
+   name:     process name or type name
+   particle: particle name [all: for all particles]
+
+Parameter : procName
+ Parameter type  : s
+ Omittable       : False
+
+Parameter : particle
+ Parameter type  : s
+ Omittable       : True
+ Default value   : all
+
+
+
+Command /process/inactivate
+Guidance :
+Inactivate process  
+Inactivate processes  
+ Inactivate  name [particle]
+   name:     process name or type name
+   particle: particle name [all: for all particles]
+
+Parameter : procName
+ Parameter type  : s
+ Omittable       : False
+
+Parameter : particle
+ Parameter type  : s
+ Omittable       : True
+ Default value   : all
+
+Command directory path : /process/gconv/
+
+
+Guidance :
+Commands for EM gamma conversion BH5D model.
+
+ Sub-directories : 
+ Commands : 
+   conversionType * gamma conversion triplet/nuclear generation type:
+   onIsolated * Conversion on isolated charged particles
+
+
+Command /process/gconv/conversionType
+Guidance :
+gamma conversion triplet/nuclear generation type:
+0 - (default) both triplet and nuclear
+1 - force nuclear
+2 - force triplet
+ Range of parameters : type >= 0 && type <= 2
+
+Parameter : type
+ Parameter type  : i
+ Omittable       : False
+ Default value   : 0
+
+
+
+Command /process/gconv/onIsolated
+Guidance :
+Conversion on isolated charged particles
+false (default) : atomic electron screening
+true : conversion on isolated particles.
+
+Parameter : flag
+ Parameter type  : b
+ Omittable       : False
+ Default value   : 0
+
+Command directory path : /process/eLoss/
+
+
+Guidance :
+Commands for EM processes.
+
+ Sub-directories : 
+ Commands : 
+   fluct * Enable/disable energy loss fluctuations.
+   CSDARange * Enable/disable CSDA range calculation
+   LPM * Enable/disable LPM effect calculation
+   useCutAsFinalRange * Enable/disable use of cut in range as a final range
+   UseAngularGenerator * Enable usage of angular generator for ionisation
+   integral * Switch true/false the integral option
+   UseICRU90 * Enable usage of ICRU90 stopping powers
+   minsubsec * Set the ratio subcut/cut 
+   minKinEnergy * Set the min kinetic energy for EM tables
+   maxKinEnergy * Set the max kinetic energy for EM tables
+   maxKinEnergyCSDA * Set the max kinetic energy for CSDA table
+   linLossLimit * Set linearLossLimit parameter
+   bremThreshold * Set bremsstrahlung energy threshold
+   LambdaFactor * Set lambdaFactor parameter for integral option
+   binsDEDX * Set number of bins for EM tables
+   binsLambda * Set number of bins for EM tables
+   binsPerDecade * Set number of bins per decade for EM tables
+   verbose * Set verbose level for EM physics
+   subsec * Switch true/false the subcutoff generation per region.
+   StepFunction * Set the energy loss step limitation parameters for e+-.
+   StepFunctionMuHad * Set the energy loss step limitation parameters for muon/hadron.
+
+
+Command /process/eLoss/fluct
+Guidance :
+Enable/disable energy loss fluctuations.
+
+Parameter : choice
+ Parameter type  : b
+ Omittable       : True
+ Default value   : 1
+
+
+
+Command /process/eLoss/CSDARange
+Guidance :
+Enable/disable CSDA range calculation
+
+Parameter : range
+ Parameter type  : b
+ Omittable       : True
+ Default value   : 0
+
+
+
+Command /process/eLoss/LPM
+Guidance :
+Enable/disable LPM effect calculation
+
+Parameter : lpm
+ Parameter type  : b
+ Omittable       : True
+ Default value   : 1
+
+
+
+Command /process/eLoss/useCutAsFinalRange
+Guidance :
+Enable/disable use of cut in range as a final range
+
+Parameter : choice
+ Parameter type  : b
+ Omittable       : True
+ Default value   : 0
+
+
+
+Command /process/eLoss/UseAngularGenerator
+Guidance :
+Enable usage of angular generator for ionisation
+
+Parameter : del
+ Parameter type  : b
+ Omittable       : True
+ Default value   : 0
+
+
+
+Command /process/eLoss/integral
+Guidance :
+Switch true/false the integral option
+
+Parameter : integ
+ Parameter type  : b
+ Omittable       : True
+ Default value   : 1
+
+
+
+Command /process/eLoss/UseICRU90
+Guidance :
+Enable usage of ICRU90 stopping powers
+
+Parameter : icru90
+ Parameter type  : b
+ Omittable       : True
+ Default value   : 0
+
+
+
+Command /process/eLoss/minsubsec
+Guidance :
+Set the ratio subcut/cut 
+
+Parameter : rcmin
+ Parameter type  : d
+ Omittable       : True
+
+
+
+Command /process/eLoss/minKinEnergy
+Guidance :
+Set the min kinetic energy for EM tables
+
+Parameter : emin
+ Parameter type  : d
+ Omittable       : True
+
+Parameter : Unit
+ Parameter type  : s
+ Omittable       : False
+ Candidates      : eV keV MeV GeV TeV PeV J electronvolt kiloelectronvolt megaelectronvolt gigaelectronvolt teraelectronvolt petaelectronvolt joule
+
+
+
+Command /process/eLoss/maxKinEnergy
+Guidance :
+Set the max kinetic energy for EM tables
+
+Parameter : emax
+ Parameter type  : d
+ Omittable       : True
+
+Parameter : Unit
+ Parameter type  : s
+ Omittable       : False
+ Candidates      : eV keV MeV GeV TeV PeV J electronvolt kiloelectronvolt megaelectronvolt gigaelectronvolt teraelectronvolt petaelectronvolt joule
+
+
+
+Command /process/eLoss/maxKinEnergyCSDA
+Guidance :
+Set the max kinetic energy for CSDA table
+
+Parameter : emaxCSDA
+ Parameter type  : d
+ Omittable       : True
+
+Parameter : Unit
+ Parameter type  : s
+ Omittable       : False
+ Candidates      : eV keV MeV GeV TeV PeV J electronvolt kiloelectronvolt megaelectronvolt gigaelectronvolt teraelectronvolt petaelectronvolt joule
+
+
+
+Command /process/eLoss/linLossLimit
+Guidance :
+Set linearLossLimit parameter
+
+Parameter : linlim
+ Parameter type  : d
+ Omittable       : True
+
+
+
+Command /process/eLoss/bremThreshold
+Guidance :
+Set bremsstrahlung energy threshold
+
+Parameter : emaxBrem
+ Parameter type  : d
+ Omittable       : True
+
+Parameter : Unit
+ Parameter type  : s
+ Omittable       : False
+ Candidates      : eV keV MeV GeV TeV PeV J electronvolt kiloelectronvolt megaelectronvolt gigaelectronvolt teraelectronvolt petaelectronvolt joule
+
+
+
+Command /process/eLoss/LambdaFactor
+Guidance :
+Set lambdaFactor parameter for integral option
+
+Parameter : Fl
+ Parameter type  : d
+ Omittable       : True
+
+
+
+Command /process/eLoss/binsDEDX
+Guidance :
+Set number of bins for EM tables
+
+Parameter : binsDEDX
+ Parameter type  : i
+ Omittable       : True
+ Default value   : 84
+
+
+
+Command /process/eLoss/binsLambda
+Guidance :
+Set number of bins for EM tables
+
+Parameter : binsL
+ Parameter type  : i
+ Omittable       : True
+ Default value   : 84
+
+
+
+Command /process/eLoss/binsPerDecade
+Guidance :
+Set number of bins per decade for EM tables
+
+Parameter : bins
+ Parameter type  : i
+ Omittable       : True
+ Default value   : 7
+
+
+
+Command /process/eLoss/verbose
+Guidance :
+Set verbose level for EM physics
+
+Parameter : verb
+ Parameter type  : i
+ Omittable       : True
+ Default value   : 1
+
+
+
+Command /process/eLoss/subsec
+Guidance :
+Switch true/false the subcutoff generation per region.
+  subSec   : true/false
+  Region   : region name
+
+Parameter : subSec
+ Parameter type  : s
+ Omittable       : False
+
+Parameter : Region
+ Parameter type  : s
+ Omittable       : False
+
+
+
+Command /process/eLoss/StepFunction
+Guidance :
+Set the energy loss step limitation parameters for e+-.
+  dRoverR   : max Range variation per step
+  finalRange: range for final step
+  unit      : unit of finalRange
+
+Parameter : dRoverR
+ Parameter type  : d
+ Omittable       : False
+ Parameter range : dRoverR>0. && dRoverR<=1.
+
+Parameter : finalRange
+ Parameter type  : d
+ Omittable       : False
+ Parameter range : finalRange>0.
+
+Parameter : unit
+ Parameter type  : s
+ Omittable       : True
+ Default value   : mm
+ Candidates      : pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
+
+
+
+Command /process/eLoss/StepFunctionMuHad
+Guidance :
+Set the energy loss step limitation parameters for muon/hadron.
+  dRoverR   : max Range variation per step
+  finalRange: range for final step
+
+Parameter : dRoverRMuHad
+ Parameter type  : d
+ Omittable       : False
+ Parameter range : dRoverRMuHad>0. && dRoverRMuHad<=1.
+
+Parameter : finalRangeMuHad
+ Parameter type  : d
+ Omittable       : False
+ Parameter range : finalRangeMuHad>0.
+
+Parameter : unit
+ Parameter type  : s
+ Omittable       : True
+ Default value   : mm
+
+Command directory path : /process/msc/
+
+
+Guidance :
+Commands for EM scattering processes.
+
+ Sub-directories : 
+ Commands : 
+   LateralDisplacement * Enable/disable sampling of lateral displacement
+   LateralDisplacementAlg96 * Enable/disable sampling of lateral displacement
+   MuHadLateralDisplacement * Enable/disable sampling of lateral displacement for muons and hadrons
+   DisplacementBeyondSafety * Enable/disable displacement at geometry boundary
+   UseMottCorrection * Enable usage of Mott corrections for e- elastic scattering
+   UseG4EmSaturation * Enable usage of built-in Birks saturation
+   FactorForAngleLimit * Set factor for computation of a limit for -t (invariant transfer)
+   ThetaLimit * Set the limit on the polar angle for msc and single scattering
+   EnergyLimit * Set the upper energy limit for msc
+   RangeFactor * Set RangeFactor for msc processes of e+-
+   RangeFactorMuHad * Set RangeFactor for msc processes of muons/hadrons
+   GeomFactor * Set GeomFactor parameter for msc processes
+   Skin * Set skin parameter for msc processes
+   ScreeningFactor * Set screening factor
+   SafetyFactor * Set safety factor
+   LambdaLimit * Set the upper energy limit for NIEL
+   StepLimit * Set msc step limitation type
+   StepLimitMuHad * Set msc step limitation type for muons/hadrons
+
+
+Command /process/msc/LateralDisplacement
+Guidance :
+Enable/disable sampling of lateral displacement
+
+Parameter : lat
+ Parameter type  : b
+ Omittable       : True
+ Default value   : 1
+
+
+
+Command /process/msc/LateralDisplacementAlg96
+Guidance :
+Enable/disable sampling of lateral displacement
+
+Parameter : lat96
+ Parameter type  : b
+ Omittable       : True
+ Default value   : 0
+
+
+
+Command /process/msc/MuHadLateralDisplacement
+Guidance :
+Enable/disable sampling of lateral displacement for muons and hadrons
+
+Parameter : mulat
+ Parameter type  : b
+ Omittable       : True
+ Default value   : 1
+
+
+
+Command /process/msc/DisplacementBeyondSafety
+Guidance :
+Enable/disable displacement at geometry boundary
+
+Parameter : cat
+ Parameter type  : b
+ Omittable       : True
+ Default value   : 0
+
+
+
+Command /process/msc/UseMottCorrection
+Guidance :
+Enable usage of Mott corrections for e- elastic scattering
+
+Parameter : mott
+ Parameter type  : b
+ Omittable       : True
+ Default value   : 0
+
+
+
+Command /process/msc/UseG4EmSaturation
+Guidance :
+Enable usage of built-in Birks saturation
+
+Parameter : birks
+ Parameter type  : b
+ Omittable       : True
+ Default value   : 0
+
+
+
+Command /process/msc/FactorForAngleLimit
+Guidance :
+Set factor for computation of a limit for -t (invariant transfer)
+ Range of parameters : Fact>0
+
+Parameter : Fact
+ Parameter type  : d
+ Omittable       : True
+ Default value   : 1
+
+
+
+Command /process/msc/ThetaLimit
+Guidance :
+Set the limit on the polar angle for msc and single scattering
+
+Parameter : theta
+ Parameter type  : d
+ Omittable       : True
+
+Parameter : Unit
+ Parameter type  : s
+ Omittable       : False
+ Candidates      : rad mrad deg radian milliradian degree
+
+
+
+Command /process/msc/EnergyLimit
+Guidance :
+Set the upper energy limit for msc
+
+Parameter : mscE
+ Parameter type  : d
+ Omittable       : True
+
+Parameter : Unit
+ Parameter type  : s
+ Omittable       : False
+ Candidates      : eV keV MeV GeV TeV PeV J electronvolt kiloelectronvolt megaelectronvolt gigaelectronvolt teraelectronvolt petaelectronvolt joule
+
+
+
+Command /process/msc/RangeFactor
+Guidance :
+Set RangeFactor for msc processes of e+-
+ Range of parameters : Fr>0
+
+Parameter : Fr
+ Parameter type  : d
+ Omittable       : True
+ Default value   : 0.04
+
+
+
+Command /process/msc/RangeFactorMuHad
+Guidance :
+Set RangeFactor for msc processes of muons/hadrons
+ Range of parameters : Fr1>0
+
+Parameter : Fr1
+ Parameter type  : d
+ Omittable       : True
+ Default value   : 0.2
+
+
+
+Command /process/msc/GeomFactor
+Guidance :
+Set GeomFactor parameter for msc processes
+ Range of parameters : Fg>0
+
+Parameter : Fg
+ Parameter type  : d
+ Omittable       : True
+ Default value   : 3.5
+
+
+
+Command /process/msc/Skin
+Guidance :
+Set skin parameter for msc processes
+
+Parameter : skin
+ Parameter type  : d
+ Omittable       : True
+
+
+
+Command /process/msc/ScreeningFactor
+Guidance :
+Set screening factor
+
+Parameter : screen
+ Parameter type  : d
+ Omittable       : True
+
+
+
+Command /process/msc/SafetyFactor
+Guidance :
+Set safety factor
+
+Parameter : fsafe
+ Parameter type  : d
+ Omittable       : True
+
+
+
+Command /process/msc/LambdaLimit
+Guidance :
+Set the upper energy limit for NIEL
+
+Parameter : ll
+ Parameter type  : d
+ Omittable       : True
+
+Parameter : Unit
+ Parameter type  : s
+ Omittable       : False
+ Candidates      : pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
+
+
+
+Command /process/msc/StepLimit
+Guidance :
+Set msc step limitation type
+
+Parameter : StepLim
+ Parameter type  : s
+ Omittable       : True
+ Candidates      : Minimal UseSafety UseSafetyPlus UseDistanceToBoundary
+
+
+
+Command /process/msc/StepLimitMuHad
+Guidance :
+Set msc step limitation type for muons/hadrons
+
+Parameter : StepLim1
+ Parameter type  : s
+ Omittable       : True
+ Candidates      : Minimal UseSafety UseSafetyPlus UseDistanceToBoundary
+
+Command directory path : /process/em/
+
+
+Guidance :
+General commands for EM processes.
+
+ Sub-directories : 
+ Commands : 
+   spline * Enable/disable usage spline for Physics Vectors
+   applyCuts * Enable/disable applying cuts for gamma processes
+   UseGeneralProcess * Enable gamma, e+- general process
+   enableSamplingTable * Enable usage of sampling table for secondary generation
+   MuDataFromFile * Enable usage of muon data from file
+   max5DMuPairEnergy * Set the max kinetic energy for 5D muon pair production
+   lowestElectronEnergy * Set the lowest kinetic energy for e+-
+   lowestMuHadEnergy * Set the lowest kinetic energy for muons and hadrons
+   lowestTripletEnergy * Set the lowest kinetic energy for triplet production
+   MaxEnergyNIEL * Set the upper energy limit for NIEL
+   verbose * Set verbose level for EM physics
+   workerVerbose * Set worker verbose level for EM physics
+   printParameters * Print all EM parameters.
+   setNuclearFormFactor * Define typy of nuclear form-factor
+   AddPAIRegion * Activate PAI in the G4Region.
+   AddEmRegion * Add optional EM configuration for a G4Region.
+   setBiasingFactor * Set factor for the process cross section.
+   setForcedInteraction * Set factor for the process cross section.
+   setSecBiasing * Set bremsstrahlung or delta-e- splitting/Russian roulette per region.
+   setDirectionalSplitting * Enable directional brem splitting
+   QuantumEntanglement * Enable quantum entanglement
+   setDirectionalSplittingTarget * Position of arget for directional splitting
+   setDirectionalSplittingRadius * Radius of target for directional splitting
+   fluo * Enable/disable atomic deexcitation
+   fluoBearden * Enable/disable usage of Bearden fluorescence files
+   auger * Enable/disable Auger electrons production
+   augerCascade * Enable/disable simulation of cascade of Auger electrons
+   pixe * Enable/disable PIXE simulation
+   deexcitationIgnoreCut * Enable/Disable usage of cuts in de-excitation module
+   pixeXSmodel * The name of PIXE cross section
+   pixeElecXSmodel * The name of PIXE cross section for electron
+   AddMicroElecRegion * Activate MicroElec model in the G4Region
+   AddDNARegion * Activate DNA in a G4Region.
+   deexcitation * Set deexcitation flags per G4Region.
+
+
+Command /process/em/spline
+Guidance :
+Enable/disable usage spline for Physics Vectors
+
+Parameter : spl
+ Parameter type  : b
+ Omittable       : True
+ Default value   : 0
+
+
+
+Command /process/em/applyCuts
+Guidance :
+Enable/disable applying cuts for gamma processes
+
+Parameter : apl
+ Parameter type  : b
+ Omittable       : True
+ Default value   : 0
+
+
+
+Command /process/em/UseGeneralProcess
+Guidance :
+Enable gamma, e+- general process
+
+Parameter : gen
+ Parameter type  : b
+ Omittable       : True
+ Default value   : 0
+
+
+
+Command /process/em/enableSamplingTable
+Guidance :
+Enable usage of sampling table for secondary generation
+
+Parameter : sampleT
+ Parameter type  : b
+ Omittable       : True
+ Default value   : 0
+
+
+
+Command /process/em/MuDataFromFile
+Guidance :
+Enable usage of muon data from file
+
+Parameter : mudat
+ Parameter type  : b
+ Omittable       : True
+ Default value   : 0
+
+
+
+Command /process/em/max5DMuPairEnergy
+Guidance :
+Set the max kinetic energy for 5D muon pair production
+
+Parameter : emax5D
+ Parameter type  : d
+ Omittable       : True
+
+Parameter : Unit
+ Parameter type  : s
+ Omittable       : False
+ Candidates      : eV keV MeV GeV TeV PeV J electronvolt kiloelectronvolt megaelectronvolt gigaelectronvolt teraelectronvolt petaelectronvolt joule
+
+
+
+Command /process/em/lowestElectronEnergy
+Guidance :
+Set the lowest kinetic energy for e+-
+
+Parameter : elow
+ Parameter type  : d
+ Omittable       : True
+
+Parameter : Unit
+ Parameter type  : s
+ Omittable       : False
+ Candidates      : eV keV MeV GeV TeV PeV J electronvolt kiloelectronvolt megaelectronvolt gigaelectronvolt teraelectronvolt petaelectronvolt joule
+
+
+
+Command /process/em/lowestMuHadEnergy
+Guidance :
+Set the lowest kinetic energy for muons and hadrons
+
+Parameter : elowh
+ Parameter type  : d
+ Omittable       : True
+
+Parameter : Unit
+ Parameter type  : s
+ Omittable       : False
+ Candidates      : eV keV MeV GeV TeV PeV J electronvolt kiloelectronvolt megaelectronvolt gigaelectronvolt teraelectronvolt petaelectronvolt joule
+
+
+
+Command /process/em/lowestTripletEnergy
+Guidance :
+Set the lowest kinetic energy for triplet production
+
+Parameter : elow3
+ Parameter type  : d
+ Omittable       : True
+
+Parameter : Unit
+ Parameter type  : s
+ Omittable       : False
+ Candidates      : eV keV MeV GeV TeV PeV J electronvolt kiloelectronvolt megaelectronvolt gigaelectronvolt teraelectronvolt petaelectronvolt joule
+
+
+
+Command /process/em/MaxEnergyNIEL
+Guidance :
+Set the upper energy limit for NIEL
+
+Parameter : niel
+ Parameter type  : d
+ Omittable       : True
+
+Parameter : Unit
+ Parameter type  : s
+ Omittable       : False
+ Candidates      : eV keV MeV GeV TeV PeV J electronvolt kiloelectronvolt megaelectronvolt gigaelectronvolt teraelectronvolt petaelectronvolt joule
+
+
+
+Command /process/em/verbose
+Guidance :
+Set verbose level for EM physics
+
+Parameter : verb1
+ Parameter type  : i
+ Omittable       : True
+ Default value   : 1
+
+
+
+Command /process/em/workerVerbose
+Guidance :
+Set worker verbose level for EM physics
+
+Parameter : verb2
+ Parameter type  : i
+ Omittable       : True
+ Default value   : 1
+
+
+
+Command /process/em/printParameters
+Guidance :
+Print all EM parameters.
+
+
+
+Command /process/em/setNuclearFormFactor
+Guidance :
+Define typy of nuclear form-factor
+
+Parameter : NucFF
+ Parameter type  : s
+ Omittable       : True
+ Candidates      : None Exponential Gaussian Flat
+
+
+
+Command /process/em/AddPAIRegion
+Guidance :
+Activate PAI in the G4Region.
+  partName  : particle name (default - all)
+  regName   : G4Region name
+  paiType   : PAI, PAIphoton
+
+Parameter : partName
+ Parameter type  : s
+ Omittable       : False
+
+Parameter : regName
+ Parameter type  : s
+ Omittable       : False
+
+Parameter : type
+ Parameter type  : s
+ Omittable       : False
+ Candidates      : pai PAI PAIphoton
+
+
+
+Command /process/em/AddEmRegion
+Guidance :
+Add optional EM configuration for a G4Region.
+  regName  : G4Region name
+  emType   : G4EmStandard, G4EmStandard_opt1, ...
+
+Parameter : regName
+ Parameter type  : s
+ Omittable       : False
+
+Parameter : mscType
+ Parameter type  : s
+ Omittable       : False
+ Candidates      : G4EmStandard G4EmStandard_opt1 G4EmStandard_opt2 G4EmStandard_opt3 G4EmStandard_opt4 G4EmStandardGS G4EmStandardSS G4EmLivermore G4EmPenelope G4RadioactiveDecay
+
+
+
+Command /process/em/setBiasingFactor
+Guidance :
+Set factor for the process cross section.
+  procName   : process name
+  procFact   : factor
+  flagFact   : flag to change weight
+
+Parameter : procName
+ Parameter type  : s
+ Omittable       : False
+
+Parameter : procFact
+ Parameter type  : d
+ Omittable       : False
+
+Parameter : flagFact
+ Parameter type  : s
+ Omittable       : False
+
+
+
+Command /process/em/setForcedInteraction
+Guidance :
+Set factor for the process cross section.
+  procNam    : process name
+  regNam     : region name
+  tlength    : fixed target length
+  unitT      : length unit
+  tflag      : flag to change weight
+
+Parameter : procNam
+ Parameter type  : s
+ Omittable       : False
+
+Parameter : regNam
+ Parameter type  : s
+ Omittable       : False
+
+Parameter : tlength
+ Parameter type  : d
+ Omittable       : False
+ Parameter range : tlength>0
+
+Parameter : unitT
+ Parameter type  : s
+ Omittable       : True
+ Default value   : mm
+ Candidates      : pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
+
+Parameter : tflag
+ Parameter type  : b
+ Omittable       : True
+ Default value   : 1
+
+
+
+Command /process/em/setSecBiasing
+Guidance :
+Set bremsstrahlung or delta-e- splitting/Russian roulette per region.
+  bProcNam : process name
+  bRegNam  : region name
+  bFactor  : number of split gamma or probability of Russian roulette
+  bEnergy  : max energy of a secondary for this biasing method
+  bUnit    : energy unit
+
+Parameter : bProcNam
+ Parameter type  : s
+ Omittable       : False
+
+Parameter : bRegNam
+ Parameter type  : s
+ Omittable       : False
+
+Parameter : bFactor
+ Parameter type  : d
+ Omittable       : False
+
+Parameter : bEnergy
+ Parameter type  : d
+ Omittable       : False
+
+Parameter : bUnit
+ Parameter type  : s
+ Omittable       : True
+ Default value   : MeV
+ Candidates      : eV keV MeV GeV TeV PeV J electronvolt kiloelectronvolt megaelectronvolt gigaelectronvolt teraelectronvolt petaelectronvolt joule
+
+
+
+Command /process/em/setDirectionalSplitting
+Guidance :
+Enable directional brem splitting
+
+Parameter : 
+ Parameter type  : b
+ Omittable       : False
+
+
+
+Command /process/em/QuantumEntanglement
+Guidance :
+Enable quantum entanglement
+
+Parameter : 
+ Parameter type  : b
+ Omittable       : False
+
+
+
+Command /process/em/setDirectionalSplittingTarget
+Guidance :
+Position of arget for directional splitting
+
+Parameter : 
+ Parameter type  : d
+ Omittable       : False
+
+Parameter : 
+ Parameter type  : d
+ Omittable       : False
+
+Parameter : 
+ Parameter type  : d
+ Omittable       : False
+
+Parameter : Unit
+ Parameter type  : s
+ Omittable       : False
+
+
+
+Command /process/em/setDirectionalSplittingRadius
+Guidance :
+Radius of target for directional splitting
+
+Parameter : 
+ Parameter type  : d
+ Omittable       : False
+
+Parameter : Unit
+ Parameter type  : s
+ Omittable       : False
+
+
+
+Command /process/em/fluo
+Guidance :
+Enable/disable atomic deexcitation
+
+Parameter : fluoFlag
+ Parameter type  : b
+ Omittable       : True
+ Default value   : 0
+
+
+
+Command /process/em/fluoBearden
+Guidance :
+Enable/disable usage of Bearden fluorescence files
+
+Parameter : fluoBeardenFlag
+ Parameter type  : b
+ Omittable       : True
+ Default value   : 0
+
+
+
+Command /process/em/auger
+Guidance :
+Enable/disable Auger electrons production
+
+Parameter : augerFlag
+ Parameter type  : b
+ Omittable       : True
+ Default value   : 0
+
+
+
+Command /process/em/augerCascade
+Guidance :
+Enable/disable simulation of cascade of Auger electrons
+
+Parameter : augerCascadeFlag
+ Parameter type  : b
+ Omittable       : True
+ Default value   : 0
+
+
+
+Command /process/em/pixe
+Guidance :
+Enable/disable PIXE simulation
+
+Parameter : pixeFlag
+ Parameter type  : b
+ Omittable       : True
+ Default value   : 0
+
+
+
+Command /process/em/deexcitationIgnoreCut
+Guidance :
+Enable/Disable usage of cuts in de-excitation module
+
+Parameter : deexcut
+ Parameter type  : b
+ Omittable       : True
+ Default value   : 0
+
+
+
+Command /process/em/pixeXSmodel
+Guidance :
+The name of PIXE cross section
+
+Parameter : pixeXS
+ Parameter type  : s
+ Omittable       : True
+ Candidates      : ECPSSR_Analytical Empirical ECPSSR_FormFactor
+
+
+
+Command /process/em/pixeElecXSmodel
+Guidance :
+The name of PIXE cross section for electron
+
+Parameter : pixeEXS
+ Parameter type  : s
+ Omittable       : True
+ Candidates      : ECPSSR_Analytical Empirical Livermore Penelope
+
+
+
+Command /process/em/AddMicroElecRegion
+Guidance :
+Activate MicroElec model in the G4Region
+
+Parameter : MicroElec
+ Parameter type  : s
+ Omittable       : True
+
+
+
+Command /process/em/AddDNARegion
+Guidance :
+Activate DNA in a G4Region.
+  regName   : G4Region name
+  dnaType   : DNA_opt0, DNA_opt1, DNA_opt2
+
+Parameter : regName
+ Parameter type  : s
+ Omittable       : False
+
+Parameter : dnaType
+ Parameter type  : s
+ Omittable       : False
+ Candidates      : DNA_Opt0
+
+
+
+Command /process/em/deexcitation
+Guidance :
+Set deexcitation flags per G4Region.
+  regName   : G4Region name
+  flagFluo  : Fluorescence
+  flagAuger : Auger
+  flagPIXE  : PIXE
+
+Parameter : regName
+ Parameter type  : s
+ Omittable       : False
+
+Parameter : flagFluo
+ Parameter type  : s
+ Omittable       : False
+
+Parameter : flagAuger
+ Parameter type  : s
+ Omittable       : False
+
+Parameter : flagPIXE
+ Parameter type  : s
+ Omittable       : False
+
+Command directory path : /process/dna/
+
+
+Guidance :
+Commands for DNA processes.
+
+ Sub-directories : 
+ Commands : 
+   UseDNAFast * Enable usage of fast sampling for DNA models
+   UseDNAStationary * Enable usage of Stationary option for DNA models
+   UseDNAElectronMsc * Enable usage of e- msc for DNA
+   e-SolvationSubType * The name of e- solvation DNA model
+
+
+Command /process/dna/UseDNAFast
+Guidance :
+Enable usage of fast sampling for DNA models
+
+Parameter : dnaf
+ Parameter type  : b
+ Omittable       : True
+ Default value   : 0
+
+
+
+Command /process/dna/UseDNAStationary
+Guidance :
+Enable usage of Stationary option for DNA models
+
+Parameter : dnas
+ Parameter type  : b
+ Omittable       : True
+ Default value   : 0
+
+
+
+Command /process/dna/UseDNAElectronMsc
+Guidance :
+Enable usage of e- msc for DNA
+
+Parameter : dnamsc
+ Parameter type  : b
+ Omittable       : True
+ Default value   : 0
+
+
+
+Command /process/dna/e-SolvationSubType
+Guidance :
+The name of e- solvation DNA model
+
+Parameter : dnaSol
+ Parameter type  : s
+ Omittable       : True
+ Candidates      : Ritchie1994 Terrisol1990 Meesungnoen2002 Kreipl2009 Meesungnoen2002_amorphous
+
+Command directory path : /process/optical/
+
+
+Guidance :
+Commands related to the optical physics simulation engine.
+
+ Sub-directories : 
+   /process/optical/defaults/   DEPRECATED Commands related to the optical physics simulation engine.
+   /process/optical/cerenkov/   Cerenkov process commands
+   /process/optical/scintillation/   Scintillation process commands
+   /process/optical/wls/   Wave length shifting process commands
+   /process/optical/boundary/   Boundary scattering commands
+   /process/optical/mie/   Mie scattering process commands
+   /process/optical/absorption/   absorption process commands
+   /process/optical/rayleigh/   Rayleigh scattering commands
+ Commands : 
+   processActivation * Activate/deactivate the specified optical process
+   setTrackSecondariesFirst * Activate/deactivate tracking of secondaries before finishing their parent track
+   verbose * Set default verbosity level for optical processes
+
+
+Command /process/optical/processActivation
+Guidance :
+Activate/deactivate the specified optical process
+
+Parameter : proc_name
+the process name
+ Parameter type  : s
+ Omittable       : False
+ Candidates      : Cerenkov Scintillation OpAbsorption OpRayleigh OpMieHG OpBoundary OpWLS 
+
+Parameter : flag
+activation flag
+ Parameter type  : b
+ Omittable       : True
+ Default value   : 1
+
+
+
+Command /process/optical/setTrackSecondariesFirst
+Guidance :
+Activate/deactivate tracking of secondaries before finishing their parent track
+
+Parameter : proc_name
+ Parameter type  : s
+ Omittable       : False
+ Candidates      : Cerenkov Scintillation OpAbsorption OpRayleigh OpMieHG OpBoundary OpWLS 
+
+Parameter : flag
+ Parameter type  : b
+ Omittable       : False
+ Default value   : 1
+
+
+
+Command /process/optical/verbose
+Guidance :
+Set default verbosity level for optical processes
+ Range of parameters : ver>=0
+
+Parameter : ver
+ Parameter type  : i
+ Omittable       : True
+ Default value   : 1
+
+Command directory path : /process/optical/defaults/
+
+
+Guidance :
+DEPRECATED Commands related to the optical physics simulation engine.
+
+ Sub-directories : 
+   /process/optical/defaults/cerenkov/   DEPRECATED Cerenkov process commands
+   /process/optical/defaults/scintillation/   DEPRECATED Scintillation process commands
+   /process/optical/defaults/wls/   DEPRECATED Wave length shifting process commands
+   /process/optical/defaults/boundary/   DEPRECATED Boundary scattering commands
+ Commands : 
+Command directory path : /process/optical/defaults/cerenkov/
+
+
+Guidance :
+DEPRECATED Cerenkov process commands
+
+ Sub-directories : 
+ Commands : 
+   setMaxPhotons * Set default maximum number of photons per step
+   setMaxBetaChange * Set default maximum change of beta of parent particle per step
+   setStackPhotons * Set default whether or not to stack secondary Cerenkov photons
+
+
+Command /process/optical/defaults/cerenkov/setMaxPhotons
+Guidance :
+Set default maximum number of photons per step
+Note this command is used to set the default value,
+if process is not active command will not have effect.
+DEPRECATED: use /process/optical/cerenkov/setMaxPhotons instead.
+ Range of parameters : CerenkovMaxPhotons>=0
+
+Parameter : CerenkovMaxPhotons
+ Parameter type  : i
+ Omittable       : False
+
+
+
+Command /process/optical/defaults/cerenkov/setMaxBetaChange
+Guidance :
+Set default maximum change of beta of parent particle per step
+Note this command is used to set the default value,
+if process is not active command will not have effect.
+DEPRECATED: use /process/optical/cerenkov/setMaxBetaChange instead.
+ Range of parameters : CerenkovMaxBetaChange>=0
+
+Parameter : CerenkovMaxBetaChange
+ Parameter type  : d
+ Omittable       : False
+
+
+
+Command /process/optical/defaults/cerenkov/setStackPhotons
+Guidance :
+Set default whether or not to stack secondary Cerenkov photons
+Note this command is used to set the default value,
+if process is not active command will not have effect.
+DEPRECATED: use /process/optical/cerenkov/setStackPhotons instead.
+
+Parameter : CerenkovStackPhotons
+ Parameter type  : b
+ Omittable       : True
+
+Command directory path : /process/optical/defaults/scintillation/
+
+
+Guidance :
+DEPRECATED Scintillation process commands
+
+ Sub-directories : 
+ Commands : 
+   setYieldFactor * Set scintillation yield factor
+   setByParticleType * Activate/Inactivate scintillation process by particle type
+   setTrackInfo * Activate/Inactivate scintillation TrackInformation
+   setFiniteRiseTime * Set option of a finite rise-time for G4Scintillation
+   setStackPhotons * Set default whether or not to stack secondary Scintillation photons
+
+
+Command /process/optical/defaults/scintillation/setYieldFactor
+Guidance :
+Set scintillation yield factor
+Note this command is used to set the default value,
+if process is not active command will not have effect.
+DEPRECATED: use /process/optical/scintillation/setYieldFactorinstead.
+ Range of parameters : ScintillationYieldFactor>=0
+
+Parameter : ScintillationYieldFactor
+ Parameter type  : d
+ Omittable       : False
+
+
+
+Command /process/optical/defaults/scintillation/setByParticleType
+Guidance :
+Activate/Inactivate scintillation process by particle type
+Note this command is used to set the default value,
+if process is not active command will not have effect.
+DEPRECATED: use /process/optical/scintillation/setByParticleType instead.
+
+Parameter : ScintillationByParticleTypeActivation
+ Parameter type  : b
+ Omittable       : False
+
+
+
+Command /process/optical/defaults/scintillation/setTrackInfo
+Guidance :
+Activate/Inactivate scintillation TrackInformation
+DEPRECATED: use /process/optical/scintillation/setTrackInfo instead.
+
+Parameter : ScintillationTrackInfo
+ Parameter type  : b
+ Omittable       : False
+
+
+
+Command /process/optical/defaults/scintillation/setFiniteRiseTime
+Guidance :
+Set option of a finite rise-time for G4Scintillation
+If set, the G4Scintillation process expects the user to have set the
+constant material property FAST/SLOWSCINTILLATIONRISETIME
+Note this command is used to set the default value,
+if process is not active command will not have effect.
+DEPRECATED: use /process/optical/scintillation/setFiniteRiseTime instead.
+
+Parameter : FiniteRiseTime
+ Parameter type  : b
+ Omittable       : False
+
+
+
+Command /process/optical/defaults/scintillation/setStackPhotons
+Guidance :
+Set default whether or not to stack secondary Scintillation photons
+Note this command is used to set the default value,
+if process is not active command will not have effect.
+DEPRECATED: use /process/optical/scintillation/setStackPhotons instead.
+
+Parameter : ScintillationStackPhotons
+ Parameter type  : b
+ Omittable       : True
+
+Command directory path : /process/optical/defaults/wls/
+
+
+Guidance :
+DEPRECATED Wave length shifting process commands
+
+ Sub-directories : 
+ Commands : 
+   setTimeProfile * Set the WLS time profile (delta or exponential)
+
+
+Command /process/optical/defaults/wls/setTimeProfile
+Guidance :
+Set the WLS time profile (delta or exponential)
+DEPRECATED: use /process/optical/wls/setTimeProfile instead.
+
+Parameter : WLSTimeProfile
+ Parameter type  : s
+ Omittable       : False
+ Candidates      : delta exponential
+
+Command directory path : /process/optical/defaults/boundary/
+
+
+Guidance :
+DEPRECATED Boundary scattering commands
+
+ Sub-directories : 
+ Commands : 
+   setInvokeSD * Set option for calling InvokeSD in G4OpBoundaryProcess
+
+
+Command /process/optical/defaults/boundary/setInvokeSD
+Guidance :
+Set option for calling InvokeSD in G4OpBoundaryProcess
+DEPRECATED: use /process/optical/boundary/setInvokeSD instead.
+
+Parameter : InvokeSD
+ Parameter type  : b
+ Omittable       : False
+
+Command directory path : /process/optical/cerenkov/
+
+
+Guidance :
+Cerenkov process commands
+
+ Sub-directories : 
+ Commands : 
+   setMaxPhotons * Set default maximum number of photons per step
+   setMaxBetaChange * Set default maximum change of beta of parent particle per step
+   setStackPhotons * Set default whether or not to stack secondary Cerenkov photons
+   setTrackSecondariesFirst * Whether to track secondary Cerenkov photons before the primary.
+   verbose * Verbosity for Cerenkov process.
+
+
+Command /process/optical/cerenkov/setMaxPhotons
+Guidance :
+Set default maximum number of photons per step
+Note this command is used to set the default value,
+if process is not active command will not have effect.
+ Range of parameters : CerenkovMaxPhotons>=0
+
+Parameter : CerenkovMaxPhotons
+ Parameter type  : i
+ Omittable       : False
+
+
+
+Command /process/optical/cerenkov/setMaxBetaChange
+Guidance :
+Set default maximum change of beta of parent particle per step
+Note this command is used to set the default value,
+if process is not active command will not have effect.
+ Range of parameters : CerenkovMaxBetaChange>=0
+
+Parameter : CerenkovMaxBetaChange
+ Parameter type  : d
+ Omittable       : False
+
+
+
+Command /process/optical/cerenkov/setStackPhotons
+Guidance :
+Set default whether or not to stack secondary Cerenkov photons
+Note this command is used to set the default value,
+if process is not active command will not have effect.
+
+Parameter : 
+ Parameter type  : b
+ Omittable       : False
+
+
+
+Command /process/optical/cerenkov/setTrackSecondariesFirst
+Guidance :
+Whether to track secondary Cerenkov photons before the primary.
+
+Parameter : 
+ Parameter type  : b
+ Omittable       : False
+
+
+
+Command /process/optical/cerenkov/verbose
+Guidance :
+Verbosity for Cerenkov process.
+ Range of parameters : verbosity >= 0 && verbosity <= 2
+
+Parameter : verbosity
+ Parameter type  : i
+ Omittable       : True
+
+Command directory path : /process/optical/scintillation/
+
+
+Guidance :
+Scintillation process commands
+
+ Sub-directories : 
+ Commands : 
+   setYieldFactor * Set scintillation yield factor
+   setExcitationRatio * Set scintillation excitation ratio
+   setByParticleType * Activate/Inactivate scintillation process by particle type
+   setTrackInfo * Activate/Inactivate scintillation TrackInformation
+   setFiniteRiseTime * Set option of a finite rise-time for G4Scintillation
+   setStackPhotons * Set default whether or not to stack secondary Scintillation photons
+   setTrackSecondariesFirst * Whether to track scintillation secondaries before primary.
+   verbose * Verbosity for scintillation process.
+
+
+Command /process/optical/scintillation/setYieldFactor
+Guidance :
+Set scintillation yield factor
+Note this command is used to set the default value,
+if process is not active command will not have effect.
+ Range of parameters : ScintillationYieldFactor>=0
+
+Parameter : ScintillationYieldFactor
+ Parameter type  : d
+ Omittable       : False
+
+
+
+Command /process/optical/scintillation/setExcitationRatio
+Guidance :
+Set scintillation excitation ratio
+Note this command is used to set the default value,
+if process is not active command will not have effect.
+ Range of parameters : ExcitationRatio >= 0 && ExcitationRatio <=1
+
+Parameter : ExcitationRatio
+ Parameter type  : d
+ Omittable       : False
+
+
+
+Command /process/optical/scintillation/setByParticleType
+Guidance :
+Activate/Inactivate scintillation process by particle type
+Note this command is used to set the default value,
+if process is not active command will not have effect.
+
+Parameter : ScintillationByParticleTypeActivation
+ Parameter type  : b
+ Omittable       : False
+
+
+
+Command /process/optical/scintillation/setTrackInfo
+Guidance :
+Activate/Inactivate scintillation TrackInformation
+
+Parameter : ScintillationTrackInfo
+ Parameter type  : b
+ Omittable       : False
+
+
+
+Command /process/optical/scintillation/setFiniteRiseTime
+Guidance :
+Set option of a finite rise-time for G4Scintillation
+If set, the G4Scintillation process expects the user to have set the
+constant material property FAST/SLOWSCINTILLATIONRISETIME
+Note this command is used to set the default value,
+if process is not active command will not have effect.
+
+Parameter : FiniteRiseTime
+ Parameter type  : b
+ Omittable       : False
+
+
+
+Command /process/optical/scintillation/setStackPhotons
+Guidance :
+Set default whether or not to stack secondary Scintillation photons
+Note this command is used to set the default value,
+if process is not active command will not have effect.
+
+Parameter : ScintillationStackPhotons
+ Parameter type  : b
+ Omittable       : True
+
+
+
+Command /process/optical/scintillation/setTrackSecondariesFirst
+Guidance :
+Whether to track scintillation secondaries before primary.
+
+Parameter : 
+ Parameter type  : b
+ Omittable       : False
+
+
+
+Command /process/optical/scintillation/verbose
+Guidance :
+Verbosity for scintillation process.
+ Range of parameters : verbosity >= 0 && verbosity <= 2
+
+Parameter : verbosity
+ Parameter type  : i
+ Omittable       : True
+
+Command directory path : /process/optical/wls/
+
+
+Guidance :
+Wave length shifting process commands
+
+ Sub-directories : 
+ Commands : 
+   setTimeProfile * Set the WLS time profile (delta or exponential)
+   verbose * Verbosity for WLS process.
+
+
+Command /process/optical/wls/setTimeProfile
+Guidance :
+Set the WLS time profile (delta or exponential)
+
+Parameter : WLSTimeProfile
+ Parameter type  : s
+ Omittable       : False
+ Candidates      : delta exponential
+
+
+
+Command /process/optical/wls/verbose
+Guidance :
+Verbosity for WLS process.
+ Range of parameters : verbosity >= 0 && verbosity <= 2
+
+Parameter : verbosity
+ Parameter type  : i
+ Omittable       : True
+
+Command directory path : /process/optical/boundary/
+
+
+Guidance :
+Boundary scattering commands
+
+ Sub-directories : 
+ Commands : 
+   setInvokeSD * Set option for calling InvokeSD in G4OpBoundaryProcess
+   verbose * Verbosity for boundary process.
+
+
+Command /process/optical/boundary/setInvokeSD
+Guidance :
+Set option for calling InvokeSD in G4OpBoundaryProcess
+
+Parameter : InvokeSD
+ Parameter type  : b
+ Omittable       : False
+
+
+
+Command /process/optical/boundary/verbose
+Guidance :
+Verbosity for boundary process.
+ Range of parameters : verbosity >= 0 && verbosity <= 2
+
+Parameter : verbosity
+ Parameter type  : i
+ Omittable       : True
+
+Command directory path : /process/optical/mie/
+
+
+Guidance :
+Mie scattering process commands
+
+ Sub-directories : 
+ Commands : 
+   verbose * Verbosity for Mie process.
+
+
+Command /process/optical/mie/verbose
+Guidance :
+Verbosity for Mie process.
+ Range of parameters : verbosity >= 0 && verbosity <= 2
+
+Parameter : verbosity
+ Parameter type  : i
+ Omittable       : True
+
+Command directory path : /process/optical/absorption/
+
+
+Guidance :
+absorption process commands
+
+ Sub-directories : 
+ Commands : 
+   verbose * Verbosity for absorption process.
+
+
+Command /process/optical/absorption/verbose
+Guidance :
+Verbosity for absorption process.
+ Range of parameters : verbosity >= 0 && verbosity <= 2
+
+Parameter : verbosity
+ Parameter type  : i
+ Omittable       : True
+
+Command directory path : /process/optical/rayleigh/
+
+
+Guidance :
+Rayleigh scattering commands
+
+ Sub-directories : 
+ Commands : 
+   verbose * Verbosity for Rayleigh process.
+
+
+Command /process/optical/rayleigh/verbose
+Guidance :
+Verbosity for Rayleigh process.
+ Range of parameters : verbosity >= 0 && verbosity <= 2
+
+Parameter : verbosity
+ Parameter type  : i
+ Omittable       : True
+
 Command directory path : /edep/
 
 
@@ -3283,7 +4035,7 @@ Guidance :
 EDepSim detector control.
 
  Sub-directories : 
-   /edep/gdml/   ...Title not available...
+   /edep/gdml/   Control over the gdml file.
    /edep/phys/   Control the physics lists
    /edep/random/   Control of the random seed number.
    /edep/db/   Output file control commands.
@@ -3293,11 +4045,12 @@ EDepSim detector control.
    validateGeometry * Check the geometry for overlaps (set before update).
    export * Export the geometry to a file.  This is not compatible with event
 generation, or reading of kinematics files.
-   field * Set the field strength in the UA1 magnet.
    control * Set the run conditions for this simulation.  This takes the name
 of a run condition and a version.  This is translated into a G4
 macro file which is executed.  The run condition macros are saved
 in the <package-root>/src directory (e.g. src/baseline-1.0.mac). 
+   hitSagitta * Set the maximum sagitta for hit segments.
+   hitLength * Set the length for hit segments to stop growing.
    runId * This is the first run id that will be used by GEANT.  GEANT will automatically increment the run id every time it starts a new internal run so care must be taken if you depend on this to pass-through the run id.
    subrunId * Set the sub run context field for documentation purposes.  This has no internal meaning.
 
@@ -3335,21 +4088,6 @@ Parameter : RootFile
 
 
 
-Command /edep/field
-Guidance :
-Set the field strength in the UA1 magnet.
-
-Parameter : field
- Parameter type  : d
- Omittable       : False
-
-Parameter : Unit
- Parameter type  : s
- Omittable       : False
- Candidates      : T kG G tesla kilogauss gauss
-
-
-
 Command /edep/control
 Guidance :
 Set the run conditions for this simulation.  This takes the name
@@ -3362,6 +4100,42 @@ Parameter : Name
  Omittable       : False
 
 Parameter : Version
+ Parameter type  : s
+ Omittable       : False
+
+
+
+Command /edep/hitSagitta
+Guidance :
+Set the maximum sagitta for hit segments.
+
+Parameter : Sensitive
+ Parameter type  : s
+ Omittable       : False
+
+Parameter : Sagitta
+ Parameter type  : d
+ Omittable       : False
+
+Parameter : Unit
+ Parameter type  : s
+ Omittable       : False
+
+
+
+Command /edep/hitLength
+Guidance :
+Set the length for hit segments to stop growing.
+
+Parameter : Sensitive
+ Parameter type  : s
+ Omittable       : False
+
+Parameter : Length
+ Parameter type  : d
+ Omittable       : False
+
+Parameter : Unit
  Parameter type  : s
  Omittable       : False
 
@@ -3386,6 +4160,11 @@ Parameter :
  Omittable       : False
 
 Command directory path : /edep/gdml/
+
+
+Guidance :
+Control over the gdml file.
+
  Sub-directories : 
  Commands : 
    read * Define a GDML file to be used for the geometry.
@@ -3427,7 +4206,7 @@ Parameter : Unit
  Parameter type  : s
  Omittable       : True
  Default value   : mm
- Candidates      : pc km m cm mm um nm Ang fm pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
+ Candidates      : pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
 
 
 
@@ -3444,7 +4223,7 @@ Parameter : Unit
  Parameter type  : s
  Omittable       : True
  Default value   : mm
- Candidates      : pc km m cm mm um nm Ang fm pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
+ Candidates      : pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
 
 
 
@@ -3461,7 +4240,7 @@ Parameter : Unit
  Parameter type  : s
  Omittable       : True
  Default value   : mm
- Candidates      : pc km m cm mm um nm Ang fm pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
+ Candidates      : pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
 
 
 
@@ -3478,7 +4257,7 @@ Parameter : Unit
  Parameter type  : s
  Omittable       : True
  Default value   : mm
- Candidates      : pc km m cm mm um nm Ang fm pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
+ Candidates      : pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
 
 
 
@@ -3585,7 +4364,7 @@ Parameter : momentum
 Parameter : Unit
  Parameter type  : s
  Omittable       : False
- Candidates      : eV keV MeV GeV TeV PeV J eV keV MeV GeV TeV PeV J electronvolt kiloelectronvolt megaelectronvolt gigaelectronvolt teraelectronvolt petaelectronvolt joule electronvolt kiloelectronvolt megaelectronvolt gigaelectronvolt teraelectronvolt petaelectronvolt joule
+ Candidates      : eV keV MeV GeV TeV PeV J electronvolt kiloelectronvolt megaelectronvolt gigaelectronvolt teraelectronvolt petaelectronvolt joule
 
 
 
@@ -3600,7 +4379,7 @@ Parameter : momentum
 Parameter : Unit
  Parameter type  : s
  Omittable       : False
- Candidates      : eV keV MeV GeV TeV PeV J eV keV MeV GeV TeV PeV J electronvolt kiloelectronvolt megaelectronvolt gigaelectronvolt teraelectronvolt petaelectronvolt joule electronvolt kiloelectronvolt megaelectronvolt gigaelectronvolt teraelectronvolt petaelectronvolt joule
+ Candidates      : eV keV MeV GeV TeV PeV J electronvolt kiloelectronvolt megaelectronvolt gigaelectronvolt teraelectronvolt petaelectronvolt joule
 
 
 
@@ -3615,7 +4394,7 @@ Parameter : length
 Parameter : Unit
  Parameter type  : s
  Omittable       : False
- Candidates      : pc km m cm mm um nm Ang fm pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
+ Candidates      : pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
 
 
 
@@ -3642,7 +4421,7 @@ Parameter : length
 Parameter : Unit
  Parameter type  : s
  Omittable       : False
- Candidates      : pc km m cm mm um nm Ang fm pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
+ Candidates      : pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
 
 
 
@@ -5933,92 +6712,6 @@ Parameter : level
  Parameter type  : i
  Omittable       : False
 
-Command directory path : /persistency/
-
-
-Guidance :
-UI commands specific to persistency.
-
- Sub-directories : 
-   /persistency/gdml/   GDML parser and writer.
- Commands : 
-Command directory path : /persistency/gdml/
-
-
-Guidance :
-GDML parser and writer.
-
- Sub-directories : 
- Commands : 
-   read * Read GDML file.
-   topvol * Set the top volume for writing the GDML file.
-   write * Write GDML file.
-   export_regions * Enable export of geometrical regions
-   export_Ecuts * Enable export of energy cuts associated
-   clear * Clear geometry (before reading a new one from GDML).
-
-
-Command /persistency/gdml/read
-Guidance :
-Read GDML file.
-
-Parameter : filename
- Parameter type  : s
- Omittable       : False
-
-
-
-Command /persistency/gdml/topvol
-Guidance :
-Set the top volume for writing the GDML file.
-
-Parameter : topvol
- Parameter type  : s
- Omittable       : False
-
-
-
-Command /persistency/gdml/write
-Guidance :
-Write GDML file.
-
-Parameter : filename
- Parameter type  : s
- Omittable       : False
-
-
-
-Command /persistency/gdml/export_regions
-Guidance :
-Enable export of geometrical regions
-for storing production cuts.
-
-Parameter : export_regions
- Parameter type  : b
- Omittable       : False
- Default value   : 0
-
-
-
-Command /persistency/gdml/export_Ecuts
-Guidance :
-Enable export of energy cuts associated
-to logical volumes.
-NOTE: may increase considerably the size of the
-      GDML file!  Information is anyhow not used
-      for import.
-
-Parameter : export_Ecuts
- Parameter type  : b
- Omittable       : False
- Default value   : 0
-
-
-
-Command /persistency/gdml/clear
-Guidance :
-Clear geometry (before reading a new one from GDML).
-
 Command directory path : /material/
 
 
@@ -6104,6 +6797,8 @@ Commands for G4MaterialTable
    printElement * print Element from G4ElementTable.
    printMaterial * print Material from G4MaterialTable.
    printDensityEffParam * print Material from G4DensityEffectData.
+   enableDensityEffOnFly * enable accurate computation of density effect.
+   disableDensityEffOnFly * disable accurate computation of density effect.
 
 
 Command /material/g4/printElement
@@ -6140,6 +6835,30 @@ Parameter : dmat
  Omittable       : True
  Default value   : all
 
+
+
+Command /material/g4/enableDensityEffOnFly
+Guidance :
+enable accurate computation of density effect.
+all - all materials.
+
+Parameter : dens
+ Parameter type  : s
+ Omittable       : True
+ Default value   : all
+
+
+
+Command /material/g4/disableDensityEffOnFly
+Guidance :
+disable accurate computation of density effect.
+all - all materials.
+
+Parameter : dens
+ Parameter type  : s
+ Omittable       : True
+ Default value   : all
+
 Command directory path : /physics_lists/
 
 
@@ -6160,7 +6879,21 @@ tailoring the processes
    SyncRadiation * Switching on/off synchrotron radiation.
    SyncRadiationAll * Switching on/off synchrotron radiation for all charged.
    GammaNuclear * Switching on gamma nuclear physics.
+   LENDGammaNuclear * Switching on LEND gamma nuclear physics.
+   ElectroNuclear * Switching on e+- nuclear physics.
    MuonNuclear * Switching on muon nuclear physics.
+   GammaToMuons * Switching on gamma conversion to muon pair.
+   PositronToMuons * Switching on positron conversion to muon pair.
+   PositronToHadrons * Switching on positron conversion to hadrons.
+   NeutrinoActivation * Activation of neutrino processes
+   NuETotXscActivation * Activation of neutrino processes
+   GammaToMuonsFactor * Factor for gamma conversion to muon pair.
+   PositronToMuonsFactor * Factor for positron conversion to muon pair.
+   PositronToHadronsFactor * Factor for positron conversion to hadrons.
+   NuEleCcBias * Neutrino-electron cc-current bias factor
+   NuEleNcBias * Neutrino-electron nc-current bias factor
+   NuNucleusBias * Neutrino-nucleus bias factor
+   NuDetectorName * Set neutrino detector name
 
 
 Command /physics_lists/em/SyncRadiation
@@ -6193,12 +6926,152 @@ Parameter :
 
 
 
+Command /physics_lists/em/LENDGammaNuclear
+Guidance :
+Switching on LEND gamma nuclear physics.
+
+Parameter : 
+ Parameter type  : b
+ Omittable       : False
+
+
+
+Command /physics_lists/em/ElectroNuclear
+Guidance :
+Switching on e+- nuclear physics.
+
+Parameter : 
+ Parameter type  : b
+ Omittable       : False
+
+
+
 Command /physics_lists/em/MuonNuclear
 Guidance :
 Switching on muon nuclear physics.
 
 Parameter : 
  Parameter type  : b
+ Omittable       : False
+
+
+
+Command /physics_lists/em/GammaToMuons
+Guidance :
+Switching on gamma conversion to muon pair.
+
+Parameter : 
+ Parameter type  : b
+ Omittable       : False
+
+
+
+Command /physics_lists/em/PositronToMuons
+Guidance :
+Switching on positron conversion to muon pair.
+
+Parameter : 
+ Parameter type  : b
+ Omittable       : False
+
+
+
+Command /physics_lists/em/PositronToHadrons
+Guidance :
+Switching on positron conversion to hadrons.
+
+Parameter : 
+ Parameter type  : b
+ Omittable       : False
+
+
+
+Command /physics_lists/em/NeutrinoActivation
+Guidance :
+Activation of neutrino processes
+
+Parameter : 
+ Parameter type  : b
+ Omittable       : False
+
+
+
+Command /physics_lists/em/NuETotXscActivation
+Guidance :
+Activation of neutrino processes
+
+Parameter : 
+ Parameter type  : b
+ Omittable       : False
+
+
+
+Command /physics_lists/em/GammaToMuonsFactor
+Guidance :
+Factor for gamma conversion to muon pair.
+
+Parameter : 
+ Parameter type  : d
+ Omittable       : False
+
+
+
+Command /physics_lists/em/PositronToMuonsFactor
+Guidance :
+Factor for positron conversion to muon pair.
+
+Parameter : 
+ Parameter type  : d
+ Omittable       : False
+
+
+
+Command /physics_lists/em/PositronToHadronsFactor
+Guidance :
+Factor for positron conversion to hadrons.
+
+Parameter : 
+ Parameter type  : d
+ Omittable       : False
+
+
+
+Command /physics_lists/em/NuEleCcBias
+Guidance :
+Neutrino-electron cc-current bias factor
+
+Parameter : 
+ Parameter type  : d
+ Omittable       : False
+
+
+
+Command /physics_lists/em/NuEleNcBias
+Guidance :
+Neutrino-electron nc-current bias factor
+
+Parameter : 
+ Parameter type  : d
+ Omittable       : False
+
+
+
+Command /physics_lists/em/NuNucleusBias
+Guidance :
+Neutrino-nucleus bias factor
+
+Parameter : 
+ Parameter type  : d
+ Omittable       : False
+
+
+
+Command /physics_lists/em/NuDetectorName
+Guidance :
+Set neutrino detector name
+
+Parameter : 
+ Parameter type  : s
  Omittable       : False
 
 Command directory path : /generator/
@@ -6489,7 +7362,7 @@ Parameter : z
 Parameter : Unit
  Parameter type  : s
  Omittable       : False
- Candidates      : pc km m cm mm um nm Ang fm pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
+ Candidates      : pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
 
 Command directory path : /generator/position/uniform/
 
@@ -6582,7 +7455,7 @@ Parameter : X
 Parameter : Unit
  Parameter type  : s
  Omittable       : False
- Candidates      : pc km m cm mm um nm Ang fm pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
+ Candidates      : pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
 
 
 
@@ -6597,7 +7470,7 @@ Parameter : Y
 Parameter : Unit
  Parameter type  : s
  Omittable       : False
- Candidates      : pc km m cm mm um nm Ang fm pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
+ Candidates      : pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
 
 
 
@@ -6612,7 +7485,7 @@ Parameter : Z
 Parameter : Unit
  Parameter type  : s
  Omittable       : False
- Candidates      : pc km m cm mm um nm Ang fm pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
+ Candidates      : pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
 
 
 
@@ -6627,7 +7500,7 @@ Parameter : T
 Parameter : Unit
  Parameter type  : s
  Omittable       : False
- Candidates      : s ms mus ns ps s ms mus ns ps second millisecond microsecond nanosecond picosecond second millisecond microsecond nanosecond picosecond
+ Candidates      : s ms us ns ps second millisecond microsecond nanosecond picosecond
 
 
 
@@ -6642,7 +7515,7 @@ Parameter : X
 Parameter : Unit
  Parameter type  : s
  Omittable       : False
- Candidates      : pc km m cm mm um nm Ang fm pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
+ Candidates      : pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
 
 
 
@@ -6657,7 +7530,7 @@ Parameter : Y
 Parameter : Unit
  Parameter type  : s
  Omittable       : False
- Candidates      : pc km m cm mm um nm Ang fm pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
+ Candidates      : pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
 
 
 
@@ -6672,7 +7545,7 @@ Parameter : Z
 Parameter : Unit
  Parameter type  : s
  Omittable       : False
- Candidates      : pc km m cm mm um nm Ang fm pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
+ Candidates      : pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
 
 
 
@@ -6687,7 +7560,7 @@ Parameter : T
 Parameter : Unit
  Parameter type  : s
  Omittable       : False
- Candidates      : s ms mus ns ps s ms mus ns ps second millisecond microsecond nanosecond picosecond second millisecond microsecond nanosecond picosecond
+ Candidates      : s ms us ns ps second millisecond microsecond nanosecond picosecond
 
 Command directory path : /generator/position/density/
 
@@ -6780,7 +7653,7 @@ Parameter : X
 Parameter : Unit
  Parameter type  : s
  Omittable       : False
- Candidates      : pc km m cm mm um nm Ang fm pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
+ Candidates      : pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
 
 
 
@@ -6795,7 +7668,7 @@ Parameter : Y
 Parameter : Unit
  Parameter type  : s
  Omittable       : False
- Candidates      : pc km m cm mm um nm Ang fm pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
+ Candidates      : pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
 
 
 
@@ -6810,7 +7683,7 @@ Parameter : Z
 Parameter : Unit
  Parameter type  : s
  Omittable       : False
- Candidates      : pc km m cm mm um nm Ang fm pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
+ Candidates      : pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
 
 
 
@@ -6825,7 +7698,7 @@ Parameter : T
 Parameter : Unit
  Parameter type  : s
  Omittable       : False
- Candidates      : s ms mus ns ps s ms mus ns ps second millisecond microsecond nanosecond picosecond second millisecond microsecond nanosecond picosecond
+ Candidates      : s ms us ns ps second millisecond microsecond nanosecond picosecond
 
 
 
@@ -6840,7 +7713,7 @@ Parameter : X
 Parameter : Unit
  Parameter type  : s
  Omittable       : False
- Candidates      : pc km m cm mm um nm Ang fm pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
+ Candidates      : pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
 
 
 
@@ -6855,7 +7728,7 @@ Parameter : Y
 Parameter : Unit
  Parameter type  : s
  Omittable       : False
- Candidates      : pc km m cm mm um nm Ang fm pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
+ Candidates      : pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
 
 
 
@@ -6870,7 +7743,7 @@ Parameter : Z
 Parameter : Unit
  Parameter type  : s
  Omittable       : False
- Candidates      : pc km m cm mm um nm Ang fm pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
+ Candidates      : pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
 
 
 
@@ -6885,7 +7758,7 @@ Parameter : T
 Parameter : Unit
  Parameter type  : s
  Omittable       : False
- Candidates      : s ms mus ns ps s ms mus ns ps second millisecond microsecond nanosecond picosecond second millisecond microsecond nanosecond picosecond
+ Candidates      : s ms us ns ps second millisecond microsecond nanosecond picosecond
 
 Command directory path : /generator/time/
 
@@ -6895,6 +7768,7 @@ Control vertex time the generators.
 
  Sub-directories : 
    /generator/time/fixed/   Control of the fixed time factory.
+   /generator/time/free/   Control of the free time factory.
    /generator/time/spill/   Control of the spill time factory.
  Commands : 
    set * Set the current time factory.
@@ -6907,7 +7781,7 @@ Set the current time factory.
 Parameter : Factory
  Parameter type  : s
  Omittable       : False
- Candidates      : fixed spill 
+ Candidates      : fixed free spill 
 
 Command directory path : /generator/time/fixed/
 
@@ -6931,8 +7805,16 @@ Parameter : time
 Parameter : Unit
  Parameter type  : s
  Omittable       : False
- Candidates      : s ms mus ns ps s ms mus ns ps second millisecond microsecond nanosecond picosecond second millisecond microsecond nanosecond picosecond
+ Candidates      : s ms us ns ps second millisecond microsecond nanosecond picosecond
 
+Command directory path : /generator/time/free/
+
+
+Guidance :
+Control of the free time factory.
+
+ Sub-directories : 
+ Commands : 
 Command directory path : /generator/time/spill/
 
 
@@ -6959,7 +7841,7 @@ Parameter : time
 Parameter : Unit
  Parameter type  : s
  Omittable       : False
- Candidates      : s ms mus ns ps s ms mus ns ps second millisecond microsecond nanosecond picosecond second millisecond microsecond nanosecond picosecond
+ Candidates      : s ms us ns ps second millisecond microsecond nanosecond picosecond
 
 
 
@@ -6974,7 +7856,7 @@ Parameter : time
 Parameter : Unit
  Parameter type  : s
  Omittable       : False
- Candidates      : s ms mus ns ps s ms mus ns ps second millisecond microsecond nanosecond picosecond second millisecond microsecond nanosecond picosecond
+ Candidates      : s ms us ns ps second millisecond microsecond nanosecond picosecond
 
 
 
@@ -6989,7 +7871,7 @@ Parameter : time
 Parameter : Unit
  Parameter type  : s
  Omittable       : False
- Candidates      : s ms mus ns ps s ms mus ns ps second millisecond microsecond nanosecond picosecond second millisecond microsecond nanosecond picosecond
+ Candidates      : s ms us ns ps second millisecond microsecond nanosecond picosecond
 
 
 
@@ -7058,7 +7940,7 @@ Parameter : particleName
  Parameter type  : s
  Omittable       : True
  Default value   : geantino
- Candidates      : B+ B- B0 Bc+ Bc- Bs0 D+ D- D0 Ds+ Ds- GenericIon He3 J/psi N(1440)+ N(1440)0 N(1520)+ N(1520)0 N(1535)+ N(1535)0 N(1650)+ N(1650)0 N(1675)+ N(1675)0 N(1680)+ N(1680)0 N(1700)+ N(1700)0 N(1710)+ N(1710)0 N(1720)+ N(1720)0 N(1900)+ N(1900)0 N(1990)+ N(1990)0 N(2090)+ N(2090)0 N(2190)+ N(2190)0 N(2220)+ N(2220)0 N(2250)+ N(2250)0 Upsilon a0(1450)+ a0(1450)- a0(1450)0 a0(980)+ a0(980)- a0(980)0 a1(1260)+ a1(1260)- a1(1260)0 a2(1320)+ a2(1320)- a2(1320)0 alpha anti_B0 anti_Bs0 anti_D0 anti_He3 anti_N(1440)+ anti_N(1440)0 anti_N(1520)+ anti_N(1520)0 anti_N(1535)+ anti_N(1535)0 anti_N(1650)+ anti_N(1650)0 anti_N(1675)+ anti_N(1675)0 anti_N(1680)+ anti_N(1680)0 anti_N(1700)+ anti_N(1700)0 anti_N(1710)+ anti_N(1710)0 anti_N(1720)+ anti_N(1720)0 anti_N(1900)+ anti_N(1900)0 anti_N(1990)+ anti_N(1990)0 anti_N(2090)+ anti_N(2090)0 anti_N(2190)+ anti_N(2190)0 anti_N(2220)+ anti_N(2220)0 anti_N(2250)+ anti_N(2250)0 anti_alpha anti_b_quark anti_c_quark anti_d_quark anti_dd1_diquark anti_delta(1600)+ anti_delta(1600)++ anti_delta(1600)- anti_delta(1600)0 anti_delta(1620)+ anti_delta(1620)++ anti_delta(1620)- anti_delta(1620)0 anti_delta(1700)+ anti_delta(1700)++ anti_delta(1700)- anti_delta(1700)0 anti_delta(1900)+ anti_delta(1900)++ anti_delta(1900)- anti_delta(1900)0 anti_delta(1905)+ anti_delta(1905)++ anti_delta(1905)- anti_delta(1905)0 anti_delta(1910)+ anti_delta(1910)++ anti_delta(1910)- anti_delta(1910)0 anti_delta(1920)+ anti_delta(1920)++ anti_delta(1920)- anti_delta(1920)0 anti_delta(1930)+ anti_delta(1930)++ anti_delta(1930)- anti_delta(1930)0 anti_delta(1950)+ anti_delta(1950)++ anti_delta(1950)- anti_delta(1950)0 anti_delta+ anti_delta++ anti_delta- anti_delta0 anti_deuteron anti_k(1460)0 anti_k0_star(1430)0 anti_k1(1270)0 anti_k1(1400)0 anti_k2(1770)0 anti_k2_star(1430)0 anti_k2_star(1980)0 anti_k3_star(1780)0 anti_k_star(1410)0 anti_k_star(1680)0 anti_k_star0 anti_kaon0 anti_lambda anti_lambda(1405) anti_lambda(1520) anti_lambda(1600) anti_lambda(1670) anti_lambda(1690) anti_lambda(1800) anti_lambda(1810) anti_lambda(1820) anti_lambda(1830) anti_lambda(1890) anti_lambda(2100) anti_lambda(2110) anti_lambda_b anti_lambda_c+ anti_neutron anti_nu_e anti_nu_mu anti_nu_tau anti_omega- anti_omega_b- anti_omega_c0 anti_proton anti_s_quark anti_sd0_diquark anti_sd1_diquark anti_sigma(1385)+ anti_sigma(1385)- anti_sigma(1385)0 anti_sigma(1660)+ anti_sigma(1660)- anti_sigma(1660)0 anti_sigma(1670)+ anti_sigma(1670)- anti_sigma(1670)0 anti_sigma(1750)+ anti_sigma(1750)- anti_sigma(1750)0 anti_sigma(1775)+ anti_sigma(1775)- anti_sigma(1775)0 anti_sigma(1915)+ anti_sigma(1915)- anti_sigma(1915)0 anti_sigma(1940)+ anti_sigma(1940)- anti_sigma(1940)0 anti_sigma(2030)+ anti_sigma(2030)- anti_sigma(2030)0 anti_sigma+ anti_sigma- anti_sigma0 anti_sigma_b+ anti_sigma_b- anti_sigma_b0 anti_sigma_c+ anti_sigma_c++ anti_sigma_c0 anti_ss1_diquark anti_su0_diquark anti_su1_diquark anti_t_quark anti_triton anti_u_quark anti_ud0_diquark anti_ud1_diquark anti_uu1_diquark anti_xi(1530)- anti_xi(1530)0 anti_xi(1690)- anti_xi(1690)0 anti_xi(1820)- anti_xi(1820)0 anti_xi(1950)- anti_xi(1950)0 anti_xi(2030)- anti_xi(2030)0 anti_xi- anti_xi0 anti_xi_b- anti_xi_b0 anti_xi_c+ anti_xi_c0 b1(1235)+ b1(1235)- b1(1235)0 b_quark c_quark chargedgeantino d_quark dd1_diquark delta(1600)+ delta(1600)++ delta(1600)- delta(1600)0 delta(1620)+ delta(1620)++ delta(1620)- delta(1620)0 delta(1700)+ delta(1700)++ delta(1700)- delta(1700)0 delta(1900)+ delta(1900)++ delta(1900)- delta(1900)0 delta(1905)+ delta(1905)++ delta(1905)- delta(1905)0 delta(1910)+ delta(1910)++ delta(1910)- delta(1910)0 delta(1920)+ delta(1920)++ delta(1920)- delta(1920)0 delta(1930)+ delta(1930)++ delta(1930)- delta(1930)0 delta(1950)+ delta(1950)++ delta(1950)- delta(1950)0 delta+ delta++ delta- delta0 deuteron e+ e- eta eta(1295) eta(1405) eta(1475) eta2(1645) eta2(1870) eta_prime etac f0(1370) f0(1500) f0(1710) f0(500) f0(980) f1(1285) f1(1420) f2(1270) f2(1810) f2(2010) f2_prime(1525) gamma geantino gluon h1(1170) h1(1380) k(1460)+ k(1460)- k(1460)0 k0_star(1430)+ k0_star(1430)- k0_star(1430)0 k1(1270)+ k1(1270)- k1(1270)0 k1(1400)+ k1(1400)- k1(1400)0 k2(1770)+ k2(1770)- k2(1770)0 k2_star(1430)+ k2_star(1430)- k2_star(1430)0 k2_star(1980)+ k2_star(1980)- k2_star(1980)0 k3_star(1780)+ k3_star(1780)- k3_star(1780)0 k_star(1410)+ k_star(1410)- k_star(1410)0 k_star(1680)+ k_star(1680)- k_star(1680)0 k_star+ k_star- k_star0 kaon+ kaon- kaon0 kaon0L kaon0S lambda lambda(1405) lambda(1520) lambda(1600) lambda(1670) lambda(1690) lambda(1800) lambda(1810) lambda(1820) lambda(1830) lambda(1890) lambda(2100) lambda(2110) lambda_b lambda_c+ mu+ mu- neutron nu_e nu_mu nu_tau omega omega(1420) omega(1650) omega- omega3(1670) omega_b- omega_c0 opticalphoton phi phi(1680) phi3(1850) pi(1300)+ pi(1300)- pi(1300)0 pi+ pi- pi0 pi2(1670)+ pi2(1670)- pi2(1670)0 proton rho(1450)+ rho(1450)- rho(1450)0 rho(1700)+ rho(1700)- rho(1700)0 rho+ rho- rho0 rho3(1690)+ rho3(1690)- rho3(1690)0 s_quark sd0_diquark sd1_diquark sigma(1385)+ sigma(1385)- sigma(1385)0 sigma(1660)+ sigma(1660)- sigma(1660)0 sigma(1670)+ sigma(1670)- sigma(1670)0 sigma(1750)+ sigma(1750)- sigma(1750)0 sigma(1775)+ sigma(1775)- sigma(1775)0 sigma(1915)+ sigma(1915)- sigma(1915)0 sigma(1940)+ sigma(1940)- sigma(1940)0 sigma(2030)+ sigma(2030)- sigma(2030)0 sigma+ sigma- sigma0 sigma_b+ sigma_b- sigma_b0 sigma_c+ sigma_c++ sigma_c0 ss1_diquark su0_diquark su1_diquark t_quark tau+ tau- thermalelectron triton u_quark ud0_diquark ud1_diquark uu1_diquark xi(1530)- xi(1530)0 xi(1690)- xi(1690)0 xi(1820)- xi(1820)0 xi(1950)- xi(1950)0 xi(2030)- xi(2030)0 xi- xi0 xi_b- xi_b0 xi_c+ xi_c0 ion 
+ Candidates      : B+ B- B0 Bc+ Bc- Bs0 D+ D- D0 Ds+ Ds- GenericIon He3 J/psi N(1440)+ N(1440)0 N(1520)+ N(1520)0 N(1535)+ N(1535)0 N(1650)+ N(1650)0 N(1675)+ N(1675)0 N(1680)+ N(1680)0 N(1700)+ N(1700)0 N(1710)+ N(1710)0 N(1720)+ N(1720)0 N(1900)+ N(1900)0 N(1990)+ N(1990)0 N(2090)+ N(2090)0 N(2190)+ N(2190)0 N(2220)+ N(2220)0 N(2250)+ N(2250)0 Upsilon a0(1450)+ a0(1450)- a0(1450)0 a0(980)+ a0(980)- a0(980)0 a1(1260)+ a1(1260)- a1(1260)0 a2(1320)+ a2(1320)- a2(1320)0 alpha anti_B0 anti_Bs0 anti_D0 anti_He3 anti_N(1440)+ anti_N(1440)0 anti_N(1520)+ anti_N(1520)0 anti_N(1535)+ anti_N(1535)0 anti_N(1650)+ anti_N(1650)0 anti_N(1675)+ anti_N(1675)0 anti_N(1680)+ anti_N(1680)0 anti_N(1700)+ anti_N(1700)0 anti_N(1710)+ anti_N(1710)0 anti_N(1720)+ anti_N(1720)0 anti_N(1900)+ anti_N(1900)0 anti_N(1990)+ anti_N(1990)0 anti_N(2090)+ anti_N(2090)0 anti_N(2190)+ anti_N(2190)0 anti_N(2220)+ anti_N(2220)0 anti_N(2250)+ anti_N(2250)0 anti_alpha anti_b_quark anti_bb1_diquark anti_bc0_diquark anti_bc1_diquark anti_bd0_diquark anti_bd1_diquark anti_bs0_diquark anti_bs1_diquark anti_bu0_diquark anti_bu1_diquark anti_c_quark anti_cc1_diquark anti_cd0_diquark anti_cd1_diquark anti_cs0_diquark anti_cs1_diquark anti_cu0_diquark anti_cu1_diquark anti_d_quark anti_dd1_diquark anti_delta(1600)+ anti_delta(1600)++ anti_delta(1600)- anti_delta(1600)0 anti_delta(1620)+ anti_delta(1620)++ anti_delta(1620)- anti_delta(1620)0 anti_delta(1700)+ anti_delta(1700)++ anti_delta(1700)- anti_delta(1700)0 anti_delta(1900)+ anti_delta(1900)++ anti_delta(1900)- anti_delta(1900)0 anti_delta(1905)+ anti_delta(1905)++ anti_delta(1905)- anti_delta(1905)0 anti_delta(1910)+ anti_delta(1910)++ anti_delta(1910)- anti_delta(1910)0 anti_delta(1920)+ anti_delta(1920)++ anti_delta(1920)- anti_delta(1920)0 anti_delta(1930)+ anti_delta(1930)++ anti_delta(1930)- anti_delta(1930)0 anti_delta(1950)+ anti_delta(1950)++ anti_delta(1950)- anti_delta(1950)0 anti_delta+ anti_delta++ anti_delta- anti_delta0 anti_deuteron anti_k(1460)0 anti_k0_star(1430)0 anti_k1(1270)0 anti_k1(1400)0 anti_k2(1770)0 anti_k2_star(1430)0 anti_k2_star(1980)0 anti_k3_star(1780)0 anti_k_star(1410)0 anti_k_star(1680)0 anti_k_star0 anti_kaon0 anti_lambda anti_lambda(1405) anti_lambda(1520) anti_lambda(1600) anti_lambda(1670) anti_lambda(1690) anti_lambda(1800) anti_lambda(1810) anti_lambda(1820) anti_lambda(1830) anti_lambda(1890) anti_lambda(2100) anti_lambda(2110) anti_lambda_b anti_lambda_c+ anti_neutron anti_nu_e anti_nu_mu anti_nu_tau anti_omega- anti_omega_b- anti_omega_c0 anti_proton anti_s_quark anti_sd0_diquark anti_sd1_diquark anti_sigma(1385)+ anti_sigma(1385)- anti_sigma(1385)0 anti_sigma(1660)+ anti_sigma(1660)- anti_sigma(1660)0 anti_sigma(1670)+ anti_sigma(1670)- anti_sigma(1670)0 anti_sigma(1750)+ anti_sigma(1750)- anti_sigma(1750)0 anti_sigma(1775)+ anti_sigma(1775)- anti_sigma(1775)0 anti_sigma(1915)+ anti_sigma(1915)- anti_sigma(1915)0 anti_sigma(1940)+ anti_sigma(1940)- anti_sigma(1940)0 anti_sigma(2030)+ anti_sigma(2030)- anti_sigma(2030)0 anti_sigma+ anti_sigma- anti_sigma0 anti_sigma_b+ anti_sigma_b- anti_sigma_b0 anti_sigma_c+ anti_sigma_c++ anti_sigma_c0 anti_ss1_diquark anti_su0_diquark anti_su1_diquark anti_t_quark anti_triton anti_u_quark anti_ud0_diquark anti_ud1_diquark anti_uu1_diquark anti_xi(1530)- anti_xi(1530)0 anti_xi(1690)- anti_xi(1690)0 anti_xi(1820)- anti_xi(1820)0 anti_xi(1950)- anti_xi(1950)0 anti_xi(2030)- anti_xi(2030)0 anti_xi- anti_xi0 anti_xi_b- anti_xi_b0 anti_xi_c+ anti_xi_c0 b1(1235)+ b1(1235)- b1(1235)0 b_quark bb1_diquark bc0_diquark bc1_diquark bd0_diquark bd1_diquark bs0_diquark bs1_diquark bu0_diquark bu1_diquark c_quark cc1_diquark cd0_diquark cd1_diquark chargedgeantino cs0_diquark cs1_diquark cu0_diquark cu1_diquark d_quark dd1_diquark delta(1600)+ delta(1600)++ delta(1600)- delta(1600)0 delta(1620)+ delta(1620)++ delta(1620)- delta(1620)0 delta(1700)+ delta(1700)++ delta(1700)- delta(1700)0 delta(1900)+ delta(1900)++ delta(1900)- delta(1900)0 delta(1905)+ delta(1905)++ delta(1905)- delta(1905)0 delta(1910)+ delta(1910)++ delta(1910)- delta(1910)0 delta(1920)+ delta(1920)++ delta(1920)- delta(1920)0 delta(1930)+ delta(1930)++ delta(1930)- delta(1930)0 delta(1950)+ delta(1950)++ delta(1950)- delta(1950)0 delta+ delta++ delta- delta0 deuteron e+ e- eta eta(1295) eta(1405) eta(1475) eta2(1645) eta2(1870) eta_prime etac f0(1370) f0(1500) f0(1710) f0(500) f0(980) f1(1285) f1(1420) f2(1270) f2(1810) f2(2010) f2_prime(1525) gamma geantino gluon h1(1170) h1(1380) k(1460)+ k(1460)- k(1460)0 k0_star(1430)+ k0_star(1430)- k0_star(1430)0 k1(1270)+ k1(1270)- k1(1270)0 k1(1400)+ k1(1400)- k1(1400)0 k2(1770)+ k2(1770)- k2(1770)0 k2_star(1430)+ k2_star(1430)- k2_star(1430)0 k2_star(1980)+ k2_star(1980)- k2_star(1980)0 k3_star(1780)+ k3_star(1780)- k3_star(1780)0 k_star(1410)+ k_star(1410)- k_star(1410)0 k_star(1680)+ k_star(1680)- k_star(1680)0 k_star+ k_star- k_star0 kaon+ kaon- kaon0 kaon0L kaon0S lambda lambda(1405) lambda(1520) lambda(1600) lambda(1670) lambda(1690) lambda(1800) lambda(1810) lambda(1820) lambda(1830) lambda(1890) lambda(2100) lambda(2110) lambda_b lambda_c+ mu+ mu- neutron nu_e nu_mu nu_tau omega omega(1420) omega(1650) omega- omega3(1670) omega_b- omega_c0 opticalphoton phi phi(1680) phi3(1850) pi(1300)+ pi(1300)- pi(1300)0 pi+ pi- pi0 pi2(1670)+ pi2(1670)- pi2(1670)0 proton rho(1450)+ rho(1450)- rho(1450)0 rho(1700)+ rho(1700)- rho(1700)0 rho+ rho- rho0 rho3(1690)+ rho3(1690)- rho3(1690)0 s_quark sd0_diquark sd1_diquark sigma(1385)+ sigma(1385)- sigma(1385)0 sigma(1660)+ sigma(1660)- sigma(1660)0 sigma(1670)+ sigma(1670)- sigma(1670)0 sigma(1750)+ sigma(1750)- sigma(1750)0 sigma(1775)+ sigma(1775)- sigma(1775)0 sigma(1915)+ sigma(1915)- sigma(1915)0 sigma(1940)+ sigma(1940)- sigma(1940)0 sigma(2030)+ sigma(2030)- sigma(2030)0 sigma+ sigma- sigma0 sigma_b+ sigma_b- sigma_b0 sigma_c+ sigma_c++ sigma_c0 ss1_diquark su0_diquark su1_diquark t_quark tau+ tau- thermalelectron triton u_quark ud0_diquark ud1_diquark uu1_diquark xi(1530)- xi(1530)0 xi(1690)- xi(1690)0 xi(1820)- xi(1820)0 xi(1950)- xi(1950)0 xi(2030)- xi(2030)0 xi- xi0 xi_b- xi_b0 xi_c+ xi_c0 ion 
 
 
 
@@ -7095,7 +7977,7 @@ Parameter : Unit
  Parameter type  : s
  Omittable       : True
  Default value   : GeV
- Candidates      : eV keV MeV GeV TeV PeV J eV keV MeV GeV TeV PeV J electronvolt kiloelectronvolt megaelectronvolt gigaelectronvolt teraelectronvolt petaelectronvolt joule electronvolt kiloelectronvolt megaelectronvolt gigaelectronvolt teraelectronvolt petaelectronvolt joule
+ Candidates      : eV keV MeV GeV TeV PeV J electronvolt kiloelectronvolt megaelectronvolt gigaelectronvolt teraelectronvolt petaelectronvolt joule
 
 
 
@@ -7120,7 +8002,7 @@ Parameter : Unit
  Parameter type  : s
  Omittable       : True
  Default value   : cm
- Candidates      : pc km m cm mm um nm Ang fm pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
+ Candidates      : pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
 
 
 
@@ -7198,7 +8080,7 @@ Parameter : Unit
  Parameter type  : s
  Omittable       : True
  Default value   : ns
- Candidates      : s ms mus ns ps s ms mus ns ps second millisecond microsecond nanosecond picosecond second millisecond microsecond nanosecond picosecond
+ Candidates      : s ms us ns ps second millisecond microsecond nanosecond picosecond
 
 
 
@@ -7252,20 +8134,20 @@ Multiple source control sub-directory
 
  Sub-directories : 
  Commands : 
-   add * add a new source defintion to the particle gun with the specified intensity
+   add * add a new source definition to the particle gun with the specified intensity
    list * List the defined particle sources
    clear * Remove all the defined particle sources
    show * Show the current source index and intensity
    set * set the indexed source as the current one
    delete * delete the indexed source from the list
    intensity * reset the current source to the specified intensity
-   multiplevertex * true for simulaneous generation mutiple vertex
+   multiplevertex * true for simultaneous generation multiple vertex
    flatsampling * true for applying flat (biased) sampling among the sources
 
 
 Command /gps/source/add
 Guidance :
-add a new source defintion to the particle gun with the specified intensity
+add a new source definition to the particle gun with the specified intensity
  Range of parameters : addsource > 0.
 
 Parameter : addsource
@@ -7328,7 +8210,7 @@ Parameter : setintensity
 
 Command /gps/source/multiplevertex
 Guidance :
-true for simulaneous generation mutiple vertex
+true for simultaneous generation multiple vertex
 Default is false
 
 Parameter : multiplevertex
@@ -7396,7 +8278,7 @@ Parameter : Shape
  Parameter type  : s
  Omittable       : False
  Default value   : NULL
- Candidates      : Circle Annulus Ellipse Square Rectangle Sphere Ellipsoid Cylinder Para
+ Candidates      : Circle Annulus Ellipse Square Rectangle Sphere Ellipsoid Cylinder EllipticCylinder Para
 
 
 
@@ -7420,7 +8302,7 @@ Parameter : Unit
  Parameter type  : s
  Omittable       : True
  Default value   : cm
- Candidates      : pc km m cm mm um nm Ang fm pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
+ Candidates      : pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
 
 
 
@@ -7476,7 +8358,7 @@ Parameter : Unit
  Parameter type  : s
  Omittable       : True
  Default value   : cm
- Candidates      : pc km m cm mm um nm Ang fm pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
+ Candidates      : pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
 
 
 
@@ -7492,7 +8374,7 @@ Parameter : Unit
  Parameter type  : s
  Omittable       : True
  Default value   : cm
- Candidates      : pc km m cm mm um nm Ang fm pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
+ Candidates      : pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
 
 
 
@@ -7508,7 +8390,7 @@ Parameter : Unit
  Parameter type  : s
  Omittable       : True
  Default value   : cm
- Candidates      : pc km m cm mm um nm Ang fm pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
+ Candidates      : pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
 
 
 
@@ -7524,7 +8406,7 @@ Parameter : Unit
  Parameter type  : s
  Omittable       : True
  Default value   : cm
- Candidates      : pc km m cm mm um nm Ang fm pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
+ Candidates      : pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
 
 
 
@@ -7540,7 +8422,7 @@ Parameter : Unit
  Parameter type  : s
  Omittable       : True
  Default value   : cm
- Candidates      : pc km m cm mm um nm Ang fm pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
+ Candidates      : pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
 
 
 
@@ -7557,7 +8439,7 @@ Parameter : Unit
  Parameter type  : s
  Omittable       : True
  Default value   : cm
- Candidates      : pc km m cm mm um nm Ang fm pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
+ Candidates      : pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
 
 
 
@@ -7574,7 +8456,7 @@ Parameter : Unit
  Parameter type  : s
  Omittable       : True
  Default value   : cm
- Candidates      : pc km m cm mm um nm Ang fm pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
+ Candidates      : pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
 
 
 
@@ -7591,7 +8473,7 @@ Parameter : Unit
  Parameter type  : s
  Omittable       : True
  Default value   : cm
- Candidates      : pc km m cm mm um nm Ang fm pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
+ Candidates      : pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
 
 
 
@@ -7607,7 +8489,7 @@ Parameter : Unit
  Parameter type  : s
  Omittable       : True
  Default value   : rad
- Candidates      : rad mrad deg rad mrad deg radian milliradian degree radian milliradian degree
+ Candidates      : rad mrad deg radian milliradian degree
 
 
 
@@ -7623,7 +8505,7 @@ Parameter : Unit
  Parameter type  : s
  Omittable       : True
  Default value   : rad
- Candidates      : rad mrad deg rad mrad deg radian milliradian degree radian milliradian degree
+ Candidates      : rad mrad deg radian milliradian degree
 
 
 
@@ -7639,7 +8521,7 @@ Parameter : Unit
  Parameter type  : s
  Omittable       : True
  Default value   : rad
- Candidates      : rad mrad deg rad mrad deg radian milliradian degree radian milliradian degree
+ Candidates      : rad mrad deg radian milliradian degree
 
 
 
@@ -7742,7 +8624,7 @@ Parameter : Unit
  Parameter type  : s
  Omittable       : True
  Default value   : rad
- Candidates      : rad mrad deg rad mrad deg radian milliradian degree radian milliradian degree
+ Candidates      : rad mrad deg radian milliradian degree
 
 
 
@@ -7759,7 +8641,7 @@ Parameter : Unit
  Parameter type  : s
  Omittable       : True
  Default value   : rad
- Candidates      : rad mrad deg rad mrad deg radian milliradian degree radian milliradian degree
+ Candidates      : rad mrad deg radian milliradian degree
 
 
 
@@ -7775,7 +8657,7 @@ Parameter : Unit
  Parameter type  : s
  Omittable       : True
  Default value   : rad
- Candidates      : rad mrad deg rad mrad deg radian milliradian degree radian milliradian degree
+ Candidates      : rad mrad deg radian milliradian degree
 
 
 
@@ -7792,7 +8674,7 @@ Parameter : Unit
  Parameter type  : s
  Omittable       : True
  Default value   : rad
- Candidates      : rad mrad deg rad mrad deg radian milliradian degree radian milliradian degree
+ Candidates      : rad mrad deg radian milliradian degree
 
 
 
@@ -7808,7 +8690,7 @@ Parameter : Unit
  Parameter type  : s
  Omittable       : True
  Default value   : rad
- Candidates      : rad mrad deg rad mrad deg radian milliradian degree radian milliradian degree
+ Candidates      : rad mrad deg radian milliradian degree
 
 
 
@@ -7824,7 +8706,7 @@ Parameter : Unit
  Parameter type  : s
  Omittable       : True
  Default value   : rad
- Candidates      : rad mrad deg rad mrad deg radian milliradian degree radian milliradian degree
+ Candidates      : rad mrad deg radian milliradian degree
 
 
 
@@ -7840,7 +8722,7 @@ Parameter : Unit
  Parameter type  : s
  Omittable       : True
  Default value   : rad
- Candidates      : rad mrad deg rad mrad deg radian milliradian degree radian milliradian degree
+ Candidates      : rad mrad deg radian milliradian degree
 
 
 
@@ -7864,7 +8746,7 @@ Parameter : Unit
  Parameter type  : s
  Omittable       : True
  Default value   : cm
- Candidates      : pc km m cm mm um nm Ang fm pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
+ Candidates      : pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
 
 
 
@@ -7922,7 +8804,7 @@ Parameter : EnergyDis
  Parameter type  : s
  Omittable       : False
  Default value   : Mono
- Candidates      : Mono Lin Pow Exp Gauss Brem Bbody Cdg User Arb Epn
+ Candidates      : Mono Lin Pow Exp CPow Gauss Brem Bbody Cdg User Arb Epn
 
 
 
@@ -7938,7 +8820,7 @@ Parameter : Unit
  Parameter type  : s
  Omittable       : True
  Default value   : keV
- Candidates      : eV keV MeV GeV TeV PeV J eV keV MeV GeV TeV PeV J electronvolt kiloelectronvolt megaelectronvolt gigaelectronvolt teraelectronvolt petaelectronvolt joule electronvolt kiloelectronvolt megaelectronvolt gigaelectronvolt teraelectronvolt petaelectronvolt joule
+ Candidates      : eV keV MeV GeV TeV PeV J electronvolt kiloelectronvolt megaelectronvolt gigaelectronvolt teraelectronvolt petaelectronvolt joule
 
 
 
@@ -7954,7 +8836,7 @@ Parameter : Unit
  Parameter type  : s
  Omittable       : True
  Default value   : keV
- Candidates      : eV keV MeV GeV TeV PeV J eV keV MeV GeV TeV PeV J electronvolt kiloelectronvolt megaelectronvolt gigaelectronvolt teraelectronvolt petaelectronvolt joule electronvolt kiloelectronvolt megaelectronvolt gigaelectronvolt teraelectronvolt petaelectronvolt joule
+ Candidates      : eV keV MeV GeV TeV PeV J electronvolt kiloelectronvolt megaelectronvolt gigaelectronvolt teraelectronvolt petaelectronvolt joule
 
 
 
@@ -7970,7 +8852,7 @@ Parameter : Unit
  Parameter type  : s
  Omittable       : True
  Default value   : keV
- Candidates      : eV keV MeV GeV TeV PeV J eV keV MeV GeV TeV PeV J electronvolt kiloelectronvolt megaelectronvolt gigaelectronvolt teraelectronvolt petaelectronvolt joule electronvolt kiloelectronvolt megaelectronvolt gigaelectronvolt teraelectronvolt petaelectronvolt joule
+ Candidates      : eV keV MeV GeV TeV PeV J electronvolt kiloelectronvolt megaelectronvolt gigaelectronvolt teraelectronvolt petaelectronvolt joule
 
 
 
@@ -7986,7 +8868,7 @@ Parameter : Unit
  Parameter type  : s
  Omittable       : True
  Default value   : keV
- Candidates      : eV keV MeV GeV TeV PeV J eV keV MeV GeV TeV PeV J electronvolt kiloelectronvolt megaelectronvolt gigaelectronvolt teraelectronvolt petaelectronvolt joule electronvolt kiloelectronvolt megaelectronvolt gigaelectronvolt teraelectronvolt petaelectronvolt joule
+ Candidates      : eV keV MeV GeV TeV PeV J electronvolt kiloelectronvolt megaelectronvolt gigaelectronvolt teraelectronvolt petaelectronvolt joule
 
 
 

@@ -16,6 +16,7 @@
 #include <G4ParticleDefinition.hh>
 #include <G4Tokenizer.hh>
 #include <G4UnitsTable.hh>
+#include <Randomize.hh>
 
 #include <TFile.h>
 #include <TBits.h>
@@ -31,32 +32,34 @@
 
 
 EDepSim::RooTrackerKinematicsGenerator::RooTrackerKinematicsGenerator(
-    const G4String& name, const G4String& filename, 
+    const G4String& name, const G4String& filename,
     const G4String& treeName, const G4String& order,
-    int firstEvent) 
-    : EDepSim::VKinematicsGenerator(name), fInput(NULL), fTree(NULL), 
+    int firstEvent)
+    : EDepSim::VKinematicsGenerator(name), fInput(NULL), fTree(NULL),
       fNextEntry(0) {
 
     fInput = TFile::Open(filename,"OLD");
     if (!fInput->IsOpen()) {
-        throw std::runtime_error("EDepSim::RooTrackerKinematicsGenerator:: File Not Open");
+        throw std::runtime_error("EDepSim::RooTrackerKinematicsGenerator::"
+                                 " File Not Open");
     }
 
     EDepSimLog("Open a RooTracker tree from " << filename);
 
     fTree = dynamic_cast<TTree*>(fInput->Get(treeName));
     if (!fTree) {
-        throw std::runtime_error("EDepSim::RooTrackerKinematicsGenerator:: "
-                    "Tree not found by constructor");
+        throw std::runtime_error("EDepSim::RooTrackerKinematicsGenerator::"
+                                 " Tree not found by constructor");
     }
-    EDepSimInfo("   File has  " << fTree->GetEntries() << " entries");
+    EDepSimNamedInfo("rooTracker",
+                     "   File has  " << fTree->GetEntries() << " entries");
 
-    // Find the basename of the input filename. 
+    // Find the basename of the input filename.
     std::string::size_type start_pos = filename.rfind("/");
     if (start_pos == std::string::npos) start_pos = 0; else ++start_pos;
     std::string basename(filename,start_pos);
     fFilename = basename + ":" + treeName;
-    
+
     fEvtFlags = NULL;
     fTree->SetBranchAddress("EvtFlags",       &fEvtFlags);
     fEvtCode = NULL;
@@ -87,14 +90,14 @@ EDepSim::RooTrackerKinematicsGenerator::RooTrackerKinematicsGenerator(
     fTree->SetBranchAddress("NuParentProX4",   fNuParentProX4);
     fTree->SetBranchAddress("NuParentProNVtx",&fNuParentProNVtx);
 #endif
-    
+
     // Set the input tree to the current rootracker tree that this class is
     // using.
     EDepSim::KinemPassThrough::GetInstance()->AddInputTree(fTree,
                                                        filename,
                                                        GetName());
 
-    // Generate a vector of entries to be used by this generator.  
+    // Generate a vector of entries to be used by this generator.
 
     // Calculate the stride through the file.  This could be cached, but
     // recalculate each time for simplicity.  Note that the stride should be a
@@ -117,11 +120,14 @@ EDepSim::RooTrackerKinematicsGenerator::RooTrackerKinematicsGenerator(
     }
     int entry = 0;
     for (int i=0; i<entries; ++i) {
-        fEntryVector[i] = entry; 
+        fEntryVector[i] = entry;
         entry = (entry + stride)%entries;
     }
     if (order == "random") {
-        std::random_shuffle(fEntryVector.begin(), fEntryVector.end());
+        for (std::size_t i = fEntryVector.size()-1; i > 0; --i) {
+            int j = (i+1)*G4UniformRand();
+            std::swap(fEntryVector[i],fEntryVector[j]);
+        }
     }
 
     if (firstEvent > 0) {
@@ -148,7 +154,8 @@ EDepSim::RooTrackerKinematicsGenerator::GeneratePrimaryVertex(
     G4Event* anEvent,
     const G4LorentzVector&) {
     if (!fInput) {
-        throw std::runtime_error("EDepSim::RooTrackerKinematicsGenerator:: File Not Open");
+        throw std::runtime_error("EDepSim::RooTrackerKinematicsGenerator::"
+                                 " File Not Open");
     }
 
     /// Check to see if the next event is there.
@@ -162,11 +169,11 @@ EDepSim::RooTrackerKinematicsGenerator::GeneratePrimaryVertex(
     int entry = fEntryVector.at(fNextEntry);
     // Get current entry to be used as new vertex - see comment below.
     fTree->GetEntry(entry);
-    // Store current entry in the pass-through obj. N.B. To avoid mismatch 
+    // Store current entry in the pass-through obj. N.B. To avoid mismatch
     // and false results call EDepSim::KinemPassThrough::AddEntry(fTreePtr, X)
     // where X is same as X in most recent call to fTreePtr->GetEntry(X).
     EDepSim::KinemPassThrough::GetInstance()->AddEntry(fTree, entry);
-    EDepSimVerbose("Use rooTracker event number " << fEvtNum 
+    EDepSimVerbose("Use rooTracker event number " << fEvtNum
                  << " (entry #" << entry << " in tree)");
 
     // Increment the next entry counter.
@@ -180,15 +187,18 @@ EDepSim::RooTrackerKinematicsGenerator::GeneratePrimaryVertex(
     if (fStdHepN == 1 && fStdHepStatus[0]<0) {
         return kEndEvent;
     }
-        
+
     // Create a new vertex to add the new particles, and add the vertex to the
     // event.
-    G4PrimaryVertex* theVertex 
+    G4PrimaryVertex* theVertex
         = new G4PrimaryVertex(G4ThreeVector(fEvtVtx[0]*m,
                                             fEvtVtx[1]*m,
                                             fEvtVtx[2]*m),
                               fEvtVtx[3]*second);
     anEvent->AddPrimaryVertex(theVertex);
+    EDepSimNamedInfo("rooTracker","Vertex @ "
+                     << G4BestUnit(theVertex->GetPosition(), "Length")
+                     << " Time: " << G4BestUnit(theVertex->GetT0(), "Time"));
 
     // Add an information field to the vertex.
     EDepSim::VertexInfo *vertexInfo = new EDepSim::VertexInfo;
@@ -208,9 +218,9 @@ EDepSim::RooTrackerKinematicsGenerator::GeneratePrimaryVertex(
     vertexInfo->SetWeight(fEvtWght);
     vertexInfo->SetProbability(fEvtProb);
 
-    // Add an informational vertex for storing the incoming 
+    // Add an informational vertex for storing the incoming
     // neutrino particle and target nucleus.
-    G4PrimaryVertex* theIncomingVertex 
+    G4PrimaryVertex* theIncomingVertex
         = new G4PrimaryVertex(G4ThreeVector(fEvtVtx[0]*m,
                                             fEvtVtx[1]*m,
                                             fEvtVtx[2]*m),
@@ -255,28 +265,28 @@ EDepSim::RooTrackerKinematicsGenerator::GeneratePrimaryVertex(
                                  fStdHepP4[cnt][1]*GeV,
                                  fStdHepP4[cnt][2]*GeV,
                                  fStdHepP4[cnt][3]*GeV);
-        
+
         if (fStdHepStatus[cnt] != 1) {
-            EDepSimVerbose("Untracked particle: " << cnt 
+            EDepSimVerbose("Untracked particle: " << cnt
                          << " " << particleName
-                        << " with " << momentum.e()/MeV 
-                         << " MeV " 
+                           << " with " << momentum.e()/MeV
+                         << " MeV "
                          << " w/ mothers " << fStdHepFm[cnt]
-                         << " to " << fStdHepLm[cnt]);        
+                         << " to " << fStdHepLm[cnt]);
         }
-        
+
         // We are only interested in particles to be tracked (status==1)
         // or incident neutrino/target nucleus (status==0).
-        if( !(fStdHepStatus[cnt] == 0 || fStdHepStatus[cnt] == 1))
+        if( !(fStdHepStatus[cnt] == 0 || fStdHepStatus[cnt] == 1)) {
             continue;
-
+        }
 
         if (!particleDef) {
             EDepSimSevere(" Particle code " << fStdHepPdg[cnt]
                       << " not recognized (not tracking)");
             continue;
         }
-        
+
         // create the particle.
         G4PrimaryParticle* theParticle
             = new G4PrimaryParticle(particleDef,
@@ -286,11 +296,25 @@ EDepSim::RooTrackerKinematicsGenerator::GeneratePrimaryVertex(
         theParticle->SetPolarization(fStdHepPolz[cnt][0],
                                      fStdHepPolz[cnt][1],
                                      fStdHepPolz[cnt][2]);
-        
+
         if (fStdHepStatus[cnt] == 0) {
+            EDepSimNamedInfo(
+                "rooTracker",
+                "Incoming "
+                << particleDef->GetParticleName()
+                << " " << theParticle->GetPDGcode()
+                << " " << momentum.e()/MeV << " MeV"
+                << " " << momentum.m()/MeV << " MeV/c^2");
             theIncomingVertex->SetPrimary(theParticle);
         }
         else if (fStdHepStatus[cnt] == 1){
+            EDepSimNamedInfo(
+                "rooTracker",
+                "Tracking "
+                << particleDef->GetParticleName()
+                << " " << theParticle->GetPDGcode()
+                << " " << momentum.e()/MeV << " MeV"
+                << " " << momentum.m()/MeV << " MeV/c^2");
             theVertex->SetPrimary(theParticle);
         }
     }
@@ -298,7 +322,7 @@ EDepSim::RooTrackerKinematicsGenerator::GeneratePrimaryVertex(
 #ifdef PARENT_PARTICLE_PASS_THROUGH
     // Fill the particles at the decay vertex.  These are the first info
     // vertex.
-    G4PrimaryVertex* theDecayVertex 
+    G4PrimaryVertex* theDecayVertex
         = new G4PrimaryVertex(G4ThreeVector(fNuParentDecX4[0]*m,
                                             fNuParentDecX4[1]*m,
                                             fNuParentDecX4[2]*m),
@@ -323,7 +347,7 @@ EDepSim::RooTrackerKinematicsGenerator::GeneratePrimaryVertex(
     theDecayVertex->SetPrimary(theDecayParticle);
 
     // Fill the particles at the production vertex.
-    G4PrimaryVertex* theProductionVertex 
+    G4PrimaryVertex* theProductionVertex
         = new G4PrimaryVertex(G4ThreeVector(fNuParentProX4[0]*m,
                                             fNuParentProX4[1]*m,
                                             fNuParentProX4[2]*m),
@@ -343,7 +367,6 @@ EDepSim::RooTrackerKinematicsGenerator::GeneratePrimaryVertex(
                                 fNuParentProP4[2]*GeV);
     theProductionVertex->SetPrimary(theProductionParticle);
 #endif
-    
+
     return generatorStatus;
 }
-

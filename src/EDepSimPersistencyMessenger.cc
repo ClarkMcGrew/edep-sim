@@ -18,55 +18,62 @@ EDepSim::PersistencyMessenger::PersistencyMessenger(
     : fPersistencyManager(persistencyMgr) {
     fPersistencyDIR = new G4UIdirectory("/edep/db/");
     fPersistencyDIR->SetGuidance("Output file control commands.");
-    
+
     fOpenCMD = new G4UIcmdWithAString("/edep/db/open",this);
     fOpenCMD->SetGuidance("Set the name of the output file and open it.");
     fOpenCMD->SetParameterName("filename",true);
     fOpenCMD->SetDefaultValue("edepsim-output.root");
     fOpenCMD->AvailableForStates(G4State_PreInit,G4State_Idle);
-    
+
     fCloseCMD = new G4UIcmdWithoutParameter("/edep/db/close",this);
     fCloseCMD->SetGuidance("Close the output file.");
 
     fPersistencySetDIR = new G4UIdirectory("/edep/db/set/");
     fPersistencySetDIR->SetGuidance("Set various parameters");
-    
-    fGammaThresholdCMD 
+
+    fGammaThresholdCMD
         = new G4UIcmdWithADoubleAndUnit("/edep/db/set/gammaThreshold", this);
     fGammaThresholdCMD->SetGuidance(
         "Set momentum threshold for writing out gamma-ray trajectories");
     fGammaThresholdCMD->SetParameterName("momentum", false, false);
     fGammaThresholdCMD->SetUnitCategory("Energy");
 
-    fNeutronThresholdCMD 
+    fNeutronThresholdCMD
         = new G4UIcmdWithADoubleAndUnit("/edep/db/set/neutronThreshold", this);
     fNeutronThresholdCMD->SetGuidance(
         "Set momentum threshold for writing out neutron trajectories");
     fNeutronThresholdCMD->SetParameterName("momentum", false, false);
     fNeutronThresholdCMD->SetUnitCategory("Energy");
 
-    fLengthThresholdCMD 
+    fLengthThresholdCMD
         = new G4UIcmdWithADoubleAndUnit("/edep/db/set/lengthThreshold", this);
     fLengthThresholdCMD->SetGuidance(
         "Set length of track in an SD for writing out particle trajectories");
     fLengthThresholdCMD->SetParameterName("length", false, false);
     fLengthThresholdCMD->SetUnitCategory("Length");
 
-    fSaveAllPrimaryTrajectoriesCMD 
+    fSaveAllPrimaryTrajectoriesCMD
         = new G4UIcmdWithABool("/edep/db/set/saveAllPrimTraj", this);
     fSaveAllPrimaryTrajectoriesCMD->SetGuidance(
         "Control which primaries have saved trajectories.\n"
         "  True: Save all prim. part. trajectories.\n"
         "  False: Save prim. that ultimately deposit energy in SD.");
 
-    fTrajectoryPointAccuracyCMD 
+    fTrajectoryPointAccuracyCMD
         = new G4UIcmdWithADoubleAndUnit("/edep/db/set/trajectoryAccuracy", this);
     fTrajectoryPointAccuracyCMD->SetGuidance(
         "Set the minimum accuracy of the trajectory.");
     fTrajectoryPointAccuracyCMD->SetParameterName("length", false, false);
     fTrajectoryPointAccuracyCMD->SetUnitCategory("Length");
 
-    fTrajectoryBoundaryCMD 
+    fTrajectoryPointDepositCMD
+        = new G4UIcmdWithADoubleAndUnit("/edep/db/set/trajectoryDeposit", this);
+    fTrajectoryPointDepositCMD->SetGuidance(
+        "Set the minimum energy deposit for a trajectory point.");
+    fTrajectoryPointDepositCMD->SetParameterName("energy", false, false);
+    fTrajectoryPointDepositCMD->SetUnitCategory("Energy");
+
+    fTrajectoryBoundaryCMD
         = new G4UIcmdWithAString("/edep/db/set/trajectoryBoundary",this);
     fTrajectoryBoundaryCMD->SetGuidance(
         "Add a Perl RegExp for a phys. vol. boundary where a\n"
@@ -77,11 +84,11 @@ EDepSim::PersistencyMessenger::PersistencyMessenger(
     fTrajectoryBoundaryCMD->SetParameterName("boundary",true);
     fTrajectoryBoundaryCMD->AvailableForStates(G4State_PreInit,G4State_Idle);
 
-    fClearBoundariesCMD 
+    fClearBoundariesCMD
         = new G4UIcmdWithoutParameter("/edep/db/set/clearBoundaries",this);
     fClearBoundariesCMD->SetGuidance("Remove all of the boundaries for "
                                      "trajectory points.");
-    
+
 }
 
 EDepSim::PersistencyMessenger::~PersistencyMessenger() {
@@ -92,6 +99,7 @@ EDepSim::PersistencyMessenger::~PersistencyMessenger() {
     delete fLengthThresholdCMD;
     delete fSaveAllPrimaryTrajectoriesCMD;
     delete fTrajectoryPointAccuracyCMD;
+    delete fTrajectoryPointDepositCMD;
     delete fTrajectoryBoundaryCMD;
     delete fClearBoundariesCMD;
     delete fPersistencyDIR;
@@ -101,11 +109,11 @@ EDepSim::PersistencyMessenger::~PersistencyMessenger() {
 
 void EDepSim::PersistencyMessenger::SetNewValue(G4UIcommand* command,
                                             G4String newValue) {
-    if (command==fOpenCMD) { 
-        fPersistencyManager->Open(newValue); 
+    if (command==fOpenCMD) {
+        fPersistencyManager->Open(newValue);
     }
     else if (command == fCloseCMD) {
-        fPersistencyManager->Close(); 
+        fPersistencyManager->Close();
     }
     else if (command == fGammaThresholdCMD) {
         fPersistencyManager->SetGammaThreshold(
@@ -127,6 +135,10 @@ void EDepSim::PersistencyMessenger::SetNewValue(G4UIcommand* command,
         fPersistencyManager->SetTrajectoryPointAccuracy(
             fTrajectoryPointAccuracyCMD->GetNewDoubleValue(newValue));
     }
+    else if (command == fTrajectoryPointDepositCMD) {
+        fPersistencyManager->SetTrajectoryPointDeposit(
+            fTrajectoryPointDepositCMD->GetNewDoubleValue(newValue));
+    }
     else if (command == fTrajectoryBoundaryCMD) {
         fPersistencyManager->AddTrajectoryBoundary(newValue);
     }
@@ -138,7 +150,7 @@ void EDepSim::PersistencyMessenger::SetNewValue(G4UIcommand* command,
 
 G4String EDepSim::PersistencyMessenger::GetCurrentValue(G4UIcommand * command) {
     G4String currentValue;
-    
+
     if (command==fOpenCMD) {
         currentValue = fPersistencyManager->GetFilename();
     }
@@ -162,7 +174,10 @@ G4String EDepSim::PersistencyMessenger::GetCurrentValue(G4UIcommand * command) {
         currentValue = fTrajectoryPointAccuracyCMD->ConvertToString(
             fPersistencyManager->GetTrajectoryPointAccuracy());
     }
+    else if (command==fTrajectoryPointDepositCMD) {
+        currentValue = fTrajectoryPointDepositCMD->ConvertToString(
+            fPersistencyManager->GetTrajectoryPointDeposit());
+    }
 
     return currentValue;
 }
-

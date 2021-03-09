@@ -1,5 +1,5 @@
 // Provide output the Geant4 way.
-// 
+//
 #ifndef EDepSim_PersistencyManager_h
 #define EDepSim_PersistencyManager_h 1
 
@@ -54,12 +54,12 @@ public:
     virtual G4bool Store(const G4Event* anEvent);
     virtual G4bool Store(const G4Run* aRun);
     virtual G4bool Store(const G4VPhysicalVolume* aWorld);
-    
+
     /// Retrieve information from a file.  These are not implemented.
     virtual G4bool Retrieve(G4Event *&e) {e=NULL; return false;}
     virtual G4bool Retrieve(G4Run* &r) {r=NULL; return false;}
     virtual G4bool Retrieve(G4VPhysicalVolume* &w) {w=NULL; return false;}
-    
+
     /// A public accessor to the summarized event.  The primaries are
     /// summarized during by a call to UpdateSummaries.  The
     /// EDepSim::PersistencyManager::Store(event) method is called from
@@ -89,14 +89,14 @@ public:
     /// messenger to open files using the G4 macro language.  It can be an
     /// empty method.
     virtual G4bool Open(G4String filename);
-    
+
     /// Make sure the output file is closed.  This is used to make sure that
     /// any information being summarized has been saved.
     virtual G4bool Close(void);
 
     /// Return the output file name.
     virtual G4String GetFilename(void) const {return fFilename;}
-    
+
     /// Set the threshold for length in a sensitive detector above which a
     /// trajectory will be saved.  If a trajectory created this much track
     /// inside a sensitive detector, then it is saved.
@@ -109,8 +109,8 @@ public:
 
     /// Set the momentum threshold required to save a gamma-ray as a
     /// trajectory.
-    virtual void SetGammaThreshold(G4double thresh) { 
-        fGammaThreshold = thresh; 
+    virtual void SetGammaThreshold(G4double thresh) {
+        fGammaThreshold = thresh;
     }
 
     /// Get the momentum threshold required to save a gamma-ray as a
@@ -120,8 +120,8 @@ public:
 
     /// Set the momentum threshold required to save a neutron as a
     /// trajectory.
-    virtual void SetNeutronThreshold(G4double thresh) { 
-        fNeutronThreshold = thresh; 
+    virtual void SetNeutronThreshold(G4double thresh) {
+        fNeutronThreshold = thresh;
     }
 
     /// Get the momentum threshold required to save a neutron as a
@@ -140,6 +140,20 @@ public:
     /// distance from the unsaved points.
     virtual double GetTrajectoryPointAccuracy(void) const {
         return fTrajectoryPointAccuracy;
+    }
+
+    /// Get the minimum energy deposition for which a trajectory point will be
+    /// saved.  This is the trajectory point process deposition
+    /// (GetProcessDeposit()).
+    virtual void SetTrajectoryPointDeposit(double dep) {
+        fTrajectoryPointDeposit = dep;
+    }
+
+    /// Get the minimum energy deposition for which a trajectory point will be
+    /// saved.  This is the trajectory point process deposition
+    /// (GetProcessDeposit()).
+    virtual double GetTrajectoryPointDeposit(void) const {
+        return fTrajectoryPointDeposit;
     }
 
     /// Set the flag to save primary particle trajectories.  If this flag is
@@ -192,7 +206,7 @@ protected:
     /// A summary of the primary vertices in the event.
     TG4Event fEventSummary;
 
-private: 
+private:
     // Fill the vertex container.  This allows informational vertices to be
     // filled.
     void SummarizePrimaries(std::vector<TG4PrimaryVertex>& primaries,
@@ -201,7 +215,7 @@ private:
     /// Fill the trajectory container.
     void SummarizeTrajectories(std::vector<TG4Trajectory>& trajectories,
                                const G4Event* event);
-    
+
     /// Mark the G4 Trajectories that should be saved.
     void MarkTrajectories(const G4Event* event);
 
@@ -237,9 +251,9 @@ private:
 
     /// Fill a vector with the indices of trajectory points that should be
     /// copied to the output file.
-    void SelectTrajectoryPoints(std::vector<int>& selected, 
+    void SelectTrajectoryPoints(std::vector<int>& selected,
                                 G4VTrajectory* g4Traj);
-    
+
     /// Return true if a trajectory point should be saved.  The decision is
     /// based on the stepping status (must be fGeomBoundary), the current and
     /// the previous volume name (one must match a trajectory boundary regexp,
@@ -279,6 +293,11 @@ private:
     /// an unsaved trajectory point.
     double fTrajectoryPointAccuracy;
 
+    /// The minimum energy for the trajectory point process deposit
+    /// (GetProcessDeposit()) to be saved.  Points with less than this energy
+    /// are not selected.
+    double fTrajectoryPointDeposit;
+
     /// Flag to determine if all primary trajectories are saved, or only those
     /// that ultimately create energy in a sensitive detector.  The primary
     /// particles are always saved.
@@ -290,7 +309,7 @@ private:
 
     /// The detector partition
     int fDetectorPartition;
-   
+
     // A pointer to the messenger.
     EDepSim::PersistencyMessenger* fPersistencyMessenger;
 };

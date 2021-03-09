@@ -10,6 +10,12 @@ if [ -f ${OUTPUT} ]; then
 fi
 
 cat > 100TestGDML.mac <<EOF
+#######################################
+# Set the hit segment.
+#######################################
+/edep/hitLength LArTracker 1.0 mm
+/edep/update
+
 # Create the first particle source.  This source will be used to
 # specify the position of the vertex.  The any of the GPS direction
 # and energy commands can be used.
@@ -40,6 +46,6 @@ cat > 100TestGDML.mac <<EOF
 EOF
 
 edep-sim -o ${OUTPUT} -g ${EDEP_ROOT}/inputs/example.gdml \
-	 -e 1 -u 100TestGDML.mac
+	 -e 1 100TestGDML.mac
 
 

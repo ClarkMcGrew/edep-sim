@@ -22,6 +22,8 @@
 #include <TGeoOverlap.h>
 #include <TGeoXtru.h>
 #include <TGeoPcon.h>
+#include <TGeoEltu.h>
+
 #include <TColor.h>
 
 #include <globals.hh>
@@ -46,10 +48,10 @@
 #include <G4UnionSolid.hh>
 #include <G4IntersectionSolid.hh>
 #include <G4ExtrudedSolid.hh>
+#include <G4EllipticalTube.hh>
 
 #include <G4SystemOfUnits.hh>
 #include <G4PhysicalConstants.hh>
-
 
 #include <memory>
 #include <cmath>
@@ -82,7 +84,7 @@ int EDepSim::RootGeometryManager::GetNodeId(const G4ThreeVector& pos) {
 namespace {
     int CountVolumes(G4LogicalVolume* volume) {
         int count = 1;
-        for (int i = 0; i<volume->GetNoDaughters(); ++i) {
+        for (std::size_t i = 0; i<volume->GetNoDaughters(); ++i) {
             G4VPhysicalVolume* daughter = volume->GetDaughter(i);
             count += CountVolumes(daughter->GetLogicalVolume());
         }
@@ -252,7 +254,8 @@ TGeoShape* EDepSim::RootGeometryManager::CreateShape(const G4VSolid* theSolid,
         double minPhiDeg = sphere->GetStartPhiAngle()/CLHEP::degree;
         double maxPhiDeg = minPhiDeg + sphere->GetDeltaPhiAngle()/CLHEP::degree;
         double minThetaDeg = sphere->GetStartThetaAngle()/CLHEP::degree;
-        double maxThetaDeg = minThetaDeg + sphere->GetDeltaThetaAngle()/CLHEP::degree;
+        double maxThetaDeg = minThetaDeg
+            + sphere->GetDeltaThetaAngle()/CLHEP::degree;
         theShape = new TGeoSphere(sphere->GetInnerRadius()/CLHEP::mm,
                                   sphere->GetOuterRadius()/CLHEP::mm,
                                   minThetaDeg, maxThetaDeg,
@@ -306,7 +309,9 @@ TGeoShape* EDepSim::RootGeometryManager::CreateShape(const G4VSolid* theSolid,
 #else
         const G4PolyconeHistorical* param = polycone->GetOriginalParameters();
         int numZ = param->Num_z_planes;
-        TGeoPcon* pcon = new TGeoPcon(phi/CLHEP::degree, dPhi/CLHEP::degree, numZ);
+        TGeoPcon* pcon = new TGeoPcon(phi/CLHEP::degree,
+                                      dPhi/CLHEP::degree,
+                                      numZ);
         // This depends on the older interface.  It's not marked as
         // deprecated, but the documentation discourages it's use.
         for (int i = 0; i< numZ; ++i) {
@@ -406,11 +411,11 @@ TGeoShape* EDepSim::RootGeometryManager::CreateShape(const G4VSolid* theSolid,
         TGeoShape* shapeA = CreateShape(solidA, &matrixA);
         TGeoMatrix* matrixB = NULL;
         TGeoShape* shapeB = CreateShape(solidB, &matrixB);
-        TGeoIntersection* intersectionNode = new TGeoIntersection(shapeA,  shapeB,
-								  matrixA, matrixB);
+        TGeoIntersection* intersectionNode
+            = new TGeoIntersection(shapeA,  shapeB,
+                                   matrixA, matrixB);
         theShape = new TGeoCompositeShape("name",intersectionNode);
     }
-
     else if (geometryType == "G4ExtrudedSolid"){
         //This following only works when using the 'standard'
         //G4ExtrudedSolid Constructor.
@@ -460,6 +465,13 @@ TGeoShape* EDepSim::RootGeometryManager::CreateShape(const G4VSolid* theSolid,
         //now assign 'theShape' to this complete extruded object.
         theShape = xtru;
     }
+    else if (geometryType == "G4EllipticalTube") {
+        const G4EllipticalTube* ellipticalTube
+            = dynamic_cast<const G4EllipticalTube*>(theSolid);
+        theShape = new TGeoEltu(ellipticalTube->GetDx()/CLHEP::mm,
+                                ellipticalTube->GetDy()/CLHEP::mm,
+                                ellipticalTube->GetDz()/CLHEP::mm);
+    }
     else {
         EDepSimThrow(geometryType+" --> shape not implemented");
     }
@@ -481,7 +493,8 @@ EDepSim::RootGeometryManager::CreateVolume(const G4VSolid* theSolid,
 // Determine if a volume should copied to the ROOT geometry representation.
 // If this returns true, then the volume and all of it's children will not be
 // exported.
-bool EDepSim::RootGeometryManager::IgnoreVolume(const G4VPhysicalVolume* theVol) {
+bool EDepSim::RootGeometryManager::IgnoreVolume(
+    const G4VPhysicalVolume* theVol) {
     std::string theFullName = theVol->GetName();
     std::string theShortName = theFullName;
     theShortName.erase(0,theShortName.rfind("/")+1);
@@ -584,7 +597,7 @@ void EDepSim::RootGeometryManager::CreateMaterials(
     }
 
     // Recurse through the children.
-    for (int child = 0;
+    for (std::size_t child = 0;
          child < theLog->GetNoDaughters();
          ++child) {
         G4VPhysicalVolume* theChild = theLog->GetDaughter(child);
@@ -722,7 +735,7 @@ bool EDepSim::RootGeometryManager::CreateEnvelope(
 
         // Add the children to the daughter.
         double missingMass = 0.0;
-        for (int child = 0;
+        for (std::size_t child = 0;
              child < theLog->GetNoDaughters();
              ++child) {
             G4VPhysicalVolume* theChild = theLog->GetDaughter(child);
@@ -1009,7 +1022,7 @@ TGeoMedium* EDepSim::RootGeometryManager::AverageMaterial(
         G4LogicalVolume* currentLog = currentPhys->GetLogicalVolume();
         stack.pop_back();
         // Add all of the current children to the stack.
-        for (int child = 0;
+        for (std::size_t child = 0;
              child < currentLog->GetNoDaughters();
              ++child) {
             stack.push_back(currentLog->GetDaughter(child));

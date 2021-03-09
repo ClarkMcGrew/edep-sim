@@ -22,6 +22,7 @@
 /generator/time/spill/bunchCount 1000
 /generator/time/spill/bunchSep 10.0 ns
 /generator/time/spill/bunchLength 5.0 ns
+/generator/time/set spill
 
 ## Make sure EDEPSIM updates the kinematics generator.
 /generator/add

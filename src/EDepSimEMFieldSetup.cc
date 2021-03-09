@@ -30,6 +30,9 @@
 //
 //   User Field class implementation.
 //
+// History:
+//    - 2017.03.15 C.McGrew adapted for EDepSim
+//
 //
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

@@ -1,5 +1,5 @@
 ////////////////////////////////////////////////////////////
-// 
+//
 
 #ifndef EDepSim_PersistencyMessenger_h
 #define EDepSim_PersistencyMessenger_h 1
@@ -20,25 +20,25 @@ class EDepSim::PersistencyMessenger: public G4UImessenger {
 public:
     PersistencyMessenger(EDepSim::PersistencyManager* persistencyMgr);
     virtual ~PersistencyMessenger();
-    
+
     void SetNewValue(G4UIcommand* command,G4String newValues);
     G4String GetCurrentValue(G4UIcommand* command);
-    
+
 private:
     EDepSim::PersistencyManager* fPersistencyManager;
-    
+
     G4UIdirectory*             fPersistencyDIR;
     G4UIdirectory*             fPersistencySetDIR;
-    G4UIcmdWithAString*        fOpenCMD;   
+    G4UIcmdWithAString*        fOpenCMD;
     G4UIcmdWithoutParameter*   fCloseCMD;
     G4UIcmdWithADoubleAndUnit* fGammaThresholdCMD;
     G4UIcmdWithADoubleAndUnit* fNeutronThresholdCMD;
     G4UIcmdWithADoubleAndUnit* fLengthThresholdCMD;
     G4UIcmdWithABool*          fSaveAllPrimaryTrajectoriesCMD;
     G4UIcmdWithADoubleAndUnit* fTrajectoryPointAccuracyCMD;
+    G4UIcmdWithADoubleAndUnit* fTrajectoryPointDepositCMD;
     G4UIcmdWithAString*        fTrajectoryBoundaryCMD;
     G4UIcmdWithoutParameter*   fClearBoundariesCMD;
 
 };
 #endif
-

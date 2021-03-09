@@ -93,7 +93,7 @@ install in "the-install-directory", the commands are:
 
 ```bash
 cd the-build-directory
-cmake -DCMAKE_INSTALL_PREFIX=the-install-directory the-edep-sim-directory 
+cmake -DCMAKE_INSTALL_PREFIX=the-install-directory the-edep-sim-directory
 make
 make doc
 make install
@@ -154,7 +154,7 @@ export EDEPSIM_ROOT=$(dirname $(which edep-sim))/..
 
 should find the right location for the necessary files.
 
-An example of a command line is 
+An example of a command line is
 
 ```bash
 edep-sim -o my-output.root -g geometry.gdml -u -e 100 muon-10000.mac
@@ -182,7 +182,7 @@ The muon-10000.mac might contain:
 # a 5 deg cone around the Z axis.
 /gps/ang/type iso
 /gps/ang/maxtheta 5 deg
-/gps/ang/rot1 1 0 0 
+/gps/ang/rot1 1 0 0
 /gps/ang/rot2 0 -1 0
 ```
 
@@ -239,7 +239,7 @@ and GEANT4 if necessary.
 The `edep-sim` executable produces a root `TTree` containing a single
 branch.  You can access this from either C++, a root macro or python.  For
 C++ based access, you must include the TG4Event.h header, and then attach
-to the tree. 
+to the tree.
 
 ```C++
 #include "TG4Event.h"
@@ -281,15 +281,15 @@ The main event class (TG4Event) is a data-only class defined in the
 access using the matching accessor:
 
    * EventId: The event number
-   
+
    * RunId: The run number
-   
+
    * Primaries: The GEANT4 primary particles (A vector of
      TG4PrimaryVertex)
-	 
+
    * Trajectories: The GEANT4 particle trajectories (A vector of
-     TG4Trajectory) 
-	 
+     TG4Trajectory)
+
    * SegmentDetectors: The energy deposition information (A map keyed by
      sensitive detector name, containing a vector of TG4HitSegments).
 
@@ -306,32 +306,39 @@ should be used instead of the field:
   * ParentId [GetParentId()]: The track identifier for the parent of this
      trajectory.  This is an integer.  If the track is from a primary
      particle, the parent identifier will be zero.
-	  
+
   * Name [GetName()]: The type of particle creating this track.
-	
+
   * PDGCode [GetPDGCode()]: The PDG MC code for the type of particle
     creating this track.
-	  
+
   * InitialMomentum [GetInitialMomentum()]: The initial momentum of track
     (A TLorentzVector).
-	
+
   * Points: This has type TrajectoryPoitns and is equivalent to vector of
     TG4TrajectoryPoints along the track.
-	
+
 The TG4TrajectoryPoint is a data-only class with the following information.
 
   * Position [GetPosition()]: The position of the trajectory point (A
     TLorentzVector)
-  
+
   * Momentum [GetMomentum()]: The momentum (a TVector3) as the trajectory
     leaves the point.
 
   * Process [GetProcess()]: The process type which created this point.
     These are defined by GEANT4.
-	
+
   * Subprocess [GetSubprocess()]: The subprocess type which create this
     point.  These are defined by GEANT4.
-	
+
+##### Controlling which trajectories are saved
+
+There are several macro commands provided which will allow the saved
+trajectories to be filtered before they are saved to an output file.
+Check the edep-sim-command-list.txt file and search for the 
+"/edep/db/set/" directory for details.
+
 #### The Energy Deposition Class (and Friends).
 
 The energy deposition in each sensitive detector is recorded using the
@@ -349,16 +356,16 @@ instead of the field:
     run settings there may be several particles associated with one segment
     (this is a very unusual situation).  This has type
     TG4HitSegment::Contributors and is equivalent to a vector of integers.
-	
+
   * PrimaryId [GetPrimaryId()]: The track identifier for the primary
     particle creating this hit.
-	
+
   * EnergyDeposit [GetEnergyDeposit()]: The total energy deposited over the
     length of this track.  The energy should be assumed to have been
     uniformly deposited along the segment (*not* at the beginning or the
     end).  This is the total dEdX of the track between the start and stop
     position of the segment.
-	
+
   * SecondaryDeposit [GetSecondaryDeposit()]: The "secondary" energy
     deposited over the length of the segment.  This is generally used to
     help simulate the energy emitted as scintillation light vs the total
@@ -371,27 +378,41 @@ instead of the field:
     SecondaryDeposit/EnergyDeposit, and the number of ionization electrons
     is N~e~ = N~q~ - N~ph~.  For liquid argon the Doke-Birks model as
     implemented by NEST used.
-	
+
   * TrackLength [GetTrackLength()]: The total track length between the
     start and stop points (as estimated by GEANT4)
-	
+
   * Start, Stop [GetStart(), GetStop()]: The starting and stopping points
     of the segment (TLorentzVector).
-	
 
-##### Controlling the step size.  
 
-The hit segment length is determined by a combination the GEANT4 physics
-step and a segment target length.  The GEANT4 physics step length is
-determined by the interaction cross sections, the energy loss, and the
-multiple scattering.  The physics step length control parameters (but not
-explicitly the step length) can be controlled using the macro commands in
-the "/process/eLoss/" and "/process/msc/" directories.  The target length
-of the hit segment can be controlled using the "/edep/hitLength" macro, and
-the maximum sagitta of the segment can be controlled using the
-"/edep/hitSagitta" macro.  Typically, the hit length should be a little
-smaller than the resolution of the detector.  Hit segments will not cross
-geometry boundaries.
+##### Controlling the step size.
+
+The hit segment length is determined by a combination the GEANT4
+physics step and a segment target length.  The GEANT4 physics step
+length is determined by the interaction cross sections, the energy
+loss, and the multiple scattering.  The physics step length control
+parameters (but not explicitly the step length) can be controlled
+using the macro commands in the ```/process/eLoss/``` and
+```/process/msc/``` directories.  A geometry can set an explicit step
+length limit for a logical volume (see below).  The steps taken by
+GEANT4 are summarized by hit segments (see above), that will combine
+steps until the next step would make the segment longer than the
+target length.  The target length of the hit segment can be controlled
+using the ```/edep/hitLength``` macro, and the maximum sagitta of the
+segment can be controlled using the ```/edep/hitSagitta``` macro.
+Notice that the segment will grow until it is approximately as long as
+the target hit length value, but depending on the underlying
+simulation, will probably be shorter, or longer than the target.  Typically,
+the segment length should be a little smaller than the resolution of the
+detector.  Hit segments will not cross geometry boundaries.
+
+Note: All of the step length controls must occur during the
+```PREINIT``` stage.  In practice, this means they need to occur
+before the ```/edep/update``` command has been given.  You can
+explicitly add the ```/edep/update``` command to the job macro, or it
+will be added automatically using the -u command which will insert an
+```/edep/update``` *before* running the macro on the command line.
 
 It is important to notice that the hit segments can have a length that is
 long compared to the resolution of the detector, but the "diameter" of the
@@ -408,22 +429,24 @@ There is a simple Eve based event display that will read the ROOT output
 file and.  It is not a complete event display, but can be useful to help
 debug geometries, and input kinematics files.  It can also be helpful to
 understand what events "look like".  It can be run using the `edep-disp`
-command.  A help message is printed if it is run without any arguments.  
+command.  A help message is printed if it is run without any arguments.
 
 ## Specifying The Detector Geometry.
 
-The detector geometry can be specified in more than one way.  The first is
-to compile it into the executable by defining the appropriate
-EDepSimBuilder classes.  There is an example of a simplified geometry for
-the CAPTAIN LArTPC contained in the source.  The alternative is to import a
-GDML definition using the `/edep/gdml/read` macro command.  The gdml file can be specified from the command line using the `-g` option
+The detector geometry can be specified in more than one way.  The
+first is to compile it into the executable by defining the appropriate
+EDepSimBuilder classes.  There is an example of a simplified geometry
+for the CAPTAIN LArTPC contained in the source.  The alternative is to
+import a GDML definition using the ```/edep/gdml/read``` macro
+command.  The gdml file can be specified from the command line using
+the ```-g``` option
 
 ```bash
 edep-sim -g geometry.gdml -o output.root macro-file.mac
 ```
 
 ### GDML Auxiliary Fields
-	
+
 Several auxiliary fields are parsed to help describe the detector geometry
 and attach more meaning to the GDML description.  For example, here is a
 simple LAr detector description that is attached as a sensitive detector,
@@ -439,10 +462,11 @@ and has both an electric and a magnetic field.
         <rotationref ref="identity"/>
       </physvol>
       <auxiliary auxtype="SensDet" auxvalue="LArD"/>
-      <auxiliary auxtype="EField" 
+      <auxiliary auxtype="EField"
 		  auxvalue="(500.0 V/cm, 1.0 V/m, 500.0 V/cm)"/>
       <auxiliary auxtype="BField
 		  " auxvalue="(2.0 tesla, 3.0 T, 1.0 G)"/>
+      <auxiliary auxtype="StepLimit" auxValue="1.0 cm"/>
     </volume>
 ```
 
@@ -482,6 +506,47 @@ assumed that the units are `volt/cm`.
 The possible units for the magnetic field are `tesla`, `gauss`, `T`, and
 `G`.  If no units are provided, it is assumed that the units are `tesla`.
 
+Arbitrary electric and magnetic fields can be set using the `ArbEField` and
+`BField` auxiliary types. The value for each is the name of the grid file which
+specifies the value of the field at a set of X, Y, and Z grid points (global
+coordinates).
+
+```
+<auxiliary auxtype="ArbEField" auxvalue="efield_grid_file.txt"/>
+<auxiliary auxtype="ArbBField" auxvalue="bfield_grid_file.txt"/>
+```
+
+The grid file is specified in the following format:
+
+```
+# First row is a header defining the origin offset and grid spacing
+# in each position coordinate X, Y, Z then hX, hY, hZ.
+-2600.00 -4200.00 12300.00 200.00 200.00 200.00
+
+# Next, each row contains one grid point: x,y,z,fx,fy,fz,f
+0.00 0.00 000.00 0.40 0.00 0.00 0.40
+0.00 0.00 200.00 0.40 0.40 0.00 0.57
+0.00 0.00 400.00 0.40 0.40 0.40 0.69
+...and so on...
+```
+
+The position, XYZ, is specified in `mm`, the electric field is specified in
+`V/cm`, and the magnetic field is specified in `T`. The grid spacing for each
+axis can be different.
+
+FX, FY, FZ are the magnitudes of the fields in the X,Y,Z directions
+and F is the total magnitude of the field vector. The Z coordinate
+iterates first, then Y, and finally X when incrementing the lines.
+
+To save space, the position of each point is not stored. Instead the
+position is calculated using the offset and the index of the array: `x
+= hx * i + offset_x`, where hx is the grid spacing in x, i is the ith
+element of the array, and offset_x is the offset specified in the
+first line for the x coordinate.
+
+Comment lines starting with the `#` character are supported in the
+grid file. They will be ignored when parsing the file.
+
 #### Auxiliary field to set the drawing color for the volume
 
 The display properties for the logical volume can be set using the `Color`
@@ -511,6 +576,14 @@ The alpha value can also be set using the opacity auxiliary type.
 ```
 <auxiliary auxtype="Opacity" auxvalue="0.5"/>
 ```
+
+#### Auxiliary field to set the volume step limit.
+
+The step limit can be set using
+
+<auxiliary auxtype="StepLimit" auxValue="1.0 cm"/>
+
+The value takes a number and a unit.
 
 ## Running as a library
 
@@ -572,6 +645,42 @@ commands.
 ## Make sure EDEPSIM updates the kinematics generator.
 /generator/add
 ```
+
+### Controlling the primary vertex timing
+
+The primary vertex timing is often taken directly from the kinematics
+generator, or set to be at time equal to zero, but it can be
+overridden to simulation the event spill.  To control the primary
+vertex timing distribution use the following macro commands
+(substitute the values you want.
+
+Set the vertices to occur at a specific time
+```
+/generator/time/fixed/time 100 ns
+/generator/time/set fixed
+```
+
+Let the vertex use the time provided by the kinematics generator.
+This is the default behavior, and usually results in a vertex time of
+zero
+
+```
+/generator/time/set free
+```
+
+Distribute the event according to a beam spill timing distribution.
+The following macros will approximate the FNAL beam structure.
+
+```
+/generator/time/spill/start 0 ns
+/generator/time/spill/bunchCount 1000
+/generator/time/spill/bunchSep 10 ns
+/generator/time/spill/bunchLength 5 ns
+/generator/time/set spill
+```
+
+There are further commands to provide limited control over the power
+of each bunch.
 
 ### Using GPS (The General Particle Source)
 
@@ -643,8 +752,8 @@ by setting
 /gps/pos/shape Rectangle
 /gps/pos/halfx 1 cm
 /gps/pos/halfy 1 cm
-/gps/pos/rot1 0 0 -1 
-/gps/pos/rot2 0 1 0 
+/gps/pos/rot1 0 0 -1
+/gps/pos/rot2 0 1 0
 ```
 
 ##### Making a volume source
@@ -673,7 +782,7 @@ which are specified as
 /gps/pos/radius 1 cm
 ```
 
-and 
+and
 
 ```
 /gps/position 0 0 -50 cm
@@ -705,7 +814,7 @@ the XY plane is determined by the /gps/ang/rot2 command.  Neither of the
 axes need to be unit vectors, and the rot2 vector doesn't need to be
 perpendicular to rot1 (the normal will be determined by rot1 cross rot2).
 The directions will then be distributed around the negative Z axis in the
-rotated coordinate system.  This means that 
+rotated coordinate system.  This means that
 
 ```
 /gps/ang/rot1 0 0 1
@@ -845,7 +954,7 @@ multiple particles coming from the same vertex.  This is overcome in detSim by i
 For the simple case of generating multiple particles
 drawn from the same angle and energy distributions, but with the same position, use `/gps/number` command.  For instance
 
-``` 
+```
 /gps/number 2
 ```
 
@@ -860,11 +969,11 @@ same position coordinates), you could create a macro:
 
 ```
 # Clear the source and tell GPS to make multiple vertices
-/gps/source/clear 
+/gps/source/clear
 /gps/source/multiplevertex true
 
 # Create the first particle.  This can be done using any of the GPS macro
-# commands. 
+# commands.
 /gps/source/add 1
 /gps/particle mu-
 /gps/energy 500 MeV
@@ -892,7 +1001,7 @@ same position coordinates), you could create a macro:
 # second.  Notice that the vertices in GPS are numbered from one, but that
 # the G4PrimaryVertex objects are numbered from zero.
 
-/generator/combine 0 1 
+/generator/combine 0 1
 ```
 
 The `/generator/combine` command copies the vertex position from the first
@@ -906,4 +1015,3 @@ the second particle is adjusted to be relative to the position of the first
 example, if the optional third argument is true, the first vertex position
 is [1,1,1], and the second vertex position is [0,1,0], then the simulated
 vertex positions will be [1,1,1] and [1,2,1].
-

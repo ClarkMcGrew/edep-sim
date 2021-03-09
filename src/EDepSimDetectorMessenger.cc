@@ -92,14 +92,14 @@ EDepSim::DetectorMessenger::DetectorMessenger(EDepSim::UserDetectorConstruction*
     // The name of the sensitive detector.
     par = new G4UIparameter("Sagitta", 'd', false);
     fHitSagittaCmd->SetParameter(par);
-    
+
     // The name of the sensitive detector.
     par = new G4UIparameter("Unit", 's', false);
     fHitSagittaCmd->SetParameter(par);
 
     fHitLengthCmd = new G4UIcommand("/edep/hitLength",this);
     fHitLengthCmd->SetGuidance(
-        "Set the maximum sagitta for hit segments.");
+        "Set the length for hit segments to stop growing.");
     fHitLengthCmd->AvailableForStates(G4State_PreInit);
 
     // The name of the sensitive detector.
@@ -109,10 +109,19 @@ EDepSim::DetectorMessenger::DetectorMessenger(EDepSim::UserDetectorConstruction*
     // The name of the sensitive detector.
     par = new G4UIparameter("Length", 'd', false);
     fHitLengthCmd->SetParameter(par);
-    
+
     // The name of the sensitive detector.
     par = new G4UIparameter("Unit", 's', false);
     fHitLengthCmd->SetParameter(par);
+
+    fHitExcludedCmd = new G4UIcommand("/edep/hitExcluded",this);
+    fHitExcludedCmd->SetGuidance(
+        "Exclude logical volumes from being sensitive.");
+    fHitExcludedCmd->AvailableForStates(G4State_PreInit);
+
+    // The name of the sensitive detector volume
+    par = new G4UIparameter("LogicalVolume", 's', false);
+    fHitExcludedCmd->SetParameter(par);
 
 }
 
@@ -127,6 +136,7 @@ EDepSim::DetectorMessenger::~DetectorMessenger()
     delete fControlCmd;
     delete fHitSagittaCmd;
     delete fHitLengthCmd;
+    delete fHitExcludedCmd;
     delete fEDepSimDir;
     delete fGDMLDir;
 }
@@ -214,6 +224,12 @@ void EDepSim::DetectorMessenger::SetNewValue(G4UIcommand * cmd,
         else {
             std::cout << "Invalid sensitive detector" << std::endl;
         }
+    }
+    else if (cmd == fHitExcludedCmd) {
+        std::istringstream input((const char*)newValue);
+        std::string logName;
+        input >> logName;
+        fConstruction->AddExcludedSensitiveDetector(logName);
     }
 
 }

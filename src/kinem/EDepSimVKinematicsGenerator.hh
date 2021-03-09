@@ -33,7 +33,7 @@ public:
         kFail = 0,
         /// A vertex was successfully generated.
         kSuccess,
-        /// The new vertex should be generated, but it is te last one for the
+        /// The new vertex should be generated, but it is the last one for the
         /// event.  This only has an effect if the EDepSim::PrimaryGenerator
         /// object is building a multiple vertex event.
         kLastVertex,
@@ -51,7 +51,7 @@ public:
     /// G4Event::AddPrimaryVertex(G4PrimaryVertex*) method.
     virtual GeneratorStatus GeneratePrimaryVertex(
         G4Event* evt, const G4LorentzVector& position) = 0;
-    
+
     /// Return the name of the generator.
     G4String GetName() const {return fName;}
 
@@ -71,4 +71,3 @@ public:
 };
 
 #endif
-

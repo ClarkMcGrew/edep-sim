@@ -10,6 +10,8 @@
 
 #include <TEveManager.h>
 #include <TEveLine.h>
+#include <TDatabasePDG.h>
+#include <TParticlePDG.h>
 
 #include <sstream>
 #include <iostream>
@@ -45,22 +47,38 @@ void EDep::TTrajectoryChangeHandler::Apply() {
         label << traj->GetName()
               << " (" << traj->GetInitialMomentum().E() << " MeV)";
 
-        bool charged = true;
-        
+        if (traj->GetParentId() < 1) {
+            std::cout << "Primary " << traj->GetTrackId()
+                      << " " << traj->GetName()
+                      << " " << traj->GetInitialMomentum().P() << " MeV/c"
+                      << " w/ points " << points.size()
+                      << std::endl;
+        }
+
+        bool charged = false;
+        std::string particleClass("none");
+        TParticlePDG* particle
+            = TDatabasePDG::Instance()->GetParticle(traj->GetPDGCode());
+        if (particle) {
+            if (std::abs(particle->Charge()) > 0.01) charged = true;
+            particleClass = particle->ParticleClass();
+        }
+
         TEveLine *track = new TEveLine();
         track->SetName("trajectory");
         track->SetTitle(label.str().c_str());
-        if (charged) {
-            track->SetLineColor(kRed);
-            track->SetLineStyle(3);
-        }
-        else {
-            track->SetLineColor(kRed+4);
-            track->SetLineStyle(4);
-        }
+
+        if (particleClass == "Lepton") track->SetLineColor(kMagenta);
+        else if (particleClass == "Baryon") track->SetLineColor(kOrange);
+        else if (particleClass == "Meson") track->SetLineColor(kGreen);
+        else if (particleClass == "GaugeBoson") track->SetLineColor(kCyan);
+        else track->SetLineColor(kRed);
+
+        if (charged) track->SetLineStyle(3);
+        else track->SetLineStyle(4);
 
         for (std::size_t p = 0; p < points.size(); ++p) {
-            track->SetPoint(p, 
+            track->SetPoint(p,
                             points[p].GetPosition().X(),
                             points[p].GetPosition().Y(),
                             points[p].GetPosition().Z());
