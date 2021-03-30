@@ -1,10 +1,18 @@
 # edep-sim : An Energy Deposition Simulation
 
-The energy deposition simulation is a wrapper around the GEANT4 particle
-propagation simulation and is intended as a tool to simulate all of the
-particle propagation and geometry related issues.  Be aware that the
-sequence of random numbers depends on the floating point accuracy of the
-machine, so given runs are machine dependent and may not be reproducible.
+The energy deposition simulation is a wrapper around the GEANT4
+particle propagation simulation and is intended as a tool to simulate
+all of the particle propagation and geometry related issues.  GEANT4
+is an excellent toolkit, but it requires you to provide the main
+programs, as well as the input, and output tools.  This has proven to
+be a very good design choice; unfortunately, it means that there is no
+standard wrapper code.  I've found myself using (and writing) almost
+identical input/output wrappers several times, so edep-sim is intended
+to provide a general starting point and allow users to concentrate on
+the physics. As a standalone program, edep-sim provides a simple ROOT
+based file format which will record the output of GEANT4.  It can also
+be linked as a library into another application, and makes the same
+information as a class.
 
 This documentation assumes that you have a passing familiarity with how to
 write GEANT4 macro control files.
@@ -17,6 +25,10 @@ al 2013 JINST 8 C10003 and references therein).
 Input file translators are provided for several standard input file
 formats.  In particular, this support input from both NEUT and GENIE.  The
 GENIE input is read using the RooTracker format.
+
+Be aware that the sequence of random numbers depends on the floating
+point accuracy of the machine, so given runs are machine dependent and
+may not be reproducible.
 
 ## Working with the source distribution
 
