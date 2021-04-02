@@ -1,3 +1,9 @@
+Changes in XXXX
+
+* Bug fix: Add error traps in EDepSimRooTrackerKinemGenerator to try
+  and catch malformed rooTracker files before processing.  This tries
+  to prevent a silent failure.
+
 Changes in 3.1.0
 
 * Improve documentation for the GDML StepLimit auxiliary, and add

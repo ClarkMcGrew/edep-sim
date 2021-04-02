@@ -36,10 +36,10 @@ void usage () {
               << std::endl;
     std::cout << "    -v      -- Increase the verbosity" << std::endl;
     std::cout << "    -V <name>=[quiet,log,info,verbose]" << std::endl
-              << "            -- Change the named log level" 
+              << "            -- Change the named log level"
               << std::endl;
     std::cout << "    -h      -- This help message." << std::endl;
-    
+
     exit(1);
 }
 
@@ -66,10 +66,10 @@ int main(int argc,char** argv) {
     // integer or G4 will give an error.  There could be error checking here,
     // but assume the user is "intelligent", and won't try to run "-e ten"
     // instead of "-e 10".
-    std::string beamOnCount = "";  
-    
+    std::string beamOnCount = "";
+
     if (argc<2) usage();
-    
+
     while (!errflg && ((c=getopt(argc,argv,"CdD:e:g:o:p:qsuUvV:h")) != -1)) {
         switch (c) {
         case 'C': {
@@ -218,14 +218,14 @@ int main(int argc,char** argv) {
         EDepSim::LogManager::SetLogLevel(EDepSim::LogManager::VerboseLevel);
         EDepSimVerbose("Set log level to VerboseLevel");
     }
-    
-    for (std::map<std::string,EDepSim::LogManager::LogPriority>::iterator i 
+
+    for (std::map<std::string,EDepSim::LogManager::LogPriority>::iterator i
              = namedLogLevel.begin();
          i != namedLogLevel.end();
          ++i) {
         EDepSim::LogManager::SetLogLevel(i->first.c_str(), i->second);
     }
-         
+
     if (debugLevel == 1) {
         EDepSim::LogManager::SetDebugLevel(EDepSim::LogManager::WarnLevel);
         EDepSimWarn("Set debug level to WarnLevel");
@@ -239,32 +239,32 @@ int main(int argc,char** argv) {
         EDepSimTrace("Set debug level to TraceLevel");
     }
 
-    for (std::map<std::string,EDepSim::LogManager::ErrorPriority>::iterator i 
+    for (std::map<std::string,EDepSim::LogManager::ErrorPriority>::iterator i
              = namedDebugLevel.begin();
          i != namedDebugLevel.end();
          ++i) {
         EDepSim::LogManager::SetDebugLevel(i->first.c_str(), i->second);
     }
-         
+
     // Set the mandatory initialization classes
     // Construct the default run manager
     G4RunManager* runManager = EDepSim::CreateRunManager(physicsList);
-    
+
     // Create the persistency manager.  The persistency manager must derive
     // from G4VPersistencyManager which will make this object available to the
     // G4RunManager as a singleton.  There can only be one persistency manager
     // at a time.  The Store methods will then be called by the run managers
     // Analyze methods.  The persistency manager doesn't *have* to be derived
-    // from EDepSim::RootPersistencyManager, but a lot of the trajectory and hit
-    // handling functionality is handled by that class.
+    // from EDepSim::RootPersistencyManager, but it's probably the best way to
+    // save internal data structures.
     EDepSim::PersistencyManager* persistencyManager = NULL;
 
     persistencyManager = new EDepSim::RootPersistencyManager();
-    
+
     // Create a "no i/o" persistency manager.  This doesn't actually save
     // anything, and it may be better to stop if there isn't a real
     // persistency manager declared.  This is here as paranoia in case later
-    // gode gets clever about how the persistency manager is created.
+    // code gets clever about how the persistency manager is created.
     if (!persistencyManager) {
         persistencyManager = new EDepSim::PersistencyManager();
     }
@@ -278,7 +278,7 @@ int main(int argc,char** argv) {
     if (gdmlFilename != "") {
         UI->ApplyCommand("/edep/gdml/read "+gdmlFilename);
     }
-    
+
     // Set the defaults for the simulation.
     UI->ApplyCommand("/edep/control edepsim-defaults 1.0");
 
@@ -286,7 +286,7 @@ int main(int argc,char** argv) {
     if (persistencyManager && ! outputFilename.empty()) {
         UI->ApplyCommand("/edep/db/open "+outputFilename);
     }
-    
+
     std::signal(SIGILL,  SIG_DFL);
     std::signal(SIGBUS,  SIG_DFL);
     std::signal(SIGSEGV, SIG_DFL);
@@ -295,7 +295,7 @@ int main(int argc,char** argv) {
     // generating the first event.  This causes the executable to throw an
     // exception if the geometry has overlaps.
     if (validateGeometry) UI->ApplyCommand("/edep/validateGeometry");
-    
+
     // Set the random seed from the time.
     if (setSeed) UI->ApplyCommand("/edep/random/timeRandomSeed");
 
@@ -331,13 +331,13 @@ int main(int argc,char** argv) {
             UI->ApplyCommand("/run/beamOn " + beamOnCount);
         }
     }
-    
+
     // If we have the persistency manager, then make sure it's closed.
     if (persistencyManager) {
         persistencyManager->Close();
         delete persistencyManager;
     }
     delete runManager;
-    
+
     return 0;
 }
