@@ -1,5 +1,8 @@
 Changes in XXXX
 
+* Bug fix: Make sure that the default geometry builds without
+  overlaps, and add a validation to catch when it does not.
+
 * Bug fix: Add error traps in EDepSimRooTrackerKinemGenerator to try
   and catch malformed rooTracker files before processing.  This tries
   to prevent a silent failure.

@@ -6,6 +6,43 @@
 # slow-tests will only be run if the "-s" option is provided.
 #
 # This needs to be run in the validate subdirectory.
+#
+# The validation scripts are run in lexical order based on the script
+# name.  This means that script "001MyName" is run before "002MyName",
+# and allows users to specify the script order.  This script is used
+# in a few places.  The following convention is suggested for script
+# naming.
+#
+#    000     -- Reserved for edep-sim-validate.sh
+#
+#    001-099 -- Scripts which don't require input.  This includes any
+#        scripts generating kinematic output that could be used by
+#        edep-sim.
+#
+#    100-199 -- Scripts which generate edep-sim output files.
+#
+#    200-299 -- Scripts which produce "raw" hits (and might need
+#        edep-sim input files).  This is where the detector response
+#        simulation is expected to be run.  These scripts might also
+#        produce calibrated hits.
+#
+#    300-399 -- Scripts which need uncalibrated hit objects.  This is
+#        where scripts that produce calibration coefficients are
+#        expected to be found.
+#
+#    400-499 -- Scripts which produce calibrate uncalibrated hits
+#        into calibrated hits.
+#
+#    500-599 -- Scripts which need calibrated objects.  This is
+#        where the reconstruction tests should be run.
+#
+#    600-699 -- Scripts which need reconstruction objects.
+#
+#    800-899 -- Scripts which produce summary trees.
+#
+#    900-999 -- Scripts looking at summary trees and validating physics
+#        performance.
+
 
 TESTS="fast-tests"
 
