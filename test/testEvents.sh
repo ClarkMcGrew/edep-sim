@@ -2,7 +2,7 @@
 
 #!/bin/sh
 
-OUTPUT=testGeometry.root
+OUTPUT=testEvents.root
 
 if [ -f ${OUTPUT} ]; then
     rm ${OUTPUT}
@@ -19,3 +19,4 @@ EOF
 
 edep-sim -o ${OUTPUT} -C -e 100 -u ${MACRO}
 
+rm ${macro}
