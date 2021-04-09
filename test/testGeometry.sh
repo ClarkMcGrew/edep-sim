@@ -17,5 +17,5 @@ cat > ${MACRO} <<EOF
 /gps/ang/type iso
 EOF
 
-edep-sim -o ${OUTPUT} -C -e 1 -u ${MACRO}
+edep-sim -o ${OUTPUT} -C -e 100 -u ${MACRO}
 
