@@ -19,7 +19,7 @@ class Builder(gegede.builder.Builder):
         self.dx = dx
         self.dy = dy
         self.dz = dz
-        self.auxValues = kwds
+        self.otherKeywords = kwds
         pass
 
     def construct(self, geom):
@@ -32,7 +32,7 @@ class Builder(gegede.builder.Builder):
                                        shape = shape)
 
         ## Add the aux values
-        for n, v in self.auxValues.items():
+        for n, v in self.otherKeywords.items():
             volume.params.append((n,v))
 
         self.add_volume(volume)

@@ -26,6 +26,7 @@ class Builder(gegede.builder.Builder):
         self.dx = dx
         self.dy = dy
         self.dz = dz
+        self.otherKeywords = kwds
         pass
 
     def construct(self, geom):
@@ -58,5 +59,10 @@ class Builder(gegede.builder.Builder):
         print ("   position " + pos.name)
         print ("   rotation " + rot.name)
         
+        ## Add the aux values
+        for n, v in self.otherKeywords.items():
+            volume.params.append((n,v))
+            pass
+
         pass
 

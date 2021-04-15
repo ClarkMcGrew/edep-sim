@@ -6,4 +6,4 @@ if ! which gegede-cli >& /dev/null ; then
     echo The executable gegede-cli must be in your path.
 fi
 
-PYTHONPATH=$(pwd):${PYTHONPATH} gegede-cli -o ${OUTPUT} testGGD.cfg
+PYTHONPATH=$(pwd):${PYTHONPATH} gegede-cli -o ${OUTPUT} ggdExample.cfg
