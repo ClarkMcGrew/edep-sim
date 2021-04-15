@@ -3,7 +3,7 @@
 # Generate events using a non-trivial GDML geometry.
 #
 
-BASE=060GDMLGeometry
+BASE=../fast-tests/060GDMLGeometry
 OUTPUT=${BASE}.root
 MACRO=${BASE}.mac
 GDML=${BASE}.gdml

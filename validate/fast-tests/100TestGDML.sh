@@ -3,7 +3,7 @@
 # Generate events using a non-trivial GDML geometry.
 #
 
-GDML=100TestGDML.gdml
+GDML=../fast-tests/100TestGDML.gdml
 OUTPUT=100TestGDML.root
 
 if [ -f ${OUTPUT} ]; then
