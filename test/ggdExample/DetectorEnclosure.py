@@ -9,6 +9,9 @@ class Builder(gegede.builder.Builder):
        subbuilders -- A list of builders for the layers of the enclosures.
        repetitions -- The number of repetions of the stack of layers.
        dx, dy, dz -- The half size of the world box.
+
+       Remaining configuration parameters are added to the logical
+       volume as auxtype and auxvalue pairs.
     '''
 
     def configure(self,
@@ -30,13 +33,26 @@ class Builder(gegede.builder.Builder):
     def construct(self, geom):
         print("Constructing the detector enclosure " + self.name)
 
+        ## Build the volume for this layer.  The conventions are that
+        ## the shape name ends in "_shape", and the volume name ends
+        ## in "_LV".  This reflects what is going to be build in
+        ## GEANT4 (a G4Shape and a G4LogicalVolume).
+        ##
+        ## The shape and volume names need to be unique inside the
+        ## GDML file.
         shape = geom.shapes.Box(self.name + "_shape",
                                 self.dx, self.dy, self.dz)
         volume = geom.structure.Volume(self.name + "_LV",
                                        material = self.material,
                                        shape = shape)
 
+        ## Add the constructed volume to the builder.  This can be
+        ## added before the volume is fully constructed.
         self.add_volume(volume)
+
+        ####################################################
+        ## Add a stack of layers to the parent volume.
+        ####################################################
 
         builders = self.get_builders()
 
@@ -50,7 +66,7 @@ class Builder(gegede.builder.Builder):
                 halfY = max(halfX,builder.dx)
                 halfZ += builder.dz
 
-        ## Make sure the outer volume is big enough.
+        ## Make sure the parent volume is big enough.
         if self.dx < halfX:
             print ("Invalid geometry")
             sys.exit(1)
@@ -61,7 +77,8 @@ class Builder(gegede.builder.Builder):
             print ("Invalid geometry")
             sys.exit(1)
 
-        ## Place the volumes.
+        ## Place the sub volumes in the parent volume.  The
+        ## coordinates are relative to the parent volume.
         centerX = Q("0m")
         centerY = Q("0m")
         centerZ = - halfZ
@@ -82,7 +99,7 @@ class Builder(gegede.builder.Builder):
                 pass
             pass
         
-        ## Add the aux values
+        ## Add the aux type and aux values fields to the logical volume.
         for n, v in self.otherKeywords.items():
             volume.params.append((n,v))
             pass

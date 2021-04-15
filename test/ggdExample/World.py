@@ -4,14 +4,19 @@ from gegede import Quantity as Q
 from . import MaterialDefinitions
 
 class Builder(gegede.builder.Builder):
-    '''
-    Build a simple box world of given material and size.
+    '''Build a simple box world of given material and size.  The world
+    will contain one daughter volume which is build using the first
+    subbuilder.
 
     Configuration parameters:
        subbuilders -- A list of builders for the world.  Only the first 
              is used.  
        material -- The material used to build the world volume.
        dx, dy, dz -- The half size of the world box.
+
+       Remaining configuration parameters are added to the logical
+       volume as auxtype and auxvalue pairs.
+
     '''
 
     def configure(self,
@@ -33,6 +38,13 @@ class Builder(gegede.builder.Builder):
         print("Constructing the world " + self.name)
         MaterialDefinitions.DefineMaterials(geom)
 
+        ## Build the volume for this layer.  The conventions are that
+        ## the shape name ends in "_shape", and the volume name ends
+        ## in "_LV".  This reflects what is going to be build in
+        ## GEANT4 (a G4Shape and a G4LogicalVolume).
+        ##
+        ## The shape and volume names need to be unique inside the
+        ## GDML file.
         shape = geom.shapes.Box(self.name + "_shape",
                                 self.dx, self.dy, self.dz)
         volume = geom.structure.Volume(self.name + "_LV",
@@ -59,7 +71,7 @@ class Builder(gegede.builder.Builder):
         print ("   position " + pos.name)
         print ("   rotation " + rot.name)
         
-        ## Add the aux values
+        ## Add the aux type and aux values fields to the logical volume.
         for n, v in self.otherKeywords.items():
             volume.params.append((n,v))
             pass
