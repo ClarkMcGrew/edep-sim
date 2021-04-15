@@ -15,7 +15,7 @@ class Builder(gegede.builder.Builder):
        dx, dy, dz -- The half size of the world box.
 
        Remaining configuration parameters are added to the logical
-       volume as auxtype and auxvalue pairs.
+       volume as <auxilliary auxtype="key" auxvalue="value" /> pairs.
 
     '''
 
@@ -50,7 +50,14 @@ class Builder(gegede.builder.Builder):
         volume = geom.structure.Volume(self.name + "_LV",
                                        material = self.material,
                                        shape = shape)
+
+        ## Add the constructed volume to the builder.    
         self.add_volume(volume)
+
+        ## Add the aux type and aux values fields to the logical volume.
+        for n, v in self.otherKeywords.items():
+            volume.params.append((n,v))
+            pass
 
         # Add the volume from the first subbuilder. 
         subBuilder = self.get_builder()
@@ -71,10 +78,5 @@ class Builder(gegede.builder.Builder):
         print ("   position " + pos.name)
         print ("   rotation " + rot.name)
         
-        ## Add the aux type and aux values fields to the logical volume.
-        for n, v in self.otherKeywords.items():
-            volume.params.append((n,v))
-            pass
-
         pass
 

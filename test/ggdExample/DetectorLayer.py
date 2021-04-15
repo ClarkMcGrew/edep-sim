@@ -8,7 +8,7 @@ class Builder(gegede.builder.Builder):
        dx, dy, dz -- The half size of the layer box.
 
        Remaining configuration parameters are added to the logical
-       volume as auxtype and auxvalue pairs.
+       volume as <auxilliary auxtype="key" auxvalue="value" /> pairs.
     '''
 
     def configure(self,
@@ -42,10 +42,11 @@ class Builder(gegede.builder.Builder):
                                        material = self.material,
                                        shape = shape)
 
+        ## Add the constructed volume to the builder.    
+        self.add_volume(volume)
+
         ## Add the aux type and aux values fields to the logical volume.
         for n, v in self.otherKeywords.items():
             volume.params.append((n,v))
 
-        ## Add the constructed volume to the builder.    
-        self.add_volume(volume)
         pass

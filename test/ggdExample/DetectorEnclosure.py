@@ -11,7 +11,7 @@ class Builder(gegede.builder.Builder):
        dx, dy, dz -- The half size of the world box.
 
        Remaining configuration parameters are added to the logical
-       volume as auxtype and auxvalue pairs.
+       volume as <auxilliary auxtype="key" auxvalue="value" /> pairs.
     '''
 
     def configure(self,
@@ -50,21 +50,26 @@ class Builder(gegede.builder.Builder):
         ## added before the volume is fully constructed.
         self.add_volume(volume)
 
+        ## Add the aux type and aux values fields to the logical volume.
+        for n, v in self.otherKeywords.items():
+            volume.params.append((n,v))
+            pass
+
         ####################################################
         ## Add a stack of layers to the parent volume.
         ####################################################
 
-        builders = self.get_builders()
+        subBuilders = self.get_builders()
 
         ## Determine the full size of the stack of layers
         halfX = Q("0m")
         halfY = Q("0m")
         halfZ = Q("0m")
         for rep in range(self.repetitions):
-            for builder in builders:
-                halfX = max(halfX,builder.dx)
-                halfY = max(halfX,builder.dx)
-                halfZ += builder.dz
+            for subBuilder in subBuilders:
+                halfX = max(halfX,subBuilder.dx)
+                halfY = max(halfX,subBuilder.dx)
+                halfZ += subBuilder.dz
 
         ## Make sure the parent volume is big enough.
         if self.dx < halfX:
@@ -83,25 +88,20 @@ class Builder(gegede.builder.Builder):
         centerY = Q("0m")
         centerZ = - halfZ
         for rep in range(self.repetitions):
-            for builder in builders:
-                centerZ += builder.dz
-                vol = builder.get_volume()
-                pos = geom.structure.Position(builder.name+"_pos"+str(rep),
+            for subBuilder in subBuilders:
+                centerZ += subBuilder.dz
+                vol = subBuilder.get_volume()
+                pos = geom.structure.Position(subBuilder.name+"_pos"+str(rep),
                                               centerX, centerY, centerZ)
-                rot = geom.structure.Rotation(builder.name+"_rot"+str(rep),
+                rot = geom.structure.Rotation(subBuilder.name+"_rot"+str(rep),
                                               "0deg","0deg","0deg")
-                place = geom.structure.Placement(builder.name+"_place"+str(rep),
-                                                 volume=vol.name,
-                                                 pos=pos.name,
-                                                 rot=rot.name)
+                place = geom.structure.Placement(
+                    subBuilder.name+"_place"+str(rep),
+                    volume=vol.name,
+                    pos=pos.name,
+                    rot=rot.name)
                 volume.placements.append(place.name)
-                centerZ += builder.dz
+                centerZ += subBuilder.dz
                 pass
             pass
-        
-        ## Add the aux type and aux values fields to the logical volume.
-        for n, v in self.otherKeywords.items():
-            volume.params.append((n,v))
-            pass
-
         pass
