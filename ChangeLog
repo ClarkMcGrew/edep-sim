@@ -1,11 +1,23 @@
 Changes in XXXX
 
+* Add an example of generating a GDML file using GeGeDe.  This shows
+  how to build a gdml file that sets the auxvalues needed by edep-sim,
+  and can be used as a starting point for a user geometry.
+
+* Improvements: The GDML validations have been cleaned up.  The output
+  still should be inspected using ROOT and edep-disp, but the tests
+  are simplified to make it easier to interpret the output.  This is
+  mostly intended as an edep-sim developer (pre-)release tool.
+
 * Bug fix: Make sure that the default geometry builds without
   overlaps, and add a validation to catch when it does not.
 
 * Bug fix: Add error traps in EDepSimRooTrackerKinemGenerator to try
   and catch malformed rooTracker files before processing.  This tries
   to prevent a silent failure.
+
+* Remove dead test files that are left over from old, and unsupported
+  methods of reading the edep-sim output.
 
 Changes in 3.1.0
 
