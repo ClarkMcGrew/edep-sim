@@ -285,7 +285,7 @@ def DefineMaterials(geom):
     lead  = geom.matter.Mixture("Lead", density="11.342*g/cc",
                                 components=(
                                     ("Elem_lead",0.95),
-                                    ("Elem_antimony",0.5)
+                                    ("Elem_antimony",0.05)
                                 ))
 
     vaccuum =  geom.matter.Mixture("Vaccuum",
