@@ -1,5 +1,11 @@
 Changes in XXXX
 
+* Add /edep/material/SetBirksConstant to allow the Birks constant to
+  be set for any material.  This must be used before the /edep/update
+  macro command.  It accepts a material name, the value of the Birks
+  constant, and the units for the birks constant.  For example:
+  ```/edep/material/SetBirksConstant Scintillator 0.12 mm/MeV```
+
 * Add an example of generating a GDML file using GeGeDe.  This shows
   how to build a gdml file that sets the auxvalues needed by edep-sim,
   and can be used as a starting point for a user geometry.
