@@ -676,5 +676,6 @@ G4VPhysicalVolume* EDepSim::UserDetectorConstruction::ConstructDetector() {
 
 void EDepSim::UserDetectorConstruction::UpdateGeometry() {
     // Initialize the run manager.  This sets everything in motion.
+    EDepSimLog("Update the geometry and initialize the G4RunManager");
     G4RunManager::GetRunManager()->Initialize();
 }
