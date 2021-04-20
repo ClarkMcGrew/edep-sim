@@ -287,6 +287,13 @@ void EDepSim::DetectorMessenger::SetNewValue(G4UIcommand * cmd,
         birksConstant *= G4UnitDefinition::GetValueOf(numerator);
         birksConstant /= G4UnitDefinition::GetValueOf(denominator);
 
+        double bc = material->GetIonisation()->GetBirksConstant();
+        if (bc > 1E-6) {
+            EDepSimError("Overriding Birks constant for " << matName
+                         << " from nonzero value of"
+                         << " " << bc/(mm/MeV) << " mm/MeV");
+        }
+
         material->GetIonisation()->SetBirksConstant(birksConstant);
 
         EDepSimLog("Set Birks constant for"

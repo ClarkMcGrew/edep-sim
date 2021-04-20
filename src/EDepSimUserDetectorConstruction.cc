@@ -431,10 +431,18 @@ void EDepSim::UserDetectorConstruction::ConstructSDandField() {
         if (!anMPT) continue;
         // Check for a Birks constant value
         if (anMPT->ConstPropertyExists("BIRKSCONSTANT")) {
+            double oldBC = (*mat)->GetIonisation()->GetBirksConstant();
+            if (oldBC > 1E-6) {
+                EDepSimError("Overriding Birks constant for "
+                             << (*mat)->GetName()
+                             << " from nonzero value of"
+                             << " " << oldBC/(mm/MeV) << " mm/MeV");
+            }
+
             double bc = anMPT->GetConstProperty("BIRKSCONSTANT");
-            EDepSimLog((*mat)->GetName()
-                       << " Birks constant from BIRKSCONSTANT property"
-                       << " set to " << bc/(mm/MeV) << " mm/MeV");
+            EDepSimLog((*mat)->GetName() << " Birks constant set to"
+                       << " " << bc/(mm/MeV) << " mm/MeV"
+                       << " from BIRKSCONSTANT property");
             (*mat)->GetIonisation()->SetBirksConstant(bc);
         }
     }
