@@ -4036,6 +4036,7 @@ EDepSim detector control.
 
  Sub-directories : 
    /edep/gdml/   Control over the gdml file.
+   /edep/material/   Extra control over the material definitions.
    /edep/phys/   Control the physics lists
    /edep/random/   Control of the random seed number.
    /edep/db/   Output file control commands.
@@ -4178,14 +4179,41 @@ Control over the gdml file.
 
  Sub-directories : 
  Commands : 
-   read * Define a GDML file to be used for the geometry.
+   read * Set a GDML file to be used for the geometry.
 
 
 Command /edep/gdml/read
 Guidance :
-Define a GDML file to be used for the geometry.
+Set a GDML file to be used for the geometry.
 
 Parameter : 
+ Parameter type  : s
+ Omittable       : False
+
+Command directory path : /edep/material/
+
+
+Guidance :
+Extra control over the material definitions.
+
+ Sub-directories : 
+ Commands : 
+   birksConstant * Override the Birks constant for material.
+
+
+Command /edep/material/birksConstant
+Guidance :
+Override the Birks constant for material.
+
+Parameter : Material
+ Parameter type  : s
+ Omittable       : False
+
+Parameter : Birks
+ Parameter type  : d
+ Omittable       : False
+
+Parameter : Unit
  Parameter type  : s
  Omittable       : False
 

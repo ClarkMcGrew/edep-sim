@@ -133,7 +133,7 @@ EDepSim::DetectorMessenger::DetectorMessenger(EDepSim::UserDetectorConstruction*
     fMaterialDir = new G4UIdirectory("/edep/material/");
     fMaterialDir->SetGuidance("Extra control over the material definitions.");
 
-    fMaterialBirksCmd = new G4UIcommand("/edep/material/SetBirksConstant",this);
+    fMaterialBirksCmd = new G4UIcommand("/edep/material/birksConstant",this);
     fMaterialBirksCmd->SetGuidance("Override the Birks constant for material.");
     fMaterialBirksCmd->AvailableForStates(G4State_PreInit);
 

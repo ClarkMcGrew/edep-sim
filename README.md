@@ -18,9 +18,11 @@ This documentation assumes that you have a passing familiarity with how to
 write GEANT4 macro control files.
 
 Where it's available (and in particular for argon), the simulation
-implements a fairly detailed model of the energy deposited as ionization
-and scintillation.  This is implemented using the NEST model (M Szydagis et
-al 2013 JINST 8 C10003 and references therein).
+implements a fairly detailed model of the energy deposited as
+ionization and non-ionizing (e.g. scintillation) energy loss.  The
+liquid argon model uses using the NEST model (M Szydagis et al 2013
+JINST 8 C10003 and references therein).  All other models use the EM
+saturation model provided by geant 4.
 
 Input file translators are provided for several standard input file
 formats.  In particular, this support input from both NEUT and GENIE.  The
@@ -348,7 +350,7 @@ The TG4TrajectoryPoint is a data-only class with the following information.
 
 There are several macro commands provided which will allow the saved
 trajectories to be filtered before they are saved to an output file.
-Check the edep-sim-command-list.txt file and search for the 
+Check the edep-sim-command-list.txt file and search for the
 "/edep/db/set/" directory for details.
 
 #### The Energy Deposition Class (and Friends).
@@ -457,12 +459,13 @@ the ```-g``` option
 edep-sim -g geometry.gdml -o output.root macro-file.mac
 ```
 
-### GDML Auxiliary Fields
+### GDML Logical Volume Auxiliary Fields
 
-Several auxiliary fields are parsed to help describe the detector geometry
-and attach more meaning to the GDML description.  For example, here is a
-simple LAr detector description that is attached as a sensitive detector,
-and has both an electric and a magnetic field.
+Several auxiliary fields are parsed to help describe volumes in the
+detector geometry and attach more meaning to the GDML description.
+For example, here is a simple LAr detector description that is
+attached as a sensitive detector, and has both an electric and a
+magnetic field.
 
 ```
     <volume name="LArD_lv">
@@ -596,6 +599,57 @@ The step limit can be set using
 <auxiliary auxtype="StepLimit" auxValue="1.0 cm"/>
 
 The value takes a number and a unit.
+
+## Describing Detector Materials
+
+Detector materials are described using the standard GEANT4 methods,
+but with a few minor extentions to simplify usage.  For geometries
+that are coded using the native GEANT4 routines (i.e. implementing a
+specialized UserDetectorGeometry class and built by deriving builders
+from EDepSimBuilder) should mostly depend the standard GEANT4
+interface.
+
+### Specifying Saturation for a Material (The Birks Constant)
+
+Internally, GEANT4 manages the Birks constant for a material using
+stippets that look like
+
+```C++
+G4Material* material = G4Material::FindMaterial("Scintillator");
+
+// Set the Birks' constant for a material
+double birks_constant = 0.12;
+material->GetIonization()->SetBirksConstant(birks_constant);
+
+// Get the Birks' constant for a material
+birks_constant = material->GetIonization()->GetBirksConstant();
+```
+
+Unfortunately, this interface is not exposed when defining materials
+using GDML.  As a work-around, there is an ```edep-sim``` macro that will
+override the Birks' constant for an existing material.  The macro must
+be used immediately before using the ```/edep/update``` macro.  The
+Birks' constant is set using
+
+```
+/edep/material/birksConstant [material] [value] [unit]
+```
+
+where ```material``` is the name of an existing material, ```value```
+is a floating point number (e.g. 0.126), and ```unit``` is a string
+describing the units (e.g. ```mm/MeV```).  The unit must be a
+```[Length]/[Energy]```, and must contain a '```/```', however there is
+only minimal error checking to make sure the result is reasonable.
+For standard polystyrene (which must have already been defined), the
+Birks' constant would be set using
+
+```
+/edep/material/birksConstant Polystyrene 0.126 mm/MeV
+/edep/update
+```
+
+An error is thrown if the material has not been defined, or if the
+units are malformed (e.g. the unit is missing a '/')
 
 ## Running as a library
 
