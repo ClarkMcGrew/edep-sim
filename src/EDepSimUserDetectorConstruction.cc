@@ -415,6 +415,29 @@ void EDepSim::UserDetectorConstruction::ConstructSDandField() {
         }
         logVolume->SetFieldManager(manager,true);
     }
+
+    ///////////////////////////////////////////////////////////////
+    // Handle custom material property values
+    //
+    // There are several material fields that cannot be directly set using a
+    // GDML interface.  An example of one is be the Birks' constant.  To work
+    // around this the GDML property element is used to set a
+    // MaterialPropertyVector that is then interpreted here to set the
+    // specific material field.
+    for (G4MaterialTable::iterator mat
+             = G4Material::GetMaterialTable()->begin();
+         mat != G4Material::GetMaterialTable()->end(); ++mat) {
+        G4MaterialPropertiesTable* anMPT = (*mat)->GetMaterialPropertiesTable();
+        if (!anMPT) continue;
+        // Check for a Birks constant value
+        if (anMPT->ConstPropertyExists("BIRKSCONSTANT")) {
+            double bc = anMPT->GetConstProperty("BIRKSCONSTANT");
+            EDepSimLog((*mat)->GetName()
+                       << " Birks constant from BIRKSCONSTANT property"
+                       << " set to " << bc/(mm/MeV) << " mm/MeV");
+            (*mat)->GetIonisation()->SetBirksConstant(bc);
+        }
+    }
 }
 
 void EDepSim::UserDetectorConstruction::DefineMaterials() {
