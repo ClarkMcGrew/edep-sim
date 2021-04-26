@@ -274,11 +274,28 @@ def DefineMaterials(geom):
                                ("Glass",0.794)
                            ))
 
-    scintillator  = geom.matter.Mixture("Scintillator",   density="1.05*g/cc",
-                                     components = (
-                                         ("Elem_carbon",   0.916),
-                                         ("Elem_hydrogen", 0.084)
-                                     ))
+    try:
+        # Try to use a new feature
+        scintillator  = geom.matter.Mixture("Scintillator",
+                                            density="1.05*g/cc",
+                                            components = (
+                                                ("Elem_carbon",   0.916),
+                                                ("Elem_hydrogen", 0.084)
+                                            ),
+                                            properties = (
+                                                ("BIRKSCONSTANT", (0.126,)),
+                                            ))
+    except:
+        # Fall back if the new feature doesn't exist.
+        print ("ERROR: #######################################")
+        print ("ERROR: GGD material properties not implemented")
+        print ("ERROR: #######################################")
+        scintillator  = geom.matter.Mixture("Scintillator",
+                                            density="1.05*g/cc",
+                                            components = (
+                                                ("Elem_carbon",   0.916),
+                                                ("Elem_hydrogen", 0.084)
+                                            ))
 
     pureLead  = geom.matter.Mixture("PureLead",   density="11.342*g/cc",
                                     components=(("Elem_lead",1),))
