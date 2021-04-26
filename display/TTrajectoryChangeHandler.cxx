@@ -47,12 +47,23 @@ void EDep::TTrajectoryChangeHandler::Apply() {
         label << traj->GetName()
               << " (" << traj->GetInitialMomentum().E() << " MeV)";
 
-        if (traj->GetParentId() < 1) {
+        if (traj->GetParentId() < 0) {
             std::cout << "Primary " << traj->GetTrackId()
                       << " " << traj->GetName()
                       << " " << traj->GetInitialMomentum().P() << " MeV/c"
-                      << " w/ points " << points.size()
-                      << std::endl;
+                      << " w/ points " << points.size();
+            if (!points.empty()) {
+                std::cout << " ("
+                          << (int)(traj->Points.front().GetPosition().X())
+                          << " mm"
+                          << ", "
+                          << (int)(traj->Points.front().GetPosition().Y())
+                          << " mm"
+                          << ", "
+                          << (int)(traj->Points.front().GetPosition().Z())
+                          << " mm)";
+            }
+            std::cout << std::endl;
         }
 
         bool charged = false;
