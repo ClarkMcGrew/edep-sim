@@ -425,7 +425,7 @@
     <material formula="" name="Lead">
       <D value="11.342"/>
       <fraction n="0.95" ref="Elem_lead"/>
-      <fraction n="0.5" ref="Elem_antimony"/>
+      <fraction n="0.05" ref="Elem_antimony"/>
     </material>
     <material formula="" name="Vaccuum">
       <D value="1e-25"/>
