@@ -1,5 +1,12 @@
 Changes in XXXX
 
+* Update the detector construction so that it look for BIRKSCONSTANT
+  in the material properties table and copies the value into the
+  material ionization properties.  This works around a missing feature
+  in GDML where certain material description values cannot be set.  In
+  GDML, add the property "BIRKSCONSTANT" with the value in units of
+  "mm/MeV" and edep-sim will "take care of the rest".
+
 * Add /edep/material/birksConstant to allow the Birks constant to
   be set for any material.  This must be used before the /edep/update
   macro command.  It accepts a material name, the value of the Birks
