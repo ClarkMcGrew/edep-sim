@@ -103,6 +103,7 @@
     <rotation name="ActiveLayer_rot24" unit="degree" x="0" y="0" z="0"/>
     <position name="DetectorEnclosure_pos" unit="cm" x="0.0" y="0.0" z="0.0"/>
     <rotation name="DetectorEnclosure_rot" unit="degree" x="0" y="0" z="0"/>
+    <matrix coldim="1" name="Scintillator_BIRKSCONSTANT_VALUE" values="0.13"/>
     <position name="center"/>
     <rotation name="identity"/>
   </define>
@@ -417,6 +418,7 @@
       <D value="1.05"/>
       <fraction n="0.916" ref="Elem_carbon"/>
       <fraction n="0.084" ref="Elem_hydrogen"/>
+      <property name="BIRKSCONSTANT" ref="Scintillator_BIRKSCONSTANT_VALUE"/>
     </material>
     <material formula="" name="PureLead">
       <D value="11.342"/>
@@ -425,7 +427,7 @@
     <material formula="" name="Lead">
       <D value="11.342"/>
       <fraction n="0.95" ref="Elem_lead"/>
-      <fraction n="0.5" ref="Elem_antimony"/>
+      <fraction n="0.05" ref="Elem_antimony"/>
     </material>
     <material formula="" name="Vaccuum">
       <D value="1e-25"/>
