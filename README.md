@@ -357,13 +357,13 @@ Check the edep-sim-command-list.txt file and search for the
 
 The energy deposition in each sensitive detector is recorded using the
 TG4HitSegment class.  This class records the starting and stopping position
-of for each energy deposition step (the energy is *not* deposited at a
+of each energy deposition step (the energy is *not* deposited at a
 point).  It also records the particle depositing the energy, as well as the
 primary particle, or ultimate parent, associated with the energy deposit.
 
-The generated hit segment contains fields with the following information.
-It has the deprecated public fields, and accessor that should be used
-instead of the field:
+The generated hit segment contains fields with the following
+information.  The ```public``` fields are deprecated, and you should
+use the accessors instead of the field:
 
   * Contrib: A vector of track identifiers which contributed to this hit
     segment.  There is almost always only one contributor, but for certain
