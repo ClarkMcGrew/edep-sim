@@ -1,0 +1,726 @@
+<?xml version="1.0" encoding="ASCII"?>
+<gdml xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://service-spi.web.cern.ch/service-spi/app/releases/GDML/schema/gdml.xsd">
+  <define>
+    <position name="InactiveLayer_pos0" unit="cm" x="0.0" y="0.0" z="-49.750000000000036"/>
+    <rotation name="InactiveLayer_rot0" unit="degree" x="0" y="0" z="0"/>
+    <position name="ActiveLayer_pos0" unit="cm" x="0.0" y="0.0" z="-47.75000000000003"/>
+    <rotation name="ActiveLayer_rot0" unit="degree" x="0" y="0" z="0"/>
+    <position name="InactiveLayer_pos1" unit="cm" x="0.0" y="0.0" z="-45.75000000000003"/>
+    <rotation name="InactiveLayer_rot1" unit="degree" x="0" y="0" z="0"/>
+    <position name="ActiveLayer_pos1" unit="cm" x="0.0" y="0.0" z="-43.75000000000003"/>
+    <rotation name="ActiveLayer_rot1" unit="degree" x="0" y="0" z="0"/>
+    <position name="InactiveLayer_pos2" unit="cm" x="0.0" y="0.0" z="-41.75000000000003"/>
+    <rotation name="InactiveLayer_rot2" unit="degree" x="0" y="0" z="0"/>
+    <position name="ActiveLayer_pos2" unit="cm" x="0.0" y="0.0" z="-39.75000000000002"/>
+    <rotation name="ActiveLayer_rot2" unit="degree" x="0" y="0" z="0"/>
+    <position name="InactiveLayer_pos3" unit="cm" x="0.0" y="0.0" z="-37.75000000000002"/>
+    <rotation name="InactiveLayer_rot3" unit="degree" x="0" y="0" z="0"/>
+    <position name="ActiveLayer_pos3" unit="cm" x="0.0" y="0.0" z="-35.75000000000002"/>
+    <rotation name="ActiveLayer_rot3" unit="degree" x="0" y="0" z="0"/>
+    <position name="InactiveLayer_pos4" unit="cm" x="0.0" y="0.0" z="-33.75000000000002"/>
+    <rotation name="InactiveLayer_rot4" unit="degree" x="0" y="0" z="0"/>
+    <position name="ActiveLayer_pos4" unit="cm" x="0.0" y="0.0" z="-31.750000000000018"/>
+    <rotation name="ActiveLayer_rot4" unit="degree" x="0" y="0" z="0"/>
+    <position name="InactiveLayer_pos5" unit="cm" x="0.0" y="0.0" z="-29.750000000000014"/>
+    <rotation name="InactiveLayer_rot5" unit="degree" x="0" y="0" z="0"/>
+    <position name="ActiveLayer_pos5" unit="cm" x="0.0" y="0.0" z="-27.750000000000014"/>
+    <rotation name="ActiveLayer_rot5" unit="degree" x="0" y="0" z="0"/>
+    <position name="InactiveLayer_pos6" unit="cm" x="0.0" y="0.0" z="-25.75000000000001"/>
+    <rotation name="InactiveLayer_rot6" unit="degree" x="0" y="0" z="0"/>
+    <position name="ActiveLayer_pos6" unit="cm" x="0.0" y="0.0" z="-23.75000000000001"/>
+    <rotation name="ActiveLayer_rot6" unit="degree" x="0" y="0" z="0"/>
+    <position name="InactiveLayer_pos7" unit="cm" x="0.0" y="0.0" z="-21.750000000000007"/>
+    <rotation name="InactiveLayer_rot7" unit="degree" x="0" y="0" z="0"/>
+    <position name="ActiveLayer_pos7" unit="cm" x="0.0" y="0.0" z="-19.750000000000007"/>
+    <rotation name="ActiveLayer_rot7" unit="degree" x="0" y="0" z="0"/>
+    <position name="InactiveLayer_pos8" unit="cm" x="0.0" y="0.0" z="-17.750000000000004"/>
+    <rotation name="InactiveLayer_rot8" unit="degree" x="0" y="0" z="0"/>
+    <position name="ActiveLayer_pos8" unit="cm" x="0.0" y="0.0" z="-15.750000000000004"/>
+    <rotation name="ActiveLayer_rot8" unit="degree" x="0" y="0" z="0"/>
+    <position name="InactiveLayer_pos9" unit="cm" x="0.0" y="0.0" z="-13.750000000000002"/>
+    <rotation name="InactiveLayer_rot9" unit="degree" x="0" y="0" z="0"/>
+    <position name="ActiveLayer_pos9" unit="cm" x="0.0" y="0.0" z="-11.75"/>
+    <rotation name="ActiveLayer_rot9" unit="degree" x="0" y="0" z="0"/>
+    <position name="InactiveLayer_pos10" unit="cm" x="0.0" y="0.0" z="-9.75"/>
+    <rotation name="InactiveLayer_rot10" unit="degree" x="0" y="0" z="0"/>
+    <position name="ActiveLayer_pos10" unit="cm" x="0.0" y="0.0" z="-7.75"/>
+    <rotation name="ActiveLayer_rot10" unit="degree" x="0" y="0" z="0"/>
+    <position name="InactiveLayer_pos11" unit="cm" x="0.0" y="0.0" z="-5.75"/>
+    <rotation name="InactiveLayer_rot11" unit="degree" x="0" y="0" z="0"/>
+    <position name="ActiveLayer_pos11" unit="cm" x="0.0" y="0.0" z="-3.749999999999999"/>
+    <rotation name="ActiveLayer_rot11" unit="degree" x="0" y="0" z="0"/>
+    <position name="InactiveLayer_pos12" unit="cm" x="0.0" y="0.0" z="-1.7499999999999991"/>
+    <rotation name="InactiveLayer_rot12" unit="degree" x="0" y="0" z="0"/>
+    <position name="ActiveLayer_pos12" unit="cm" x="0.0" y="0.0" z="0.2500000000000011"/>
+    <rotation name="ActiveLayer_rot12" unit="degree" x="0" y="0" z="0"/>
+    <position name="InactiveLayer_pos13" unit="cm" x="0.0" y="0.0" z="2.250000000000001"/>
+    <rotation name="InactiveLayer_rot13" unit="degree" x="0" y="0" z="0"/>
+    <position name="ActiveLayer_pos13" unit="cm" x="0.0" y="0.0" z="4.250000000000001"/>
+    <rotation name="ActiveLayer_rot13" unit="degree" x="0" y="0" z="0"/>
+    <position name="InactiveLayer_pos14" unit="cm" x="0.0" y="0.0" z="6.250000000000002"/>
+    <rotation name="InactiveLayer_rot14" unit="degree" x="0" y="0" z="0"/>
+    <position name="ActiveLayer_pos14" unit="cm" x="0.0" y="0.0" z="8.250000000000002"/>
+    <rotation name="ActiveLayer_rot14" unit="degree" x="0" y="0" z="0"/>
+    <position name="InactiveLayer_pos15" unit="cm" x="0.0" y="0.0" z="10.250000000000002"/>
+    <rotation name="InactiveLayer_rot15" unit="degree" x="0" y="0" z="0"/>
+    <position name="ActiveLayer_pos15" unit="cm" x="0.0" y="0.0" z="12.250000000000002"/>
+    <rotation name="ActiveLayer_rot15" unit="degree" x="0" y="0" z="0"/>
+    <position name="InactiveLayer_pos16" unit="cm" x="0.0" y="0.0" z="14.250000000000002"/>
+    <rotation name="InactiveLayer_rot16" unit="degree" x="0" y="0" z="0"/>
+    <position name="ActiveLayer_pos16" unit="cm" x="0.0" y="0.0" z="16.250000000000004"/>
+    <rotation name="ActiveLayer_rot16" unit="degree" x="0" y="0" z="0"/>
+    <position name="InactiveLayer_pos17" unit="cm" x="0.0" y="0.0" z="18.250000000000004"/>
+    <rotation name="InactiveLayer_rot17" unit="degree" x="0" y="0" z="0"/>
+    <position name="ActiveLayer_pos17" unit="cm" x="0.0" y="0.0" z="20.250000000000007"/>
+    <rotation name="ActiveLayer_rot17" unit="degree" x="0" y="0" z="0"/>
+    <position name="InactiveLayer_pos18" unit="cm" x="0.0" y="0.0" z="22.250000000000007"/>
+    <rotation name="InactiveLayer_rot18" unit="degree" x="0" y="0" z="0"/>
+    <position name="ActiveLayer_pos18" unit="cm" x="0.0" y="0.0" z="24.25000000000001"/>
+    <rotation name="ActiveLayer_rot18" unit="degree" x="0" y="0" z="0"/>
+    <position name="InactiveLayer_pos19" unit="cm" x="0.0" y="0.0" z="26.25000000000001"/>
+    <rotation name="InactiveLayer_rot19" unit="degree" x="0" y="0" z="0"/>
+    <position name="ActiveLayer_pos19" unit="cm" x="0.0" y="0.0" z="28.250000000000014"/>
+    <rotation name="ActiveLayer_rot19" unit="degree" x="0" y="0" z="0"/>
+    <position name="InactiveLayer_pos20" unit="cm" x="0.0" y="0.0" z="30.250000000000014"/>
+    <rotation name="InactiveLayer_rot20" unit="degree" x="0" y="0" z="0"/>
+    <position name="ActiveLayer_pos20" unit="cm" x="0.0" y="0.0" z="32.250000000000014"/>
+    <rotation name="ActiveLayer_rot20" unit="degree" x="0" y="0" z="0"/>
+    <position name="InactiveLayer_pos21" unit="cm" x="0.0" y="0.0" z="34.25000000000002"/>
+    <rotation name="InactiveLayer_rot21" unit="degree" x="0" y="0" z="0"/>
+    <position name="ActiveLayer_pos21" unit="cm" x="0.0" y="0.0" z="36.25000000000002"/>
+    <rotation name="ActiveLayer_rot21" unit="degree" x="0" y="0" z="0"/>
+    <position name="InactiveLayer_pos22" unit="cm" x="0.0" y="0.0" z="38.25000000000002"/>
+    <rotation name="InactiveLayer_rot22" unit="degree" x="0" y="0" z="0"/>
+    <position name="ActiveLayer_pos22" unit="cm" x="0.0" y="0.0" z="40.25000000000002"/>
+    <rotation name="ActiveLayer_rot22" unit="degree" x="0" y="0" z="0"/>
+    <position name="InactiveLayer_pos23" unit="cm" x="0.0" y="0.0" z="42.25000000000003"/>
+    <rotation name="InactiveLayer_rot23" unit="degree" x="0" y="0" z="0"/>
+    <position name="ActiveLayer_pos23" unit="cm" x="0.0" y="0.0" z="44.25000000000003"/>
+    <rotation name="ActiveLayer_rot23" unit="degree" x="0" y="0" z="0"/>
+    <position name="InactiveLayer_pos24" unit="cm" x="0.0" y="0.0" z="46.25000000000003"/>
+    <rotation name="InactiveLayer_rot24" unit="degree" x="0" y="0" z="0"/>
+    <position name="ActiveLayer_pos24" unit="cm" x="0.0" y="0.0" z="48.25000000000003"/>
+    <rotation name="ActiveLayer_rot24" unit="degree" x="0" y="0" z="0"/>
+    <position name="DetectorEnclosure_pos" unit="cm" x="0.0" y="0.0" z="0.0"/>
+    <rotation name="DetectorEnclosure_rot" unit="degree" x="0" y="0" z="0"/>
+    <matrix coldim="1" name="Scintillator_BIRKSCONSTANT_VALUE" values="0.13"/>
+    <position name="center"/>
+    <rotation name="identity"/>
+  </define>
+  <materials>
+    <element Z="1" formula="H" name="Elem_hydrogen">
+      <atom value="1.00791"/>
+    </element>
+    <isotope N="10" Z="5" name="Iso_boron10">
+      <atom type="A" value="10.01"/>
+    </isotope>
+    <isotope N="11" Z="5" name="Iso_boron11">
+      <atom type="A" value="11.0"/>
+    </isotope>
+    <element name="Elem_boron">
+      <fraction n="0.2" ref="Iso_boron10"/>
+      <fraction n="0.8" ref="Iso_boron11"/>
+    </element>
+    <element Z="6" formula="C" name="Elem_carbon">
+      <atom value="12.0107"/>
+    </element>
+    <element Z="7" formula="N" name="Elem_nitrogen">
+      <atom value="14.0671"/>
+    </element>
+    <element Z="8" formula="O" name="Elem_oxygen">
+      <atom value="15.999"/>
+    </element>
+    <element Z="9" formula="F" name="Elem_fluorine">
+      <atom value="18.9984"/>
+    </element>
+    <element Z="11" formula="Na" name="Elem_sodium">
+      <atom value="22.99"/>
+    </element>
+    <element Z="12" formula="Mg" name="Elem_magnesium">
+      <atom value="24.305"/>
+    </element>
+    <element Z="13" formula="Al" name="Elem_aluminum">
+      <atom value="26.9815"/>
+    </element>
+    <element Z="14" formula="Si" name="Elem_silicon">
+      <atom value="28.0855"/>
+    </element>
+    <element Z="15" formula="P" name="Elem_phosphorus">
+      <atom value="30.973"/>
+    </element>
+    <element Z="16" formula="S" name="Elem_sulfur">
+      <atom value="32.065"/>
+    </element>
+    <element Z="18" formula="Ar" name="Elem_argon">
+      <atom value="39.948"/>
+    </element>
+    <element Z="19" formula="K" name="Elem_potassium">
+      <atom value="39.0983"/>
+    </element>
+    <element Z="20" formula="Ca" name="Elem_calcium">
+      <atom value="40.078"/>
+    </element>
+    <element Z="22" formula="Ti" name="Elem_titanium">
+      <atom value="47.867"/>
+    </element>
+    <element Z="24" formula="Cr" name="Elem_chromium">
+      <atom value="51.9961"/>
+    </element>
+    <element Z="25" formula="Mn" name="Elem_manganese">
+      <atom value="54.938"/>
+    </element>
+    <element Z="26" formula="Fe" name="Elem_iron">
+      <atom value="55.845"/>
+    </element>
+    <element Z="28" formula="Ni" name="Elem_nickel">
+      <atom value="58.6934"/>
+    </element>
+    <isotope N="63" Z="29" name="Iso_copper63">
+      <atom type="A" value="62.93"/>
+    </isotope>
+    <isotope N="65" Z="29" name="Iso_copper65">
+      <atom type="A" value="64.93"/>
+    </isotope>
+    <element name="Elem_copper">
+      <fraction n="0.6917" ref="Iso_copper63"/>
+      <fraction n="0.3083" ref="Iso_copper65"/>
+    </element>
+    <isotope N="64" Z="30" name="Iso_zinc64">
+      <atom type="A" value="63.93"/>
+    </isotope>
+    <isotope N="66" Z="30" name="Iso_zinc66">
+      <atom type="A" value="65.93"/>
+    </isotope>
+    <isotope N="67" Z="30" name="Iso_zinc67">
+      <atom type="A" value="66.93"/>
+    </isotope>
+    <isotope N="68" Z="30" name="Iso_zinc68">
+      <atom type="A" value="67.93"/>
+    </isotope>
+    <isotope N="70" Z="30" name="Iso_zinc70">
+      <atom type="A" value="69.93"/>
+    </isotope>
+    <element name="Elem_zinc">
+      <fraction n="0.492" ref="Iso_zinc64"/>
+      <fraction n="0.277" ref="Iso_zinc66"/>
+      <fraction n="0.04" ref="Iso_zinc67"/>
+      <fraction n="0.185" ref="Iso_zinc68"/>
+      <fraction n="0.006" ref="Iso_zinc70"/>
+    </element>
+    <element Z="35" formula="Br" name="Elem_bromine">
+      <atom value="79.904"/>
+    </element>
+    <element Z="51" formula="Sb" name="Elem_antimony">
+      <atom value="121.76"/>
+    </element>
+    <element Z="54" formula="Xe" name="Elem_xenon">
+      <atom value="131.293"/>
+    </element>
+    <element Z="74" formula="W" name="Elem_tungsten">
+      <atom value="183.84"/>
+    </element>
+    <element Z="79" formula="Au" name="Elem_gold">
+      <atom value="196.966"/>
+    </element>
+    <element Z="82" formula="Pb" name="Elem_lead">
+      <atom value="207.2"/>
+    </element>
+    <material formula="" name="Water">
+      <D value="1.0"/>
+      <composite n="1" ref="Elem_oxygen"/>
+      <composite n="2" ref="Elem_hydrogen"/>
+    </material>
+    <material formula="" name="CO2">
+      <D value="1.562"/>
+      <composite n="1" ref="Elem_carbon"/>
+      <composite n="2" ref="Elem_oxygen"/>
+    </material>
+    <material formula="" name="SiO2">
+      <D value="2.2"/>
+      <composite n="1" ref="Elem_silicon"/>
+      <composite n="2" ref="Elem_oxygen"/>
+    </material>
+    <material formula="" name="Methane">
+      <D value="0.000716"/>
+      <composite n="1" ref="Elem_carbon"/>
+      <composite n="4" ref="Elem_hydrogen"/>
+    </material>
+    <material formula="" name="Ethane">
+      <D value="0.00134"/>
+      <composite n="2" ref="Elem_carbon"/>
+      <composite n="6" ref="Elem_hydrogen"/>
+    </material>
+    <material formula="" name="Propane">
+      <D value="0.00197"/>
+      <composite n="3" ref="Elem_carbon"/>
+      <composite n="8" ref="Elem_hydrogen"/>
+    </material>
+    <material formula="" name="Isobutane">
+      <D value="0.0026"/>
+      <composite n="4" ref="Elem_carbon"/>
+      <composite n="10" ref="Elem_hydrogen"/>
+    </material>
+    <material formula="" name="Kapton">
+      <D value="1.4"/>
+      <composite n="22" ref="Elem_carbon"/>
+      <composite n="5" ref="Elem_oxygen"/>
+      <composite n="2" ref="Elem_nitrogen"/>
+    </material>
+    <material formula="" name="Tungsten">
+      <D value="19.3"/>
+      <composite n="1" ref="Elem_tungsten"/>
+    </material>
+    <material formula="" name="Gold">
+      <D value="19.3"/>
+      <composite n="1" ref="Elem_gold"/>
+    </material>
+    <material formula="" name="Iron">
+      <D value="7.874"/>
+      <composite n="1" ref="Elem_iron"/>
+    </material>
+    <material formula="" name="Graphite">
+      <D value="2.23"/>
+      <composite n="1" ref="Elem_carbon"/>
+    </material>
+    <material formula="" name="Calcium">
+      <D value="1.55"/>
+      <composite n="1" ref="Elem_calcium"/>
+    </material>
+    <material formula="" name="FeO">
+      <D value="5.745"/>
+      <composite n="1" ref="Elem_iron"/>
+      <composite n="1" ref="Elem_oxygen"/>
+    </material>
+    <material formula="" name="Al2O3">
+      <D value="3.97"/>
+      <composite n="2" ref="Elem_aluminum"/>
+      <composite n="3" ref="Elem_oxygen"/>
+    </material>
+    <material formula="" name="MgO">
+      <D value="3.58"/>
+      <composite n="1" ref="Elem_magnesium"/>
+      <composite n="1" ref="Elem_oxygen"/>
+    </material>
+    <material formula="" name="CaO">
+      <D value="3.35"/>
+      <composite n="1" ref="Elem_calcium"/>
+      <composite n="1" ref="Elem_oxygen"/>
+    </material>
+    <material formula="" name="Na2O">
+      <D value="2.27"/>
+      <composite n="2" ref="Elem_sodium"/>
+      <composite n="1" ref="Elem_oxygen"/>
+    </material>
+    <material formula="" name="P2O5">
+      <D value="1.562"/>
+      <composite n="2" ref="Elem_phosphorus"/>
+      <composite n="5" ref="Elem_oxygen"/>
+    </material>
+    <material formula="" name="TiO2">
+      <D value="4.23"/>
+      <composite n="1" ref="Elem_titanium"/>
+      <composite n="2" ref="Elem_oxygen"/>
+    </material>
+    <material formula="" name="Fe2O3">
+      <D value="5.24"/>
+      <composite n="2" ref="Elem_iron"/>
+      <composite n="3" ref="Elem_oxygen"/>
+    </material>
+    <material formula="" name="Rock">
+      <D value="2.82"/>
+      <fraction n="0.5267" ref="SiO2"/>
+      <fraction n="0.1174" ref="FeO"/>
+      <fraction n="0.1025" ref="Al2O3"/>
+      <fraction n="0.0771" ref="Elem_oxygen"/>
+      <fraction n="0.0473" ref="MgO"/>
+      <fraction n="0.0422" ref="CO2"/>
+      <fraction n="0.0382" ref="CaO"/>
+      <fraction n="0.024" ref="Elem_carbon"/>
+      <fraction n="0.0186" ref="Elem_sulfur"/>
+      <fraction n="0.0053" ref="Na2O"/>
+      <fraction n="0.0007" ref="P2O5"/>
+    </material>
+    <material formula="" name="Dirt">
+      <D value="1.7"/>
+      <fraction n="0.438" ref="Elem_oxygen"/>
+      <fraction n="0.257" ref="Elem_silicon"/>
+      <fraction n="0.222" ref="Elem_sodium"/>
+      <fraction n="0.049" ref="Elem_aluminum"/>
+      <fraction n="0.019" ref="Elem_iron"/>
+      <fraction n="0.015" ref="Elem_potassium"/>
+    </material>
+    <material formula="" name="Air">
+      <D value="0.001225"/>
+      <fraction n="0.781154" ref="Elem_nitrogen"/>
+      <fraction n="0.209476" ref="Elem_oxygen"/>
+      <fraction n="0.00934" ref="Elem_argon"/>
+    </material>
+    <material formula="" name="Steel">
+      <D value="7.93"/>
+      <fraction n="0.7298" ref="Elem_iron"/>
+      <fraction n="0.1792" ref="Elem_chromium"/>
+      <fraction n="0.09" ref="Elem_nickel"/>
+      <fraction n="0.001" ref="Elem_carbon"/>
+    </material>
+    <material formula="" name="CarbonSteel">
+      <D value="7.9"/>
+      <fraction n="0.003" ref="Elem_carbon"/>
+      <fraction n="0.0025" ref="Elem_copper"/>
+      <fraction n="0.98" ref="Elem_iron"/>
+      <fraction n="0.0103" ref="Elem_manganese"/>
+      <fraction n="0.0009" ref="Elem_phosphorus"/>
+      <fraction n="0.0028" ref="Elem_silicon"/>
+      <fraction n="0.0005" ref="Elem_sulfur"/>
+    </material>
+    <material formula="" name="SS304">
+      <D value="7.9"/>
+      <fraction n="0.0008" ref="Elem_carbon"/>
+      <fraction n="0.02" ref="Elem_manganese"/>
+      <fraction n="0.00045" ref="Elem_phosphorus"/>
+      <fraction n="0.0003" ref="Elem_sulfur"/>
+      <fraction n="0.0075" ref="Elem_silicon"/>
+      <fraction n="0.18" ref="Elem_chromium"/>
+      <fraction n="0.08" ref="Elem_nickel"/>
+      <fraction n="0.001" ref="Elem_nitrogen"/>
+      <fraction n="0.70995" ref="Elem_iron"/>
+    </material>
+    <material formula="" name="Concrete">
+      <D value="2.5"/>
+      <fraction n="0.6661" ref="CaO"/>
+      <fraction n="0.2345" ref="SiO2"/>
+      <fraction n="0.0445" ref="Al2O3"/>
+      <fraction n="0.0307" ref="Fe2O3"/>
+      <fraction n="0.0242" ref="MgO"/>
+    </material>
+    <material formula="" name="Epoxy">
+      <D value="1.25"/>
+      <composite n="6" ref="Elem_carbon"/>
+      <composite n="6" ref="Elem_hydrogen"/>
+      <composite n="1" ref="Elem_oxygen"/>
+    </material>
+    <material formula="" name="Glass">
+      <D value="2.7"/>
+      <fraction n="0.2743" ref="Elem_silicon"/>
+      <fraction n="0.0166" ref="Elem_boron"/>
+      <fraction n="0.0207" ref="Elem_aluminum"/>
+      <fraction n="0.0449" ref="Elem_sodium"/>
+      <fraction n="0.0821" ref="Elem_potassium"/>
+      <fraction n="0.0882" ref="Elem_zinc"/>
+      <fraction n="0.0292" ref="Elem_titanium"/>
+      <fraction n="0.444" ref="Elem_oxygen"/>
+    </material>
+    <material formula="" name="FR4">
+      <D value="1.85"/>
+      <fraction n="0.206" ref="Epoxy"/>
+      <fraction n="0.794" ref="Glass"/>
+    </material>
+    <material formula="" name="Scintillator">
+      <D value="1.05"/>
+      <fraction n="0.916" ref="Elem_carbon"/>
+      <fraction n="0.084" ref="Elem_hydrogen"/>
+      <property name="BIRKSCONSTANT" ref="Scintillator_BIRKSCONSTANT_VALUE"/>
+    </material>
+    <material formula="" name="PureLead">
+      <D value="11.342"/>
+      <fraction n="1.0" ref="Elem_lead"/>
+    </material>
+    <material formula="" name="Lead">
+      <D value="11.342"/>
+      <fraction n="0.95" ref="Elem_lead"/>
+      <fraction n="0.05" ref="Elem_antimony"/>
+    </material>
+    <material formula="" name="Vaccuum">
+      <D value="1e-25"/>
+      <fraction n="1.0" ref="Air"/>
+    </material>
+  </materials>
+  <solids>
+    <box lunit="cm" name="InactiveLayer_shape" x="100.0" y="100.0" z="0.5"/>
+    <box lunit="cm" name="ActiveLayer_shape" x="100.0" y="100.0" z="3.5"/>
+    <box lunit="cm" name="DetectorEnclosure_shape" x="200.0" y="200.0" z="200.0"/>
+    <box lunit="cm" name="World_shape" x="2000.0" y="2000.0" z="2000.0"/>
+  </solids>
+  <structure>
+    <volume name="InactiveLayer_LV">
+      <materialref ref="Lead"/>
+      <solidref ref="InactiveLayer_shape"/>
+      <auxiliary auxtype="Color" auxvalue="red"/>
+      <auxiliary auxtype="Opacity" auxvalue="0.30"/>
+    </volume>
+    <volume name="ActiveLayer_LV">
+      <materialref ref="Scintillator"/>
+      <solidref ref="ActiveLayer_shape"/>
+      <auxiliary auxtype="Color" auxvalue="blue"/>
+      <auxiliary auxtype="Opacity" auxvalue="1.0"/>
+      <auxiliary auxtype="StepLimit" auxvalue="1 mm"/>
+      <auxiliary auxtype="SensDet" auxvalue="ActiveHits"/>
+    </volume>
+    <volume name="DetectorEnclosure_LV">
+      <materialref ref="Air"/>
+      <solidref ref="DetectorEnclosure_shape"/>
+      <physvol>
+        <volumeref ref="InactiveLayer_LV"/>
+        <positionref ref="InactiveLayer_pos0"/>
+        <rotationref ref="InactiveLayer_rot0"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="ActiveLayer_LV"/>
+        <positionref ref="ActiveLayer_pos0"/>
+        <rotationref ref="ActiveLayer_rot0"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="InactiveLayer_LV"/>
+        <positionref ref="InactiveLayer_pos1"/>
+        <rotationref ref="InactiveLayer_rot1"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="ActiveLayer_LV"/>
+        <positionref ref="ActiveLayer_pos1"/>
+        <rotationref ref="ActiveLayer_rot1"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="InactiveLayer_LV"/>
+        <positionref ref="InactiveLayer_pos2"/>
+        <rotationref ref="InactiveLayer_rot2"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="ActiveLayer_LV"/>
+        <positionref ref="ActiveLayer_pos2"/>
+        <rotationref ref="ActiveLayer_rot2"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="InactiveLayer_LV"/>
+        <positionref ref="InactiveLayer_pos3"/>
+        <rotationref ref="InactiveLayer_rot3"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="ActiveLayer_LV"/>
+        <positionref ref="ActiveLayer_pos3"/>
+        <rotationref ref="ActiveLayer_rot3"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="InactiveLayer_LV"/>
+        <positionref ref="InactiveLayer_pos4"/>
+        <rotationref ref="InactiveLayer_rot4"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="ActiveLayer_LV"/>
+        <positionref ref="ActiveLayer_pos4"/>
+        <rotationref ref="ActiveLayer_rot4"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="InactiveLayer_LV"/>
+        <positionref ref="InactiveLayer_pos5"/>
+        <rotationref ref="InactiveLayer_rot5"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="ActiveLayer_LV"/>
+        <positionref ref="ActiveLayer_pos5"/>
+        <rotationref ref="ActiveLayer_rot5"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="InactiveLayer_LV"/>
+        <positionref ref="InactiveLayer_pos6"/>
+        <rotationref ref="InactiveLayer_rot6"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="ActiveLayer_LV"/>
+        <positionref ref="ActiveLayer_pos6"/>
+        <rotationref ref="ActiveLayer_rot6"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="InactiveLayer_LV"/>
+        <positionref ref="InactiveLayer_pos7"/>
+        <rotationref ref="InactiveLayer_rot7"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="ActiveLayer_LV"/>
+        <positionref ref="ActiveLayer_pos7"/>
+        <rotationref ref="ActiveLayer_rot7"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="InactiveLayer_LV"/>
+        <positionref ref="InactiveLayer_pos8"/>
+        <rotationref ref="InactiveLayer_rot8"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="ActiveLayer_LV"/>
+        <positionref ref="ActiveLayer_pos8"/>
+        <rotationref ref="ActiveLayer_rot8"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="InactiveLayer_LV"/>
+        <positionref ref="InactiveLayer_pos9"/>
+        <rotationref ref="InactiveLayer_rot9"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="ActiveLayer_LV"/>
+        <positionref ref="ActiveLayer_pos9"/>
+        <rotationref ref="ActiveLayer_rot9"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="InactiveLayer_LV"/>
+        <positionref ref="InactiveLayer_pos10"/>
+        <rotationref ref="InactiveLayer_rot10"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="ActiveLayer_LV"/>
+        <positionref ref="ActiveLayer_pos10"/>
+        <rotationref ref="ActiveLayer_rot10"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="InactiveLayer_LV"/>
+        <positionref ref="InactiveLayer_pos11"/>
+        <rotationref ref="InactiveLayer_rot11"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="ActiveLayer_LV"/>
+        <positionref ref="ActiveLayer_pos11"/>
+        <rotationref ref="ActiveLayer_rot11"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="InactiveLayer_LV"/>
+        <positionref ref="InactiveLayer_pos12"/>
+        <rotationref ref="InactiveLayer_rot12"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="ActiveLayer_LV"/>
+        <positionref ref="ActiveLayer_pos12"/>
+        <rotationref ref="ActiveLayer_rot12"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="InactiveLayer_LV"/>
+        <positionref ref="InactiveLayer_pos13"/>
+        <rotationref ref="InactiveLayer_rot13"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="ActiveLayer_LV"/>
+        <positionref ref="ActiveLayer_pos13"/>
+        <rotationref ref="ActiveLayer_rot13"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="InactiveLayer_LV"/>
+        <positionref ref="InactiveLayer_pos14"/>
+        <rotationref ref="InactiveLayer_rot14"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="ActiveLayer_LV"/>
+        <positionref ref="ActiveLayer_pos14"/>
+        <rotationref ref="ActiveLayer_rot14"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="InactiveLayer_LV"/>
+        <positionref ref="InactiveLayer_pos15"/>
+        <rotationref ref="InactiveLayer_rot15"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="ActiveLayer_LV"/>
+        <positionref ref="ActiveLayer_pos15"/>
+        <rotationref ref="ActiveLayer_rot15"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="InactiveLayer_LV"/>
+        <positionref ref="InactiveLayer_pos16"/>
+        <rotationref ref="InactiveLayer_rot16"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="ActiveLayer_LV"/>
+        <positionref ref="ActiveLayer_pos16"/>
+        <rotationref ref="ActiveLayer_rot16"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="InactiveLayer_LV"/>
+        <positionref ref="InactiveLayer_pos17"/>
+        <rotationref ref="InactiveLayer_rot17"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="ActiveLayer_LV"/>
+        <positionref ref="ActiveLayer_pos17"/>
+        <rotationref ref="ActiveLayer_rot17"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="InactiveLayer_LV"/>
+        <positionref ref="InactiveLayer_pos18"/>
+        <rotationref ref="InactiveLayer_rot18"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="ActiveLayer_LV"/>
+        <positionref ref="ActiveLayer_pos18"/>
+        <rotationref ref="ActiveLayer_rot18"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="InactiveLayer_LV"/>
+        <positionref ref="InactiveLayer_pos19"/>
+        <rotationref ref="InactiveLayer_rot19"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="ActiveLayer_LV"/>
+        <positionref ref="ActiveLayer_pos19"/>
+        <rotationref ref="ActiveLayer_rot19"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="InactiveLayer_LV"/>
+        <positionref ref="InactiveLayer_pos20"/>
+        <rotationref ref="InactiveLayer_rot20"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="ActiveLayer_LV"/>
+        <positionref ref="ActiveLayer_pos20"/>
+        <rotationref ref="ActiveLayer_rot20"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="InactiveLayer_LV"/>
+        <positionref ref="InactiveLayer_pos21"/>
+        <rotationref ref="InactiveLayer_rot21"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="ActiveLayer_LV"/>
+        <positionref ref="ActiveLayer_pos21"/>
+        <rotationref ref="ActiveLayer_rot21"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="InactiveLayer_LV"/>
+        <positionref ref="InactiveLayer_pos22"/>
+        <rotationref ref="InactiveLayer_rot22"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="ActiveLayer_LV"/>
+        <positionref ref="ActiveLayer_pos22"/>
+        <rotationref ref="ActiveLayer_rot22"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="InactiveLayer_LV"/>
+        <positionref ref="InactiveLayer_pos23"/>
+        <rotationref ref="InactiveLayer_rot23"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="ActiveLayer_LV"/>
+        <positionref ref="ActiveLayer_pos23"/>
+        <rotationref ref="ActiveLayer_rot23"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="InactiveLayer_LV"/>
+        <positionref ref="InactiveLayer_pos24"/>
+        <rotationref ref="InactiveLayer_rot24"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="ActiveLayer_LV"/>
+        <positionref ref="ActiveLayer_pos24"/>
+        <rotationref ref="ActiveLayer_rot24"/>
+      </physvol>
+      <auxiliary auxtype="BField" auxvalue="(3.0 T, 0.0 T, 0.0 G)"/>
+    </volume>
+    <volume name="World_LV">
+      <materialref ref="Air"/>
+      <solidref ref="World_shape"/>
+      <physvol>
+        <volumeref ref="DetectorEnclosure_LV"/>
+        <positionref ref="DetectorEnclosure_pos"/>
+        <rotationref ref="DetectorEnclosure_rot"/>
+      </physvol>
+    </volume>
+  </structure>
+  <setup name="Default" version="0">
+    <world ref="World_LV"/>
+  </setup>
+</gdml>

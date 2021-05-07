@@ -1,8 +1,6 @@
-#!/bin/bash
-
 #!/bin/sh
 
-OUTPUT=testGeometry.root
+OUTPUT=testEvents.root
 
 if [ -f ${OUTPUT} ]; then
     rm ${OUTPUT}
@@ -17,5 +15,6 @@ cat > ${MACRO} <<EOF
 /gps/ang/type iso
 EOF
 
-edep-sim -o ${OUTPUT} -C -e 1 -u ${MACRO}
+edep-sim -o ${OUTPUT} -C -e 100 -u ${MACRO}
 
+rm ${macro}

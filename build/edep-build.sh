@@ -1,4 +1,9 @@
 #!/bin/bash
+##
+## A script to build edep-sim.  This is aliased to the edep-build
+## command by setup.sh, and can build from "anyplace". (for some
+## definition of "anyplace", don't test that too agressively).
+##
 if [ ${#EDEP_ROOT} == 0 ]; then
     echo EDEP is not setup yet.  You need to source build/edep-setup.sh.
     echo You can also run cmake and make by hand...

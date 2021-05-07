@@ -57,7 +57,7 @@ void EDep::TG4HitChangeHandler::Apply() {
             double dEdX = energy;
             if (length>0.01) dEdX /= length;
 
-            int contrib = g4Hit->Contrib.front();
+            int contrib = g4Hit->GetContributors().front();
             std::string particle = gEDepSimEvent->Trajectories[contrib].GetName();
 
             TEveLine* eveHit = new TEveLine(2);

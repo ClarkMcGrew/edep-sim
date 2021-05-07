@@ -1,4 +1,6 @@
 #!/bin/bash
+## A deprecated script to build the text documentation.  Use the
+## "build/make-doc.sh" script instead.
 
 MACRO=`mktemp -t edepsim.XXXXXXXXXX` || exit 1
 cat >> $MACRO <<EOF

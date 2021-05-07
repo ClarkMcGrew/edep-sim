@@ -223,8 +223,10 @@ void EDepSim::RootGeometryManager::Validate() {
     EDepSimLog("Geometry validated");
 }
 
-TGeoShape* EDepSim::RootGeometryManager::CreateShape(const G4VSolid* theSolid,
-                                                 TGeoMatrix **returnMatrix) {
+TGeoShape* EDepSim::RootGeometryManager::CreateShape(
+    const std::string& theName,
+    const G4VSolid* theSolid,
+    TGeoMatrix **returnMatrix) {
     const G4String geometryType = theSolid->GetEntityType();
     TGeoShape* theShape = NULL;
     if (geometryType == "G4Box") {
@@ -358,9 +360,9 @@ TGeoShape* EDepSim::RootGeometryManager::CreateShape(const G4VSolid* theSolid,
         const G4VSolid* solidB = sub->GetConstituentSolid(1);
         // solidA - solidB
         TGeoMatrix* matrixA = NULL;
-        TGeoShape* shapeA = CreateShape(solidA, &matrixA);
+        TGeoShape* shapeA = CreateShape(theName, solidA, &matrixA);
         TGeoMatrix* matrixB = NULL;
-        TGeoShape* shapeB = CreateShape(solidB, &matrixB);
+        TGeoShape* shapeB = CreateShape(theName, solidB, &matrixB);
         TGeoSubtraction* subtractNode = new TGeoSubtraction(shapeA,shapeB,
                                                             matrixA, matrixB);
         theShape = new TGeoCompositeShape("name",subtractNode);
@@ -371,7 +373,7 @@ TGeoShape* EDepSim::RootGeometryManager::CreateShape(const G4VSolid* theSolid,
         const G4VSolid* movedSolid = disp->GetConstituentMovedSolid();
         G4RotationMatrix rotation = disp->GetObjectRotation();
         G4ThreeVector displacement = disp->GetObjectTranslation();
-        theShape = CreateShape(movedSolid);
+        theShape = CreateShape(theName, movedSolid);
         if (returnMatrix) {
             TGeoRotation* rotate
                 = new TGeoRotation("rot",
@@ -394,9 +396,9 @@ TGeoShape* EDepSim::RootGeometryManager::CreateShape(const G4VSolid* theSolid,
         const G4VSolid* solidB = sub->GetConstituentSolid(1);
         // solidA - solidB
         TGeoMatrix* matrixA = NULL;
-        TGeoShape* shapeA = CreateShape(solidA, &matrixA);
+        TGeoShape* shapeA = CreateShape(theName, solidA, &matrixA);
         TGeoMatrix* matrixB = NULL;
-        TGeoShape* shapeB = CreateShape(solidB, &matrixB);
+        TGeoShape* shapeB = CreateShape(theName, solidB, &matrixB);
         TGeoUnion* unionNode = new TGeoUnion(shapeA,  shapeB,
                                              matrixA, matrixB);
         theShape = new TGeoCompositeShape("name",unionNode);
@@ -408,9 +410,9 @@ TGeoShape* EDepSim::RootGeometryManager::CreateShape(const G4VSolid* theSolid,
         const G4VSolid* solidB = sub->GetConstituentSolid(1);
         // solidA - solidB
         TGeoMatrix* matrixA = NULL;
-        TGeoShape* shapeA = CreateShape(solidA, &matrixA);
+        TGeoShape* shapeA = CreateShape(theName, solidA, &matrixA);
         TGeoMatrix* matrixB = NULL;
-        TGeoShape* shapeB = CreateShape(solidB, &matrixB);
+        TGeoShape* shapeB = CreateShape(theName, solidB, &matrixB);
         TGeoIntersection* intersectionNode
             = new TGeoIntersection(shapeA,  shapeB,
                                    matrixA, matrixB);
@@ -473,7 +475,8 @@ TGeoShape* EDepSim::RootGeometryManager::CreateShape(const G4VSolid* theSolid,
                                 ellipticalTube->GetDz()/CLHEP::mm);
     }
     else {
-        EDepSimThrow(geometryType+" --> shape not implemented");
+        EDepSimThrow(theName + " :: " + geometryType
+                     + " --> shape not implemented");
     }
 
     return theShape;
@@ -483,7 +486,7 @@ TGeoVolume*
 EDepSim::RootGeometryManager::CreateVolume(const G4VSolid* theSolid,
                                            std::string theName,
                                            TGeoMedium* theMedium) {
-    TGeoShape* theShape = CreateShape(theSolid);
+    TGeoShape* theShape = CreateShape(theName,theSolid);
     TGeoVolume* theVolume = new TGeoVolume(theName.c_str(),
                                            theShape,
                                            theMedium);

@@ -25,17 +25,21 @@ private:
     EDepSim::UserDetectorConstruction* fConstruction;
 
     G4UIdirectory*             fEDepSimDir;
-    G4UIdirectory*             fGDMLDir;
 
     G4UIcmdWithoutParameter*   fUpdateCmd;
     G4UIcmdWithAString*        fPrintMassCmd;
     G4UIcmdWithoutParameter*   fValidateCmd;
     G4UIcmdWithAString*        fExportCmd;
-    G4UIcmdWithAString*        fGDMLCmd;
     G4UIcommand*               fControlCmd;
     G4UIcommand*               fHitSagittaCmd;
     G4UIcommand*               fHitLengthCmd;
     G4UIcommand*               fHitExcludedCmd;
+
+    G4UIdirectory*             fGDMLDir;
+    G4UIcmdWithAString*        fGDMLReadCmd;
+
+    G4UIdirectory*             fMaterialDir;
+    G4UIcommand*               fMaterialBirksCmd;
 
 };
 

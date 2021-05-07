@@ -1,3 +1,37 @@
+Changes in XXXX
+
+* Update the detector construction so that it look for BIRKSCONSTANT
+  in the material properties table and copies the value into the
+  material ionization properties.  This works around a missing feature
+  in GDML where certain material description values cannot be set.  In
+  GDML, add the property "BIRKSCONSTANT" with the value in units of
+  "mm/MeV" and edep-sim will "take care of the rest".
+
+* Add /edep/material/birksConstant to allow the Birks constant to
+  be set for any material.  This must be used before the /edep/update
+  macro command.  It accepts a material name, the value of the Birks
+  constant, and the units for the birks constant.  For example:
+  ```/edep/material/birksConstant Scintillator 0.12 mm/MeV```
+
+* Add an example of generating a GDML file using GeGeDe.  This shows
+  how to build a gdml file that sets the auxvalues needed by edep-sim,
+  and can be used as a starting point for a user geometry.
+
+* Improvements: The GDML validations have been cleaned up.  The output
+  still should be inspected using ROOT and edep-disp, but the tests
+  are simplified to make it easier to interpret the output.  This is
+  mostly intended as an edep-sim developer (pre-)release tool.
+
+* Bug fix: Make sure that the default geometry builds without
+  overlaps, and add a validation to catch when it does not.
+
+* Bug fix: Add error traps in EDepSimRooTrackerKinemGenerator to try
+  and catch malformed rooTracker files before processing.  This tries
+  to prevent a silent failure.
+
+* Remove dead test files that are left over from old, and unsupported
+  methods of reading the edep-sim output.
+
 Changes in 3.1.0
 
 * Improve documentation for the GDML StepLimit auxiliary, and add
@@ -27,7 +61,7 @@ Changes in 3.1.0
 
 * Bug Fix: Protect against NULL pointers in the persistency manager.
   Fix the bunch length simulation to avoid discontinuities.  Improve
-  trajectory drawing edep-disp for very large events. 
+  trajectory drawing edep-disp for very large events.
 
 * Bug Fix (EDepSimRooTrackerKinematicsGenerator): Avoid the deprecated
   std::random_shuffle, and make sure that the G4 random number
@@ -105,4 +139,3 @@ Changes in 3.0.0
   Cudd.  The fields can be set in the GDML file.  The field values are
   defined in auxilliary files containing the electric or magnetic
   fields on a regular grid of points.
-  

@@ -1,7 +1,9 @@
 #!/bin/bash
 #
-# Export an MC geometry to a geometry file.  This prepares a file that
-# is ready to be used in the reconstruction.
+# DEPRECATED: Export an MC geometry to a geometry file.  This prepares
+# a file that is ready to be used in the reconstruction.  It only
+# works with the default geometry used for tests.  This script is a
+# candidate to be removed.
 #
 # USAGE: ./edepsim-export-geometry.sh <control-file> <1.0> ...
 # 

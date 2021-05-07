@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////
 // $Id: EDepSim::RootGeometryManager.hh,v 1.13 2011/01/17 02:45:46 mcgrew Exp $
-// 
+//
 #ifndef EDepSim_RootGeometryManager_hh_Seen
 #define EDepSim_RootGeometryManager_hh_Seen
 
@@ -51,10 +51,10 @@ public:
 
     /// Set the root geometry from a gdml file.
     void Update(std::string gdmlFile, bool validate);
-    
+
     /// Make sure that the current geometry passes a bunch of tests.
     void Validate();
-    
+
     /// Get a volume ID base on the volume position.
     int GetNodeId(const G4ThreeVector& pos);
 
@@ -83,7 +83,7 @@ protected:
     /// Get the opacity of the physical volume.  This will return an opacity of
     /// zero (i.e. transparent) if the volume should be invisible.
     double GetOpacity(const G4VPhysicalVolume* vol);
-    
+
 private:
     /// The pointer to the instantiation of this object.
     static EDepSim::RootGeometryManager* fThis;
@@ -124,11 +124,13 @@ private:
     /// become impractially large.  The decision is made based on traversing
     /// the geant geometry and counting the number of unique volumes.
     bool fCreateAllVolumes;
-    
+
     /// Create a new ROOT shape object based on the G4 solid.  This might be
     /// called recursively if a G4 boolean solid is found.
-    TGeoShape* CreateShape(const G4VSolid* theSolid, TGeoMatrix **mat = NULL);
-    
+    TGeoShape* CreateShape(const std::string& theName,
+                           const G4VSolid* theSolid,
+                           TGeoMatrix **mat = NULL);
+
     /// Create a new ROOT volume object.
     TGeoVolume* CreateVolume(const G4VSolid* theSolid,
                              std::string theName,
@@ -137,7 +139,7 @@ private:
     /// Save the detector envelope.  This is called recursively to fill in the
     /// entire detector.  The G4 physical volume, theVol, is used to create a
     /// new root TGeoVolume which is added to the existing root TGeoVolume,
-    /// theMother, as a daughter.  
+    /// theMother, as a daughter.
     ///
     /// RETURN VALUE: This returns true if one of the immediate daughter
     /// volumes was ignored.  This tells the mother volume that it will need
@@ -159,7 +161,7 @@ private:
     /// If this returns true, the volume and all of it's children will not be
     /// exported to ROOT.  This allows the internal structure of low level
     /// objects (i.e. the internal "structure" of scintillating bars) to be
-    /// hidden.  
+    /// hidden.
     virtual bool IgnoreVolume(const G4VPhysicalVolume* theVol);
 
     /// A method to flag that a volume mass should be printed.
