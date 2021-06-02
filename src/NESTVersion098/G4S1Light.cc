@@ -1150,7 +1150,7 @@ G4double GetLiquidElectronDriftSpeed(G4double tempinput, G4double efieldinput,
     thri=58.3785811395493,
     thrj=201512.080026704;
   G4double y1=0,y2=0,f1=0,f2=0,f3=0,edrift=0,
-    t1=0,t2=0,frac=0,slope=0,intercept=0;
+    t1=0,t2=0,/*frac=0,*/slope=0,intercept=0;
 
   //Equations defined
   f1=onea/(1+exp(-(efieldinput-oneb)/onec))+oned/
