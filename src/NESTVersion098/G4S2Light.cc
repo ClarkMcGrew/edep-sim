@@ -296,7 +296,6 @@ G4double G4S2Light::GetMeanFreePath(const G4Track& aTrack,
   }
   else {
     *condition = NotForced;
-    const G4Material* aMaterial = aTrack.GetMaterial();
     if ( aMaterial->GetDensity() == GRID_DENSITY )
       return DBL_MAX; //pass electrons through grid wires
     return 0*CLHEP::nm; //kill elsewhere
