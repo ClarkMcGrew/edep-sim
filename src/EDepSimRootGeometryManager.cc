@@ -84,7 +84,7 @@ int EDepSim::RootGeometryManager::GetNodeId(const G4ThreeVector& pos) {
 namespace {
     int CountVolumes(G4LogicalVolume* volume) {
         int count = 1;
-        for (std::size_t i = 0; i<volume->GetNoDaughters(); ++i) {
+        for (int i = 0; i<volume->GetNoDaughters(); ++i) {
             G4VPhysicalVolume* daughter = volume->GetDaughter(i);
             count += CountVolumes(daughter->GetLogicalVolume());
         }
@@ -600,7 +600,7 @@ void EDepSim::RootGeometryManager::CreateMaterials(
     }
 
     // Recurse through the children.
-    for (std::size_t child = 0;
+    for (int child = 0;
          child < theLog->GetNoDaughters();
          ++child) {
         G4VPhysicalVolume* theChild = theLog->GetDaughter(child);
@@ -738,7 +738,7 @@ bool EDepSim::RootGeometryManager::CreateEnvelope(
 
         // Add the children to the daughter.
         double missingMass = 0.0;
-        for (std::size_t child = 0;
+        for (int child = 0;
              child < theLog->GetNoDaughters();
              ++child) {
             G4VPhysicalVolume* theChild = theLog->GetDaughter(child);
@@ -1025,7 +1025,7 @@ TGeoMedium* EDepSim::RootGeometryManager::AverageMaterial(
         G4LogicalVolume* currentLog = currentPhys->GetLogicalVolume();
         stack.pop_back();
         // Add all of the current children to the stack.
-        for (std::size_t child = 0;
+        for (int child = 0;
              child < currentLog->GetNoDaughters();
              ++child) {
             stack.push_back(currentLog->GetDaughter(child));

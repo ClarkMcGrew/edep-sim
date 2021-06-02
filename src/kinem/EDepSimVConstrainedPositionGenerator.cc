@@ -268,7 +268,7 @@ void EDepSim::VConstrainedPositionGenerator::FindLimits() {
         }
 
         G4LogicalVolume* logVolume = phyVolume->GetLogicalVolume();
-        for (std::size_t i=0; i< logVolume->GetNoDaughters(); ++i) {
+        for (int i=0; i< logVolume->GetNoDaughters(); ++i) {
             volumes.push(QueueElement(logVolume->GetDaughter(i),
                                       translation,
                                       rotation));

@@ -283,7 +283,7 @@ void EDepSim::UserDetectorConstruction::ConstructSDandField() {
         // handled later.
         G4LogicalVolume* logVolume = remainingVolumes.front();
         remainingVolumes.pop();
-        for (std::size_t i = 0; i<logVolume->GetNoDaughters(); ++i) {
+        for (int i = 0; i<logVolume->GetNoDaughters(); ++i) {
             G4VPhysicalVolume* daughter = logVolume->GetDaughter(i);
             remainingVolumes.push(daughter->GetLogicalVolume());
         }
