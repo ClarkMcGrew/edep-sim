@@ -2,8 +2,25 @@ message("Energy Deposition Simulation")
 
 # Suck up all of the .cc files for the source.  This isn't good CMAKE
 # practice, but it makes maintaining this file easier.
-file(GLOB_RECURSE source *.cc)
-file(GLOB_RECURSE includes EDepSim*.hh)
+# file(GLOB_RECURSE source *.cc)
+# file(GLOB_RECURSE includes EDepSim*.hh)
+file(GLOB edep_source *.cc)
+file(GLOB edep_includes *.cc)
+file(GLOB captain_source captain/*.cc)
+file(GLOB captain_includes captain/EDepSim*.hh)
+file(GLOB kinem_source kinem/*.cc)
+file(GLOB kinem_includes kinem/EDepSim*.hh)
+
+if(EDEPSIM_USE_NEST)
+  file(GLOB nest_source NESTVersion098/*.cc)
+  file(GLOB nest_includes NESTVersion098/EDepSim*.hh)
+else(EDEPSIM_USE_NEST)
+  message("Not including NEST in the compilation")
+  add_definitions(-DEDEPSIM_SKIP_NESTVersion098)
+endif(EDEPSIM_USE_NEST)
+
+set(source ${edep_source} ${captain_source} ${kinem_source} ${nest_source})
+set(includes ${edep_includes} ${captain_includes} ${kinem_includes})
 
 # Where the macro files can be found.
 add_definitions(-DDETSIM_INSTALL_PREFIX=\"${CMAKE_INSTALL_PREFIX}\")
@@ -34,5 +51,3 @@ install(TARGETS edepsim
 
 # Install the header files.
 install(FILES ${includes} DESTINATION include/EDepSim)
-
-
