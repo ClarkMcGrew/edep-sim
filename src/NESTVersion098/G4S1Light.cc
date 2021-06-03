@@ -85,10 +85,10 @@ G4S1Light::G4S1Light(const G4String& processName,
 {
         //luxManager = LUXSimManager::GetManager();
         SetProcessSubType(fScintillation);
-        
+
         fTrackSecondariesFirst = false;
         //particles die first, then scintillation is generated
-        
+
         if (verboseLevel>0) {
           G4cout << GetProcessName() << " is created " << G4endl;
         }
@@ -110,10 +110,10 @@ G4S1Light::PostStepDoIt(const G4Track& aTrack, const G4Step& aStep)
 // this is the most important function, where all light & charge yields happen!
 {
         aParticleChange.Initialize(aTrack);
-        
+
         if ( !YieldFactor ) //set YF=0 when you want S1Light off in your sim
           return G4VRestDiscreteProcess::PostStepDoIt(aTrack, aStep);
-        
+
         if( aTrack.GetParentID() == 0 && aTrack.GetCurrentStepNumber() == 1 ) {
           fExcitedNucleus = false; //an initialization or reset
           fVeryHighEnergy = false; //initializes or (later) resets this
@@ -126,11 +126,11 @@ G4S1Light::PostStepDoIt(const G4Track& aTrack, const G4Step& aStep)
         G4String particleName = pDef->GetParticleName();
         const G4Material* aMaterial = aStep.GetPreStepPoint()->GetMaterial();
         const G4Material* bMaterial = aStep.GetPostStepPoint()->GetMaterial();
-        
+
         if((particleName == "neutron" || particleName == "antineutron") &&
            aStep.GetTotalEnergyDeposit() <= 0)
           return G4VRestDiscreteProcess::PostStepDoIt(aTrack, aStep);
-        
+
         // code for determining whether the present/next material is noble
         // element, or, in other words, for checking if either is a valid NEST
         // scintillating material, and save Z for later L calculation, or
@@ -168,11 +168,11 @@ G4S1Light::PostStepDoIt(const G4Track& aTrack, const G4Step& aStep)
             j = 0; //no sites yet
           } //material properties initialized
         } //end of atomic number check
-        
+
         if ( !NobleNow && !NobleLater )
           return G4VRestDiscreteProcess::PostStepDoIt(aTrack, aStep);
-        
-        // retrieval of the particle's position, time, attributes at both the 
+
+        // retrieval of the particle's position, time, attributes at both the
         // beginning and the end of the current step along its track
         G4StepPoint* pPreStepPoint  = aStep.GetPreStepPoint();
         G4StepPoint* pPostStepPoint = aStep.GetPostStepPoint();
@@ -181,7 +181,7 @@ G4S1Light::PostStepDoIt(const G4Track& aTrack, const G4Step& aStep)
         G4double evtStrt = pPreStepPoint->GetGlobalTime();
         G4double      t0 = pPreStepPoint->GetLocalTime();
         G4double      t1 = pPostStepPoint->GetLocalTime();
-        
+
         // now check if we're entering a scintillating material (inside) or
         // leaving one (outside), in order to determine (later on in the code,
         // based on the booleans inside & outside) whether to add/subtract
@@ -195,13 +195,13 @@ G4S1Light::PostStepDoIt(const G4Track& aTrack, const G4Step& aStep)
           ElementA = ElementB;
           aMaterialPropertiesTable = bMaterial->GetMaterialPropertiesTable();
         }
-        if ( NobleNow && NobleLater && 
+        if ( NobleNow && NobleLater &&
              aMaterial->GetDensity() != bMaterial->GetDensity() )
           InsAndOuts = true;
-        
+
         //      Get the LUXSimMaterials pointer
         //LUXSimMaterials *luxMaterials = LUXSimMaterials::GetMaterials();
-        
+
         // retrieve scintillation-related material properties
         G4double Density = aMaterial->GetDensity()/(CLHEP::g/CLHEP::cm3);
         G4double nDensity = Density*AVO; //molar mass factor applied below
@@ -336,7 +336,7 @@ G4S1Light::PostStepDoIt(const G4Track& aTrack, const G4Step& aStep)
             R0 = 0.0*CLHEP::um; //all Doke/Birks interactions (except for alphas)
             G4double Townsend = (ElectricField/nDensity)*1e17;
             DokeBirks[0] = 0.0000; //all geminate (except at zero, low fields)
-            DokeBirks[2] = 0.1933*pow(Density,2.6199)+0.29754 - 
+            DokeBirks[2] = 0.1933*pow(Density,2.6199)+0.29754 -
               (0.045439*pow(Density,2.4689)+0.066034)*log10(ElectricField);
             if ( ElectricField>6990 ) DokeBirks[2]=0.0;
             if ( ElectricField<1000 ) DokeBirks[2]=0.2;
@@ -355,7 +355,7 @@ G4S1Light::PostStepDoIt(const G4Track& aTrack, const G4Step& aStep)
             tau1 = 3.5*CLHEP::ns; tau3 = 20.*CLHEP::ns; tauR = 40.*CLHEP::ns;
           } //solid Xe
         }
-        
+
         // log present and running tally of energy deposition in this section
         G4double anExcitationEnergy = ((const G4Ions*)(pDef))->
           GetExcitationEnergy(); //grab nuclear energy level
@@ -363,13 +363,13 @@ G4S1Light::PostStepDoIt(const G4Track& aTrack, const G4Step& aStep)
           aMaterialPropertiesTable->GetConstProperty( "ENERGY_DEPOSIT_TOT" );
         G4bool convert = false, annihil = false;
         //set up special cases for pair production and positron annihilation
-        if(pPreStepPoint->GetKineticEnergy()>=(2*CLHEP::electron_mass_c2) && 
-           !pPostStepPoint->GetKineticEnergy() && 
+        if(pPreStepPoint->GetKineticEnergy()>=(2*CLHEP::electron_mass_c2) &&
+           !pPostStepPoint->GetKineticEnergy() &&
            !aStep.GetTotalEnergyDeposit() && aParticle->GetPDGcode()==22) {
             convert = true; TotalEnergyDeposit = CLHEP::electron_mass_c2;
         }
-        if(pPreStepPoint->GetKineticEnergy() && 
-           !pPostStepPoint->GetKineticEnergy() && 
+        if(pPreStepPoint->GetKineticEnergy() &&
+           !pPostStepPoint->GetKineticEnergy() &&
            aParticle->GetPDGcode()==-11) {
           annihil = true; TotalEnergyDeposit += aStep.GetTotalEnergyDeposit();
         }
@@ -385,7 +385,7 @@ G4S1Light::PostStepDoIt(const G4Track& aTrack, const G4Step& aStep)
           AddConstProperty( "ENERGY_DEPOSIT_TOT", TotalEnergyDeposit );
         //save current deposit for determining number of quanta produced now
         TotalEnergyDeposit = aStep.GetTotalEnergyDeposit();
-        
+
         // check what the current "goal" E is for dumping scintillation,
         // often the initial kinetic energy of the parent particle, and deal
         // with all other energy-related matters in this block of code
@@ -426,7 +426,7 @@ G4S1Light::PostStepDoIt(const G4Track& aTrack, const G4Step& aStep)
           }
         }
         if ( InsAndOuts ) {
-          //G4double dribble = pPostStepPoint->GetKineticEnergy() - 
+          //G4double dribble = pPostStepPoint->GetKineticEnergy() -
           //pPreStepPoint->GetKineticEnergy();
           aMaterialPropertiesTable->
             AddConstProperty("ENERGY_DEPOSIT_GOL",(-0.1*CLHEP::keV)+
@@ -461,7 +461,7 @@ G4S1Light::PostStepDoIt(const G4Track& aTrack, const G4Step& aStep)
         aMaterialPropertiesTable->GetConstProperty("ENERGY_DEPOSIT_GOL")==0 &&
         aMaterialPropertiesTable->GetConstProperty("ENERGY_DEPOSIT_TOT")==0)
         return G4VRestDiscreteProcess::PostStepDoIt(aTrack, aStep);
-        
+
         G4String procName;
         if ( aTrack.GetCreatorProcess() )
           procName = aTrack.GetCreatorProcess()->GetProcessName();
@@ -469,7 +469,7 @@ G4S1Light::PostStepDoIt(const G4Track& aTrack, const G4Step& aStep)
           procName = "NULL";
         if ( procName == "eBrem" && outside && !OutElectrons )
           fMultipleScattering = true;
-        
+
         // next 2 codeblocks deal with position-related things
         if ( fAlpha ) delta = 1000.*CLHEP::km;
         G4int i, k, counter = 0; G4double pos[3];
@@ -478,7 +478,7 @@ G4S1Light::PostStepDoIt(const G4Track& aTrack, const G4Step& aStep)
             fMultipleScattering = true;
           x1 = x0; //prevents generation of quanta outside active volume
         } //no scint. for e-'s that leave
-        
+
         char xCoord[80]; char yCoord[80]; char zCoord[80];
         G4bool exists = false; //for querying whether set-up of new site needed
         for(i=0;i<j;i++) { //loop over all saved interaction sites
@@ -495,7 +495,7 @@ G4S1Light::PostStepDoIt(const G4Track& aTrack, const G4Step& aStep)
         }
         if(!exists && TotalEnergyDeposit) { //current interaction too far away
           counter = j;
-          sprintf(xCoord,"POS_X_%i",j); sprintf(yCoord,"POS_Y_%i",j); 
+          sprintf(xCoord,"POS_X_%i",j); sprintf(yCoord,"POS_Y_%i",j);
           sprintf(zCoord,"POS_Z_%i",j);
           //save 3-space coordinates of the new interaction site
           aMaterialPropertiesTable->AddConstProperty( xCoord, x1[0] );
@@ -505,14 +505,14 @@ G4S1Light::PostStepDoIt(const G4Track& aTrack, const G4Step& aStep)
           aMaterialPropertiesTable-> //save
             AddConstProperty( "TOTALNUM_INT_SITES", j );
         }
-        
+
         // this is where nuclear recoil "L" factor is handled: total yield is
         // reduced for nuclear recoil as per Lindhard theory
-        
+
         //we assume you have a mono-elemental scintillator only
         //now, grab A's and Z's of current particle and of material (avg)
         G4double a1 = ElementA->GetA();
-        z2 = pDef->GetAtomicNumber(); 
+        z2 = pDef->GetAtomicNumber();
         G4double a2 = (G4double)(pDef->GetAtomicMass());
         if ( particleName == "alpha" || (z2 == 2 && a2 == 4) )
           fAlpha = true; //used later to get S1 pulse shape correct for alpha
@@ -522,7 +522,7 @@ G4S1Light::PostStepDoIt(const G4Track& aTrack, const G4Step& aStep)
         G4double gamma = 3.*pow(epsilon,0.15)+0.7*pow(epsilon,0.6)+epsilon;
         G4double kappa = 0.133*pow(z1,(2./3.))*pow(a2,(-1./2.))*(2./3.);
         //check if we are dealing with nuclear recoil (Z same as material)
-        if ( (z1 == z2 && pDef->GetParticleType() == "nucleus") || 
+        if ( (z1 == z2 && pDef->GetParticleType() == "nucleus") ||
              particleName == "neutron" || particleName == "antineutron" ) {
           YieldFactor=(kappa*gamma)/(1+kappa*gamma); //Lindhard factor
           if ( z1 == 18 && Phase == kStateLiquid )
@@ -534,11 +534,11 @@ G4S1Light::PostStepDoIt(const G4Track& aTrack, const G4Step& aStep)
             if ( z1 == 54 ) ThomasImel = 0.19;
             if ( z1 == 18 ) ThomasImel = 0.25;
           } //special TIB parameters for nuclear recoil only, in LXe and LAr
-          ExcitationRatio = 0.69337 + 
+          ExcitationRatio = 0.69337 +
             0.3065*exp(-0.008806*pow(ElectricField,0.76313));
         }
         else YieldFactor = 1.000; //default
-        
+
         // determine ultimate #quanta from current E-deposition (ph+e-)
         G4double MeanNumberOfQuanta = //total mean number of exc/ions
           ScintillationYield*TotalEnergyDeposit;
@@ -555,15 +555,15 @@ G4S1Light::PostStepDoIt(const G4Track& aTrack, const G4Step& aStep)
         //less than zero because Gaussian fluctuated low, update to zero
         if(TotalEnergyDeposit < 1/ScintillationYield || NumQuanta < 0)
           NumQuanta = 0;
-        
+
         // next section binomially assigns quanta to excitons and ions
-        G4int NumExcitons = 
+        G4int NumExcitons =
           BinomFluct(NumQuanta,ExcitationRatio/(1+ExcitationRatio));
         G4int NumIons = NumQuanta - NumExcitons;
-        
+
         // this section calculates recombination following the modified Birks'
         // Law of Doke, deposition by deposition, and may be overridden later
-        // in code if a low enough energy necessitates switching to the 
+        // in code if a low enough energy necessitates switching to the
         // Thomas-Imel box model for recombination instead (determined by site)
         G4double dE, dx=0, LET=0, recombProb;
         dE = TotalEnergyDeposit/CLHEP::MeV;
@@ -582,7 +582,7 @@ G4S1Light::PostStepDoIt(const G4Track& aTrack, const G4Step& aStep)
           if(dx) LET = (dE/dx)*(1/Density); //lin. energy xfer (prop. to dE/dx)
           if ( LET > 0 && dE > 0 && dx > 0 ) {
             G4double ratio = CalculateElectronLET(dE*1e3,z1)/LET;
-            if ( j == 1 && ratio < 0.7 && !ThomasImelTail && 
+            if ( j == 1 && ratio < 0.7 && !ThomasImelTail &&
                  particleName == "e-" ) {
               dx /= ratio; LET *= ratio; }}
         }
@@ -615,7 +615,7 @@ G4S1Light::PostStepDoIt(const G4Track& aTrack, const G4Step& aStep)
         aParticleChange.ProposeNonIonizingEnergyDeposit(nonIonizingEnergy);
         return G4VRestDiscreteProcess::PostStepDoIt(aTrack, aStep);
 #endif
-        
+
         // next section increments the numbers of excitons, ions, photons, and
         // electrons for the appropriate interaction site; it only appears to
         // be redundant by saving seemingly no longer needed exciton and ion
@@ -636,7 +636,7 @@ G4S1Light::PostStepDoIt(const G4Track& aTrack, const G4Step& aStep)
           GetConstProperty( numEle );
         aMaterialPropertiesTable->AddConstProperty( numPho, NumPhotons   );
         aMaterialPropertiesTable->AddConstProperty( numEle, NumElectrons );
-        
+
         // increment and save the total track length, and save interaction
         // times for later, when generating the scintillation quanta
         char trackL[80]; char time00[80]; char time01[80]; char energy[80];
@@ -665,29 +665,29 @@ G4S1Light::PostStepDoIt(const G4Track& aTrack, const G4Step& aStep)
           if (t1 > deltaTime)
             aMaterialPropertiesTable->AddConstProperty( time01, t1 );
         }
-        
+
         // begin the process of setting up creation of scint./ionization
         TotalEnergyDeposit=aMaterialPropertiesTable->
           GetConstProperty("ENERGY_DEPOSIT_TOT"); //get the total E deposited
         InitialKinetEnergy=aMaterialPropertiesTable->
           GetConstProperty("ENERGY_DEPOSIT_GOL"); //E that should have been
-        if(InitialKinetEnergy > HIENLIM && 
+        if(InitialKinetEnergy > HIENLIM &&
            abs(aParticle->GetPDGcode()) != 2112) fVeryHighEnergy=true;
         G4double safety; //margin of error for TotalE.. - InitialKinetEnergy
         if (fVeryHighEnergy && !fExcitedNucleus) safety = 0.2*CLHEP::keV;
         else safety = 2.*CLHEP::eV;
-        
+
         //force a scintillation dump for NR and for full nuclear de-excitation
-        if( !anExcitationEnergy && pDef->GetParticleType() == "nucleus" && 
+        if( !anExcitationEnergy && pDef->GetParticleType() == "nucleus" &&
             aTrack.GetTrackStatus() != fAlive && !fAlpha )
           InitialKinetEnergy = TotalEnergyDeposit;
         if ( particleName == "neutron" || particleName == "antineutron" )
           InitialKinetEnergy = TotalEnergyDeposit;
-        
+
         //force a dump of all saved scintillation under the following
-        //conditions: energy goal reached, and current particle dead, or an 
+        //conditions: energy goal reached, and current particle dead, or an
         //error has occurred and total has exceeded goal (shouldn't happen)
-        if( fabs(TotalEnergyDeposit-InitialKinetEnergy)<safety || 
+        if( fabs(TotalEnergyDeposit-InitialKinetEnergy)<safety ||
             TotalEnergyDeposit>=InitialKinetEnergy ){
           dx = 0; dE = 0;
           //calculate the total number of quanta from all sites and all
@@ -711,10 +711,10 @@ G4S1Light::PostStepDoIt(const G4Track& aTrack, const G4Step& aStep)
             if (aTrack.GetTrackStatus() == fAlive )
               aParticleChange.ProposeTrackStatus(fSuspend);
           }
-          
+
           // begin the loop over all sites which generates all the quanta
           for(i=0;i<j;i++) {
-            // get the position X,Y,Z, exciton and ion numbers, total track 
+            // get the position X,Y,Z, exciton and ion numbers, total track
             // length of the site, and interaction times
             sprintf(xCoord,"POS_X_%d",i); sprintf(yCoord,"POS_Y_%d",i);
             sprintf(zCoord,"POS_Z_%d",i);
@@ -730,9 +730,9 @@ G4S1Light::PostStepDoIt(const G4Track& aTrack, const G4Step& aStep)
             energ = aMaterialPropertiesTable->GetConstProperty( energy );
             t0 = aMaterialPropertiesTable->GetConstProperty( time00 );
             t1 = aMaterialPropertiesTable->GetConstProperty( time01 );
-            
+
             //if site is small enough, override the Doke/Birks' model with
-            //Thomas-Imel, but not if we're dealing with super-high energy 
+            //Thomas-Imel, but not if we're dealing with super-high energy
             //particles, and if it's NR force Thomas-Imel (though NR should be
             //already short enough in track even up to O(100) keV)
             if ( (delta < R0 && !fVeryHighEnergy) || z2 == z1 || fAlpha ) {
@@ -785,18 +785,18 @@ G4S1Light::PostStepDoIt(const G4Track& aTrack, const G4Step& aStep)
               aMaterialPropertiesTable->
                 AddConstProperty( numEle, NumElectrons );
             }
-            
+
             // grab NumPhotons/NumElectrons, which come from Birks if
             // the Thomas-Imel block of code above was not executed
             NumPhotons  = (G4int)aMaterialPropertiesTable->
               GetConstProperty( numPho );
             NumElectrons =(G4int)aMaterialPropertiesTable->
               GetConstProperty( numEle );
-            
+
             // extra Fano factor caused by recomb. fluct.
             G4double FanoFactor =0; //ionization channel
             if(Phase == kStateLiquid && YieldFactor == 1) {
-              FanoFactor = 
+              FanoFactor =
               2575.9*pow((ElectricField+15.154),-0.64064)-1.4707;
               if ( fKr83m ) TotalEnergyDeposit = 4*CLHEP::keV;
               if ( (dE/CLHEP::keV) <= 100 && ElectricField >= 0 ) {
@@ -810,7 +810,7 @@ G4S1Light::PostStepDoIt(const G4Track& aTrack, const G4Step& aStep)
             if ( Phase == kStateGas && Density>0.5 ) FanoFactor =
               0.42857-4.7857*Density+7.8571*pow(Density,2.);
             if( FanoFactor <= 0 || fVeryHighEnergy ) FanoFactor = 0;
-            NumQuanta = NumPhotons + NumElectrons; 
+            NumQuanta = NumPhotons + NumElectrons;
             if(z1==54 && FanoFactor) NumElectrons = G4int(
             floor(G4RandGauss::shoot(NumElectrons,
                      sqrt(FanoFactor*NumElectrons))+0.5));
@@ -822,20 +822,20 @@ G4S1Light::PostStepDoIt(const G4Track& aTrack, const G4Step& aStep)
                 NumPhotons = BinomFluct(NumPhotons,biExc);
               NumPhotons = BinomFluct(NumPhotons,QE_EFF);
             } NumElectrons = G4int(floor(NumElectrons*phe_per_e+0.5));
-            
+
             // new stuff to make Kr-83m work properly
             if(fKr83m || InitialKinetEnergy==9.4*CLHEP::keV) fKr83m += dE/CLHEP::keV;
             if(fKr83m > 41) fKr83m = 0;
             if ( SinglePhase ) //for a 1-phase det. don't propagate e-'s
               NumElectrons = 0; //saves simulation time
-            
+
             // reset material properties numExc, numIon, numPho, numEle, as
             // their values have been used or stored elsewhere already
             aMaterialPropertiesTable->AddConstProperty( numExc, 0 );
             aMaterialPropertiesTable->AddConstProperty( numIon, 0 );
             aMaterialPropertiesTable->AddConstProperty( numPho, 0 );
             aMaterialPropertiesTable->AddConstProperty( numEle, 0 );
-            
+
             // start particle creation loop
             if( InitialKinetEnergy < MAX_ENE && InitialKinetEnergy > MIN_ENE &&
                !fMultipleScattering )
@@ -844,7 +844,7 @@ G4S1Light::PostStepDoIt(const G4Track& aTrack, const G4Step& aStep)
             for(k = 0; k < NumQuanta; k++) {
               G4double sampledEnergy;
               G4DynamicParticle* aQuantum;
-              
+
               // Generate random direction
               G4double cost = 1. - 2.*G4UniformRand();
               G4double sint = std::sqrt((1.-cost)*(1.+cost));
@@ -852,15 +852,15 @@ G4S1Light::PostStepDoIt(const G4Track& aTrack, const G4Step& aStep)
               G4double sinp = std::sin(phi); G4double cosp = std::cos(phi);
               G4double px = sint*cosp; G4double py = sint*sinp;
               G4double pz = cost;
-              
+
               // Create momentum direction vector
               G4ParticleMomentum photonMomentum(px, py, pz);
-              
+
               // case of photon-specific stuff
               if (k < NumPhotons) {
-                // Determine polarization of new photon 
+                // Determine polarization of new photon
                 G4double sx = cost*cosp;
-                G4double sy = cost*sinp; 
+                G4double sy = cost*sinp;
                 G4double sz = -sint;
                 G4ThreeVector photonPolarization(sx, sy, sz);
                 G4ThreeVector perp = photonMomentum.cross(photonPolarization);
@@ -869,22 +869,22 @@ G4S1Light::PostStepDoIt(const G4Track& aTrack, const G4Step& aStep)
                 cosp = std::cos(phi);
                 photonPolarization = cosp * photonPolarization + sinp * perp;
                 photonPolarization = photonPolarization.unit();
-                
+
                 // Generate a new photon or electron:
                 sampledEnergy = G4RandGauss::shoot(PhotMean,PhotWidth);
-                aQuantum = 
+                aQuantum =
                   new G4DynamicParticle(G4OpticalPhoton::OpticalPhoton(),
                                         photonMomentum);
                 aQuantum->SetPolarization(photonPolarization.x(),
                                           photonPolarization.y(),
                                           photonPolarization.z());
               }
-              
+
               else { // this else statement is for ionization electrons
                 if(ElectricField) {
                   // point all electrons straight up, for drifting
                   G4ParticleMomentum electronMomentum(0, 0, -FieldSign);
-                  aQuantum = 
+                  aQuantum =
                     new G4DynamicParticle(G4ThermalElectron::ThermalElectron(),
                                           electronMomentum);
                   if ( Phase == kStateGas ) {
@@ -898,7 +898,7 @@ G4S1Light::PostStepDoIt(const G4Track& aTrack, const G4Step& aStep)
                 else {
                   // use "photonMomentum" for the electrons in the case of zero
                   // electric field, which is just randomized vector we made
-                  aQuantum = 
+                  aQuantum =
                     new G4DynamicParticle(G4ThermalElectron::ThermalElectron(),
                                           photonMomentum);
                   sampledEnergy = 1.38e-23*(CLHEP::joule/CLHEP::kelvin)*Temperature;
@@ -909,10 +909,10 @@ G4S1Light::PostStepDoIt(const G4Track& aTrack, const G4Step& aStep)
               aQuantum->SetKineticEnergy(sampledEnergy);
               if (verboseLevel>1) //verbosity stuff
                 G4cout << "sampledEnergy = " << sampledEnergy << G4endl;
-              
+
               // Generate new G4Track object:
               // emission time distribution
-              
+
               // first an initial birth time is provided that is typically
               // <<1 ns after the initial interaction in the simulation, then
               // singlet, triplet lifetimes, and recombination time, are
@@ -988,8 +988,8 @@ G4S1Light::PostStepDoIt(const G4Track& aTrack, const G4Step& aStep)
                 if ( Phase == kStateLiquid )
                   aSecondaryTime -= tauTrap*CLHEP::ns*log(G4UniformRand());
               }
-              
-              // emission position distribution -- 
+
+              // emission position distribution --
               // Generate the position of a new photon or electron, with NO
               // stochastic variation because that could lead to particles
 	      // being mistakenly generated outside of your active region by
@@ -1043,15 +1043,15 @@ G4S1Light::PostStepDoIt(const G4Track& aTrack, const G4Step& aStep)
 		if(aSecondaryPosition[2] <= PMT && !GlobalFields)
 		  aSecondaryPosition[2] = PMT + R_TOL;
 	      } //end of electron diffusion code
-	      
+
 	      // GEANT4 business: stuff you need to make a new track
 	      if ( aSecondaryTime < 0 ) aSecondaryTime = 0; //no neg. time
-	      G4Track * aSecondaryTrack = 
+	      G4Track * aSecondaryTrack =
 		new G4Track(aQuantum,aSecondaryTime,aSecondaryPosition);
 	      if ( k < NumPhotons || radius < R_MAX )
 		aParticleChange.AddSecondary(aSecondaryTrack);
 	    }
-	    
+
 	    //reset bunch of things when done with an interaction site
 	    aMaterialPropertiesTable->AddConstProperty( xCoord, 999*CLHEP::km );
 	    aMaterialPropertiesTable->AddConstProperty( yCoord, 999*CLHEP::km );
@@ -1060,7 +1060,7 @@ G4S1Light::PostStepDoIt(const G4Track& aTrack, const G4Step& aStep)
 	    aMaterialPropertiesTable->AddConstProperty( energy, 0*CLHEP::eV );
 	    aMaterialPropertiesTable->AddConstProperty( time00, DBL_MAX );
 	    aMaterialPropertiesTable->AddConstProperty( time01, -1*CLHEP::ns );
-	    
+
 	    if (verboseLevel>0) { //more verbose stuff
 	      G4cout << "\n Exiting from G4S1Light::DoIt -- "
 		     << "NumberOfSecondaries = "
@@ -1078,13 +1078,13 @@ G4S1Light::PostStepDoIt(const G4Track& aTrack, const G4Step& aStep)
 	  fExcitedNucleus = false;
 	  fAlpha = false;
 	}
-	
+
 	//don't do anything when you're not ready to scintillate
         else {
           aParticleChange.SetNumberOfSecondaries(0);
           return G4VRestDiscreteProcess::PostStepDoIt(aTrack, aStep);
         }
-	
+
 	//the end (exiting)
 	return G4VRestDiscreteProcess::PostStepDoIt(aTrack, aStep);
 }
@@ -1115,7 +1115,7 @@ G4double G4S1Light::GetMeanLifeTime(const G4Track&,
         return DBL_MAX;
 }
 
-G4double GetLiquidElectronDriftSpeed(G4double tempinput, G4double efieldinput, 
+G4double GetLiquidElectronDriftSpeed(G4double tempinput, G4double efieldinput,
 				     G4bool Miller, G4int Z) {
   if(efieldinput<0) efieldinput *= (-1);
   //Liquid equation one (165K) coefficients
@@ -1150,7 +1150,7 @@ G4double GetLiquidElectronDriftSpeed(G4double tempinput, G4double efieldinput,
     thri=58.3785811395493,
     thrj=201512.080026704;
   G4double y1=0,y2=0,f1=0,f2=0,f3=0,edrift=0,
-    t1=0,t2=0,frac=0,slope=0,intercept=0;
+    t1=0,t2=0,slope=0,intercept=0;
 
   //Equations defined
   f1=onea/(1+exp(-(efieldinput-oneb)/onec))+oned/
@@ -1189,12 +1189,12 @@ G4double GetLiquidElectronDriftSpeed(G4double tempinput, G4double efieldinput,
   else if (tempinput == 200.0) edrift = f2;
   else if (tempinput == 230.0) edrift = f3;
   else { //Linear interpolation
-    frac=(tempinput-t1)/(t2-t1);
+    // frac=(tempinput-t1)/(t2-t1);
     slope = (y1-y2)/(t1-t2);
     intercept=y1-slope*t1;
     edrift=slope*tempinput+intercept;
   }
-  
+
   if ( Miller ) {
     if ( efieldinput <= 40. )
       edrift = -0.13274+0.041082*efieldinput-0.0006886*pow(efieldinput,2.)+
@@ -1248,7 +1248,7 @@ G4int BinomFluct ( G4int N0, G4double prob ) {
   G4int N1 = 0;
   if ( prob == 0.00 ) return N1;
   if ( prob == 1.00 ) return N0;
-  
+
   if ( N0 < 10 ) {
     for(G4int i = 0; i < N0; i++) {
       if(G4UniformRand() < prob) N1++;
@@ -1266,7 +1266,7 @@ void InitMatPropValues ( G4MaterialPropertiesTable *nobleElementMat ) {
   char xCoord[80]; char yCoord[80]; char zCoord[80];
   char numExc[80]; char numIon[80]; char numPho[80]; char numEle[80];
   char trackL[80]; char time00[80]; char time01[80]; char energy[80];
-  
+
   // for loop to initialize the interaction site mat'l properties
   for( G4int i=0; i<10000; i++ ) {
     sprintf(xCoord,"POS_X_%d",i); sprintf(yCoord,"POS_Y_%d",i);
@@ -1287,7 +1287,7 @@ void InitMatPropValues ( G4MaterialPropertiesTable *nobleElementMat ) {
     nobleElementMat->AddConstProperty( time00, DBL_MAX );
     nobleElementMat->AddConstProperty( time01,-1*CLHEP::ns );
   }
-  
+
   // we initialize the total number of interaction sites, a variable for
   // updating the amount of energy deposited thus far in the medium, and a
   // variable for storing the amount of energy expected to be deposited
