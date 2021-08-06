@@ -1,9 +1,11 @@
 #include "EDepSimExtraPhysics.hh"
 #include "EDepSimException.hh"
 
+#ifndef EDEPSIM_SKIP_NESTVersion098
 // Include NEST
 #include "NESTVersion098/G4S1Light.hh"
 #include "NESTVersion098/G4ThermalElectron.hh"
+#endif
 
 #include "EDepSimDokeBirks.hh"
 #include "EDepSimLog.hh"
@@ -20,13 +22,15 @@
 #include <G4ios.hh>
 #include <G4StepLimiter.hh>
 
-EDepSim::ExtraPhysics::ExtraPhysics() 
+EDepSim::ExtraPhysics::ExtraPhysics()
     : G4VPhysicsConstructor("EDepSimExtra"), fIonizationModel(1) { }
 
 EDepSim::ExtraPhysics::~ExtraPhysics() { }
 
 void EDepSim::ExtraPhysics::ConstructParticle() {
+#ifndef EDEPSIM_SKIP_NESTVersion098
     G4ThermalElectron::Definition();
+#endif
 }
 
 void EDepSim::ExtraPhysics::ConstructProcess() {
@@ -44,20 +48,21 @@ void EDepSim::ExtraPhysics::ConstructProcess() {
         double charge = particle->GetPDGCharge();
 
         if (!pman) {
-            EDepSimError("Particle " 
-                      << particleName 
+            EDepSimError("Particle "
+                      << particleName
                       << " without a Process Manager.");
             EDepSimThrow("Particle without a Process Manager.");
         }
-        
+
         // All charged particles should have a step limiter to make sure that
         // the steps do not get too long.
         if (std::abs(charge) > 0.1) {
             pman->AddDiscreteProcess(new G4StepLimiter("Step Limit"));
         }
-        
+
         switch (fIonizationModel) {
         case 0: {
+#ifndef EDEPSIM_SKIP_NESTVersion098
             // Add nest to any applicable particle.
             G4S1Light* scintProcess = new G4S1Light();
             scintProcess->SetScintillationYieldFactor(1.0);
@@ -65,7 +70,10 @@ void EDepSim::ExtraPhysics::ConstructProcess() {
                 pman->AddProcess(scintProcess,ordDefault,
                                  ordInActive,ordDefault);
             }
-            break; 
+#else
+            EDepSimThrow("NEST not enabled during compilation");
+#endif
+            break;
         }
         case 1: default: {
             // Add EDepSim::DokeBirks to any applicable particle.
@@ -77,5 +85,5 @@ void EDepSim::ExtraPhysics::ConstructProcess() {
             break;
         }
         }
-    } 
+    }
 }
