@@ -20,9 +20,9 @@
 namespace EDepSim {class VPrimaryFactory;}
 class EDepSim::VPrimaryFactory : public G4UImessenger {
 public:
-    VPrimaryFactory(G4String subdir, G4String name, 
-                         EDepSim::UserPrimaryGeneratorMessenger* parent,
-                         bool makeDirectory);
+    VPrimaryFactory(G4String subdir, G4String name,
+                    EDepSim::UserPrimaryGeneratorMessenger* parent,
+                    bool makeDirectory);
     virtual ~VPrimaryFactory();
 
     /// Return the full path for the factory.  This returns the full name of

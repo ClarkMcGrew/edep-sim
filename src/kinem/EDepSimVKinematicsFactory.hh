@@ -8,9 +8,9 @@ namespace EDepSim {class VKinematicsGenerator;}
 namespace EDepSim {class VKinematicsFactory;}
 class EDepSim::VKinematicsFactory : public EDepSim::VPrimaryFactory {
 public:
-    VKinematicsFactory(G4String name, 
-                            EDepSim::UserPrimaryGeneratorMessenger* fParent,
-                            bool makeDirectory=true);
+    VKinematicsFactory(G4String name,
+                       EDepSim::UserPrimaryGeneratorMessenger* fParent,
+                       bool makeDirectory=true);
     virtual ~VKinematicsFactory();
 
     /// Return a new generator enclosing the current factory state.  The new
