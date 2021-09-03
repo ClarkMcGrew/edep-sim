@@ -6,6 +6,7 @@
 #include "kinem/EDepSimCombinationGenerator.hh"
 #include "kinem/EDepSimVKinematicsFactory.hh"
 #include "kinem/EDepSimGPSKinematicsFactory.hh"
+#include "kinem/EDepSimHEPEVTKinematicsFactory.hh"
 #include "kinem/EDepSimRooTrackerKinematicsFactory.hh"
 #include "kinem/EDepSimNuMIRockKinematicsFactory.hh"
 
@@ -65,6 +66,7 @@ EDepSim::UserPrimaryGeneratorMessenger::UserPrimaryGeneratorMessenger(
     /////////////////////////////////////////
 
     AddKinematicsFactory(new EDepSim::GPSKinematicsFactory(this));
+    AddKinematicsFactory(new EDepSim::HEPEVTKinematicsFactory(this));
     AddKinematicsFactory(new EDepSim::NuMIRockKinematicsFactory(this));
     AddKinematicsFactory(new EDepSim::RooTrackerKinematicsFactory(this));
 
