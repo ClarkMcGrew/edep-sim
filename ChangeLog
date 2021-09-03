@@ -1,5 +1,10 @@
 Changes in XXXX
 
+* Add a new kinematics generator to accept HEPEVT format files.  The
+  generator input file is set using
+  "/generator/kinematics/hepevt/input [file]" and selected using
+  "/generator/kinematics/set hepevt".
+
 * Update the detector construction so that it look for BIRKSCONSTANT
   in the material properties table and copies the value into the
   material ionization properties.  This works around a missing feature
