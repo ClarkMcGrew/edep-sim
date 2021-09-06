@@ -3,7 +3,9 @@ Changes in XXXX
 * Add a new kinematics generator to accept HEPEVT format files.  The
   generator input file is set using
   "/generator/kinematics/hepevt/input [file]" and selected using
-  "/generator/kinematics/set hepevt".
+  "/generator/kinematics/set hepevt".  The reader checks the syntax of
+  the input file and adds (hopefully) useful error messages.  The
+  current behavior is to terminate when an input error is found. 
 
 * Update the detector construction so that it look for BIRKSCONSTANT
   in the material properties table and copies the value into the
