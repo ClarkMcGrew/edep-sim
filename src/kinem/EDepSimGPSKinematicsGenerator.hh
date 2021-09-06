@@ -9,17 +9,15 @@
 class G4Event;
 class G4VPrimaryGenerator;
 
-/// A base class for primary generator classes used in the EDepSim::.  This is
-/// used by the EDepSim::UserPrimaryGeneratorAction to generate particles which
-/// will be tracked by the G4 simulation.
+/// This is an interface to use the General Particle Source (GPS).
 namespace EDepSim {class GPSKinematicsGenerator;}
 class EDepSim::GPSKinematicsGenerator : public EDepSim::VKinematicsGenerator {
 public:
-    GPSKinematicsGenerator(const G4String& name, 
+    GPSKinematicsGenerator(const G4String& name,
                                 G4VPrimaryGenerator* gps);
     virtual ~GPSKinematicsGenerator();
 
-    /// Add a primary vertex to the event.  
+    /// Add a primary vertex to the event.
     virtual GeneratorStatus
     GeneratePrimaryVertex(G4Event* evt,
                           const G4LorentzVector& position);
