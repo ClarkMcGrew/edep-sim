@@ -1,4 +1,6 @@
-Changes in XXXX
+Changes in XXXXX
+
+Changes in 3.2.0
 
 * Add a new kinematics generator to accept HEPEVT format files.  The
   generator input file is set using
