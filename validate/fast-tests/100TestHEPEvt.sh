@@ -41,4 +41,4 @@ cat > 100TestHEPEvt.mac <<EOF
 /generator/add
 EOF
 
-edep-sim -o ${OUTPUT} -C -e 3 100TestHEPEvt.mac
+edep-sim -o ${OUTPUT} -C -e 3 100TestHEPEvt.mac || exit 1
