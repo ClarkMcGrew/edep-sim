@@ -20,6 +20,7 @@ class EDepSim::HEPEVTKinematicsGenerator :
 public:
     HEPEVTKinematicsGenerator(const G4String& name,
                               const G4String& fileName,
+                              const G4String& flavor,
                               int verbosity = 0);
     virtual ~HEPEVTKinematicsGenerator();
 
@@ -34,6 +35,9 @@ private:
 
     /// The name of the input file (used for error messages)
     std::string fFileName;
+
+    ///The input flavor (type of HEPEVT format) to be read
+    std::string fFlavor;
 
     /// The number of lines read from the input file (used for error messages)
     int fCurrentLine;
