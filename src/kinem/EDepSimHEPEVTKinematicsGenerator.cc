@@ -101,7 +101,8 @@ EDepSim::HEPEVTKinematicsGenerator::GeneratePrimaryVertex(
         EDepSimNamedLog("HEPEVT", "Open HEPEVT file: " << fFileName);
     }
 
-    EDepSimLog("Using HEPEVT input flavor: " << fFlavor);
+    
+    if (fVerbosity>0) EDepSimNamedLog("HEPEVT", "Using HEPEVT input flavor: " << fFlavor);
 
     std::vector<std::string> tokens;
     int event_id  = 0;
@@ -118,7 +119,7 @@ EDepSim::HEPEVTKinematicsGenerator::GeneratePrimaryVertex(
 
     // Parse the header line for an interaction. Depending on the input 
     // flavor, this line may contain any number of the following: event ID,
-    // vertex ID, number of particles, and vertex information. The number 
+    // vertex ID, number of particles, and vertex (x,y,z,t). The number 
     // of particles is the only required field. Vertex positions should 
     // be given in cm, and the time should be in ns.
     if (!GetTokens(tokens)) {
@@ -197,8 +198,9 @@ EDepSim::HEPEVTKinematicsGenerator::GeneratePrimaryVertex(
     vertex->SetUserInformation(vertexInfo);
     vertexInfo->SetInteractionNumber(vertex_id);
 
-    // Parse the particle lines for the vertex.  This loses some of the context
-    // information for now and only adds the particles that should be tracked.
+    // Parse the particle lines for the vertex and check input flavor 
+    // compatibility. This loses some of the context information for 
+    // now and only adds the particles that should be tracked.
     for (int line = 0; line < lines; ++line) {
         if (!GetTokens(tokens)) {
             EDepSimError("Input truncated in " << fFileName
@@ -226,11 +228,11 @@ EDepSim::HEPEVTKinematicsGenerator::GeneratePrimaryVertex(
         int status = AsInteger(tokens[0]);
         if (status != 1) continue;
         int pid       = AsInteger(tokens[1]);
-        //int mother1, mother2, daughter1, daughter2;
+        //int mother1, mother2   // ignored, here for docu.
         int daughter1, daughter2;
         double mass;
         double momX, momY, momZ;
-        //double mass, energy;
+        //double energy;         // ignored, here for docu.
 
         // Read in pythia (8-number) input flavor
         // This is the default used in Geant4; see 
@@ -243,6 +245,8 @@ EDepSim::HEPEVTKinematicsGenerator::GeneratePrimaryVertex(
             momZ   = AsReal(tokens[6])*GeV;
             mass = AsReal(tokens[7])*GeV;  
         }
+        // Read in ParticleBomb flavor. Useful for multi-vertex events
+        // See http://deeplearnphysics.org/DLPGenerator/index.html
         else if (fFlavor == "pbomb") {
             //mother1   = AsInteger(tokens[2]); // ignored, here for docu.
             //mother2   = AsInteger(tokens[3]); // ignored, here for docu.
