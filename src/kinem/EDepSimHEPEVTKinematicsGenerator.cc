@@ -232,7 +232,7 @@ EDepSim::HEPEVTKinematicsGenerator::GeneratePrimaryVertex(
         int daughter1, daughter2;
         double mass;
         double momX, momY, momZ;
-        //double energy;         // ignored, here for docu.
+        //double energy;        
 
         // Read in pythia (8-number) input flavor
         // This is the default used in Geant4; see 
@@ -255,7 +255,7 @@ EDepSim::HEPEVTKinematicsGenerator::GeneratePrimaryVertex(
             momX   = AsReal(tokens[6])*GeV;
             momY   = AsReal(tokens[7])*GeV;
             momZ   = AsReal(tokens[8])*GeV;
-            //energy = AsReal(tokens[9])*GeV;   // ignored, here for docu.
+            //energy = AsReal(tokens[9])*GeV;   
             mass   = AsReal(tokens[10])*GeV;  
         }
         // Read Marley (15-number) input flavor, also used by LArSoft's
@@ -303,7 +303,7 @@ EDepSim::HEPEVTKinematicsGenerator::GeneratePrimaryVertex(
         std::unique_ptr<G4HEPEvtParticle> hep_particle(
             new G4HEPEvtParticle(part.release(), status, daughter1, daughter2));
         HPlist.push_back(hep_particle.release());
-        vertex->SetPrimary(hep_particle.release());
+        //vertex->SetPrimary(hep_particle.release()->GetTheParticle());
         if (fVerbosity>1) {
             EDepSim::LogManager::IncreaseIndentation();
             EDepSimNamedLog("HEPEVT",
@@ -354,3 +354,4 @@ EDepSim::HEPEVTKinematicsGenerator::GeneratePrimaryVertex(
 
     return kSuccess;
 }
+
