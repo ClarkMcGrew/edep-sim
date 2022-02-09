@@ -52,7 +52,7 @@ private:
     /// A command to get the file name to read for the HEPEVT records.
     G4UIcmdWithAString* fInputFileCMD;
 
-    /// A command to set the HEPEVT input "flavor", since there 
+    /// A command to set the HEPEVT input "flavor", since there
     /// apparently isn't a standardized format
     G4UIcmdWithAString* fFlavorCMD;
 

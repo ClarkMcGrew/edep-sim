@@ -15,10 +15,10 @@
 #include <memory>
 
 EDepSim::HEPEVTKinematicsGenerator::HEPEVTKinematicsGenerator(
-    const G4String& name, const G4String& fileName, 
+    const G4String& name, const G4String& fileName,
     const G4String& flavor, int verbosity)
     : EDepSim::VKinematicsGenerator(name), fGenerator(NULL),
-      fFileName(fileName), fFlavor(flavor), 
+      fFileName(fileName), fFlavor(flavor),
       fVerbosity(verbosity) {}
 
 EDepSim::HEPEVTKinematicsGenerator::~HEPEVTKinematicsGenerator() {
@@ -101,8 +101,10 @@ EDepSim::HEPEVTKinematicsGenerator::GeneratePrimaryVertex(
         EDepSimNamedLog("HEPEVT", "Open HEPEVT file: " << fFileName);
     }
 
-    
-    if (fVerbosity>0) EDepSimNamedLog("HEPEVT", "Using HEPEVT input flavor: " << fFlavor);
+
+    if (fVerbosity>0) {
+        EDepSimNamedLog("HEPEVT", "Using HEPEVT input flavor: " << fFlavor);
+    }
 
     std::vector<std::string> tokens;
     int event_id  = 0;
@@ -117,10 +119,10 @@ EDepSim::HEPEVTKinematicsGenerator::GeneratePrimaryVertex(
     // storing mother/daughter information possible.
     std::vector<G4HEPEvtParticle*> HPlist;
 
-    // Parse the header line for an interaction. Depending on the input 
+    // Parse the header line for an interaction. Depending on the input
     // flavor, this line may contain any number of the following: event ID,
-    // vertex ID, number of particles, and vertex (x,y,z,t). The number 
-    // of particles is the only required field. Vertex positions should 
+    // vertex ID, number of particles, and vertex (x,y,z,t). The number
+    // of particles is the only required field. Vertex positions should
     // be given in cm, and the time should be in ns.
     if (!GetTokens(tokens)) {
         EDepSimLog("No more events in " << fFileName
@@ -128,7 +130,7 @@ EDepSim::HEPEVTKinematicsGenerator::GeneratePrimaryVertex(
         throw EDepSim::NoMoreEvents();
     }
     switch (tokens.size()) {
-    // For pythia flavor input, the number of particle in the event 
+    // For pythia flavor input, the number of particle in the event
     // is the only token.
     case 1:
         lines = AsInteger(tokens[0]);
@@ -198,8 +200,8 @@ EDepSim::HEPEVTKinematicsGenerator::GeneratePrimaryVertex(
     vertex->SetUserInformation(vertexInfo);
     vertexInfo->SetInteractionNumber(vertex_id);
 
-    // Parse the particle lines for the vertex and check input flavor 
-    // compatibility. This loses some of the context information for 
+    // Parse the particle lines for the vertex and check input flavor
+    // compatibility. This loses some of the context information for
     // now and only adds the particles that should be tracked.
     for (int line = 0; line < lines; ++line) {
         if (!GetTokens(tokens)) {
@@ -228,14 +230,14 @@ EDepSim::HEPEVTKinematicsGenerator::GeneratePrimaryVertex(
         int status = AsInteger(tokens[0]);
         if (status != 1) continue;
         int pid       = AsInteger(tokens[1]);
-        //int mother1, mother2   // ignored, here for docu.
+        //int mother1, mother2   // ignored, here for documentation
         int daughter1, daughter2;
         double mass;
         double momX, momY, momZ;
-        //double energy;        
+        //double energy;
 
         // Read in pythia (8-number) input flavor
-        // This is the default used in Geant4; see 
+        // This is the default used in Geant4; see
         // https://apc.u-paris.fr/~franco/g4doxy4.10/html/class_g4_h_e_p_evt_interface.html
         if (fFlavor == "pythia") {
             //daughter1 = AsInteger(tokens[2]);  // ignored, here for docu.
@@ -243,7 +245,7 @@ EDepSim::HEPEVTKinematicsGenerator::GeneratePrimaryVertex(
             momX   = AsReal(tokens[4])*GeV;
             momY   = AsReal(tokens[5])*GeV;
             momZ   = AsReal(tokens[6])*GeV;
-            mass = AsReal(tokens[7])*GeV;  
+            mass = AsReal(tokens[7])*GeV;
         }
         // Read in ParticleBomb flavor. Useful for multi-vertex events
         // See http://deeplearnphysics.org/DLPGenerator/index.html
@@ -255,8 +257,8 @@ EDepSim::HEPEVTKinematicsGenerator::GeneratePrimaryVertex(
             momX   = AsReal(tokens[6])*GeV;
             momY   = AsReal(tokens[7])*GeV;
             momZ   = AsReal(tokens[8])*GeV;
-            //energy = AsReal(tokens[9])*GeV;   
-            mass   = AsReal(tokens[10])*GeV;  
+            //energy = AsReal(tokens[9])*GeV;
+            mass   = AsReal(tokens[10])*GeV;
         }
         // Read Marley (15-number) input flavor, also used by LArSoft's
         // TextFileGen_module.cc; see
@@ -270,7 +272,7 @@ EDepSim::HEPEVTKinematicsGenerator::GeneratePrimaryVertex(
             momY   = AsReal(tokens[7])*GeV;
             momZ   = AsReal(tokens[8])*GeV;
             //energy = AsReal(tokens[9])*GeV;   // ignored, here for docu.
-            mass   = AsReal(tokens[10])*GeV;  
+            mass   = AsReal(tokens[10])*GeV;
             vtxX   = AsReal(tokens[11])*cm;
             vtxY   = AsReal(tokens[12])*cm;
             vtxZ   = AsReal(tokens[13])*cm;
@@ -296,9 +298,9 @@ EDepSim::HEPEVTKinematicsGenerator::GeneratePrimaryVertex(
         std::unique_ptr<G4PrimaryParticle> part(
             new G4PrimaryParticle(pid, momX, momY, momZ));
         part->SetMass(mass);
-        
+
         // Use Geant's G4HEPEvtParticle class to store daughter information,
-        // similar to L120 here: 
+        // similar to L120 here:
         // https://apc.u-paris.fr/~franco/g4doxy/html/G4HEPEvtInterface_8cc-source.html#l00078
         std::unique_ptr<G4HEPEvtParticle> hep_particle(
             new G4HEPEvtParticle(part.release(), status, daughter1, daughter2));
@@ -317,12 +319,12 @@ EDepSim::HEPEVTKinematicsGenerator::GeneratePrimaryVertex(
 
     // Loop stored HEPParticles and set daughter information if applicable.
     // Note that in Geant's notation, JDAHEP1 and JDAHEP2 correspond to
-    // daughter1 and daughter2, respectively 
+    // daughter1 and daughter2, respectively
     for(size_t i = 0; i < HPlist.size(); ++i) {
         if (HPlist[i]->GetJDAHEP1() > 0) {
             // Shift index to start from 0
-            G4int jda1 = HPlist[i]->GetJDAHEP1()-1; 
-            G4int jda2 = HPlist[i]->GetJDAHEP2()-1; 
+            G4int jda1 = HPlist[i]->GetJDAHEP1()-1;
+            G4int jda2 = HPlist[i]->GetJDAHEP2()-1;
             G4PrimaryParticle* mother = HPlist[i]->GetTheParticle();
             for( G4int j=jda1; j<=jda2; j++ ) {
                 G4PrimaryParticle* daughter = HPlist[j]->GetTheParticle();
@@ -339,14 +341,16 @@ EDepSim::HEPEVTKinematicsGenerator::GeneratePrimaryVertex(
     for(size_t ii=0; ii<HPlist.size(); ii++ ) {
         // The Done() method above sets the status of all
         // daughters to be negative
-        if( HPlist[ii]->GetISTHEP() > 0 ) { 
+        if( HPlist[ii]->GetISTHEP() > 0 ) {
             G4PrimaryParticle* initialParticle = HPlist[ii]->GetTheParticle();
             vertex->SetPrimary(initialParticle);
         }
     }
 
     // Clear G4HEPEvtParticles
-    for(size_t iii=0;iii<HPlist.size();iii++) {delete HPlist[iii];}
+    for(size_t iii=0;iii<HPlist.size();iii++) {
+        delete HPlist[iii];
+    }
     HPlist.clear();
 
     evt->AddPrimaryVertex(vertex.release());
@@ -354,4 +358,3 @@ EDepSim::HEPEVTKinematicsGenerator::GeneratePrimaryVertex(
 
     return kSuccess;
 }
-
