@@ -32,6 +32,7 @@ private:
     G4UIcmdWithAString*        fExportCmd;
     G4UIcommand*               fControlCmd;
     G4UIcommand*               fHitSagittaCmd;
+    G4UIcommand*               fHitSeparationCmd;
     G4UIcommand*               fHitLengthCmd;
     G4UIcommand*               fHitExcludedCmd;
 
