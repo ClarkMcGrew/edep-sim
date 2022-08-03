@@ -69,7 +69,7 @@ done
 # Make a temporary macro file in the local directory.
 OUTPUT_DIR="output.$(date +%Y-%m-%d-%H%M)"
 mkdir ${OUTPUT_DIR}
-for i in $(find ${TESTS} -name "[0-9]*" -type f | sort); do
+for i in $(find ${TESTS} -name "[0-9]*" -type f | grep -v "~" | sort); do
     if [ -x ${i} ]; then
         LOG=$(basename $i)
         echo "(cd $OUTPUT_DIR && ../${i} >& ${LOG}.log || echo FAIL: $i)"
