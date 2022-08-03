@@ -8,17 +8,17 @@
 #include <algorithm>
 #include <functional>
 
-EDepSim::Builder::Builder(G4String n, 
-                         EDepSim::UserDetectorConstruction* c) 
+EDepSim::Builder::Builder(G4String n,
+                         EDepSim::UserDetectorConstruction* c)
     : fLocalName(n), fName(n), fConstruction(c), fParent(NULL),
-      fMessenger(NULL), fSensitiveDetector(NULL), 
+      fMessenger(NULL), fSensitiveDetector(NULL),
       fOpacity(0.0), fCheck(false) {
     fMessenger = fConstruction->GetMessenger();
 }
 
-EDepSim::Builder::Builder(G4String n, EDepSim::Builder* p) 
+EDepSim::Builder::Builder(G4String n, EDepSim::Builder* p)
     : fLocalName(n), fName(n), fConstruction(NULL), fParent(p),
-      fMessenger(NULL), fSensitiveDetector(NULL), 
+      fMessenger(NULL), fSensitiveDetector(NULL),
       fOpacity(0.0), fCheck(false) {
     fName = fParent->GetName() + "/" + fLocalName;
     fConstruction = fParent->GetConstruction();
@@ -63,7 +63,7 @@ void EDepSim::Builder::SetOpacity(double v) {
 
 /// Set the visibility of the constructed object.
 void EDepSim::Builder::SetDaughterOpacity(double v) {
-    for (std::map<G4String,EDepSim::Builder*>::iterator p 
+    for (std::map<G4String,EDepSim::Builder*>::iterator p
              = fSubBuilders.begin();
          p!=fSubBuilders.end();
          ++p) {
@@ -84,14 +84,14 @@ EDepSim::BuilderMessenger::BuilderMessenger(EDepSim::Builder* c,
         std::string guidance = "Commands for the " + c->GetName() + " Builder";
         fDirectory->SetGuidance(guidance.c_str());
     }
-    
+
     fOpacityCMD = new G4UIcmdWithADouble(CommandName("opacity"),this);
     fOpacityCMD->SetGuidance("Set the log of the relative opacity."
                              " Useful values are between [-0.5, 0.5], and"
                              " +/-10 makes the object opague or transparent."
                              " A value of 0 leaves the opacity unchanged.");
     fOpacityCMD->SetParameterName("opacity",false);
-    
+
     fDaughterOpacityCMD = new G4UIcmdWithADouble(
         CommandName("daughterOpacity"),this);
     fDaughterOpacityCMD->SetGuidance(
@@ -110,14 +110,20 @@ EDepSim::BuilderMessenger::BuilderMessenger(EDepSim::Builder* c,
     G4UIparameter* typeParam = new G4UIparameter('s');
     typeParam->SetParameterName("Type");
     fSensitiveCMD->SetParameter(typeParam);
-    
-    fMaximumHitSagittaCMD 
+
+    fMaximumHitSagittaCMD
         = new G4UIcmdWithADoubleAndUnit(CommandName("maxHitSagitta"),this);
     fMaximumHitSagittaCMD->SetGuidance("Set the maximum sagitta for a hit.");
     fMaximumHitSagittaCMD->SetParameterName("Sagitta",false);
     fMaximumHitSagittaCMD->SetUnitCategory("Length");
-    
-    fMaximumHitLengthCMD 
+
+    fMaximumHitSeparationCMD
+        = new G4UIcmdWithADoubleAndUnit(CommandName("maxHitSeparation"),this);
+    fMaximumHitSeparationCMD->SetGuidance("Set the maximum separation for a hit.");
+    fMaximumHitSeparationCMD->SetParameterName("Separation",false);
+    fMaximumHitSeparationCMD->SetUnitCategory("Length");
+
+    fMaximumHitLengthCMD
         = new G4UIcmdWithADoubleAndUnit(CommandName("maxHitLength"),this);
     fMaximumHitLengthCMD->SetGuidance("Set the maximum length for a hit.");
     fMaximumHitLengthCMD->SetParameterName("HitLength",false);
@@ -147,6 +153,11 @@ void EDepSim::BuilderMessenger::SetNewValue(G4UIcommand *cmd, G4String val) {
             SetMaximumHitSagitta(
                 fMaximumHitSagittaCMD->GetNewDoubleValue(val));
     }
+    else if (cmd==fMaximumHitSeparationCMD) {
+        fBuilder->
+            SetMaximumHitSeparation(
+                fMaximumHitSeparationCMD->GetNewDoubleValue(val));
+    }
     else if (cmd==fMaximumHitLengthCMD) {
         fBuilder->
             SetMaximumHitLength(
@@ -161,6 +172,7 @@ EDepSim::BuilderMessenger::~BuilderMessenger() {
     delete fCheckCMD;
     delete fSensitiveCMD;
     delete fMaximumHitSagittaCMD;
+    delete fMaximumHitSeparationCMD;
     delete fMaximumHitLengthCMD;
 }
 
@@ -191,20 +203,37 @@ void EDepSim::Builder::SetSensitiveDetector(G4String name, G4String type) {
     EDepSim::SDFactory factory(type);
     SetSensitiveDetector(factory.MakeSD(name));
 }
-    
+
 void EDepSim::Builder::SetMaximumHitSagitta(double sagitta) {
     if (!fSensitiveDetector) {
         EDepSimError("Maximum hit sagitta must be set after the sensitive"
-                  " detector is defined.");
+                     " detector is defined.");
         EDepSimThrow("Builder does not have sensitive detector defined");
         return;
     }
-    EDepSim::SegmentSD *segSD = dynamic_cast<EDepSim::SegmentSD*>(fSensitiveDetector);
+    EDepSim::SegmentSD *segSD
+        = dynamic_cast<EDepSim::SegmentSD*>(fSensitiveDetector);
     if (!segSD) {
         EDepSimThrow("Sensitive detector not derived from EDepSim::SegmentSD");
         return;
     }
     segSD->SetMaximumHitSagitta(sagitta);
+}
+
+void EDepSim::Builder::SetMaximumHitSeparation(double separation) {
+    if (!fSensitiveDetector) {
+        EDepSimError("Maximum hit separation must be set after the sensitive"
+                     " detector is defined.");
+        EDepSimThrow("Builder does not have sensitive detector defined");
+        return;
+    }
+    EDepSim::SegmentSD *segSD
+        = dynamic_cast<EDepSim::SegmentSD*>(fSensitiveDetector);
+    if (!segSD) {
+        EDepSimThrow("Sensitive detector not derived from EDepSim::SegmentSD");
+        return;
+    }
+    segSD->SetMaximumHitSeparation(separation);
 }
 
 void EDepSim::Builder::SetMaximumHitLength(double length) {
@@ -221,5 +250,3 @@ void EDepSim::Builder::SetMaximumHitLength(double length) {
     }
     segSD->SetMaximumHitLength(length);
 }
-
-
