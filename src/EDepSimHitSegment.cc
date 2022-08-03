@@ -89,6 +89,8 @@ bool EDepSim::HitSegment::SameHit(G4Step* theStep) {
         }
     }
     else {
+        // Short cut when separation is negative (or zero).
+        if (fMaxSeparation <= 0.0) return false;
         // This is not the same track that started this hit, but check to see
         // if it is a delta-ray that should be added to this segment.
         double separation = FindSeparation(theStep);
@@ -274,7 +276,6 @@ double EDepSim::HitSegment::FindSeparation(G4Step* theStep) {
     // Find the distance from the segment center line to the initial point of
     // the new step.
     double s1 = (frontDelta - cosDelta*dir).mag();
-
 
     // Find the distance from the segment center line to the final point of
     // the new step.
