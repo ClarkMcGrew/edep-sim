@@ -29,6 +29,7 @@ cat > 100TestHEPEvt.mac <<EOF
 # Set the hit segment.
 #######################################
 /edep/hitSagitta drift 1.0 mm
+/edep/hitSeparation drift -1.0 mm
 /edep/hitLength drift 1.0 mm
 /edep/update
 
