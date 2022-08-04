@@ -39,7 +39,10 @@ EDepSim::HitSegment::HitSegment(
       fMaxLength(maxLength),
       fPrimaryId(0), fEnergyDeposit(0), fSecondaryDeposit(0), fTrackLength(0),
       fStart(0,0,0,0), fStop(0,0,0,0) {
-    fPath.reserve(500);
+    fPath.reserve(50);
+    if (fMaxSeparation > fMaxSagitta) fMaxSeparation = fMaxSagitta;
+    if (fMaxSeparation > fMaxLength) fMaxSeparation = fMaxLength;
+
 }
 
 EDepSim::HitSegment::HitSegment(const EDepSim::HitSegment& rhs)
@@ -173,7 +176,8 @@ void EDepSim::HitSegment::AddStep(G4Step* theStep) {
                     << " (kin: " << trk->GetKineticEnergy()/MeV << " MeV"
                     << " Deposit: "
                     << energyDeposit/MeV << "MeV"
-                    << " Status: " << theStep->GetPreStepPoint()->GetStepStatus()
+                    << " Status: "
+                    << theStep->GetPreStepPoint()->GetStepStatus()
                     << " -> " << theStep->GetPostStepPoint()->GetStepStatus());
 
         const G4VProcess* proc = theStep->GetPostStepPoint()
@@ -183,7 +187,8 @@ void EDepSim::HitSegment::AddStep(G4Step* theStep) {
         }
         else {
             EDepSimWarn("    Process: " << proc->GetProcessName()
-                        <<"/"<< proc->GetProcessTypeName(proc->GetProcessType()));
+                        << "/"
+                        << proc->GetProcessTypeName(proc->GetProcessType()));
         }
     }
 
