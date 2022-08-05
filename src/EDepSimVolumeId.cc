@@ -117,7 +117,7 @@ bool operator < (const EDepSim::VolumeId& x, const EDepSim::VolumeId& y) {
 }
 
 std::ostream& operator << (std::ostream& stream, const EDepSim::VolumeId& v) {
-    EDepSim::VolumeId::Volumes::const_iterator b;
+    //EDepSim::VolumeId::Volumes::const_iterator b;
     stream<< "<VolumeId ";
     if (v.fVolumes.size()<1) {
         stream << "empty>";

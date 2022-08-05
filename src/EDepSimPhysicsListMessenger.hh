@@ -28,7 +28,7 @@ private:
     EDepSim::PhysicsList* fPhysicsList;
  
     G4UIdirectory* fDirectory;
-    G4UIdirectory* fDecayDirectory;
+    //G4UIdirectory* fDecayDirectory;
 
     G4UIcmdWithADoubleAndUnit* fGammaCutCMD;
     G4UIcmdWithADoubleAndUnit* fElectCutCMD;
