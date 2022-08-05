@@ -159,7 +159,7 @@ G4LogicalVolume *CaptWirePlaneBuilder::GetPiece(void) {
                                             GetHeight()/2),
                                   FindMaterial("Argon_Liquid"),
                                   GetName()+"/Wire");
-        logWire->SetVisAttributes(G4VisAttributes::Invisible);
+        logWire->SetVisAttributes(G4VisAttributes::GetInvisible());
 
         if (GetSensitiveDetector()) {
             logWire->SetSensitiveDetector(GetSensitiveDetector());
