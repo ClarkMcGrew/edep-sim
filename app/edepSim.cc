@@ -13,6 +13,7 @@
 #include <fstream>
 #include <csignal>
 #include <cstdlib>
+#include <unistd.h>
 
 void usage () {
     std::cout << "Usage: edep-sim [options] [macros]" << std::endl;
