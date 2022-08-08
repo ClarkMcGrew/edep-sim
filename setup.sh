@@ -82,9 +82,9 @@ ___path_prepend () {
     eval export $1="$2:\$$1"
 }
 ___path_remove ()  {
-    export $1=$(eval echo -n \$$1 | \
+    export $1="$(eval echo -n \$$1 | \
 	awk -v RS=: -v ORS=: '$0 != "'$2'"' | \
-	sed 's/:$//'); 
+	sed 's/:$//');"
 }
 
 ___path_prepend PATH ${EDEP_ROOT}/${EDEP_TARGET}/bin
