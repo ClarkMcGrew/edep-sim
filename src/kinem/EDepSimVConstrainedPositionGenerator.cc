@@ -59,7 +59,8 @@ namespace {
             if (!volume) return false;
 
             // Check that the point is inside the named volume.
-            if (!volume->GetName().contains(fName)) {
+            if (!G4StrUtil::contains(volume->GetName(), fName))
+            {
                 return false;
             }
             return true;
@@ -102,7 +103,8 @@ namespace {
                 ->GetMaterial()->GetName();
 
             // Check that the point is inside the named material.
-            if (!matter.contains(fMater)) return false;
+            if (!G4StrUtil::contains(matter, fMater))
+                return false;
             return true;
         }
     private:
