@@ -71,7 +71,7 @@ private:
     /// The volume for the ullage.  This is set when the cryostat vessel is
     /// constructed and fills the gas part of the inner void.  It can be
     /// passed to daughter volumes to define the shape of the ullage.
-    G4LogicalVolume* fUllageVolume;
+    //G4LogicalVolume* fUllageVolume;
 
     /// The volume for the liquid argon.  This is set when the cryostat vessel
     /// is constructed and fills the liquid part of the inner void.  It can be

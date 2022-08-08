@@ -52,11 +52,11 @@ private:
     TEventChangeManager* fEventChangeManager;
 
     // The digit drawing class.  This is connected directly to the buttons.
-    TPlotDigitsHits* fPlotDigitsHits;
+    //TPlotDigitsHits* fPlotDigitsHits;
 
     // The hit time and charge drawing class.  This is connected directly to
     // the buttons.
-    TPlotTimeCharge* fPlotTimeCharge;
+    //TPlotTimeCharge* fPlotTimeCharge;
 
     // The base color index of the palette to use.
     int fColorBase;

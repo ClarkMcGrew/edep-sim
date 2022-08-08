@@ -35,7 +35,7 @@ EDepSim::TrajectoryPoint::TrajectoryPoint(const G4Step* aStep)
             = aStep->GetPostStepPoint()->GetPhysicalVolume()->GetName();
     }
     else {
-        fPhysVolName == "OutOfWorld";
+        fPhysVolName = "OutOfWorld";
     }
     fPrevPosition = aStep->GetPreStepPoint()->GetPosition();
     // Check if the G4VProcess for the defining process is available.  It
@@ -61,7 +61,7 @@ EDepSim::TrajectoryPoint::TrajectoryPoint(const G4Track* aTrack)
         fPhysVolName = aTrack->GetVolume()->GetName();
     }
     else {
-        fPhysVolName == "OutOfWorld";
+        fPhysVolName = "OutOfWorld";
     }
     fPrevPosition = aTrack->GetPosition();
     const G4VProcess* proc = aTrack->GetCreatorProcess();
