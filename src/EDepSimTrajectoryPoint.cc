@@ -18,6 +18,12 @@
 
 G4Allocator<EDepSim::TrajectoryPoint> aTrajPointAllocator;
 
+const G4String getTextForEnum(int enumVal)
+{
+    return EnumStrings[enumVal];
+}
+
+
 EDepSim::TrajectoryPoint::TrajectoryPoint()
     : fTime(0.), fMomentum(0.,0.,0.),
       fStepStatus(fUndefined),
@@ -128,7 +134,7 @@ std::vector<G4AttValue>* EDepSim::TrajectoryPoint::CreateAttValues() const {
 
     values->push_back(G4AttValue("Momentum",
                                  G4BestUnit(fMomentum,"Momentum"),""));
-    values->push_back(G4AttValue("StepStatus",fStepStatus,""));
+    values->push_back(G4AttValue("StepStatus", getTextForEnum(fStepStatus), ""));
 
     values->push_back(G4AttValue("PhysVolName",fPhysVolName,""));
 

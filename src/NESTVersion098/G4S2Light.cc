@@ -108,7 +108,7 @@ G4S2Light::PostStepDoIt(const G4Track& aTrack, const G4Step& aStep)
 	}
 	const G4ElementVector* theElementVector =
 	  aMaterial->GetElementVector();
-	G4Element* Element = (*theElementVector)[0]; G4int z1;
+	const G4Element* Element = (*theElementVector)[0]; G4int z1;
 	if ( Element ) z1 = (G4int)(Element->GetZ()); else z1 = -1;
 	G4double z_anode = BORDER + GASGAP;
 	G4double z_start = BORDER;
@@ -262,7 +262,7 @@ G4double G4S2Light::GetMeanFreePath(const G4Track& aTrack,
   const G4Material* aMaterial = aTrack.GetMaterial();
   if ( !aMaterial ) return DBL_MIN;
   const G4ElementVector* theElementVector = aMaterial->GetElementVector();
-  G4Element* Element = (*theElementVector)[0]; G4int z1;
+  const G4Element* Element = (*theElementVector)[0]; G4int z1;
   if ( Element ) z1 = (G4int)(Element->GetZ()); else z1 = -1;
   if ( (z1==2 || z1==10 || z1==18 || z1==36 || z1==54) &&
        aMaterial->GetState() == kStateLiquid ) {
