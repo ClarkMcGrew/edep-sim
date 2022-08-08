@@ -13,6 +13,8 @@
 #include <G4ParticleTypes.hh>
 #include <G4ParticleTable.hh>
 
+#include <G4UnitsTable.hh>
+
 #include <G4PhysListFactory.hh>
 
 #include <G4Gamma.hh>
