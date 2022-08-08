@@ -95,7 +95,7 @@ G4LogicalVolume *CaptWorldBuilder::GetPiece(void) {
                                         fHeight/2), 
                               FindMaterial("Air"),
                               GetName());
-    logVolume->SetVisAttributes(G4VisAttributes::Invisible);
+    logVolume->SetVisAttributes(G4VisAttributes::GetInvisible());
     
     double floorThickness = 10*CLHEP::cm;
     G4LogicalVolume *logFloor
@@ -105,7 +105,7 @@ G4LogicalVolume *CaptWorldBuilder::GetPiece(void) {
                                         floorThickness/2), 
                               FindMaterial("Cement"),
                               GetName()+"/Floor");
-    logFloor->SetVisAttributes(G4VisAttributes::Invisible);
+    logFloor->SetVisAttributes(G4VisAttributes::GetInvisible());
 
     CaptCryostatBuilder& cryo
         = Get<CaptCryostatBuilder>("Cryostat");

@@ -179,9 +179,9 @@ EDepSim::BuilderMessenger::~BuilderMessenger() {
 G4VisAttributes EDepSim::Builder::GetColor(G4Material* mat, double opacity) {
     EDepSim::RootGeometryManager* geoMan = EDepSim::RootGeometryManager::Get();
     // Check if the opacity has been over-ruled by the macro...
-    if (fOpacity < -9.9) return G4VisAttributes::Invisible;
+    if (fOpacity < -9.9) return G4VisAttributes::GetInvisible();
     opacity += fOpacity;
-    if (opacity < -9.9) return G4VisAttributes::Invisible;
+    if (opacity < -9.9) return G4VisAttributes::GetInvisible();
     G4Color color = geoMan->GetG4Color(mat);
     double red = color.GetRed();
     double green = color.GetGreen();
