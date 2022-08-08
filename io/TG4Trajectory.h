@@ -125,24 +125,47 @@ public:
     /// definitions are mostly found in the geant4 include files named
     /// G4HadronicProcessType.hh and G4EmProcessSubType.hh
     enum G4ProcessSubtype {
+        kSubtypeProcessNotDefined = 0,
         // EM subtypes for charged particles.
         kSubtypeEMCoulombScattering = 1,
         kSubtypeEMIonization = 2,
         kSubtypeEMBremsstrahlung = 3,
         kSubtypeEMPairProdByCharged = 4,
+        kSubtypeEMAnnihilation = 5,
+        kSubtypeEMAnnihilationToMuMu = 6,
+        kSubtypeEMAnnihilationToHadrons = 7,
         kSubtypeEMNuclearStopping = 8,
 
         // EM subtypes for photons
         kSubtypeEMMultipleScattering = 10,
+        kSubtypeEMRayleigh = 11,
         kSubtypeEMPhotoelectric = 12,
         kSubtypeEMComptonScattering = 13,
         kSubtypeEMGammaConversion = 14,
         
+
+        kSubtypeEMGammaConversionToMuMu = 15,
+        kSubtypeEMCerenkov = 21,
+        kSubtypeEMScintillation = 22,
+        kSubtypeEMSynchrotronRadiation = 23,
+        kSubtypeEMTransitionRadiation = 24,
+
+        //Optical subtypes
+        kSubtypeOpAbsorption = 31,
+        kSubtypeOpBoundary = 32,
+        kSubtypeOpRayleigh = 33,
+        kSubtypeOpWLS = 34,
+        kSubtypeOpMieHG = 35,
+
         // Hadronic subtypes
         kSubtypeHadronElastic = 111,
         kSubtypeHadronInelastic = 121,
         kSubtypeHadronCapture = 131,
+        kSubtypeHadronFission = 141,
+        kSubtypeHadronAtRest = 151,
+        kSubtypeLeptonAtRest = 152,
         kSubtypeHadronChargeExchange = 161,
+        kSubtypehadronRadioactiveDecay = 210,
 
         // General subtypes
         kSubtypeGeneralStepLimit = 401,
