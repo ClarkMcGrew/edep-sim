@@ -15,6 +15,9 @@ public:
     /// The run number
     int RunId;
     
+    /// The sub-run number
+    int SubrunId;
+    
     /// The event number
     int EventId;
 
@@ -38,6 +41,6 @@ public:
     /// map is keyed using the sensitive volume name.
     TG4HitSegmentDetectors SegmentDetectors;
 
-    ClassDef(TG4Event,1)
+    ClassDef(TG4Event,2)
 };
 #endif
