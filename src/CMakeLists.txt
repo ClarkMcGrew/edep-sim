@@ -36,8 +36,16 @@ target_include_directories(edepsim PUBLIC
   "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}../io>"
   "$<INSTALL_INTERFACE:include/EDepSim>")
 
+find_package( yaml-cpp CONFIG REQUIRED )
+target_include_directories(edepsim PRIVATE 
+  ${YAML_CPP_INCLUDE_DIR} $ENV{DLPGENERATOR_INCDIR}
+)
+target_link_directories(edepsim PUBLIC $ENV{DLPGENERATOR_LIBDIR})
+
 target_link_libraries(edepsim PUBLIC
-  edepsim_io ${Geant4_LIBRARIES} ${ROOT_LIBRARIES})
+  edepsim_io ${Geant4_LIBRARIES} ${ROOT_LIBRARIES} 
+  yaml-cpp LiteFMWK_ParticleBomb
+)
 
 # Install the G4 macro files used to control the MC.
 install(FILES edepsim-defaults-1.0.mac DESTINATION lib/EDepSim)
