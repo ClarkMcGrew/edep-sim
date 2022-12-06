@@ -23,6 +23,8 @@ void usage() {
               << std::endl;
     std::cout << "   -S    Clear the volumes that will be shown."
               << std::endl;
+    std::cout << "   -N    Skip to event N in the file."
+	      << std::endl;
     std::cout << "   -h    This message." << std::endl;
 }
 
@@ -30,9 +32,10 @@ int main(int argc, char **argv) {
     std::string fileName = "";
     bool showGeometry = true;
     std::vector<std::string> volumesToShow;
-    
+    int evtNum = 0;
+
     while (1) {
-        int c = getopt(argc, argv, "?hgs:S");
+        int c = getopt(argc, argv, "?hgs:N:S");
         if (c == -1) break;
         switch (c) {
         case 'g': {
@@ -48,6 +51,10 @@ int main(int argc, char **argv) {
             volumesToShow.clear();
             break;
         }
+	case 'N': {
+	    evtNum = atoi(optarg);
+	    break;
+	}
         case '?':
         case 'h':
         default:
@@ -80,6 +87,7 @@ int main(int argc, char **argv) {
         ev.EventChange().AddVolumeToShow(*v);
     }
     ev.EventChange().SetEventSource(eventSource);
+    ev.EventChange().ChangeEvent(evtNum);
     
     theApp.Run(kFALSE);
 
