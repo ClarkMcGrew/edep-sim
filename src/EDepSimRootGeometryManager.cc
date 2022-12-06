@@ -23,6 +23,7 @@
 #include <TGeoXtru.h>
 #include <TGeoPcon.h>
 #include <TGeoEltu.h>
+#include <TGeoTorus.h>
 
 #include <TColor.h>
 
@@ -49,6 +50,7 @@
 #include <G4IntersectionSolid.hh>
 #include <G4ExtrudedSolid.hh>
 #include <G4EllipticalTube.hh>
+#include <G4Torus.hh>
 
 #include <G4SystemOfUnits.hh>
 #include <G4PhysicalConstants.hh>
@@ -262,6 +264,17 @@ TGeoShape* EDepSim::RootGeometryManager::CreateShape(
                                   sphere->GetOuterRadius()/CLHEP::mm,
                                   minThetaDeg, maxThetaDeg,
                                   minPhiDeg, maxPhiDeg);
+    }
+    else if (geometryType == "G4Torus") {
+      const G4Torus* torus = dynamic_cast<const G4Torus*>(theSolid);
+      // Root takes the angles in degrees so there is no extra
+      // conversion.
+      double minR = torus->GetRmin()/CLHEP::mm;
+      double maxR = torus->GetRmax()/CLHEP::mm;
+      double axialR = torus->GetRtor()/CLHEP::mm;
+      double phi1 = torus->GetSPhi()/CLHEP::degree;
+      double dphi = torus->GetDPhi()/CLHEP::degree;
+      theShape = new TGeoTorus(axialR, minR, maxR, phi1, dphi);
     }
     else if (geometryType == "G4Polyhedra") {
         const G4Polyhedra* polyhedra
