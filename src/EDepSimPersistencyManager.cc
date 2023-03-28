@@ -373,12 +373,6 @@ void EDepSim::PersistencyManager::MarkTrajectories(const G4Event* event) {
         if (particleName == "nu_mu") continue;
         if (particleName == "nu_tau") continue;
 
-	// Save all pi0s
-	if (particleName == "pi0"){
-	  ndTraj->MarkTrajectory(false);
-	  continue;
-	}
-
         // Save any decay product if it caused any energy deposit.
         if (processName == "Decay") {
             if (ndTraj->GetSDTotalEnergyDeposit()>1*eV
@@ -415,6 +409,12 @@ void EDepSim::PersistencyManager::MarkTrajectories(const G4Event* event) {
         // since primary neutrons are controlled above.
         if (particleName == "neutron"
             && initialMomentum > GetNeutronThreshold()) {
+            ndTraj->MarkTrajectory(false);
+            continue;
+        }
+
+        // Save all pi0s that pass the GetSDTotalEnergyDeposit cut above
+        if (particleName == "pi0") {
             ndTraj->MarkTrajectory(false);
             continue;
         }
