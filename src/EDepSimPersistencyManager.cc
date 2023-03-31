@@ -47,7 +47,7 @@ EDepSim::PersistencyManager::PersistencyManager()
       fLengthThreshold(10*mm),
       fGammaThreshold(5*MeV), fNeutronThreshold(50*MeV),
       fTrajectoryPointAccuracy(1.*mm), fTrajectoryPointDeposit(0*MeV),
-      fSaveAllPrimaryTrajectories(true) {
+      fSaveAllPrimaryTrajectories(true), fOutEventId(0) {
     fPersistencyMessenger = new EDepSim::PersistencyMessenger(this);
 }
 
@@ -149,9 +149,10 @@ bool EDepSim::PersistencyManager::UpdateSummaries(const G4Event* event) {
     const G4Run* runInfo = G4RunManager::GetRunManager()->GetCurrentRun();
 
     fEventSummary.RunId = runInfo->GetRunID();
-    fEventSummary.EventId = event->GetEventID();
+    fEventSummary.EventId = fOutEventId;
     EDepSimLog("Event Summary for run " << fEventSummary.RunId
-               << " event " << fEventSummary.EventId);
+               << " input event " << event->GetEventID()
+               << " candidate output event " << fEventSummary.EventId);
 
     if (GetRequireEventsWithHits() && not EventHasHits(event)) {
         EDepSimLog("   No hits and /edep/db/set/requireEventsWithHits is true");
@@ -171,6 +172,7 @@ bool EDepSim::PersistencyManager::UpdateSummaries(const G4Event* event) {
     EDepSimLog("   Segment Detectors "
                << fEventSummary.SegmentDetectors.size());
 
+    ++fOutEventId;
     return true;
 }
 
