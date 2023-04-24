@@ -24,6 +24,11 @@
 #include <TGeoPcon.h>
 #include <TGeoEltu.h>
 
+#include <TGeoParaboloid.h>
+#include <TGeoHype.h>
+#include <TGeoCone.h>
+#include <TGeoPara.h>
+#include <TGeoTorus.h>
 #include <TColor.h>
 
 #include <globals.hh>
@@ -49,6 +54,11 @@
 #include <G4IntersectionSolid.hh>
 #include <G4ExtrudedSolid.hh>
 #include <G4EllipticalTube.hh>
+#include <G4Torus.hh>
+#include <G4Para.hh>
+#include <G4Cons.hh>
+#include <G4Hype.hh>
+#include <G4Paraboloid.hh>
 
 #include <G4SystemOfUnits.hh>
 #include <G4PhysicalConstants.hh>
@@ -262,6 +272,57 @@ TGeoShape* EDepSim::RootGeometryManager::CreateShape(
                                   sphere->GetOuterRadius()/CLHEP::mm,
                                   minThetaDeg, maxThetaDeg,
                                   minPhiDeg, maxPhiDeg);
+    }
+    else if (geometryType == "G4Hype") {
+        const G4Hype* Hype = dynamic_cast<const G4Hype*>(theSolid);
+        double rin = Hype->GetInnerRadius()/CLHEP::mm;
+        double stin = Hype->GetInnerStereo()/CLHEP::degree;
+        double rout = Hype->GetOuterRadius()/CLHEP::mm;
+        double stout = Hype->GetOuterStereo()/CLHEP::degree;
+        double dz = Hype->GetZHalfLength()/CLHEP::mm;
+        theShape = new TGeoHype(rin,stin,rout,stout,dz);
+    }
+    else if (geometryType == "G4Paraboloid") {
+        const G4Paraboloid *Paraboloid = dynamic_cast<const G4Paraboloid *>(theSolid);
+
+        double rlo=Paraboloid->GetRadiusMinusZ()/CLHEP::mm;
+        double rhi=Paraboloid->GetRadiusPlusZ()/CLHEP::mm;
+        double dz=Paraboloid->GetZHalfLength()/CLHEP::mm;
+
+        theShape = new TGeoParaboloid(rlo,rhi,dz);
+    }
+    else if (geometryType == "G4Cons") {
+        const G4Cons* Cons = dynamic_cast<const G4Cons*>(theSolid);
+        double rmin1 = Cons->GetInnerRadiusMinusZ()/ CLHEP::mm;
+        double rmax1 = Cons->GetOuterRadiusMinusZ() / CLHEP::mm;
+        double rmin2 = Cons->GetInnerRadiusPlusZ()/CLHEP::mm;
+        double rmax2 = Cons->GetOuterRadiusPlusZ ()/CLHEP::mm;
+        double dz = Cons->GetZHalfLength()/ CLHEP::mm;
+        double phi1 = Cons->GetStartPhiAngle()/ CLHEP::degree;
+        double phi2 = Cons->GetDeltaPhiAngle()/ CLHEP::degree;
+        theShape = new TGeoConeSeg(dz, rmin1, rmax1, rmin2, rmax2, phi1, phi2);
+    }
+    else if (geometryType == "G4Torus") {
+        const G4Torus* torus = dynamic_cast<const G4Torus*>(theSolid);
+        // Root takes the angles in degrees so there is no extra
+        // conversion.
+        double minR = torus->GetRmin()/CLHEP::mm;
+        double maxR = torus->GetRmax()/CLHEP::mm;
+        double axialR = torus->GetRtor()/CLHEP::mm;
+        double phi1 = torus->GetSPhi()/CLHEP::degree;
+        double dphi = torus->GetDPhi()/CLHEP::degree;
+        theShape = new TGeoTorus(axialR, minR, maxR, phi1, dphi);
+    }
+    else if (geometryType == "G4Para") {
+        const G4Para* para = dynamic_cast<const G4Para*>(theSolid);
+        double dX = para->GetXHalfLength() / CLHEP::mm;
+        double dY = para->GetYHalfLength() / CLHEP::mm;
+        double dZ = para->GetZHalfLength() / CLHEP::mm;
+        double alpha =std::atan(para->GetTanAlpha())/CLHEP::degree;
+        G4ThreeVector SymAxis =para->GetSymAxis();
+        double theta = std::acos(SymAxis.z())/CLHEP::degree;
+        double phi = std::acos(SymAxis.x()/std::sin(theta))/CLHEP::degree;
+        theShape = new TGeoPara(dX, dY, dZ, alpha, theta, phi);
     }
     else if (geometryType == "G4Polyhedra") {
         const G4Polyhedra* polyhedra
