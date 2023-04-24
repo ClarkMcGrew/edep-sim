@@ -14,3 +14,4 @@ Makefile
 *_C.*
 *.pcm
 *.png
+*darwin*
