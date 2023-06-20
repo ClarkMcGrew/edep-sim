@@ -58,6 +58,7 @@
 #include <G4Cons.hh>
 #include <G4Hype.hh>
 #include <G4Paraboloid.hh>
+#include <G4GenericTrap.hh>
 
 #include <G4SystemOfUnits.hh>
 #include <G4PhysicalConstants.hh>
@@ -412,6 +413,18 @@ TGeoShape* EDepSim::RootGeometryManager::CreateShape(
         double dy1 = trd->GetYHalfLength1()/CLHEP::mm;
         double dy2 = trd->GetYHalfLength2()/CLHEP::mm;
         theShape = new TGeoTrd2(dx1,dx2,dy1,dy2,dz);
+    }
+    else if (geometryType == "G4GenericTrap") {
+        const G4GenericTrap* trap
+            = dynamic_cast<const G4GenericTrap*>(theSolid);
+        double dz = trap->GetZHalfLength()/CLHEP::mm;
+        double vertices[2*8] = { }; // initialized to zeroes
+        for (int i = 0; i < trap->GetNofVertices(); ++i) {
+            const G4TwoVector& v = trap->GetVertex(i);
+            vertices[2*i] = v.x()/CLHEP::mm;
+            vertices[2*i + 1] = v.y()/CLHEP::mm;
+        }
+        theShape = new TGeoArb8(dz, vertices);
     }
     else if (geometryType == "G4SubtractionSolid") {
         const G4SubtractionSolid* sub
