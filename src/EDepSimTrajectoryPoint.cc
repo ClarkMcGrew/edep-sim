@@ -23,7 +23,7 @@ EDepSim::TrajectoryPoint::TrajectoryPoint()
       fStepStatus(fUndefined),
       fProcessType(fNotDefined), fProcessSubType(0),
       fProcessName("NotDefined"), fPhysVolName("OutofWorld"),
-      fPrevPosition(0,0,0) { }
+      fPrevPosition(0,0,0), fStepMaterial("Default") { }
 
 EDepSim::TrajectoryPoint::TrajectoryPoint(const G4Step* aStep)
     : G4TrajectoryPoint(aStep->GetPostStepPoint()->GetPosition()) {
@@ -38,6 +38,7 @@ EDepSim::TrajectoryPoint::TrajectoryPoint(const G4Step* aStep)
         fPhysVolName == "OutOfWorld";
     }
     fPrevPosition = aStep->GetPreStepPoint()->GetPosition();
+    fStepMaterial = aStep->GetPreStepPoint()->GetMaterial()->GetName();
     // Check if the G4VProcess for the defining process is available.  It
     // isn't available for steps defined by the user, step limits, or some
     // other "bookkeeping" pseudo interactions.
@@ -59,11 +60,14 @@ EDepSim::TrajectoryPoint::TrajectoryPoint(const G4Track* aTrack)
     fStepStatus = fUndefined;
     if (aTrack->GetVolume()) {
         fPhysVolName = aTrack->GetVolume()->GetName();
+        fStepMaterial
+            = aTrack->GetVolume()->GetLogicalVolume()->GetMaterial()->GetName();
     }
     else {
         fPhysVolName == "OutOfWorld";
     }
     fPrevPosition = aTrack->GetPosition();
+
     const G4VProcess* proc = aTrack->GetCreatorProcess();
     if (proc) {
         fProcessType = proc->GetProcessType();
@@ -84,6 +88,7 @@ EDepSim::TrajectoryPoint::TrajectoryPoint(const EDepSim::TrajectoryPoint &right)
     fProcessDeposit = right.fProcessDeposit;
     fPhysVolName = right.fPhysVolName;
     fPrevPosition = right.fPrevPosition;
+    fStepMaterial = right.fStepMaterial;
 }
 
 EDepSim::TrajectoryPoint::~TrajectoryPoint() { }

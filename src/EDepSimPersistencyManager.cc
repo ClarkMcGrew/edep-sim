@@ -54,6 +54,7 @@ EDepSim::PersistencyManager::PersistencyManager()
 // This is called by the G4RunManager during AnalyzeEvent.
 EDepSim::PersistencyManager::~PersistencyManager() {
     ClearTrajectoryBoundaries();
+    ClearTrajectoryBulks();
     delete fPersistencyMessenger;
 }
 
@@ -96,6 +97,11 @@ void EDepSim::PersistencyManager::AddTrajectoryBoundary(const G4String& b) {
     fTrajectoryBoundaries.push_back(bound);
 }
 
+void EDepSim::PersistencyManager::AddTrajectoryBulk(const G4String& b) {
+    //TPRegexp* bulk = new TPRegexp(b.c_str());
+    fTrajectoryBulks.push_back(b);
+}
+
 void EDepSim::PersistencyManager::ClearTrajectoryBoundaries() {
     for (std::vector<TPRegexp*>::iterator r = fTrajectoryBoundaries.begin();
          r != fTrajectoryBoundaries.end();
@@ -105,6 +111,15 @@ void EDepSim::PersistencyManager::ClearTrajectoryBoundaries() {
     fTrajectoryBoundaries.clear();
 }
 
+void EDepSim::PersistencyManager::ClearTrajectoryBulks() {
+    /*for (auto * r fTrajectoryBulks) {
+        delete r;
+    }*/
+    fTrajectoryBulks.clear();
+}
+
+
+//TODO -- Define which Boundaries to save on?
 bool EDepSim::PersistencyManager::SaveTrajectoryBoundary(G4VTrajectory* g4Traj,
                                                     G4StepStatus status,
                                                     G4String currentVolume,
@@ -129,6 +144,43 @@ bool EDepSim::PersistencyManager::SaveTrajectoryBoundary(G4VTrajectory* g4Traj,
             return true;
         }
     }
+
+    //New: Check Bulk
+    /*for (std::vector<TPRegexp*>::iterator r = fTrajectoryBulks.begin();
+         r != fTrajectoryBulks.end();
+         ++r) {*/
+    /*for (auto * r : fTrajectoryBulks) {
+         //std::cout << "Checking " << r->GetPattern() << " " << current << std::endl;
+        // Check if the particle is traveling through a relevant volume.
+        if (r->Match(current)>0 && r->Match(previous)<1) {
+            EDepSimNamedDebug("boundary","Bulk " << current);
+            std::cout << "Saving " << current << std::endl;
+            return true;
+        }
+    }*/
+    return false;
+}
+
+bool EDepSim::PersistencyManager::SaveTrajectoryBulk(G4VTrajectory* g4Traj,
+                                                    //G4StepStatus status,
+                                                    G4String material) {
+    //if (status != fGeomBoundary) return false;
+    std::string particleInfo = ":" + g4Traj->GetParticleName();
+    if (std::abs(g4Traj->GetCharge())<0.1) particleInfo += ":neutral";
+    else particleInfo += ":charged";
+    std::string current = particleInfo + ":" + material;
+    for (const auto r : fTrajectoryBulks) {
+         //std::cout << "Checking " << r->GetPattern() << " " << current << " " << r->Match(current) <<std::endl;
+         //std::cout << "Checking " << r << " " << current <<std::endl;
+        // Check if a watched volume is being traveled through.
+        //if (r->Match(current)>0) {
+        if (r == current) {
+            //std::cout << "\tMatched" << std::endl;
+            EDepSimNamedDebug("bulk","bulk " << current);
+            return true;
+        }
+    }
+
     return false;
 }
 
@@ -499,6 +551,7 @@ void EDepSim::PersistencyManager::CopyTrajectoryPoints(TG4Trajectory& traj,
                               edepPoint->GetMomentum().z());
         point.Process = edepPoint->GetProcessType();
         point.Subprocess = edepPoint->GetProcessSubType();
+        point.Material = edepPoint->GetMaterial();
         traj.Points.push_back(point);
     }
 }
@@ -675,7 +728,9 @@ EDepSim::PersistencyManager::SelectTrajectoryPoints(std::vector<int>& selected,
     // trajectory.
     //////////////////////////////////////////////
     EDepSim::Trajectory* ndTraj = dynamic_cast<EDepSim::Trajectory*>(g4Traj);
-    if (ndTraj->GetSDTotalEnergyDeposit() < 1*eV) return;
+    //std::cout << "Selecting " << lastIndex << " " <<
+    //             ndTraj->GetSDTotalEnergyDeposit() << std::endl;
+    //if (ndTraj->GetSDTotalEnergyDeposit() < 1*eV) return;
 
     // Find the trajectory points where particles are entering and leaving the
     // detectors.
@@ -689,14 +744,19 @@ EDepSim::PersistencyManager::SelectTrajectoryPoints(std::vector<int>& selected,
         // Save the point on a boundary crossing for volumes where we are
         // saving the entry and exit points.
         if (SaveTrajectoryBoundary(g4Traj,edepPoint->GetStepStatus(),
-                                   volumeName,prevVolumeName)) {
+                                   volumeName,prevVolumeName) || 
+            SaveTrajectoryBulk(g4Traj, edepPoint->GetMaterial())
+           ) {
             selected.push_back(tp);
         }
+        //TODO -- Add volume where we save all points?
+        //        for a given particle -- maybe define by material
         prevVolumeName = volumeName;
     }
 
     // Save trajectory points where there is a "big" interaction.
     for (int tp = 1; tp < lastIndex; ++tp) {
+      //std::cout << tp << " processA: " << edepPoint->GetProcessType() << std::endl;
         edepPoint
             = dynamic_cast<EDepSim::TrajectoryPoint*>(g4Traj->GetPoint(tp));
         // Just navigation....
@@ -715,6 +775,7 @@ EDepSim::PersistencyManager::SelectTrajectoryPoints(std::vector<int>& selected,
         // Don't save multiple scattering.
         if (edepPoint->GetProcessType() == fElectromagnetic
             && edepPoint->GetProcessSubType() == fMultipleScattering) continue;
+        //std::cout << "Pushing back" << std::endl;
         selected.push_back(tp);
     }
 

@@ -18,6 +18,7 @@
 #include <G4StoppingPhysics.hh>
 #include <G4HadronElasticPhysics.hh>
 #include <G4NeutronTrackingCut.hh>
+#include <G4StepLimiterPhysics.hh>
 
 #include "QGSP_BERT_Bias.hh"
 #include "G4HadronPhysicsQGSP_BERT_Bias.hh"
@@ -57,5 +58,8 @@ QGSP_BERT_Bias::QGSP_BERT_Bias(G4int ver)
   
   // Neutron tracking cut
   RegisterPhysics( new G4NeutronTrackingCut(ver));
+
+  // Step Limiting
+//  RegisterPhysics(new G4StepLimiterPhysics("STEPLIMIT"));
 
 }
