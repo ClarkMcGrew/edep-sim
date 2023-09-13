@@ -5,17 +5,11 @@
 
 #include "EDepSimRootPersistencyManager.hh"
 #include "EDepSimRootGeometryManager.hh"
-#include "EDepSimUserPrimaryGeneratorAction.hh"
-#include "kinem/EDepSimKinemPassThrough.hh"
-#include "kinem/EDepSimPrimaryGenerator.hh"
-#include "kinem/EDepSimRooTrackerKinematicsGenerator.hh"
-#include "kinem/EDepSimVKinematicsGenerator.hh"
 
 #include <globals.hh>
 
 #include <G4Event.hh>
 #include <G4Run.hh>
-#include <G4RunManager.hh>
 
 #include <TROOT.h>
 #include <TFile.h>
@@ -92,24 +86,6 @@ bool EDepSim::RootPersistencyManager::Store(const G4Event* anEvent) {
     if (save) {
         fOutput->cd();
         fEventTree->Fill();
-
-        auto genAction = dynamic_cast<const EDepSim::UserPrimaryGeneratorAction*>(
-            G4RunManager::GetRunManager()->GetUserPrimaryGeneratorAction());
-
-        for (int i = 0; i < genAction->GetGeneratorCount(); ++i) {
-            auto gen = dynamic_cast<const EDepSim::PrimaryGenerator*>(
-                genAction->GetGenerator(i));
-            auto vkinGen = const_cast<EDepSim::VKinematicsGenerator*>(
-                gen->GetKinematicsGenerator());
-            auto kinGen = dynamic_cast<EDepSim::RooTrackerKinematicsGenerator*>(
-                vkinGen);
-
-            if (kinGen) {
-                EDepSim::KinemPassThrough::GetInstance()->AddEntry(
-                    kinGen, fEventSummary.EventId);
-                break;
-            }
-        }
     }
 
     return true;

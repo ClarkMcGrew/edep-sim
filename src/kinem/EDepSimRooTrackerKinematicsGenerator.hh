@@ -13,12 +13,9 @@ class TBits;
 class TObjString;
 class G4Event;
 
-namespace EDepSim {class KinemPassThrough;}
-
 /// This is an interface to read rooTracker formatted kinematic info. 
 namespace EDepSim {class RooTrackerKinematicsGenerator;}
 class EDepSim::RooTrackerKinematicsGenerator : public EDepSim::VKinematicsGenerator {
-friend class EDepSim::KinemPassThrough;
 public:
     ///  Construct a new generator.  The name is the name of the generator
     ///  (e.g. NEUT, GENIE, &c).  The fileName is the name of the root file

@@ -207,8 +207,7 @@ EDepSim::RooTrackerKinematicsGenerator::GeneratePrimaryVertex(
     // Store current entry in the pass-through obj. N.B. To avoid mismatch
     // and false results call EDepSim::KinemPassThrough::AddEntry(fTreePtr, X)
     // where X is same as X in most recent call to fTreePtr->GetEntry(X).
-    // EDepSim::KinemPassThrough::GetInstance()->AddEntry(fTree, entry);
-    // NOTE: This is now done in EDepSim::RootPersistencyManager
+    EDepSim::KinemPassThrough::GetInstance()->AddEntry(fTree, entry);
     EDepSimVerbose("Use rooTracker event number " << fEvtNum
                  << " (entry #" << entry << " in tree)");
 

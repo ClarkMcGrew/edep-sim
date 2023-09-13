@@ -51,7 +51,6 @@
 /// = 1 and the (N_1 + i)'th entry when X = 2. There is no limit to the
 /// number of input trees.
 namespace EDepSim {class KinemPassThrough;}
-namespace EDepSim {class RooTrackerKinematicsGenerator;}
 class EDepSim::KinemPassThrough {
 public:
     /// for relating input tree pointers to the input file.
@@ -70,8 +69,9 @@ public:
                       const char * inputFileName, 
                       const char* generatorName);
 
-    ///  Copy the current entry of the generator tree
-    bool AddEntry(EDepSim::RooTrackerKinematicsGenerator *kinGen, int outEventId);
+    ///  Copy the i'th entry from segment of the TChain corresponding to the
+    ///  input tree pointed at (in detsim) by inputTreePtr.
+    bool AddEntry(const TTree * inputTreePtr, const int origEntry);
 
     ///  Return the position (entry number) that the most recent entry to be
     ///  copied to the pass-through tree will have.
@@ -146,9 +146,5 @@ private:
     /// Used to fill input file list tree "nEntriesTot" field.  This is the
     /// total number of entries in the input tree.
     int fInputFileEntries;
-
-    // The output EvtNum, which is rewritten from the original generator's
-    // EvtNum to be consistent with the EventId in EDepSimEvents
-    Int_t fEvtNum;
 };
 #endif

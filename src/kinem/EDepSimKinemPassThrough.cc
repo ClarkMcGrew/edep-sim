@@ -1,5 +1,4 @@
 #include "EDepSimKinemPassThrough.hh"
-#include "EDepSimRooTrackerKinematicsGenerator.hh"
 
 #include <TROOT.h>
 #include <TList.h>
@@ -107,7 +106,6 @@ bool EDepSim::KinemPassThrough::AddInputTree(const TTree * inputTreePtr,
     if (fPersistentTree == NULL) {
         EDepSimNamedDebug("PassThru", "Clone the input TTree");
         fPersistentTree = (TTree*) fInputTreeChain->CloneTree(0);
-        fPersistentTree->SetBranchAddress("EvtNum", &fEvtNum);
     }
 
     // Add the input file to the file list so it can be saved in the output
@@ -198,11 +196,7 @@ void EDepSim::KinemPassThrough::CreateInternalTrees() {
 }
 
 bool 
-EDepSim::KinemPassThrough::AddEntry(EDepSim::RooTrackerKinematicsGenerator* kinGen,
-                                    int outEventId) {
-    const TTree* inputTree = kinGen->fTree;
-    int origEntry = kinGen->fEntryVector[kinGen->fNextEntry - 1];
-
+EDepSim::KinemPassThrough::AddEntry(const TTree* inputTree, int origEntry) {
     if (!fPersistentTree) {       
         EDepSimNamedDebug("PassThru", "Cannot copy entry from tree "
                         "since  fPersistentTree is NULL."); 
@@ -227,7 +221,6 @@ EDepSim::KinemPassThrough::AddEntry(EDepSim::RooTrackerKinematicsGenerator* kinG
     // Now fill temp tree with i'th entry from first_event_in_chain of TChain
     // of input trees.
     if (fInputTreeChain->GetEntry(origEntry+first_event_in_chain)) {
-        fEvtNum = outEventId;
         fOrigEntryNumber = origEntry;
         fPersistentTree->Fill();
         fInputKinemTree->Fill(); // Also store book keeping info.
