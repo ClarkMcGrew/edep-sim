@@ -737,17 +737,32 @@ EDepSim::PersistencyManager::SelectTrajectoryPoints(std::vector<int>& selected,
     EDepSim::TrajectoryPoint* edepPoint
         = dynamic_cast<EDepSim::TrajectoryPoint*>(g4Traj->GetPoint(0));
     G4String prevVolumeName = edepPoint->GetPhysVolName();
+    //std::cout << 0 << " " << edepPoint->GetMaterial() << " " <<
+    //             edepPoint->GetPosition().z() << std::endl;
+    bool saved_prev = true;
     for (int tp = 1; tp < lastIndex; ++tp) {
         edepPoint
             = dynamic_cast<EDepSim::TrajectoryPoint*>(g4Traj->GetPoint(tp));
         G4String volumeName = edepPoint->GetPhysVolName();
         // Save the point on a boundary crossing for volumes where we are
         // saving the entry and exit points.
-        if (SaveTrajectoryBoundary(g4Traj,edepPoint->GetStepStatus(),
-                                   volumeName,prevVolumeName) || 
-            SaveTrajectoryBulk(g4Traj, edepPoint->GetMaterial())
-           ) {
-            selected.push_back(tp);
+        //std::cout << tp << " " << edepPoint->GetMaterial() << " " <<
+        //             edepPoint->GetPosition().z() << std::endl;
+        bool save_bulk = SaveTrajectoryBulk(g4Traj, edepPoint->GetMaterial());
+        bool save_bound = SaveTrajectoryBoundary(
+            g4Traj, edepPoint->GetStepStatus(), volumeName,prevVolumeName);
+        //Saving previous point if skipped last time, and this is a good material
+        //Last point was a Transportation step
+        if (save_bulk && !saved_prev) {
+          selected.push_back(tp-1);
+        }
+
+        if (save_bound || save_bulk) {
+          selected.push_back(tp);
+          saved_prev = true;
+        }
+        else {
+          saved_prev = false;
         }
         //TODO -- Add volume where we save all points?
         //        for a given particle -- maybe define by material
