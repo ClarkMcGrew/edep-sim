@@ -81,11 +81,12 @@ bool EDepSim::RootPersistencyManager::Store(const G4Event* anEvent) {
         return false;
     }
 
-    UpdateSummaries(anEvent);
-    
-    fOutput->cd();
+    bool save = UpdateSummaries(anEvent);
 
-    fEventTree->Fill();
+    if (save) {
+        fOutput->cd();
+        fEventTree->Fill();
+    }
 
     return true;
 }
