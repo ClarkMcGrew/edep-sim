@@ -301,6 +301,12 @@ void EDepSim::PersistencyManager::SummarizeTrajectories(
          t != trajectories->GetVector()->end();
          ++t) {
         EDepSim::Trajectory* ndTraj = dynamic_cast<EDepSim::Trajectory*>(*t);
+        /*int pdg = ndTraj->GetPDGEncoding();
+        if (abs(pdg) != 11 && pdg != 22) {
+          std::cout << "Traj: " << pdg << " PID: " <<
+                       ndTraj->GetParentID() << " Save: " <<
+                       ndTraj->SaveTrajectory() << std::endl;
+        }*/
 
         // Check if the trajectory should be saved.
         if (!ndTraj->SaveTrajectory()) continue;
@@ -416,6 +422,29 @@ void EDepSim::PersistencyManager::MarkTrajectories(const G4Event* event) {
                 continue;
             }
         }
+
+        int pid = ndTraj->GetParentID();
+        std::string parentName = "";
+        while (pid != 0) {
+          EDepSim::Trajectory * pTraj = dynamic_cast<EDepSim::Trajectory*>(
+              EDepSim::TrajectoryMap::Get(pid));
+          parentName = pTraj->GetParticleName();
+          //std::cout << pid << " " << parentName << std::endl;
+          pid = pTraj->GetParentID();
+        }
+        //std::cout << "progenitor " << parentName << std::endl;
+
+        bool progenitor_is_nu = (std::find(fNuNames.begin(),
+                                           fNuNames.end(),
+                                           parentName) != fNuNames.end());
+        bool is_had = (std::find(fHadNames.begin(),
+                                 fHadNames.end(),
+                                 particleName) != fHadNames.end());
+        if (progenitor_is_nu && is_had) {
+          //std::cout << "Saving progeny " << particleName << std::endl;
+	  ndTraj->MarkTrajectory(false);
+        }
+
 
         // Don't save the neutrinos
         if (particleName == "anti_nu_e") continue;
@@ -533,7 +562,7 @@ void EDepSim::PersistencyManager::CopyTrajectoryPoints(TG4Trajectory& traj,
     std::sort(selected.begin(),selected.end());
     selected.erase(std::unique(selected.begin(), selected.end()),
                    selected.end());
-
+    //std::cout << "Selected: " << selected.size() << std::endl;
     ////////////////////////////////////
     // Save the trajectories.
     ////////////////////////////////////
@@ -728,7 +757,7 @@ EDepSim::PersistencyManager::SelectTrajectoryPoints(std::vector<int>& selected,
     // trajectory.
     //////////////////////////////////////////////
     EDepSim::Trajectory* ndTraj = dynamic_cast<EDepSim::Trajectory*>(g4Traj);
-    //std::cout << "Selecting " << lastIndex << " " <<
+    //std::cout << "\tSelecting " << lastIndex << " " <<
     //             ndTraj->GetSDTotalEnergyDeposit() << std::endl;
     //if (ndTraj->GetSDTotalEnergyDeposit() < 1*eV) return;
 
@@ -737,6 +766,11 @@ EDepSim::PersistencyManager::SelectTrajectoryPoints(std::vector<int>& selected,
     EDepSim::TrajectoryPoint* edepPoint
         = dynamic_cast<EDepSim::TrajectoryPoint*>(g4Traj->GetPoint(0));
     G4String prevVolumeName = edepPoint->GetPhysVolName();
+        //std::cout << 0 << " " << edepPoint->GetMaterial() << " " <<
+        //             edepPoint->GetPosition().x() << " " <<
+        //             edepPoint->GetPosition().y() << " " <<
+        //             edepPoint->GetPosition().z() << " " <<
+        //             edepPoint->GetProcessType() << " _ _ _" << std::endl;
     //std::cout << 0 << " " << edepPoint->GetMaterial() << " " <<
     //             edepPoint->GetPosition().z() << std::endl;
     bool saved_prev = true;
@@ -746,11 +780,15 @@ EDepSim::PersistencyManager::SelectTrajectoryPoints(std::vector<int>& selected,
         G4String volumeName = edepPoint->GetPhysVolName();
         // Save the point on a boundary crossing for volumes where we are
         // saving the entry and exit points.
-        //std::cout << tp << " " << edepPoint->GetMaterial() << " " <<
-        //             edepPoint->GetPosition().z() << std::endl;
         bool save_bulk = SaveTrajectoryBulk(g4Traj, edepPoint->GetMaterial());
         bool save_bound = SaveTrajectoryBoundary(
             g4Traj, edepPoint->GetStepStatus(), volumeName,prevVolumeName);
+        //std::cout << tp << " " << edepPoint->GetMaterial() << " " <<
+        //             edepPoint->GetPosition().x() << " " <<
+        //             edepPoint->GetPosition().y() << " " <<
+        //             edepPoint->GetPosition().z() << " " <<
+        //             edepPoint->GetProcessType() << " " << save_bulk << " " <<
+        //             save_bound << " " << saved_prev << std::endl;
         //Saving previous point if skipped last time, and this is a good material
         //Last point was a Transportation step
         if (save_bulk && !saved_prev) {
@@ -768,6 +806,13 @@ EDepSim::PersistencyManager::SelectTrajectoryPoints(std::vector<int>& selected,
         //        for a given particle -- maybe define by material
         prevVolumeName = volumeName;
     }
+    //edepPoint
+    //    = dynamic_cast<EDepSim::TrajectoryPoint*>(g4Traj->GetPoint(lastIndex));
+    //    std::cout << lastIndex << " " << edepPoint->GetMaterial() << " " <<
+    //                 edepPoint->GetPosition().x() << " " <<
+    //                 edepPoint->GetPosition().y() << " " <<
+    //                 edepPoint->GetPosition().z() << " " <<
+    //                 edepPoint->GetProcessType() << " _ _ _" << std::endl;
 
     // Save trajectory points where there is a "big" interaction.
     for (int tp = 1; tp < lastIndex; ++tp) {

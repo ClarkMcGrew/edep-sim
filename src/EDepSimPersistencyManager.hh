@@ -331,5 +331,19 @@ private:
 
     // A pointer to the messenger.
     EDepSim::PersistencyMessenger* fPersistencyMessenger;
+
+    std::vector<std::string> fNuNames = {
+      "anti_nu_e",
+      "anti_nu_mu",
+      "anti_nu_tau",
+      "nu_e",
+      "nu_mu",
+      "nu_tau",
+      "pi+"
+    };
+    std::vector<std::string> fHadNames = {
+      "pi+", "pi-", "proton",
+      "neutron"
+    };
 };
 #endif
