@@ -325,5 +325,9 @@ private:
 
     // A pointer to the messenger.
     EDepSim::PersistencyMessenger* fPersistencyMessenger;
+
+    /// The output event ID, starting sequentially from zero.
+    /// This does not correspond to the input event IDs from e.g. GENIE
+    int fOutEventId;
 };
 #endif
