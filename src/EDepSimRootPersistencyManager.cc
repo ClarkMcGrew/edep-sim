@@ -105,8 +105,7 @@ bool EDepSim::RootPersistencyManager::Store(const G4Event* anEvent) {
                 vkinGen);
 
             if (kinGen) {
-                EDepSim::KinemPassThrough::GetInstance()->AddEntry(
-                    kinGen, fEventSummary.EventId);
+                EDepSim::KinemPassThrough::GetInstance()->AddEntry(kinGen);
                 break;
             }
         }
