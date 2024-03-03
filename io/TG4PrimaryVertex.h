@@ -13,6 +13,53 @@ class TG4PrimaryParticle;
 namespace EDepSim {class PersistencyManager;}
 typedef std::vector<TG4PrimaryVertex> TG4PrimaryVertexContainer;
 
+/// A class to save a G4 primary particle into a root output file without
+/// linking to geant.
+class TG4PrimaryParticle : public TObject {
+    friend class EDepSim::PersistencyManager;
+public:
+    TG4PrimaryParticle(void)
+        : TrackId(-1), PDGCode(0), Momentum(0,0,0,0) {}
+    virtual ~TG4PrimaryParticle();
+
+    /// The Track Id of the matching trajectory.  Particles that are not
+    /// tracked will have negative track id values.
+    int GetTrackId() const {return TrackId;}
+
+    /// The name of the particle.
+    const char* GetName() const {return Name.c_str();}
+
+    /// The PDG code of the particle.
+    int GetPDGCode() const {return PDGCode;}
+
+    /// The initial momentum of the particle
+    const TLorentzVector& GetMomentum() const {return Momentum;}
+
+#if defined(EDEPSIM_USE_PUBLIC_FIELDS)&&!defined(EDEPSIM_FORCE_PRIVATE_FIELDS)&&!defined(__CINT__)
+public:
+#ifdef EDEPSIM_WARN_PUBLIC_FIELDS
+#warning Using deprecated public fields.  Please consider using the accessor.  For example, to access PrimaryId, use GetPrimaryId().
+#endif
+#else
+private:
+#endif
+
+    /// The Track Id of the matching trajectory.  Particles that are not
+    /// tracked will have negative track id values.
+    Int_t TrackId;
+
+    /// The name of the particle.
+    std::string Name;
+
+    /// The PDG code of the particle.
+    Int_t PDGCode;
+
+    /// The initial momentum of the particle
+    TLorentzVector Momentum;
+
+    ClassDef(TG4PrimaryParticle,1);
+};
+
 /// A class to save a G4 primary vertex into a root output file without linking
 /// to geant.
 class TG4PrimaryVertex : public TObject {
@@ -110,52 +157,5 @@ private:
     Float_t Probability;
 
     ClassDef(TG4PrimaryVertex,2)
-};
-
-/// A class to save a G4 primary particle into a root output file without
-/// linking to geant.
-class TG4PrimaryParticle : public TObject {
-    friend class EDepSim::PersistencyManager;
-public:
-    TG4PrimaryParticle(void)
-        : TrackId(-1), PDGCode(0), Momentum(0,0,0,0) {}
-    virtual ~TG4PrimaryParticle();
-
-    /// The Track Id of the matching trajectory.  Particles that are not
-    /// tracked will have negative track id values.
-    int GetTrackId() const {return TrackId;}
-
-    /// The name of the particle.
-    const char* GetName() const {return Name.c_str();}
-    
-    /// The PDG code of the particle.
-    int GetPDGCode() const {return PDGCode;}
-
-    /// The initial momentum of the particle
-    const TLorentzVector& GetMomentum() const {return Momentum;}
-
-#if defined(EDEPSIM_USE_PUBLIC_FIELDS)&&!defined(EDEPSIM_FORCE_PRIVATE_FIELDS)&&!defined(__CINT__)
-public:
-#ifdef EDEPSIM_WARN_PUBLIC_FIELDS
-#warning Using deprecated public fields.  Please consider using the accessor.  For example, to access PrimaryId, use GetPrimaryId().
-#endif
-#else
-private:
-#endif
-    
-    /// The Track Id of the matching trajectory.  Particles that are not
-    /// tracked will have negative track id values.
-    Int_t TrackId;
-
-    /// The name of the particle.
-    std::string Name;
-    
-    /// The PDG code of the particle.
-    Int_t PDGCode;
-
-    /// The initial momentum of the particle
-    TLorentzVector Momentum;
-
-    ClassDef(TG4PrimaryParticle,1);
 };
 #endif
