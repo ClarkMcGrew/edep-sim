@@ -13,17 +13,21 @@ EDepSim::ParticleBombGenerator::ParticleBombGenerator(
 {
   auto cfg = YAML::LoadFile(cfg_file);
   int seed = cfg["SEED"].as<int>(-1);
-  verbose = cfg["Debug"].as<bool>(verbose);
+  verbose  = cfg["Debug"].as<bool>(verbose);
 
   _generator.Seed(seed);
   _generator.Debug(verbose);
   
   for (auto const &item: cfg) {
-    if (item.first.as<std::string>() == "SEED") continue;
+    if (item.first.as<std::string>() == "SEED" ) continue;
     if (item.first.as<std::string>() == "Debug") continue;
 
     auto pars = _parse_interaction(item.second);
-    _generator.Add(pars);
+    
+    if(_generator.Add(pars)) {
+      std::cerr << "[ParticleBombGenerator] error detected while configuring a generator" << std::endl;
+      throw std::exception();
+    }
   }
 }
 
@@ -34,6 +38,10 @@ EDepSim::VKinematicsGenerator::GeneratorStatus
 EDepSim::ParticleBombGenerator::GeneratePrimaryVertex(
     G4Event *evt, const G4LorentzVector& /* position */) {
 
+  if (!(_generator.Configured())) {
+      std::cerr << "[ParticleBombGenerator] the generator has not been configured" << std::endl;
+      throw std::exception();
+  }
   auto bombs = _generator.Generate();
   for (auto const &bomb : bombs) {
 
@@ -67,6 +75,16 @@ EDepSim::ParticleBombGenerator::_parse_particle(const YAML::Node &node)
 
   pars.kerange[0] = node["KERange"][0].as<double>();
   pars.kerange[1] = node["KERange"][1].as<double>();
+
+  if(node["PhiRange"]) {
+    pars.phi_range[0] = node["PhiRange"][0].as<double>(0.);
+    pars.phi_range[1] = node["PhiRange"][1].as<double>(2*M_PI);
+  }
+
+  if(node["ThetaRange"]) {
+    pars.theta_range[0] = node["ThetaRange"][0].as<double>(0.);
+    pars.theta_range[1] = node["ThetaRange"][1].as<double>(M_PI);
+  }
 
   pars.use_mom = node["UseMom"].as<bool>(false);
   pars.weight = node["Weight"].as<double>(1.);
