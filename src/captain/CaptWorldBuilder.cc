@@ -28,7 +28,7 @@ private:
     G4UIcmdWithADoubleAndUnit* fHeightCMD;
 
 public:
-    CaptWorldMessenger(CaptWorldBuilder* c) 
+    CaptWorldMessenger(CaptWorldBuilder* c)
         : EDepSim::BuilderMessenger(c,"Control the world geometry."),
           fBuilder(c) {
         fLengthCMD
@@ -90,27 +90,27 @@ G4LogicalVolume *CaptWorldBuilder::GetPiece(void) {
 
     G4LogicalVolume *logVolume
 	= new G4LogicalVolume(new G4Box(GetName(),
-                                        fLength/2,  
-                                        fWidth/2, 
-                                        fHeight/2), 
+                                        fLength/2,
+                                        fWidth/2,
+                                        fHeight/2),
                               FindMaterial("Air"),
                               GetName());
-    logVolume->SetVisAttributes(G4VisAttributes::Invisible);
-    
+    logVolume->SetVisAttributes(G4VisAttributes::GetInvisible());
+
     double floorThickness = 10*CLHEP::cm;
     G4LogicalVolume *logFloor
 	= new G4LogicalVolume(new G4Box(GetName()+"/Floor",
                                         fLength/2,
                                         fWidth/2,
-                                        floorThickness/2), 
+                                        floorThickness/2),
                               FindMaterial("Cement"),
                               GetName()+"/Floor");
-    logFloor->SetVisAttributes(G4VisAttributes::Invisible);
+    logFloor->SetVisAttributes(G4VisAttributes::GetInvisible());
 
     CaptCryostatBuilder& cryo
         = Get<CaptCryostatBuilder>("Cryostat");
     G4LogicalVolume* logCryostat = cryo.GetPiece();
-    
+
     G4ThreeVector cryoCenter = G4ThreeVector(0,0,0)
         - cryo.GetOffset() - cryo.GetTPCOffset();
 

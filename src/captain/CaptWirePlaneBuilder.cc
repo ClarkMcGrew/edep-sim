@@ -26,10 +26,10 @@ private:
     G4UIcmdWithADoubleAndUnit* fApothemCMD;
     G4UIcmdWithADoubleAndUnit* fSpacingCMD;
     G4UIcmdWithAnInteger* fMaxWireCountCMD;
-   
-    
+
+
 public:
-    CaptWirePlaneMessenger(CaptWirePlaneBuilder* c) 
+    CaptWirePlaneMessenger(CaptWirePlaneBuilder* c)
         : EDepSim::BuilderMessenger(c,"Control the drift region geometry."),
           fBuilder(c) {
 
@@ -79,7 +79,7 @@ public:
 
 void CaptWirePlaneBuilder::Init(void) {
     SetMessenger(new CaptWirePlaneMessenger(this));
-    SetApothem(1000*mm); 
+    SetApothem(1000*mm);
     SetSpacing(3*mm);
     SetHeight(1*mm);
     SetMaxWireCount(0);   // default value used to see if limit is set.
@@ -123,7 +123,7 @@ G4LogicalVolume *CaptWirePlaneBuilder::GetPiece(void) {
         wires = GetMaxWireCount();
     }
 
-    EDepSimLog("Construct " << GetName() 
+    EDepSimLog("Construct " << GetName()
             << " with " << wires << " wires"
             << "  (spacing: " << GetSpacing()/CLHEP::mm << " mm)");
 
@@ -137,7 +137,7 @@ G4LogicalVolume *CaptWirePlaneBuilder::GetPiece(void) {
 
     // The core needs to be rotated into the wire volume.  The core is not
     // used inside the geometry.
-    G4RotationMatrix* coreRotation = new G4RotationMatrix(); 
+    G4RotationMatrix* coreRotation = new G4RotationMatrix();
     coreRotation->rotateX(90*CLHEP::degree);
 
     // The offset of the first wire.
@@ -152,14 +152,14 @@ G4LogicalVolume *CaptWirePlaneBuilder::GetPiece(void) {
         // wire box.
         wireLength -= 2*GetSpacing()*std::cos(30*CLHEP::degree);
 
-        G4LogicalVolume* logWire 
+        G4LogicalVolume* logWire
             = new G4LogicalVolume(new G4Box(GetName()+"/Wire",
                                             GetSpacing()/2,
                                             wireLength/2,
                                             GetHeight()/2),
                                   FindMaterial("Argon_Liquid"),
                                   GetName()+"/Wire");
-        logWire->SetVisAttributes(G4VisAttributes::Invisible);
+        logWire->SetVisAttributes(G4VisAttributes::GetInvisible());
 
         if (GetSensitiveDetector()) {
             logWire->SetSensitiveDetector(GetSensitiveDetector());
@@ -174,7 +174,7 @@ G4LogicalVolume *CaptWirePlaneBuilder::GetPiece(void) {
                           0,                             // Copy number (zero)
                           false);                         // Check overlaps.
 
-        G4LogicalVolume* logCore 
+        G4LogicalVolume* logCore
             = new G4LogicalVolume(new G4Tubs(GetName()+"/Wire/Core",
                                              0.0, wireDiameter/2.0,
                                              wireLength/2,
@@ -183,7 +183,7 @@ G4LogicalVolume *CaptWirePlaneBuilder::GetPiece(void) {
                                   GetName()+"/Wire/Core");
         // Draw this as if it was a wire plane.
         logCore->SetVisAttributes(GetColor(logCore));
-    
+
         new G4PVPlacement(coreRotation,         // rotation.
                           G4ThreeVector(0,0,0), // position
                           logCore,              // logical volume
@@ -193,7 +193,7 @@ G4LogicalVolume *CaptWirePlaneBuilder::GetPiece(void) {
                           0,                    // Copy number (zero)
                           false);               // Check overlaps.
 
-        
+
 
     }
 
