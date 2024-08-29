@@ -69,7 +69,8 @@ fi
 ___edep_target () {
     target="edep"
     compiler=gcc
-    target="${target}-${compiler}-$(cc -dumpversion)-$(cc -dumpmachine)"
+    version=$(geant4-config --version)
+    target="${target}-g4.${version}-${compiler}-$(cc -dumpversion)-$(cc -dumpmachine)"
     echo $target
 }
 
