@@ -21,32 +21,33 @@
 
 #include <G4ProcessTable.hh>
 
+#include <G4UnitsTable.hh>
 #include <G4SystemOfUnits.hh>
 
 #include <unistd.h>
 
-EDepSim::PhysicsList::PhysicsList(G4String physName) 
+EDepSim::PhysicsList::PhysicsList(G4String physName)
     : G4VModularPhysicsList() {
     G4LossTableManager::Instance();
     defaultCutValue  = 1.*mm;
     fCutForGamma     = defaultCutValue;
     fCutForElectron  = defaultCutValue;
     fCutForPositron  = defaultCutValue;
-    
+
     fMessenger = new EDepSim::PhysicsListMessenger(this);
 
     SetVerboseLevel(1);
 
     G4PhysListFactory factory;
     G4VModularPhysicsList* phys = NULL;
-    
+
     // Check to see if the physics list has been over ridden from the
     // environment variable PHYSLIST
     char* list = getenv("PHYSLIST");
     if (list) {
         phys = factory.ReferencePhysList();
     }
-    
+
     // Check if a list name was provided on the command line.  It usually is
     // not provided.
     if (!phys && physName.size() > 1
@@ -118,4 +119,3 @@ void EDepSim::PhysicsList::SetCutForPositron(G4double cut) {
 void EDepSim::PhysicsList::SetIonizationModel(bool b) {
     fExtra->SetIonizationModel(b);
 }
-
