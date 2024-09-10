@@ -3,11 +3,12 @@
 # Read almost every field in the event tree.
 #
 
-from __future__ import print_function
 import glob, os, re, sys, getopt
-from ROOT import *
-gSystem.Load("libedepsim_io.so")
-from ROOT import TG4Event
+
+import ROOT
+
+# Load the EDepSim IO library.
+ROOT.gSystem.Load("libedepsim_io.so")
 
 # Print the fields in a TG4PrimaryParticle object
 def printPrimaryParticle(depth, primaryParticle):
@@ -102,14 +103,14 @@ def main(argv=None):
         argv = sys.argv
 
     # The input file is generated in a previous test (100TestTree.sh).
-    inputFile=TFile("100TestTree.root")
+    inputFile=ROOT.TFile("100TestTree.root")
 
     # Get the input tree out of the file.
     inputTree=inputFile.Get("EDepSimEvents")
     print("Class:",inputTree.ClassName())
 
-    # Attach a brach to the events.
-    event = TG4Event()
+    # Attach a branch to the events.
+    event = ROOT.TG4Event()
     inputTree.SetBranchAddress("Event",event)
 
     # Read all of the events.
