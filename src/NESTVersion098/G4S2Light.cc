@@ -63,7 +63,7 @@ G4double tau1[100], tau3[100], MolarMass[100], ConvertEff[100];
 G4double GetGasElectronDriftSpeed(G4double efieldinput,G4double density);
 G4double GetLiquidElectronDriftSpeed(double T, double F, G4bool M, G4int Z);
 
-G4S2Light::G4S2Light(const G4String& processName, 
+G4S2Light::G4S2Light(const G4String& processName,
 		           G4ProcessType type)
       : G4VRestDiscreteProcess(processName, type)
 {
@@ -100,7 +100,7 @@ G4S2Light::PostStepDoIt(const G4Track& aTrack, const G4Step& aStep)
 	  aParticleChange.ProposeTrackStatus(fStopAndKill);
           return G4VRestDiscreteProcess::PostStepDoIt(aTrack, aStep);
 	}
-	G4MaterialPropertiesTable* aMaterialPropertiesTable = 
+	G4MaterialPropertiesTable* aMaterialPropertiesTable =
 	  aMaterial->GetMaterialPropertiesTable();
 	if ( !aMaterialPropertiesTable ) {
 	  aParticleChange.ProposeTrackStatus(fStopAndKill);
@@ -108,14 +108,14 @@ G4S2Light::PostStepDoIt(const G4Track& aTrack, const G4Step& aStep)
 	}
 	const G4ElementVector* theElementVector =
 	  aMaterial->GetElementVector();
-	G4Element* Element = (*theElementVector)[0]; G4int z1;
+	const G4Element* Element = (*theElementVector)[0]; G4int z1;
 	if ( Element ) z1 = (G4int)(Element->GetZ()); else z1 = -1;
 	G4double z_anode = BORDER + GASGAP;
 	G4double z_start = BORDER;
 	//if(luxManager->GetGasRun()) z_start=GAT;
 	tau1[54] = G4RandGauss::shoot(5.18*CLHEP::ns,1.55*CLHEP::ns);
         tau3[54] = G4RandGauss::shoot(100.1*CLHEP::ns,7.9*CLHEP::ns);
-	
+
 	G4StepPoint* pPreStepPoint = aStep.GetPreStepPoint();
 	G4StepPoint* pPostStepPoint = aStep.GetPostStepPoint();
         G4ThreeVector x0 = pPreStepPoint->GetPosition();
@@ -124,7 +124,7 @@ G4S2Light::PostStepDoIt(const G4Track& aTrack, const G4Step& aStep)
         G4double Density = aMaterial->GetDensity()/(CLHEP::g/CLHEP::cm3);
 	G4double nDensity = (Density/MolarMass[z1])*AVO;
 	G4int Phase = aMaterial->GetState();
-	
+
 	if ( Phase == kStateLiquid && x0[2] > (GAT-5*CLHEP::mm) && GAT != 0 ) {
 	  aParticleChange.ProposeEnergy(GetLiquidElectronDriftSpeed(
 	  aMaterial->GetTemperature(),fabs(aMaterialPropertiesTable->
@@ -132,7 +132,7 @@ G4S2Light::PostStepDoIt(const G4Track& aTrack, const G4Step& aStep)
 	  aParticleChange.ProposeWeight(2.0);
 	  return G4VRestDiscreteProcess::PostStepDoIt(aTrack, aStep);
 	}
-	
+
 	// absorb the electron if you are in liquid and there is non-perfect
 	// purity, you turned S2 off with YieldFactor, the e- is above the
 	// anode in the gas already, or it's not present in a noble element
@@ -147,7 +147,7 @@ G4S2Light::PostStepDoIt(const G4Track& aTrack, const G4Step& aStep)
         }
 	if ( x0[2] <= z_start && x1[2] <= z_start )
 	  return G4VRestDiscreteProcess::PostStepDoIt(aTrack, aStep);
-	
+
 	G4double ElectricField;
 	if(!WIN && !TOP && !ANE && !SRF && !GAT && !CTH && !BOT && !PMT)
 	  ElectricField = aMaterialPropertiesTable->
@@ -155,9 +155,9 @@ G4S2Light::PostStepDoIt(const G4Track& aTrack, const G4Step& aStep)
 	else
 	  ElectricField = aMaterialPropertiesTable->
 	    GetConstProperty("ELECTRICFIELDANODE");
-        ElectricField = 
+        ElectricField =
             fabs(ElectricField/(CLHEP::kilovolt/CLHEP::cm));
-	
+
 	if ( Density > 0. && Phase == kStateGas && (x0[2] > z_start ||
 	     x1[2] > z_start) && aParticleChange.GetWeight() >= 1.0 ) {
 	  aParticleChange.ProposeWeight(0);
@@ -165,7 +165,7 @@ G4S2Light::PostStepDoIt(const G4Track& aTrack, const G4Step& aStep)
 	    0.1638*ElectricField-0.0063782*pow(ElectricField,2.);
 	  if ( ElectricField > 10.0 ) ExtractEff = 1.00;
 	  if ( ElectricField <= 0.0 ) ExtractEff = 0.00;
-	  if ( ExtractEff < 0 ) ExtractEff = 0; 
+	  if ( ExtractEff < 0 ) ExtractEff = 0;
 	  if ( ExtractEff > 1 ) ExtractEff = 1;
 	  //if ( luxManager->GetGasRun() ) ExtractEff = 1;
 	  if (G4UniformRand() > ExtractEff || !ElectricField ||
@@ -179,7 +179,7 @@ G4S2Light::PostStepDoIt(const G4Track& aTrack, const G4Step& aStep)
 	    aParticleChange.ProposeEnergy(eDrift);
 	  }
 	}
-	
+
 	if ( G4UniformRand () >= QE_EFF )
           return G4VRestDiscreteProcess::PostStepDoIt(aTrack, aStep);
 	aParticleChange.SetNumberOfSecondaries(G4int(floor(YieldFactor)));
@@ -188,11 +188,11 @@ G4S2Light::PostStepDoIt(const G4Track& aTrack, const G4Step& aStep)
 		 << "NumberOfSecondaries = "
 		 << aParticleChange.GetNumberOfSecondaries() << G4endl;
 	}
-	
+
 	// start particle creation
 	G4double sampledEnergy;
 	G4DynamicParticle* aQuantum;
-	
+
 	// Generate random direction
 	G4double cost = 1. - 2.*G4UniformRand();
 	G4double sint = std::sqrt((1.-cost)*(1.+cost));
@@ -201,10 +201,10 @@ G4S2Light::PostStepDoIt(const G4Track& aTrack, const G4Step& aStep)
 	G4double cosp = std::cos(phi);
 	G4double px = sint*cosp; G4double py = sint*sinp;
 	G4double pz = cost;
-	
+
 	// Create momentum direction vector
 	G4ParticleMomentum photonMomentum(px, py, pz);
-	
+
 	// Determine polarization of new photon
 	G4double sx = cost*cosp; G4double sy = cost*sinp;
 	G4double sz = -sint;
@@ -214,42 +214,42 @@ G4S2Light::PostStepDoIt(const G4Track& aTrack, const G4Step& aStep)
 	sinp = std::sin(phi); cosp = std::cos(phi);
 	photonPolarization = cosp * photonPolarization + sinp * perp;
 	photonPolarization = photonPolarization.unit();
-	
+
 	// Generate a new photon:
 	sampledEnergy = G4RandGauss::shoot(E_eV[z1]*CLHEP::eV,0.2*CLHEP::eV);
 	if ( z1==54 && sampledEnergy>8.5*CLHEP::eV ) sampledEnergy = 8.5*CLHEP::eV;
-	aQuantum = 
+	aQuantum =
 	  new G4DynamicParticle(G4OpticalPhoton::OpticalPhoton(),
 				photonMomentum);
 	aQuantum->SetPolarization(photonPolarization.x(),
 				  photonPolarization.y(),
 				  photonPolarization.z());
-	
+
 	//assign energy to make particle real
 	aQuantum->SetKineticEnergy(sampledEnergy);
 	if (verboseLevel>1)
 	  G4cout << "sampledEnergy = " << sampledEnergy << G4endl;
-	
+
 	// electroluminesence emission time distribution
-	G4double aSecondaryTime = t1, 
+	G4double aSecondaryTime = t1,
 	  SingTripRatio=.1; //guess: revisit
 	if(G4UniformRand()<SingTripRatio/(1+SingTripRatio))
 	  aSecondaryTime -= tau1[z1]*log(G4UniformRand());
-	else aSecondaryTime -= 
+	else aSecondaryTime -=
 	       tau3[z1]*log(G4UniformRand());
-	
+
 	//the position of the new secondary particle
 	if ( x1[2] < BORDER + GASGAP / 2. )
 	  x1[2] += 0.001*CLHEP::mm;
 	if ( x1[2] > BORDER + GASGAP / 2. )
 	  x1[2] -= 0.001*CLHEP::mm;
 	G4ThreeVector aSecondaryPosition = x1;
-	
+
 	// GEANT4 business: stuff you need to make a new track
-	G4Track* aSecondaryTrack = 
+	G4Track* aSecondaryTrack =
 	  new G4Track(aQuantum,aSecondaryTime,aSecondaryPosition);
 	aParticleChange.AddSecondary(aSecondaryTrack);
-	
+
 	return G4VRestDiscreteProcess::PostStepDoIt(aTrack, aStep);
 }
 
@@ -262,7 +262,7 @@ G4double G4S2Light::GetMeanFreePath(const G4Track& aTrack,
   const G4Material* aMaterial = aTrack.GetMaterial();
   if ( !aMaterial ) return DBL_MIN;
   const G4ElementVector* theElementVector = aMaterial->GetElementVector();
-  G4Element* Element = (*theElementVector)[0]; G4int z1;
+  const G4Element* Element = (*theElementVector)[0]; G4int z1;
   if ( Element ) z1 = (G4int)(Element->GetZ()); else z1 = -1;
   if ( (z1==2 || z1==10 || z1==18 || z1==36 || z1==54) &&
        aMaterial->GetState() == kStateLiquid ) {
@@ -279,13 +279,13 @@ G4double G4S2Light::GetMeanFreePath(const G4Track& aTrack,
     G4double ElectricField = fabs(aMaterialPropertiesTable->
 				  GetConstProperty("ELECTRICFIELDANODE"));
     ElectricField = ElectricField/(CLHEP::volt/CLHEP::cm);
-    G4double mfp, nDensity = 
+    G4double mfp, nDensity =
       (aMaterial->GetDensity()/(CLHEP::g/CLHEP::cm3))/(MolarMass[z1])*AVO;
     if ( (1/E_eV[z1])*(ElectricField/nDensity)*1e17 == thr[z1] ) {
         mfp = 0*CLHEP::cm;
     }
     else { //denominator of formula OK
-      mfp = 1 / 
+      mfp = 1 /
 	(nDensity*1e-17*((1/E_eV[z1])*(ElectricField/nDensity)*1e17-thr[z1]));
     }
     //equation 8 within Monteiro's paper JINST 2007 (where 140=1/7.14.. eV)
@@ -319,9 +319,9 @@ G4double GetGasElectronDriftSpeed(G4double efieldinput, G4double density)
   double gas2a=-592981.611357632,gas2b=-90261.9643716643,
     gas2c=-4911.83213989609,gas2d=-115.157545835228, gas2f=-0.990440443390298,
     gas2g=1008.30998933704,gas2h=223.711221224885;
-  
+
   G4double edrift=0, gasdep=efieldinput/density, gas1fix=0, gas2fix=0;
-  
+
   if ( gasdep < 1.2e-19 && gasdep >= 0 ) edrift = 4e22*gasdep;
   if ( gasdep < 3.5e-19 && gasdep >= 1.2e-19 ) {
     gas1fix = gas1b*pow(gasdep,gas1c); edrift = gas1a*pow(gasdep,gas1fix);
@@ -332,6 +332,6 @@ G4double GetGasElectronDriftSpeed(G4double efieldinput, G4double density)
 	      gas2f*pow(gas2fix,4))*(gas2h*exp(gasdep));
   }
   if ( gasdep >= 3.8e-17 ) edrift = 6e21*gasdep-32279;
-  
+
   return 0.5*EMASS*pow(edrift*(CLHEP::cm/CLHEP::s),2.);
 }

@@ -136,7 +136,7 @@ G4S1Light::PostStepDoIt(const G4Track& aTrack, const G4Step& aStep)
         // scintillating material, and save Z for later L calculation, or
         // return if no valid scintillators are found on this step, which is
         // protection against G4Exception or seg. fault/violation
-        G4Element *ElementA = NULL, *ElementB = NULL;
+        const G4Element *ElementA = NULL, *ElementB = NULL;
         if (aMaterial && aMaterial->GetMaterialPropertiesTable()) {
           const G4ElementVector* theElementVector1 =
             aMaterial->GetElementVector();
