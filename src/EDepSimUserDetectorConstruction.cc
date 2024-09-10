@@ -15,6 +15,8 @@
 
 #include "EDepSimLog.hh"
 
+#include <G4Version.hh>
+
 #include <G4ios.hh>
 #include <G4NistManager.hh>
 #include <G4StableIsotopes.hh>
@@ -568,8 +570,13 @@ void EDepSim::UserDetectorConstruction::DefineMaterials() {
 
     // Set up liquid argon for NEST.
     G4MaterialPropertiesTable *LArMatProps = new G4MaterialPropertiesTable();
+#if G4VERSION_NUMBER < 1100
     LArMatProps->AddConstProperty("ELECTRICFIELD",500*CLHEP::volt/CLHEP::cm);
     LArMatProps->AddConstProperty("TOTALNUM_INT_SITES",-1);
+#else
+    LArMatProps->AddConstProperty("ELECTRICFIELD",500*CLHEP::volt/CLHEP::cm,true);
+    LArMatProps->AddConstProperty("TOTALNUM_INT_SITES",-1,true);
+#endif
     LAr->SetMaterialPropertiesTable(LArMatProps);
 
     geoMan->SetDrawAtt(LAr,kCyan-9,0.1);
