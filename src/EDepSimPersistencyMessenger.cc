@@ -59,6 +59,12 @@ EDepSim::PersistencyMessenger::PersistencyMessenger(
         "  True: Save all prim. part. trajectories.\n"
         "  False: Save prim. that ultimately deposit energy in SD.");
 
+    fRequireEventsWithHitsCMD
+        = new G4UIcmdWithABool("/edep/db/set/requireEventsWithHits", this);
+    fRequireEventsWithHitsCMD->SetGuidance(
+        "If true, don't save primaries/trajectories for events that\n"
+        "  have no hits in sensitive detectors");
+
     fTrajectoryPointAccuracyCMD
         = new G4UIcmdWithADoubleAndUnit("/edep/db/set/trajectoryAccuracy", this);
     fTrajectoryPointAccuracyCMD->SetGuidance(
@@ -143,6 +149,10 @@ void EDepSim::PersistencyMessenger::SetNewValue(G4UIcommand* command,
         fPersistencyManager->SetSaveAllPrimaryTrajectories(
             fSaveAllPrimaryTrajectoriesCMD->GetNewBoolValue(newValue));
     }
+    else if (command == fRequireEventsWithHitsCMD) {
+        fPersistencyManager->SetRequireEventsWithHits(
+            fRequireEventsWithHitsCMD->GetNewBoolValue(newValue));
+    }
     else if (command == fTrajectoryPointAccuracyCMD) {
         fPersistencyManager->SetTrajectoryPointAccuracy(
             fTrajectoryPointAccuracyCMD->GetNewDoubleValue(newValue));
@@ -185,6 +195,10 @@ G4String EDepSim::PersistencyMessenger::GetCurrentValue(G4UIcommand * command) {
     else if (command==fSaveAllPrimaryTrajectoriesCMD) {
         currentValue = fSaveAllPrimaryTrajectoriesCMD->ConvertToString(
             fPersistencyManager->GetSaveAllPrimaryTrajectories());
+    }
+    else if (command==fRequireEventsWithHitsCMD) {
+        currentValue = fRequireEventsWithHitsCMD->ConvertToString(
+            fPersistencyManager->GetRequireEventsWithHits());
     }
     else if (command==fTrajectoryPointAccuracyCMD) {
         currentValue = fTrajectoryPointAccuracyCMD->ConvertToString(

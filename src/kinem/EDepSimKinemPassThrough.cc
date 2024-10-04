@@ -1,4 +1,5 @@
 #include "EDepSimKinemPassThrough.hh"
+#include "EDepSimRooTrackerKinematicsGenerator.hh"
 
 #include <TROOT.h>
 #include <TList.h>
@@ -196,7 +197,10 @@ void EDepSim::KinemPassThrough::CreateInternalTrees() {
 }
 
 bool 
-EDepSim::KinemPassThrough::AddEntry(const TTree* inputTree, int origEntry) {
+EDepSim::KinemPassThrough::AddEntry(EDepSim::RooTrackerKinematicsGenerator* kinGen) {
+    const TTree* inputTree = kinGen->fTree;
+    int origEntry = kinGen->fEntryVector[kinGen->fNextEntry - 1];
+
     if (!fPersistentTree) {       
         EDepSimNamedDebug("PassThru", "Cannot copy entry from tree "
                         "since  fPersistentTree is NULL."); 

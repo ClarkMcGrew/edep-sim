@@ -176,6 +176,16 @@ public:
         return fSaveAllPrimaryTrajectories;
     }
 
+    /// Set the flag to ignore events that have no SD hits
+    virtual void SetRequireEventsWithHits(bool val) {
+        fRequireEventsWithHits = val;
+    }
+
+    /// Get the flag to ignore events that have no SD hits
+    virtual bool GetRequireEventsWithHits(void) const {
+        return fRequireEventsWithHits;
+    }
+
     /// Add a regular expression to define a volume boundary at which a
     /// trajectory point should be saved.  The volume names are defined by the
     /// constructors which built the volume.  Most of the names can be found
@@ -212,7 +222,7 @@ protected:
     }
 
     /// Update the event summary fields.
-    void UpdateSummaries(const G4Event* event);
+    bool UpdateSummaries(const G4Event* event);
 
     /// A summary of the primary vertices in the event.
     TG4Event fEventSummary;
@@ -317,6 +327,9 @@ private:
     /// that ultimately create energy in a sensitive detector.  The primary
     /// particles are always saved.
     bool fSaveAllPrimaryTrajectories;
+
+    /// Flag to determine whether to ignore events that have no SD hits
+    bool fRequireEventsWithHits;
 
     /// A list of detectors for which trajectory points should be saved as
     /// particles enter and exit.

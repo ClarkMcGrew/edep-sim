@@ -9,6 +9,7 @@
 #include "kinem/EDepSimHEPEVTKinematicsFactory.hh"
 #include "kinem/EDepSimRooTrackerKinematicsFactory.hh"
 #include "kinem/EDepSimNuMIRockKinematicsFactory.hh"
+#include "kinem/ParticleBombFactory.hh"
 
 #include "kinem/EDepSimVCountFactory.hh"
 #include "kinem/EDepSimFixedCountFactory.hh"
@@ -69,6 +70,7 @@ EDepSim::UserPrimaryGeneratorMessenger::UserPrimaryGeneratorMessenger(
     AddKinematicsFactory(new EDepSim::HEPEVTKinematicsFactory(this));
     AddKinematicsFactory(new EDepSim::NuMIRockKinematicsFactory(this));
     AddKinematicsFactory(new EDepSim::RooTrackerKinematicsFactory(this));
+    AddKinematicsFactory(new EDepSim::ParticleBombFactory(this));
 
     AddCountFactory(new EDepSim::FixedCountFactory(this));
     AddCountFactory(new EDepSim::MeanCountFactory(this));

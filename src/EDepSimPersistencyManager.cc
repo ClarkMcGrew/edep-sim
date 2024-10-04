@@ -184,7 +184,19 @@ bool EDepSim::PersistencyManager::SaveTrajectoryBulk(G4VTrajectory* g4Traj,
     return false;
 }
 
-void EDepSim::PersistencyManager::UpdateSummaries(const G4Event* event) {
+static bool EventHasHits(const G4Event* event)
+{
+    G4HCofThisEvent* hitCollections = event->GetHCofThisEvent();
+    if (!hitCollections) return false;
+    for (int i=0; i < hitCollections->GetNumberOfCollections(); ++i) {
+        G4VHitsCollection* g4Hits = hitCollections->GetHC(i);
+        if (g4Hits->GetSize() > 0)
+            return true;
+    }
+    return false;
+}
+
+bool EDepSim::PersistencyManager::UpdateSummaries(const G4Event* event) {
 
     const G4Run* runInfo = G4RunManager::GetRunManager()->GetCurrentRun();
 
@@ -192,6 +204,11 @@ void EDepSim::PersistencyManager::UpdateSummaries(const G4Event* event) {
     fEventSummary.EventId = event->GetEventID();
     EDepSimLog("Event Summary for run " << fEventSummary.RunId
                << " event " << fEventSummary.EventId);
+
+    if (GetRequireEventsWithHits() && not EventHasHits(event)) {
+        EDepSimLog("   No hits and /edep/db/set/requireEventsWithHits is true");
+        return false;
+    }
 
     // Summarize the trajectories first so that fTrackIdMap is filled.
     MarkTrajectories(event);
@@ -205,6 +222,8 @@ void EDepSim::PersistencyManager::UpdateSummaries(const G4Event* event) {
     SummarizeSegmentDetectors(fEventSummary.SegmentDetectors, event);
     EDepSimLog("   Segment Detectors "
                << fEventSummary.SegmentDetectors.size());
+
+    return true;
 }
 
 void EDepSim::PersistencyManager::SummarizePrimaries(
@@ -454,12 +473,6 @@ void EDepSim::PersistencyManager::MarkTrajectories(const G4Event* event) {
         if (particleName == "nu_mu") continue;
         if (particleName == "nu_tau") continue;
 
-	// Save all pi0s
-	if (particleName == "pi0"){
-	  ndTraj->MarkTrajectory(false);
-	  continue;
-	}
-
         // Save any decay product if it caused any energy deposit.
         if (processName == "Decay") {
             if (ndTraj->GetSDTotalEnergyDeposit()>1*eV
@@ -496,6 +509,12 @@ void EDepSim::PersistencyManager::MarkTrajectories(const G4Event* event) {
         // since primary neutrons are controlled above.
         if (particleName == "neutron"
             && initialMomentum > GetNeutronThreshold()) {
+            ndTraj->MarkTrajectory(false);
+            continue;
+        }
+
+        // Save all pi0s that pass the GetSDTotalEnergyDeposit cut above
+        if (particleName == "pi0") {
             ndTraj->MarkTrajectory(false);
             continue;
         }
