@@ -90,6 +90,17 @@ EDepSim::PersistencyMessenger::PersistencyMessenger(
     fTrajectoryBoundaryCMD->SetParameterName("boundary",true);
     fTrajectoryBoundaryCMD->AvailableForStates(G4State_PreInit,G4State_Idle);
 
+    fTrajectoryBulkCMD
+        = new G4UIcmdWithAString("/edep/db/set/trajectoryBulk",this);
+    fTrajectoryBulkCMD->SetGuidance(
+        "Add a Perl RegExp for a phys. vol. (bulk) where a\n"
+        "    trajectory point is saved. The expression is compared to a\n"
+        "    string constructed \":particle:charge:volume:\" where particle\n"
+        "    is the particle name, charge is \"charged\" or \"neutral\" and\n"
+        "    volume is the physical volume name.");
+    fTrajectoryBulkCMD->SetParameterName("bulk",true);
+    fTrajectoryBulkCMD->AvailableForStates(G4State_PreInit,G4State_Idle);
+
     fClearBoundariesCMD
         = new G4UIcmdWithoutParameter("/edep/db/set/clearBoundaries",this);
     fClearBoundariesCMD->SetGuidance("Remove all of the boundaries for "
@@ -107,6 +118,7 @@ EDepSim::PersistencyMessenger::~PersistencyMessenger() {
     delete fTrajectoryPointAccuracyCMD;
     delete fTrajectoryPointDepositCMD;
     delete fTrajectoryBoundaryCMD;
+    delete fTrajectoryBulkCMD;
     delete fClearBoundariesCMD;
     delete fPersistencyDIR;
     delete fPersistencySetDIR;
@@ -151,6 +163,10 @@ void EDepSim::PersistencyMessenger::SetNewValue(G4UIcommand* command,
     }
     else if (command == fTrajectoryBoundaryCMD) {
         fPersistencyManager->AddTrajectoryBoundary(newValue);
+    }
+
+    else if (command == fTrajectoryBulkCMD) {
+        fPersistencyManager->AddTrajectoryBulk(newValue);
     }
     else if (command == fClearBoundariesCMD) {
         fPersistencyManager->ClearTrajectoryBoundaries();

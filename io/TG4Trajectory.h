@@ -29,8 +29,7 @@ class TG4TrajectoryPoint : public TObject {
 public:
     TG4TrajectoryPoint()
         : Position(0,0,0,0), Momentum(0,0,0),
-          Process(0), Subprocess(0) {}
-
+          Process(0), Subprocess(0), Material("Default") {}
     virtual ~TG4TrajectoryPoint();
 
     /// Process types copied from the G4 definitions so that this can be
@@ -94,6 +93,8 @@ public:
     /// The interaction process type associated with this trajectory point.
     /// The possible values are defined in the G4ProcessSubtype enum.
     int GetSubprocess() const {return Subprocess;}
+    // Get the material for this point
+    std::string GetMaterial() const {return Material;}
 
 #if defined(EDEPSIM_USE_PUBLIC_FIELDS)&&!defined(EDEPSIM_FORCE_PRIVATE_FIELDS)&&!defined(__CINT__)
 public:
@@ -118,7 +119,10 @@ private:
     /// The possible values are defined in the G4ProcessSubtype enum.
     Int_t Subprocess;
 
-    ClassDef(TG4TrajectoryPoint,1)
+    //The name of the material for this trajectory point.
+    std::string Material;
+    
+    ClassDef(TG4TrajectoryPoint,2)
 };
 
 /// A class to save a G4 trajectory into a root output file without linking to

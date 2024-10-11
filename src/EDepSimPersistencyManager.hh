@@ -193,9 +193,20 @@ public:
     /// the root volume names.
     virtual void AddTrajectoryBoundary(const G4String& boundary);
 
+    /// Add a regular expression to define a volume bulk at which a
+    /// trajectory point should be saved.  The volume names are defined by the
+    /// constructors which built the volume.  Most of the names can be found
+    /// by looking at the geant command list.  The names are not the same as
+    /// the root volume names.
+    virtual void AddTrajectoryBulk(const G4String& bulk);
+
     /// Clear the list of volume boundaries which will cause a trajectory
     /// point to be saved.
     virtual void ClearTrajectoryBoundaries();
+
+    /// Clear the list of volume bulks which will cause a trajectory
+    /// point to be saved.
+    virtual void ClearTrajectoryBulks();
 
     /// Set the detector mask.
     void SetDetectorPartition(int partition) {fDetectorPartition = partition;}
@@ -273,6 +284,10 @@ private:
                                 G4String currentVolume,
                                 G4String prevVolume);
 
+    //TODO add descr
+    bool SaveTrajectoryBulk(G4VTrajectory* g4Traj,
+                            G4String material);
+
     /// The mapping between the internal G4 TrackID number and the external
     /// TrackId number.  The G4 TrackID value is based on the order that the
     /// particle is placed onto the stack, not all TrackID value exist and the
@@ -320,10 +335,28 @@ private:
     /// particles enter and exit.
     std::vector<TPRegexp*> fTrajectoryBoundaries;
 
+    /// A list of detectors for which trajectory points should be saved as
+    /// particles travel through
+    std::vector<std::string> fTrajectoryBulks;
+
     /// The detector partition
     int fDetectorPartition;
 
     // A pointer to the messenger.
     EDepSim::PersistencyMessenger* fPersistencyMessenger;
+
+    std::vector<std::string> fNuNames = {
+      "anti_nu_e",
+      "anti_nu_mu",
+      "anti_nu_tau",
+      "nu_e",
+      "nu_mu",
+      "nu_tau",
+      "pi+"
+    };
+    std::vector<std::string> fHadNames = {
+      "pi+", "pi-", "proton",
+      "neutron"
+    };
 };
 #endif
