@@ -6,6 +6,8 @@
 #include <string>
 #include <algorithm>
 #include <stdexcept>
+#include <random>
+#include <chrono>
 
 #include <globals.hh>
 #include <G4Event.hh>
