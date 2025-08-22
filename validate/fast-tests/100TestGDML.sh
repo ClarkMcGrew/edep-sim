@@ -3,6 +3,7 @@
 # Generate events using a non-trivial GDML geometry.
 #
 
+GDML=../fast-tests/100TestGDML.gdml
 OUTPUT=100TestGDML.root
 
 if [ -f ${OUTPUT} ]; then
@@ -10,17 +11,14 @@ if [ -f ${OUTPUT} ]; then
 fi
 
 cat > 100TestGDML.mac <<EOF
-#######################################
-# Set the hit segment.
-#######################################
-/edep/hitLength LArTracker 1.0 mm
+/edep/material/birksConstant Scintillator 0.126 mm/MeV
 /edep/update
 
 # Create the first particle source.  This source will be used to
 # specify the position of the vertex.  The any of the GPS direction
 # and energy commands can be used.
 /gps/particle mu+
-/gps/energy 10000 MeV
+/gps/energy 500 MeV
 
 # This generates the position of the particle gun.  It can be
 # used for the other particle guns to create a multi particle event.  The
@@ -36,16 +34,13 @@ cat > 100TestGDML.mac <<EOF
 # the particle downstream with the directions uniformly distributed in
 # a 10 deg cone around the Z axis.
 /gps/ang/type iso
-/gps/ang/rot1 1 0 0 
+/gps/ang/rot1 1 0 0
 /gps/ang/rot2 0 -1 0
 
-/generator/count/fixed/number 300
+/generator/count/fixed/number 30
 /generator/count/set fixed
 
 /generator/add
 EOF
 
-edep-sim -o ${OUTPUT} -g ${EDEP_ROOT}/inputs/example.gdml \
-	 -e 1 100TestGDML.mac
-
-
+edep-sim -o ${OUTPUT} -g ${GDML} -e 10 100TestGDML.mac

@@ -22,6 +22,12 @@
 #include <TGeoOverlap.h>
 #include <TGeoXtru.h>
 #include <TGeoPcon.h>
+#include <TGeoEltu.h>
+#include <TGeoTorus.h>
+#include <TGeoParaboloid.h>
+#include <TGeoHype.h>
+#include <TGeoCone.h>
+#include <TGeoPara.h>
 #include <TColor.h>
 
 #include <globals.hh>
@@ -46,10 +52,16 @@
 #include <G4UnionSolid.hh>
 #include <G4IntersectionSolid.hh>
 #include <G4ExtrudedSolid.hh>
+#include <G4EllipticalTube.hh>
+#include <G4Torus.hh>
+#include <G4Para.hh>
+#include <G4Cons.hh>
+#include <G4Hype.hh>
+#include <G4Paraboloid.hh>
+#include <G4GenericTrap.hh>
 
 #include <G4SystemOfUnits.hh>
 #include <G4PhysicalConstants.hh>
-
 
 #include <memory>
 #include <cmath>
@@ -82,7 +94,7 @@ int EDepSim::RootGeometryManager::GetNodeId(const G4ThreeVector& pos) {
 namespace {
     int CountVolumes(G4LogicalVolume* volume) {
         int count = 1;
-        for (std::size_t i = 0; i<volume->GetNoDaughters(); ++i) {
+        for (std::size_t i=0; i < (std::size_t)volume->GetNoDaughters(); ++i) {
             G4VPhysicalVolume* daughter = volume->GetDaughter(i);
             count += CountVolumes(daughter->GetLogicalVolume());
         }
@@ -221,8 +233,10 @@ void EDepSim::RootGeometryManager::Validate() {
     EDepSimLog("Geometry validated");
 }
 
-TGeoShape* EDepSim::RootGeometryManager::CreateShape(const G4VSolid* theSolid,
-                                                 TGeoMatrix **returnMatrix) {
+TGeoShape* EDepSim::RootGeometryManager::CreateShape(
+    const std::string& theName,
+    const G4VSolid* theSolid,
+    TGeoMatrix **returnMatrix) {
     const G4String geometryType = theSolid->GetEntityType();
     TGeoShape* theShape = NULL;
     if (geometryType == "G4Box") {
@@ -252,11 +266,63 @@ TGeoShape* EDepSim::RootGeometryManager::CreateShape(const G4VSolid* theSolid,
         double minPhiDeg = sphere->GetStartPhiAngle()/CLHEP::degree;
         double maxPhiDeg = minPhiDeg + sphere->GetDeltaPhiAngle()/CLHEP::degree;
         double minThetaDeg = sphere->GetStartThetaAngle()/CLHEP::degree;
-        double maxThetaDeg = minThetaDeg + sphere->GetDeltaThetaAngle()/CLHEP::degree;
+        double maxThetaDeg = minThetaDeg
+            + sphere->GetDeltaThetaAngle()/CLHEP::degree;
         theShape = new TGeoSphere(sphere->GetInnerRadius()/CLHEP::mm,
                                   sphere->GetOuterRadius()/CLHEP::mm,
                                   minThetaDeg, maxThetaDeg,
                                   minPhiDeg, maxPhiDeg);
+    }
+    else if (geometryType == "G4Hype") {
+        const G4Hype* Hype = dynamic_cast<const G4Hype*>(theSolid);
+        double rin = Hype->GetInnerRadius()/CLHEP::mm;
+        double stin = Hype->GetInnerStereo()/CLHEP::degree;
+        double rout = Hype->GetOuterRadius()/CLHEP::mm;
+        double stout = Hype->GetOuterStereo()/CLHEP::degree;
+        double dz = Hype->GetZHalfLength()/CLHEP::mm;
+        theShape = new TGeoHype(rin,stin,rout,stout,dz);
+    }
+    else if (geometryType == "G4Paraboloid") {
+        const G4Paraboloid *Paraboloid = dynamic_cast<const G4Paraboloid *>(theSolid);
+
+        double rlo=Paraboloid->GetRadiusMinusZ()/CLHEP::mm;
+        double rhi=Paraboloid->GetRadiusPlusZ()/CLHEP::mm;
+        double dz=Paraboloid->GetZHalfLength()/CLHEP::mm;
+
+        theShape = new TGeoParaboloid(rlo,rhi,dz);
+    }
+    else if (geometryType == "G4Cons") {
+        const G4Cons* Cons = dynamic_cast<const G4Cons*>(theSolid);
+        double rmin1 = Cons->GetInnerRadiusMinusZ()/ CLHEP::mm;
+        double rmax1 = Cons->GetOuterRadiusMinusZ() / CLHEP::mm;
+        double rmin2 = Cons->GetInnerRadiusPlusZ()/CLHEP::mm;
+        double rmax2 = Cons->GetOuterRadiusPlusZ ()/CLHEP::mm;
+        double dz = Cons->GetZHalfLength()/ CLHEP::mm;
+        double phi1 = Cons->GetStartPhiAngle()/ CLHEP::degree;
+        double phi2 = Cons->GetDeltaPhiAngle()/ CLHEP::degree;
+        theShape = new TGeoConeSeg(dz, rmin1, rmax1, rmin2, rmax2, phi1, phi2);
+    }
+    else if (geometryType == "G4Torus") {
+      const G4Torus* torus = dynamic_cast<const G4Torus*>(theSolid);
+      // Root takes the angles in degrees so there is no extra
+      // conversion.
+      double minR = torus->GetRmin()/CLHEP::mm;
+      double maxR = torus->GetRmax()/CLHEP::mm;
+      double axialR = torus->GetRtor()/CLHEP::mm;
+      double phi1 = torus->GetSPhi()/CLHEP::degree;
+      double dphi = torus->GetDPhi()/CLHEP::degree;
+      theShape = new TGeoTorus(axialR, minR, maxR, phi1, dphi);
+    }
+    else if (geometryType == "G4Para") {
+        const G4Para* para = dynamic_cast<const G4Para*>(theSolid);
+        double dX = para->GetXHalfLength() / CLHEP::mm;
+        double dY = para->GetYHalfLength() / CLHEP::mm;
+        double dZ = para->GetZHalfLength() / CLHEP::mm;
+        double alpha =std::atan(para->GetTanAlpha())/CLHEP::degree;
+        G4ThreeVector SymAxis =para->GetSymAxis();
+        double theta = std::acos(SymAxis.z())/CLHEP::degree;
+        double phi = std::acos(SymAxis.x()/std::sin(theta))/CLHEP::degree;
+        theShape = new TGeoPara(dX, dY, dZ, alpha, theta, phi);
     }
     else if (geometryType == "G4Polyhedra") {
         const G4Polyhedra* polyhedra
@@ -306,7 +372,9 @@ TGeoShape* EDepSim::RootGeometryManager::CreateShape(const G4VSolid* theSolid,
 #else
         const G4PolyconeHistorical* param = polycone->GetOriginalParameters();
         int numZ = param->Num_z_planes;
-        TGeoPcon* pcon = new TGeoPcon(phi/CLHEP::degree, dPhi/CLHEP::degree, numZ);
+        TGeoPcon* pcon = new TGeoPcon(phi/CLHEP::degree,
+                                      dPhi/CLHEP::degree,
+                                      numZ);
         // This depends on the older interface.  It's not marked as
         // deprecated, but the documentation discourages it's use.
         for (int i = 0; i< numZ; ++i) {
@@ -346,6 +414,18 @@ TGeoShape* EDepSim::RootGeometryManager::CreateShape(const G4VSolid* theSolid,
         double dy2 = trd->GetYHalfLength2()/CLHEP::mm;
         theShape = new TGeoTrd2(dx1,dx2,dy1,dy2,dz);
     }
+    else if (geometryType == "G4GenericTrap") {
+        const G4GenericTrap* trap
+            = dynamic_cast<const G4GenericTrap*>(theSolid);
+        double dz = trap->GetZHalfLength()/CLHEP::mm;
+        double vertices[2*8] = { }; // initialized to zeroes
+        for (int i = 0; i < trap->GetNofVertices(); ++i) {
+            const G4TwoVector& v = trap->GetVertex(i);
+            vertices[2*i] = v.x()/CLHEP::mm;
+            vertices[2*i + 1] = v.y()/CLHEP::mm;
+        }
+        theShape = new TGeoArb8(dz, vertices);
+    }
     else if (geometryType == "G4SubtractionSolid") {
         const G4SubtractionSolid* sub
             = dynamic_cast<const G4SubtractionSolid*>(theSolid);
@@ -353,9 +433,9 @@ TGeoShape* EDepSim::RootGeometryManager::CreateShape(const G4VSolid* theSolid,
         const G4VSolid* solidB = sub->GetConstituentSolid(1);
         // solidA - solidB
         TGeoMatrix* matrixA = NULL;
-        TGeoShape* shapeA = CreateShape(solidA, &matrixA);
+        TGeoShape* shapeA = CreateShape(theName, solidA, &matrixA);
         TGeoMatrix* matrixB = NULL;
-        TGeoShape* shapeB = CreateShape(solidB, &matrixB);
+        TGeoShape* shapeB = CreateShape(theName, solidB, &matrixB);
         TGeoSubtraction* subtractNode = new TGeoSubtraction(shapeA,shapeB,
                                                             matrixA, matrixB);
         theShape = new TGeoCompositeShape("name",subtractNode);
@@ -366,7 +446,7 @@ TGeoShape* EDepSim::RootGeometryManager::CreateShape(const G4VSolid* theSolid,
         const G4VSolid* movedSolid = disp->GetConstituentMovedSolid();
         G4RotationMatrix rotation = disp->GetObjectRotation();
         G4ThreeVector displacement = disp->GetObjectTranslation();
-        theShape = CreateShape(movedSolid);
+        theShape = CreateShape(theName, movedSolid);
         if (returnMatrix) {
             TGeoRotation* rotate
                 = new TGeoRotation("rot",
@@ -389,9 +469,9 @@ TGeoShape* EDepSim::RootGeometryManager::CreateShape(const G4VSolid* theSolid,
         const G4VSolid* solidB = sub->GetConstituentSolid(1);
         // solidA - solidB
         TGeoMatrix* matrixA = NULL;
-        TGeoShape* shapeA = CreateShape(solidA, &matrixA);
+        TGeoShape* shapeA = CreateShape(theName, solidA, &matrixA);
         TGeoMatrix* matrixB = NULL;
-        TGeoShape* shapeB = CreateShape(solidB, &matrixB);
+        TGeoShape* shapeB = CreateShape(theName, solidB, &matrixB);
         TGeoUnion* unionNode = new TGeoUnion(shapeA,  shapeB,
                                              matrixA, matrixB);
         theShape = new TGeoCompositeShape("name",unionNode);
@@ -403,14 +483,14 @@ TGeoShape* EDepSim::RootGeometryManager::CreateShape(const G4VSolid* theSolid,
         const G4VSolid* solidB = sub->GetConstituentSolid(1);
         // solidA - solidB
         TGeoMatrix* matrixA = NULL;
-        TGeoShape* shapeA = CreateShape(solidA, &matrixA);
+        TGeoShape* shapeA = CreateShape(theName, solidA, &matrixA);
         TGeoMatrix* matrixB = NULL;
-        TGeoShape* shapeB = CreateShape(solidB, &matrixB);
-        TGeoIntersection* intersectionNode = new TGeoIntersection(shapeA,  shapeB,
-								  matrixA, matrixB);
+        TGeoShape* shapeB = CreateShape(theName, solidB, &matrixB);
+        TGeoIntersection* intersectionNode
+            = new TGeoIntersection(shapeA,  shapeB,
+                                   matrixA, matrixB);
         theShape = new TGeoCompositeShape("name",intersectionNode);
     }
-
     else if (geometryType == "G4ExtrudedSolid"){
         //This following only works when using the 'standard'
         //G4ExtrudedSolid Constructor.
@@ -460,8 +540,16 @@ TGeoShape* EDepSim::RootGeometryManager::CreateShape(const G4VSolid* theSolid,
         //now assign 'theShape' to this complete extruded object.
         theShape = xtru;
     }
+    else if (geometryType == "G4EllipticalTube") {
+        const G4EllipticalTube* ellipticalTube
+            = dynamic_cast<const G4EllipticalTube*>(theSolid);
+        theShape = new TGeoEltu(ellipticalTube->GetDx()/CLHEP::mm,
+                                ellipticalTube->GetDy()/CLHEP::mm,
+                                ellipticalTube->GetDz()/CLHEP::mm);
+    }
     else {
-        EDepSimThrow(geometryType+" --> shape not implemented");
+        EDepSimThrow(theName + " :: " + geometryType
+                     + " --> shape not implemented");
     }
 
     return theShape;
@@ -471,7 +559,7 @@ TGeoVolume*
 EDepSim::RootGeometryManager::CreateVolume(const G4VSolid* theSolid,
                                            std::string theName,
                                            TGeoMedium* theMedium) {
-    TGeoShape* theShape = CreateShape(theSolid);
+    TGeoShape* theShape = CreateShape(theName,theSolid);
     TGeoVolume* theVolume = new TGeoVolume(theName.c_str(),
                                            theShape,
                                            theMedium);
@@ -481,7 +569,8 @@ EDepSim::RootGeometryManager::CreateVolume(const G4VSolid* theSolid,
 // Determine if a volume should copied to the ROOT geometry representation.
 // If this returns true, then the volume and all of it's children will not be
 // exported.
-bool EDepSim::RootGeometryManager::IgnoreVolume(const G4VPhysicalVolume* theVol) {
+bool EDepSim::RootGeometryManager::IgnoreVolume(
+    const G4VPhysicalVolume* theVol) {
     std::string theFullName = theVol->GetName();
     std::string theShortName = theFullName;
     theShortName.erase(0,theShortName.rfind("/")+1);
@@ -585,7 +674,7 @@ void EDepSim::RootGeometryManager::CreateMaterials(
 
     // Recurse through the children.
     for (std::size_t child = 0;
-         child < theLog->GetNoDaughters();
+         child < (std::size_t) theLog->GetNoDaughters();
          ++child) {
         G4VPhysicalVolume* theChild = theLog->GetDaughter(child);
         CreateMaterials(theChild);
@@ -723,7 +812,7 @@ bool EDepSim::RootGeometryManager::CreateEnvelope(
         // Add the children to the daughter.
         double missingMass = 0.0;
         for (std::size_t child = 0;
-             child < theLog->GetNoDaughters();
+             child < (std::size_t) theLog->GetNoDaughters();
              ++child) {
             G4VPhysicalVolume* theChild = theLog->GetDaughter(child);
             if (theLog->GetNoDaughters() > 20000) {
@@ -1010,7 +1099,7 @@ TGeoMedium* EDepSim::RootGeometryManager::AverageMaterial(
         stack.pop_back();
         // Add all of the current children to the stack.
         for (std::size_t child = 0;
-             child < currentLog->GetNoDaughters();
+             child < (std::size_t) currentLog->GetNoDaughters();
              ++child) {
             stack.push_back(currentLog->GetDaughter(child));
         }

@@ -29,7 +29,7 @@ private:
     G4UIcmdWithAString* fVesselTypeCMD;
 
 public:
-    CaptCryostatMessenger(CaptCryostatBuilder* c) 
+    CaptCryostatMessenger(CaptCryostatBuilder* c)
         : EDepSim::BuilderMessenger(c,"Control the driftRegion geometry."),
           fBuilder(c) {
 
@@ -82,7 +82,7 @@ void CaptCryostatBuilder::Init(void) {
     SetMessenger(new CaptCryostatMessenger(this));
 
     SetVesselType("CAPTAIN");
-    
+
     SetSensitiveDetector("cryo","segment");
 
     AddBuilder(new CaptImmersedBuilder("Immersed",this));
@@ -107,21 +107,29 @@ void CaptCryostatBuilder::DefineCAPTAINVessel() {
 
     fInnerVessel.clear();
 #include "captainInnerVessel.hxx"
-    
+
     fOuterVessel.clear();
 #include "captainOuterVessel.hxx"
 
+    double minZ = 1*CLHEP::km;
+    double maxZ = -1*CLHEP::km;
+    double maxOuter = 0.0;
     for (Shape::reverse_iterator p = fOuterVessel.rbegin();
          p != fOuterVessel.rend(); ++p) {
-        fVesselEnvelope.push_back(*p);
+        minZ = std::min(p->fZ,minZ);
+        maxZ = std::max(p->fZ,maxZ);
+        maxOuter = std::max(p->fOuter,maxOuter);
     }
     for (Shape::reverse_iterator p = fInnerVessel.rbegin();
          p != fInnerVessel.rend(); ++p) {
-        if (p->fZ >= fVesselEnvelope.back().fZ) continue;
-        fVesselEnvelope.push_back(*p);
+        minZ = std::min(p->fZ,minZ);
+        maxZ = std::max(p->fZ,maxZ);
+        maxOuter = std::max(p->fOuter,maxOuter);
     }
-    std::reverse(fVesselEnvelope.begin(), fVesselEnvelope.end());
-    
+    maxOuter += 1*CLHEP::mm;
+    fVesselEnvelope.push_back(Point(minZ,0.0,maxOuter));
+    fVesselEnvelope.push_back(Point(maxZ,0.0,maxOuter));
+
 }
 
 void CaptCryostatBuilder::DefineMiniCAPTAINVessel() {
@@ -130,21 +138,29 @@ void CaptCryostatBuilder::DefineMiniCAPTAINVessel() {
 
     fInnerVessel.clear();
 #include "miniCaptainInnerVessel.hxx"
-    
+
     fOuterVessel.clear();
 #include "miniCaptainOuterVessel.hxx"
 
+    double minZ = 1*CLHEP::km;
+    double maxZ = -1*CLHEP::km;
+    double maxOuter = 0.0;
     for (Shape::reverse_iterator p = fOuterVessel.rbegin();
          p != fOuterVessel.rend(); ++p) {
-        fVesselEnvelope.push_back(*p);
+        minZ = std::min(p->fZ,minZ);
+        maxZ = std::max(p->fZ,maxZ);
+        maxOuter = std::max(p->fOuter,maxOuter);
     }
     for (Shape::reverse_iterator p = fInnerVessel.rbegin();
          p != fInnerVessel.rend(); ++p) {
-        if (p->fZ >= fVesselEnvelope.back().fZ) continue;
-        fVesselEnvelope.push_back(*p);
+        minZ = std::min(p->fZ,minZ);
+        maxZ = std::max(p->fZ,maxZ);
+        maxOuter = std::max(p->fOuter,maxOuter);
     }
-    std::reverse(fVesselEnvelope.begin(), fVesselEnvelope.end());
-    
+    maxOuter += 1*CLHEP::mm;
+    fVesselEnvelope.push_back(Point(minZ,0.0,maxOuter));
+    fVesselEnvelope.push_back(Point(maxZ,0.0,maxOuter));
+
 }
 
 G4LogicalVolume *CaptCryostatBuilder::GetPiece(void) {
@@ -171,20 +187,24 @@ G4LogicalVolume *CaptCryostatBuilder::GetPiece(void) {
          p != fVesselEnvelope.rend();
          ++p) {
         conePlanes.push_back(- p->fZ);
-        coneMax.push_back(p->fOuter+10*CLHEP::cm);
         coneMin.push_back(0.0);
+        coneMax.push_back(p->fOuter+10*CLHEP::cm);
     }
-    
-    G4LogicalVolume* logVolume 
+
+    G4LogicalVolume* logVolume
         = new G4LogicalVolume(
             new G4Polycone(GetName(),
-                           0*CLHEP::degree, 360*CLHEP::degree, conePlanes.size(),
+                           0*CLHEP::degree, 360*CLHEP::degree,
+                           conePlanes.size(),
                            conePlanes.data(),
-                           coneMin.data(), coneMax.data()),
+                           coneMin.data(),
+                           coneMax.data()),
             FindMaterial("Air"),
             GetName());
     logVolume->SetVisAttributes(G4VisAttributes::Invisible);
-    
+
+#define BUILD_OUTER_VESSEL
+#ifdef BUILD_OUTER_VESSEL
     ////////////////////////////////////////////////////////
     // Define the outer vessel.
     ////////////////////////////////////////////////////////
@@ -202,13 +222,15 @@ G4LogicalVolume *CaptCryostatBuilder::GetPiece(void) {
     G4LogicalVolume* logOuterVessel
         = new G4LogicalVolume(
             new G4Polycone(GetName()+"/OuterVessel",
-                           0*CLHEP::degree, 360*CLHEP::degree, conePlanes.size(),
+                           0*CLHEP::degree, 360*CLHEP::degree,
+                           conePlanes.size(),
                            conePlanes.data(),
-                           coneMin.data(), coneMax.data()),
+                           coneMin.data(),
+                           coneMax.data()),
             FindMaterial("SS_304"),
             GetName()+"/OuterVessel");
     logOuterVessel->SetVisAttributes(GetColor(logOuterVessel));
-    
+
     new G4PVPlacement(NULL,                // rotation.
                       G4ThreeVector(0,0,0),
                       logOuterVessel,           // logical volume
@@ -217,8 +239,10 @@ G4LogicalVolume *CaptCryostatBuilder::GetPiece(void) {
                       false,                    // (not used)
                       0,                        // Copy number (zero)
                       Check());                 // Check overlaps.
+#endif
 
-    
+#define BUILD_INNER_VESSEL
+#ifdef BUILD_INNER_VESSEL
     ////////////////////////////////////////////////////////
     // Define the inner vessel.
     ////////////////////////////////////////////////////////
@@ -236,13 +260,14 @@ G4LogicalVolume *CaptCryostatBuilder::GetPiece(void) {
     G4LogicalVolume* logInnerVessel
         = new G4LogicalVolume(
             new G4Polycone(GetName()+"/InnerVessel",
-                           0*CLHEP::degree, 360*CLHEP::degree, conePlanes.size(),
+                           0*CLHEP::degree, 360*CLHEP::degree,
+                           conePlanes.size(),
                            conePlanes.data(),
                            coneMin.data(), coneMax.data()),
             FindMaterial("SS_304"),
             GetName()+"/InnerVessel");
     logInnerVessel->SetVisAttributes(GetColor(logInnerVessel));
-    
+
     new G4PVPlacement(NULL,                // rotation.
                       G4ThreeVector(0,0,0),
                       logInnerVessel,           // logical volume
@@ -271,17 +296,18 @@ G4LogicalVolume *CaptCryostatBuilder::GetPiece(void) {
         coneMin.push_back(0.0);
         coneMax.push_back(coneMax.back());
     }
-        
+
     fLiquidVolume
         = new G4LogicalVolume(
             new G4Polycone(GetName()+"/Liquid",
-                           0*CLHEP::degree, 360*CLHEP::degree, conePlanes.size(),
+                           0*CLHEP::degree, 360*CLHEP::degree,
+                           conePlanes.size(),
                            conePlanes.data(),
                            coneMin.data(), coneMax.data()),
             FindMaterial("Argon_Liquid"),
             GetName()+"/Liquid");
     fLiquidVolume->SetVisAttributes(GetColor(fLiquidVolume));
-    
+
     new G4PVPlacement(NULL,                // rotation.
                       G4ThreeVector(0,0,0),
                       fLiquidVolume,           // logical volume
@@ -322,8 +348,9 @@ G4LogicalVolume *CaptCryostatBuilder::GetPiece(void) {
         std::cout << "Undefined immersed volume" << std::endl;
         std::exit(0);
     }
+#endif
 
-    
+#ifdef BUILD_ULLAGE
     ////////////////////////////////////////////////////////
     // Define the ullage volume.
     ////////////////////////////////////////////////////////
@@ -343,17 +370,19 @@ G4LogicalVolume *CaptCryostatBuilder::GetPiece(void) {
         coneMin.push_back(0.0);
         coneMax.push_back(p->fInner);
     }
-        
+
     fUllageVolume
         = new G4LogicalVolume(
             new G4Polycone(GetName()+"/Ullage",
-                           0*CLHEP::degree, 360*CLHEP::degree, conePlanes.size(),
+                           0*CLHEP::degree, 360*CLHEP::degree,
+                           conePlanes.size(),
                            conePlanes.data(),
-                           coneMin.data(), coneMax.data()),
+                           coneMin.data(),
+                           coneMax.data()),
             FindMaterial("Argon_Gas"),
             GetName()+"/Ullage");
     fUllageVolume->SetVisAttributes(GetColor(fUllageVolume));
-    
+
     new G4PVPlacement(NULL,                // rotation.
                       G4ThreeVector(0,0,0),
                       fUllageVolume,           // logical volume
@@ -398,6 +427,7 @@ G4LogicalVolume *CaptCryostatBuilder::GetPiece(void) {
         std::cout << "Undefined exposed volume" << std::endl;
         std::exit(0);
     }
+#endif
 
     return logVolume;
 }

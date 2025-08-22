@@ -22,7 +22,7 @@ private:
     CaptExposedBuilder* fBuilder;
 
 public:
-    CaptExposedMessenger(CaptExposedBuilder* c) 
+    CaptExposedMessenger(CaptExposedBuilder* c)
         : EDepSim::BuilderMessenger(c,"Control the exposed geometry."),
           fBuilder(c) {
 
@@ -44,27 +44,29 @@ void CaptExposedBuilder::Init(void) {
 CaptExposedBuilder::~CaptExposedBuilder() {}
 
 double CaptExposedBuilder::GetRadius() {
-    double radius = 2*CLHEP::cm;
+    double radius = 120*CLHEP::cm;
     return radius;
 }
 
 double CaptExposedBuilder::GetHeight() {
-    return 1*CLHEP::cm;
+    return 20*CLHEP::cm;
 }
 
 G4LogicalVolume *CaptExposedBuilder::GetPiece(void) {
 
-    G4LogicalVolume* logVolume 
+    std::cout << " Radius " << GetRadius() << std::endl;
+    std::cout << " Height " << GetHeight() << std::endl;
+    G4LogicalVolume* logVolume
         = new G4LogicalVolume(new G4Tubs(GetName(),
-                                         0.0, GetRadius(), GetHeight()/2, 
+                                         0.0, GetRadius(), GetHeight()/2,
                                          0*CLHEP::degree, 360*CLHEP::degree),
                               FindMaterial("Argon_Gas"),
                               GetName());
     logVolume->SetVisAttributes(GetColor(logVolume));
 
-    G4ThreeVector center(0.0,0.0,-GetHeight()/2);
+    G4ThreeVector center(0.0,0.0,-GetHeight()/2-0.1*CLHEP::mm);
     fOffset = center;
-    
+
     /// All the space above the drift region.
     center += G4ThreeVector(0.0,0.0,0.0);
 

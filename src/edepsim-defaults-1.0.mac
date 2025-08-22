@@ -21,6 +21,7 @@
 # to the "nearest" parent particle.
 ##############################################
 /edep/db/set/saveAllPrimTraj true
+/edep/db/set/requireEventsWithHits false
 /edep/db/set/lengthThreshold 1 mm
 /edep/db/set/trajectoryAccuracy 1 mm
 /edep/db/set/neutronThreshold 50 MeV

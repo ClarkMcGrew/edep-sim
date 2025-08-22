@@ -14,8 +14,7 @@ class G4Step;
 
 /// A sensitive detector to create EDepSim::HitSegment based hits.
 namespace EDepSim {class SegmentSD;}
-class EDepSim::SegmentSD : public G4VSensitiveDetector
-{
+class EDepSim::SegmentSD : public G4VSensitiveDetector {
     
 public:
     SegmentSD(G4String name);
@@ -34,15 +33,25 @@ public:
     }
     double GetMaximumHitSagitta(void) {return fMaximumHitSagitta;}
 
-    /// Set the maximum length for the EDepSim::HitSegment objects created by this
-    /// sensitive detector.
+    /// Set the maximum separation between deposits for the
+    /// EDepSim::HitSegment objects created by this sensitive
+    /// detector.
+    void SetMaximumHitSeparation(double separation) {
+        EDepSimLog("Set max segment separation to " << separation
+                << " for " << GetName());
+        fMaximumHitSeparation = separation;
+    }
+    double GetMaximumHitSeparation(void) {return fMaximumHitSeparation;}
+    
+    /// Set the maximum length for the EDepSim::HitSegment objects
+    /// created by this sensitive detector.
     void SetMaximumHitLength(double length) {
         EDepSimLog("Set max segment length to " << length
-                << " for " << GetName());
+            << " for " << GetName());
         fMaximumHitLength = length;
     }
     double GetMaximumHitLength(void) {return fMaximumHitLength;}
-
+    
 private:
     /// The collection of hits that is being filled in the current event.  It
     /// is constructed in Initialize, filled in ProcessHits, and added the the
@@ -55,6 +64,9 @@ private:
     /// The maximum allowed sagitta;
     double fMaximumHitSagitta;
 
+    /// The maximum distance between deposits that can be combined.
+    double fMaximumHitSeparation;
+    
     /// The maximum allowed length;
     double fMaximumHitLength;
 

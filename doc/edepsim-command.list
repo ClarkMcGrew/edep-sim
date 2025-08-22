@@ -4036,6 +4036,7 @@ EDepSim detector control.
 
  Sub-directories : 
    /edep/gdml/   Control over the gdml file.
+   /edep/material/   Extra control over the material definitions.
    /edep/phys/   Control the physics lists
    /edep/random/   Control of the random seed number.
    /edep/db/   Output file control commands.
@@ -4051,6 +4052,7 @@ macro file which is executed.  The run condition macros are saved
 in the <package-root>/src directory (e.g. src/baseline-1.0.mac). 
    hitSagitta * Set the maximum sagitta for hit segments.
    hitLength * Set the length for hit segments to stop growing.
+   hitExcluded * Exclude logical volumes from being sensitive.
    runId * This is the first run id that will be used by GEANT.  GEANT will automatically increment the run id every time it starts a new internal run so care must be taken if you depend on this to pass-through the run id.
    subrunId * Set the sub run context field for documentation purposes.  This has no internal meaning.
 
@@ -4141,6 +4143,16 @@ Parameter : Unit
 
 
 
+Command /edep/hitExcluded
+Guidance :
+Exclude logical volumes from being sensitive.
+
+Parameter : LogicalVolume
+ Parameter type  : s
+ Omittable       : False
+
+
+
 Command /edep/runId
 Guidance :
 This is the first run id that will be used by GEANT.  GEANT will automatically increment the run id every time it starts a new internal run so care must be taken if you depend on this to pass-through the run id.
@@ -4167,14 +4179,41 @@ Control over the gdml file.
 
  Sub-directories : 
  Commands : 
-   read * Define a GDML file to be used for the geometry.
+   read * Set a GDML file to be used for the geometry.
 
 
 Command /edep/gdml/read
 Guidance :
-Define a GDML file to be used for the geometry.
+Set a GDML file to be used for the geometry.
 
 Parameter : 
+ Parameter type  : s
+ Omittable       : False
+
+Command directory path : /edep/material/
+
+
+Guidance :
+Extra control over the material definitions.
+
+ Sub-directories : 
+ Commands : 
+   birksConstant * Override the Birks constant for material.
+
+
+Command /edep/material/birksConstant
+Guidance :
+Override the Birks constant for material.
+
+Parameter : Material
+ Parameter type  : s
+ Omittable       : False
+
+Parameter : Birks
+ Parameter type  : d
+ Omittable       : False
+
+Parameter : Unit
  Parameter type  : s
  Omittable       : False
 
@@ -4345,6 +4384,7 @@ Set various parameters
   True: Save all prim. part. trajectories.
   False: Save prim. that ultimately deposit energy in SD.
    trajectoryAccuracy * Set the minimum accuracy of the trajectory.
+   trajectoryDeposit * Set the minimum energy deposit for a trajectory point.
    trajectoryBoundary * Add a Perl RegExp for a phys. vol. boundary where a
     trajectory point is saved. The expression is compared to a
     string constructed ":particle:charge:volume:" where particle
@@ -4422,6 +4462,21 @@ Parameter : Unit
  Parameter type  : s
  Omittable       : False
  Candidates      : pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
+
+
+
+Command /edep/db/set/trajectoryDeposit
+Guidance :
+Set the minimum energy deposit for a trajectory point.
+
+Parameter : energy
+ Parameter type  : d
+ Omittable       : False
+
+Parameter : Unit
+ Parameter type  : s
+ Omittable       : False
+ Candidates      : eV keV MeV GeV TeV PeV J electronvolt kiloelectronvolt megaelectronvolt gigaelectronvolt teraelectronvolt petaelectronvolt joule
 
 
 
@@ -7091,6 +7146,7 @@ Control of the particle generator.
    combine * Combine the previous two vertices into one.
    allowEmptyEvents * If true, then generate events even if they don't contain a vertex.
    addFakeGeantino * If true, then guarantee a primary vertex by adding a geantino.
+   allowPartialEvents * ...Title not available...
 
 
 Command /generator/clear
@@ -7127,6 +7183,7 @@ Parameter : relative
 Command /generator/allowEmptyEvents
 Guidance :
 If true, then generate events even if they don't contain a vertex.
+If true, then generate the final event even if it ran out of interactions in the input kinematics file.
 
 Parameter : 
  Parameter type  : b
@@ -7137,6 +7194,15 @@ Parameter :
 Command /generator/addFakeGeantino
 Guidance :
 If true, then guarantee a primary vertex by adding a geantino.
+
+Parameter : 
+ Parameter type  : b
+ Omittable       : False
+
+
+
+Command /generator/allowPartialEvents
+Guidance :
 
 Parameter : 
  Parameter type  : b
@@ -7231,6 +7297,7 @@ Guidance :
 Control kinematics generators.
 
  Sub-directories : 
+   /generator/kinematics/hepevt/   ...Title not available...
    /generator/kinematics/rooTracker/   Control of the rooTracker kinematics factory.
  Commands : 
    set * Set the current kinematics factory.
@@ -7243,7 +7310,32 @@ Set the current kinematics factory.
 Parameter : Factory
  Parameter type  : s
  Omittable       : False
- Candidates      : gps rock rooTracker 
+ Candidates      : gps hepevt rock rooTracker 
+
+Command directory path : /generator/kinematics/hepevt/
+ Sub-directories : 
+ Commands : 
+   input * Set the input file.
+   verbose * Set verbosity level (0 is default, 2 is max).
+
+
+Command /generator/kinematics/hepevt/input
+Guidance :
+Set the input file.
+
+Parameter : name
+ Parameter type  : s
+ Omittable       : False
+
+
+
+Command /generator/kinematics/hepevt/verbose
+Guidance :
+Set verbosity level (0 is default, 2 is max).
+
+Parameter : number
+ Parameter type  : i
+ Omittable       : False
 
 Command directory path : /generator/kinematics/rooTracker/
 
@@ -9040,4 +9132,4 @@ Parameter : int
  Default value   : Lin
  Candidates      : Lin Log Exp Spline
 
-ERROR: /home/mcgrew/work/dune/software/edep-sim/src/EDepSimRootPersistencyManager.cc:63: EDepSim::RootPersistencyManager::Close -- No Output File
+ERROR: /home/mcgrew/work/dune/software/edep-sim/src/EDepSimRootPersistencyManager.cc:62: EDepSim::RootPersistencyManager::Close -- No Output File

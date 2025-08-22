@@ -67,12 +67,15 @@ public:
     /// The TrackId for each trajectory that contributed to this hit.  This
     /// could contain the TrackId of the primary particle, but not
     /// necessarily.  
-    Contributors Contrib;
+    const Contributors& GetContributors() const {return Contrib;}
 
 // The public fields are deprecated but still supported by default in the
 // current version.
 #define EDEPSIM_USE_PUBLIC_FIELDS
-    
+
+    // Not hidden in private since it's the most commonly used interface.
+    Contributors Contrib;
+
 #if defined(EDEPSIM_USE_PUBLIC_FIELDS)&&!defined(EDEPSIM_FORCE_PRIVATE_FIELDS)&&!defined(__CINT__)
 public:
 #ifdef EDEPSIM_WARN_PUBLIC_FIELDS

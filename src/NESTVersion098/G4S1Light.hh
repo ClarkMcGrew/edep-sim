@@ -32,7 +32,7 @@
 #define phe_per_e 1 //S2 gain for quick studies
 
 // different field regions, for gamma-X studies
-#define WIN 0*CLHEP::mm //top Cu block (also, quartz window)
+#define WIN 0 //top Cu block (also, quartz window)
 #define TOP 0 //top grid wires
 #define ANE 0 //anode mesh
 #define SRF 0 //liquid-gas interface
@@ -60,7 +60,7 @@ public: // methods, with descriptions
 	G4double GetMeanFreePath(const G4Track& aTrack,
 				       G4double ,
                                        G4ForceCondition* );
-        // Returns infinity; i. e. the process does not limit the step, but 
+        // Returns infinity; i. e. the process does not limit the step, but
         // sets the 'StronglyForced' condition for the DoIt to be invoked at
         // every step.
 
@@ -69,15 +69,15 @@ public: // methods, with descriptions
         // Returns infinity; i. e. the process does not limit the time, but
         // sets the 'StronglyForced' condition for the DoIt to be invoked at
         // every step.
-  
+
         // For in-flight particles losing energy (or those stopped)
 	G4VParticleChange* PostStepDoIt(const G4Track& aTrack,
 					const G4Step& aStep);
         G4VParticleChange* AtRestDoIt ( const G4Track& aTrack,
 					const G4Step& aStep);
-  
+
         // These are the methods implementing the scintillation process.
-  
+
 	void SetTrackSecondariesFirst(const G4bool state);
         // If set, the primary particle tracking is interrupted and any
         // produced scintillation quanta are tracked next. When all have been
@@ -85,14 +85,14 @@ public: // methods, with descriptions
 
         G4bool GetTrackSecondariesFirst() const;
         // Returns the boolean flag for tracking secondaries first.
-  
+
         void SetScintillationYieldFactor(const G4double yieldfactor);
         // Called to set the scintillation quantum yield factor, useful for
-        // shutting off scintillation entirely, or for producing a universal 
+        // shutting off scintillation entirely, or for producing a universal
         // re-scaling to for example represent detector effects. Internally is
         // used for Lindhard yield factor for NR. Default should be user-set
         // to be 1 (for ER) in your simulation -- see NEST readme
-  
+
         G4double GetScintillationYieldFactor() const;
         // Returns the quantum (photon/electron) yield factor. See above.
 
@@ -120,23 +120,23 @@ private:
 ////////////////////
 // Inline methods
 ////////////////////
-inline 
+inline
 G4bool G4S1Light::IsApplicable(const G4ParticleDefinition& aParticleType)
 {
        if (aParticleType.GetParticleName() == "opticalphoton") return false;
        if (aParticleType.IsShortLived()) return false;
        if (aParticleType.GetParticleName() == "thermalelectron") return false;
        //if(abs(aParticleType.GetPDGEncoding())==2112 || //neutron (no E-dep.)
-       if(abs(aParticleType.GetPDGEncoding())==12 || //neutrinos (ditto) 
+       if(abs(aParticleType.GetPDGEncoding())==12 || //neutrinos (ditto)
 	  abs(aParticleType.GetPDGEncoding())==14 ||
 	  abs(aParticleType.GetPDGEncoding())==16) return false;
-       
+
        return true;
 }
 
-inline 
-void G4S1Light::SetTrackSecondariesFirst(const G4bool state) 
-{ 
+inline
+void G4S1Light::SetTrackSecondariesFirst(const G4bool state)
+{
 	fTrackSecondariesFirst = state;
 }
 

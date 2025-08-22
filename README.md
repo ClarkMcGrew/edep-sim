@@ -1,22 +1,36 @@
 # edep-sim : An Energy Deposition Simulation
 
-The energy deposition simulation is a wrapper around the GEANT4 particle
-propagation simulation and is intended as a tool to simulate all of the
-particle propagation and geometry related issues.  Be aware that the
-sequence of random numbers depends on the floating point accuracy of the
-machine, so given runs are machine dependent and may not be reproducible.
+The energy deposition simulation is a wrapper around the GEANT4
+particle propagation simulation and is intended as a tool to simulate
+all of the particle propagation and geometry related issues.  GEANT4
+is an excellent toolkit, but it requires you to provide the main
+programs, as well as the input, and output tools.  This has proven to
+be a very good design choice; unfortunately, it means that there is no
+standard wrapper code.  I've found myself using (and writing) almost
+identical input/output wrappers several times, so edep-sim is intended
+to provide a general starting point and allow users to concentrate on
+the physics. As a standalone program, edep-sim provides a simple ROOT
+based file format which will record the output of GEANT4.  It can also
+be linked as a library into another application, and makes the same
+information as a class.
 
 This documentation assumes that you have a passing familiarity with how to
 write GEANT4 macro control files.
 
 Where it's available (and in particular for argon), the simulation
-implements a fairly detailed model of the energy deposited as ionization
-and scintillation.  This is implemented using the NEST model (M Szydagis et
-al 2013 JINST 8 C10003 and references therein).
+implements a fairly detailed model of the energy deposited as
+ionization and non-ionizing (e.g. scintillation) energy loss.  The
+liquid argon model uses using the NEST model (M Szydagis et al 2013
+JINST 8 C10003 and references therein).  All other models use the EM
+saturation model provided by geant 4.
 
 Input file translators are provided for several standard input file
 formats.  In particular, this support input from both NEUT and GENIE.  The
 GENIE input is read using the RooTracker format.
+
+Be aware that the sequence of random numbers depends on the floating
+point accuracy of the machine, so given runs are machine dependent and
+may not be reproducible.
 
 ## Working with the source distribution
 
@@ -336,20 +350,20 @@ The TG4TrajectoryPoint is a data-only class with the following information.
 
 There are several macro commands provided which will allow the saved
 trajectories to be filtered before they are saved to an output file.
-Check the edep-sim-command-list.txt file and search for the 
+Check the edep-sim-command-list.txt file and search for the
 "/edep/db/set/" directory for details.
 
 #### The Energy Deposition Class (and Friends).
 
 The energy deposition in each sensitive detector is recorded using the
 TG4HitSegment class.  This class records the starting and stopping position
-of for each energy deposition step (the energy is *not* deposited at a
+of each energy deposition step (the energy is *not* deposited at a
 point).  It also records the particle depositing the energy, as well as the
 primary particle, or ultimate parent, associated with the energy deposit.
 
-The generated hit segment contains fields with the following information.
-It has the deprecated public fields, and accessor that should be used
-instead of the field:
+The generated hit segment contains fields with the following
+information.  The ```public``` fields are deprecated, and you should
+use the accessors instead of the field:
 
   * Contrib: A vector of track identifiers which contributed to this hit
     segment.  There is almost always only one contributor, but for certain
@@ -445,12 +459,13 @@ the ```-g``` option
 edep-sim -g geometry.gdml -o output.root macro-file.mac
 ```
 
-### GDML Auxiliary Fields
+### GDML Logical Volume Auxiliary Fields
 
-Several auxiliary fields are parsed to help describe the detector geometry
-and attach more meaning to the GDML description.  For example, here is a
-simple LAr detector description that is attached as a sensitive detector,
-and has both an electric and a magnetic field.
+Several auxiliary fields are parsed to help describe volumes in the
+detector geometry and attach more meaning to the GDML description.
+For example, here is a simple LAr detector description that is
+attached as a sensitive detector, and has both an electric and a
+magnetic field.
 
 ```
     <volume name="LArD_lv">
@@ -490,26 +505,28 @@ tree.
 #### Auxiliary field to define the electric and magnetic field.
 
 Uniform electric and magnetic fields can be set using the `EField` and
-`BField` auxiliary types.  The value for each is the field vector in the
-volume specified by the X, Y and Z components (global coordinates).  It is
-assumed that the field applies to all of the daughter volumes.
+`BField` auxiliary types.  The value for each is the field vector in
+the volume specified by the X, Y and Z components (global
+coordinates).  It is assumed that the field applies to all of the
+daughter volumes.
 
 ```
 <auxiliary auxtype="EField" auxvalue="(500.0 V/cm, 1.0 V/cm, 500.0 V/cm)"/>
 <auxiliary auxtype="BField" auxvalue="(2.0 T, 3.0 T, 1.0 G)"/>
 ```
 
-The possible units for the electric field are `volt/cm`, `volt/m`, `V/cm`,
-and `V/m`.  You should specify a unit.  If no units are provided, it is
-assumed that the units are `volt/cm`.
+The possible units for the electric field are `volt/cm`, `volt/m`,
+`V/cm`, and `V/m`.  You should specify a unit.  If no units are
+provided, it is assumed that the units are `volt/cm`.
 
-The possible units for the magnetic field are `tesla`, `gauss`, `T`, and
-`G`.  If no units are provided, it is assumed that the units are `tesla`.
+The possible units for the magnetic field are `tesla`, `gauss`, `T`,
+and `G`.  If no units are provided, it is assumed that the units are
+`tesla`.
 
-Arbitrary electric and magnetic fields can be set using the `ArbEField` and
-`BField` auxiliary types. The value for each is the name of the grid file which
-specifies the value of the field at a set of X, Y, and Z grid points (global
-coordinates).
+Arbitrary electric and magnetic fields can be set using the
+`ArbEField` and `BField` auxiliary types. The value for each is the
+name of the grid file which specifies the value of the field at a set
+of X, Y, and Z grid points (global coordinates).
 
 ```
 <auxiliary auxtype="ArbEField" auxvalue="efield_grid_file.txt"/>
@@ -530,9 +547,9 @@ The grid file is specified in the following format:
 ...and so on...
 ```
 
-The position, XYZ, is specified in `mm`, the electric field is specified in
-`V/cm`, and the magnetic field is specified in `T`. The grid spacing for each
-axis can be different.
+The position, XYZ, is specified in `mm`, the electric field is
+specified in `V/cm`, and the magnetic field is specified in `T`. The
+grid spacing for each axis can be different.
 
 FX, FY, FZ are the magnitudes of the fields in the X,Y,Z directions
 and F is the total magnitude of the field vector. The Z coordinate
@@ -552,11 +569,11 @@ grid file. They will be ignored when parsing the file.
 The display properties for the logical volume can be set using the `Color`
 and `Opacity` auxiliary types.
 
-The color of a volume can be set in two forms.  The first form allows a few
-primary colors to be set by names.  These colors are defined by the
-G4Colour class and are one of the list "white", "gray", "grey", "black",
-"brown", "red", "green", "blue", "cyan", "magenta", and "yellow".  A color
-can be set with one of these as the value.
+The color of a volume can be set in two forms.  The first form allows
+a few primary colors to be set by names.  These colors are defined by
+the G4Colour class and are one of the list "white", "gray", "grey",
+"black", "brown", "red", "green", "blue", "cyan", "magenta", and
+"yellow".  A color can be set with one of these as the value.
 
 ```
 <auxiliary auxtype="Color" auxvalue="red"/>
@@ -569,9 +586,10 @@ The color can also be set as an RGB triplet, or an RGBA quartet.
 <auxiliary auxtype="Color" auxvalue="(1.0,0.0,0.0,0.5)"/>
 ```
 
-The fourth component of the color is the "alpha" which can run between zero
-and one.  A value of zero is transparent, and a value of one is opaque.
-The alpha value can also be set using the opacity auxiliary type.
+The fourth component of the color is the "alpha" which can run between
+zero and one.  A value of zero is transparent, and a value of one is
+opaque.  The alpha value can also be set using the opacity auxiliary
+type.
 
 ```
 <auxiliary auxtype="Opacity" auxvalue="0.5"/>
@@ -585,15 +603,96 @@ The step limit can be set using
 
 The value takes a number and a unit.
 
+## Describing Detector Materials
+
+Detector materials are described using the standard GEANT4 methods,
+but with a few minor extentions to simplify usage.  For geometries
+that are coded using the native GEANT4 routines (i.e. implementing a
+specialized UserDetectorGeometry class and built by deriving builders
+from EDepSimBuilder) should mostly depend the standard GEANT4
+interface.
+
+### Specifying Saturation for a Material (The Birks Constant)
+
+Internally, GEANT4 manages the Birks constant for a material using
+stippets that look like
+
+```C++
+G4Material* material = G4Material::FindMaterial("Scintillator");
+
+// Set the Birks' constant for a material
+double birks_constant = 0.12;
+material->GetIonization()->SetBirksConstant(birks_constant);
+
+// Get the Birks' constant for a material
+birks_constant = material->GetIonization()->GetBirksConstant();
+```
+
+Unfortunately, this interface is not exposed when defining materials
+using GDML.
+
+#### Specifying the Birks' constant in a macro
+
+As a work-around, there is an ```edep-sim``` macro that will
+override the Birks' constant for an existing material.  The macro must
+be used immediately before using the ```/edep/update``` macro.  The
+Birks' constant is set using
+
+```
+/edep/material/birksConstant [material] [value] [unit]
+```
+
+where ```material``` is the name of an existing material, ```value```
+is a floating point number (e.g. 0.126), and ```unit``` is a string
+describing the units (e.g. ```mm/MeV```).  The unit must be a
+```[Length]/[Energy]```, and must contain a '```/```', however there is
+only minimal error checking to make sure the result is reasonable.
+For standard polystyrene (which must have already been defined), the
+Birks' constant would be set using
+
+```
+/edep/material/birksConstant Polystyrene 0.126 mm/MeV
+/edep/update
+```
+
+An error is thrown if the material has not been defined, or if the
+units are malformed (e.g. the unit is missing a '/')
+
+#### Specifying the Birks' constant using a custom material property
+
+While GDML does not provide an element that will directly set the
+Birks' constant value for a material, it does define and interface
+allowing material properties to be set.  For instance,
+
+```
+<define>
+   <matrix name="BIRKSVALUE" coldim="1" values="0.126"/>
+</define>
+<materials>
+  <material formula="Scintillator">
+     <property name="BIRKSCONSTANT" ref="BIRKSVALUE"/>
+  </material>
+</materials>
+```
+
+will add a constant material property to the material properties table
+for the "Scintillator" material.  By default, GEANT4 will ignore these
+extra properties, but ```edep-sim``` has been modified to look for
+specific properties and to use them to set values in the ```G4Material```
+class.  Properties that will be interpreted are
+
+* ```BIRKSCONSTANT``` -- Set the Birks' constant value.  The value
+    must be in units of ```mm/MeV```.
+
 ## Running as a library
 
 The simulation is developed as a library separated from a main program
-wrapping the library.  The entire main program is only a few hundred lines
-long, of which about twenty lines are needed to actually setup and run the
-simulation.  It is relatively straight forward to take this and include
-edep-sim into a separate package.  The example main program
-(i.e. app/edepSim.cc) is commented and the library is started beginning at
-about line 230.
+wrapping the library.  The entire main program is only a few hundred
+lines long, of which about twenty lines are needed to actually setup
+and run the simulation.  It is relatively straight forward to take
+this and include edep-sim into a separate package.  The example main
+program (i.e. app/edepSim.cc) is commented and the library is started
+beginning at about line 230.
 
 ### Using as a CMAKE package
 
@@ -947,12 +1046,15 @@ where this create a source with a Gaussian spread of 30 MeV around 400 MeV.
 
 #### Creating Multiple Particle Events
 
-The GPS is very inflexible when it comes to handling multiple particles in
-a single event, so it's not possible to handle the general case with
-multiple particles coming from the same vertex.  This is overcome in detSim by implementing the `/generator/combine` command which is discussed below.
+The GPS is very inflexible when it comes to handling multiple
+particles in a single event, so it's not possible to handle the
+general case with multiple particles coming from the same vertex.
+This is overcome in detSim by implementing the `/generator/combine`
+command which is discussed below.
 
-For the simple case of generating multiple particles
-drawn from the same angle and energy distributions, but with the same position, use `/gps/number` command.  For instance
+For the simple case of generating multiple particles drawn from the
+same angle and energy distributions, but with the same position, use
+`/gps/number` command.  For instance
 
 ```
 /gps/number 2

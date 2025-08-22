@@ -1,3 +1,107 @@
+Changes in XXXXX
+
+* EDepSim::HitSegment -- Add a new parameter to control when very
+  short tracks (e.g. delta rays) are combined with an existing hit
+  segment.  This was previously controlled by the maximum allowed
+  segment sagitta.  The sagitta and separation for segments can now be
+  controlled by the /edep/hitSagitta (previously existed) and
+  /edep/hitSeparation (new) macro commands.
+
+Changes in 3.2.0
+
+* Add a new kinematics generator to accept HEPEVT format files.  The
+  generator input file is set using
+  "/generator/kinematics/hepevt/input [file]" and selected using
+  "/generator/kinematics/set hepevt".  The reader checks the syntax of
+  the input file and adds (hopefully) useful error messages.  The
+  current behavior is to terminate when an input error is found.
+
+* Update the detector construction so that it looks for BIRKSCONSTANT
+  in the material properties table and copies the value into the
+  material ionization properties.  This works around a missing feature
+  in GDML where certain material description values cannot be set.  In
+  GDML, add the property "BIRKSCONSTANT" with the value in units of
+  "mm/MeV" and edep-sim will "take care of the rest".
+
+* Add /edep/material/birksConstant to allow the Birks constant to
+  be set for any material.  This must be used before the /edep/update
+  macro command.  It accepts a material name, the value of the Birks
+  constant, and the units for the birks constant.  For example:
+  ```/edep/material/birksConstant Scintillator 0.12 mm/MeV```
+
+* Add an example of generating a GDML file using GeGeDe.  This shows
+  how to build a gdml file that sets the auxvalues needed by edep-sim,
+  and can be used as a starting point for a user geometry.
+
+* Improvement: Add a new include file (EDepSimUnits.h) for use with
+  the edepsim_io library.  The output of EDepSim is in the same units
+  as Geant4 (i.e. the CLHEP units).  Adding this include file means
+  that the CLHEP SystemOfUnits.h file is not required.
+
+* Improvements: The GDML validations have been cleaned up.  The output
+  still should be inspected using ROOT and edep-disp, but the tests
+  are simplified to make it easier to interpret the output.  This is
+  mostly intended as an edep-sim developer (pre-)release tool.
+
+* Bug fix: Make sure that the default geometry builds without
+  overlaps, and add a validation to catch when it does not.
+
+* Bug fix: Add error traps in EDepSimRooTrackerKinemGenerator to try
+  and catch malformed rooTracker files before processing.  This tries
+  to prevent a silent failure.
+
+* Remove dead test files that are left over from old, and unsupported
+  methods of reading the edep-sim output.
+
+* Bug fix: Fix some compilation warnings.  The compilation should be
+  warning free.
+
+* New option: Add a cmake definition to disable the compilation of
+  NEST.  The default is to include NEST.  Even if NEST is not included
+  in the executable, ionization in argon cribs from it's
+  implementation, so the NEST paper should be cited.
+
+Changes in 3.1.0
+
+* Improve documentation for the GDML StepLimit auxiliary, and add
+  tests.  This is now being actively used in the SAND TPC implemention
+  to make sure step by step fluctuctuations are correctly handled.
+
+* Add macro commands to override logical volumes marked with a
+  sensitive detectors.  When ```/edep/hitExclude [logicalVolume]``` is
+  set segments will not be saved in that volume.
+
+* Allow a threshold for the minimum energy required to save a
+  trajectory point.
+
+* Improvements in the trajectory pruning.  This was mostly changes to
+  clarify the documentation, but there were minor bug fixes in the
+  handling minimum deposit required to save a trajectory.
+
+* Support the G4EllipticalTube solid.  This translates it into a
+  TGeoEltu object in the root geometry.
+
+* Bug fix: Corrections in the example macros.
+
+* Bug Fix: Trajectories for decay products were being saved when they
+  should not have been.  This makes them follow the same "rules" as
+  other trajectories.  Decay products can still be treated as a
+  primary particle.
+
+* Bug Fix: Protect against NULL pointers in the persistency manager.
+  Fix the bunch length simulation to avoid discontinuities.  Improve
+  trajectory drawing edep-disp for very large events.
+
+* Bug Fix (EDepSimRooTrackerKinematicsGenerator): Avoid the deprecated
+  std::random_shuffle, and make sure that the G4 random number
+  generator is used when a vector is being shuffled.
+
+* Bug Fix (EDepSimPersistencyManager): This makes the code match the
+  documentation.  The documentation claimed that all trajectories
+  contributing to a hit segment were saved, but the code only saved
+  the "primary" trajectory.  This now saves all of the contributors
+  like it claims.
+
 Changes in 3.0.0
 
 * Add a change log!
@@ -64,4 +168,3 @@ Changes in 3.0.0
   Cudd.  The fields can be set in the GDML file.  The field values are
   defined in auxilliary files containing the electric or magnetic
   fields on a regular grid of points.
-  

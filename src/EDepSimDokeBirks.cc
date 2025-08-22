@@ -21,7 +21,7 @@ EDepSim::DokeBirks::DokeBirks(const G4String& processName,
       fEmSaturation(nullptr)
 {
     SetProcessSubType(fScintillation);
-    
+
     if (verboseLevel>0) {
         G4cout << GetProcessName() << " is created " << G4endl;
     }
@@ -30,7 +30,7 @@ EDepSim::DokeBirks::DokeBirks(const G4String& processName,
 
 EDepSim::DokeBirks::~DokeBirks () {} //destructor needed to avoid linker error
 
-    
+
 G4bool
 EDepSim::DokeBirks::IsApplicable(const G4ParticleDefinition& aParticleType)
 {
@@ -60,7 +60,7 @@ G4VParticleChange*
 EDepSim::DokeBirks::PostStepDoIt(const G4Track& aTrack, const G4Step& aStep)
 {
     aParticleChange.Initialize(aTrack);
-        
+
     const G4Material* aMaterial = aTrack.GetMaterial();
 
     bool inLiquidArgon = true;
@@ -81,21 +81,21 @@ EDepSim::DokeBirks::PostStepDoIt(const G4Track& aTrack, const G4Step& aStep)
         // Do Nothing
         inLiquidArgon = false;
     }
-    
+
     const G4DynamicParticle* aParticle = aTrack.GetDynamicParticle();
     const G4ParticleDefinition *pDef = aParticle->GetDefinition();
     G4String particleName = pDef->GetParticleName();
     // G4StepPoint* pPreStepPoint  = aStep.GetPreStepPoint();
     G4double totalEnergyDeposit = aStep.GetTotalEnergyDeposit();
-    
+
     if (totalEnergyDeposit <= 0.0) {
-        return G4VRestDiscreteProcess::PostStepDoIt(aTrack, aStep);        
+        return G4VRestDiscreteProcess::PostStepDoIt(aTrack, aStep);
     }
 
     if (aStep.GetStepLength() <= 0.0) {
-        return G4VRestDiscreteProcess::PostStepDoIt(aTrack, aStep);        
+        return G4VRestDiscreteProcess::PostStepDoIt(aTrack, aStep);
     }
-    
+
     if (!inLiquidArgon) {
         if (!fEmSaturation) fEmSaturation = new G4EmSaturation(0);
         G4double nonIonizingEnergy
@@ -120,7 +120,7 @@ EDepSim::DokeBirks::PostStepDoIt(const G4Track& aTrack, const G4Step& aStep)
         EDepSimError("LAr Volume "
                      << aLogVolume->GetName()
                      << " should have field!");
-        return G4VRestDiscreteProcess::PostStepDoIt(aTrack, aStep);        
+        return G4VRestDiscreteProcess::PostStepDoIt(aTrack, aStep);
     }
 
     G4ThreeVector thePosition = pPostStepPoint->GetPosition();
@@ -129,7 +129,7 @@ EDepSim::DokeBirks::PostStepDoIt(const G4Track& aTrack, const G4Step& aStep)
         thePosition.x(), thePosition.y(), thePosition.z(), theTime};
     double bField[6];
     aField->GetFieldValue(point,bField);
-    
+
     double electricField = bField[3]*bField[3];
     electricField += bField[4]*bField[4];
     electricField += bField[5]*bField[5];
@@ -180,7 +180,7 @@ EDepSim::DokeBirks::PostStepDoIt(const G4Track& aTrack, const G4Step& aStep)
         LET *= ratio;
         dx /= ratio;
     } while (false);
-    
+
     G4double recombProb = (dokeBirks[0]*LET)/(1+dokeBirks[1]*LET)+dokeBirks[2];
 
     G4double ScintillationYield = 1 / (19.5*eV);
@@ -196,7 +196,7 @@ EDepSim::DokeBirks::PostStepDoIt(const G4Track& aTrack, const G4Step& aStep)
     // Thomas-Imel fit the data.  It's also because we are not interested in
     // extremely low energies, so Thomas-Imel makes a negligible correction.
     G4double nonIonizingEnergy = totalEnergyDeposit;
-    nonIonizingEnergy *= NumPhotons/NumQuanta; 
+    nonIonizingEnergy *= NumPhotons/NumQuanta;
     aParticleChange.ProposeNonIonizingEnergyDeposit(nonIonizingEnergy);
     return G4VRestDiscreteProcess::PostStepDoIt(aTrack, aStep);
 }
@@ -208,9 +208,9 @@ G4double EDepSim::DokeBirks::GetMeanFreePath(const G4Track&,
                                      G4ForceCondition* condition)
 {
     *condition = StronglyForced;
-    // Force the EDepSim::DokeBirks physics process to always happen, even if it's
-    // not the dominant process.  In effect it is a meta-process on top of any
-    // and all other energy depositions which may occur, just like the
+    // Force the EDepSim::DokeBirks physics process to always happen, even if
+    // it's not the dominant process.  In effect it is a meta-process on top
+    // of any and all other energy depositions which may occur, just like the
     // original G4Scintillation (disregard DBL_MAX, this function makes the
     // mean free path zero really, not infinite)
 
@@ -224,6 +224,7 @@ G4double EDepSim::DokeBirks::GetMeanLifeTime(const G4Track&,
 {
     *condition = Forced;
     // This function and this condition has the same effect as the above
+
     return DBL_MAX;
 }
 
@@ -239,4 +240,3 @@ G4double EDepSim::DokeBirks::CalculateElectronLET ( G4double E) {
     else LET = 0;
     return LET;
 }
-

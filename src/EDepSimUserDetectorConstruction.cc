@@ -283,7 +283,7 @@ void EDepSim::UserDetectorConstruction::ConstructSDandField() {
         // handled later.
         G4LogicalVolume* logVolume = remainingVolumes.front();
         remainingVolumes.pop();
-        for (std::size_t i = 0; i<logVolume->GetNoDaughters(); ++i) {
+        for (std::size_t i=0; i<(std::size_t)logVolume->GetNoDaughters(); ++i) {
             G4VPhysicalVolume* daughter = logVolume->GetDaughter(i);
             remainingVolumes.push(daughter->GetLogicalVolume());
         }
@@ -414,6 +414,37 @@ void EDepSim::UserDetectorConstruction::ConstructSDandField() {
             throw std::runtime_error("Field not created");
         }
         logVolume->SetFieldManager(manager,true);
+    }
+
+    ///////////////////////////////////////////////////////////////
+    // Handle custom material property values
+    //
+    // There are several material fields that cannot be directly set using a
+    // GDML interface.  An example of one is be the Birks' constant.  To work
+    // around this the GDML property element is used to set a
+    // MaterialPropertyVector that is then interpreted here to set the
+    // specific material field.
+    for (G4MaterialTable::iterator mat
+             = G4Material::GetMaterialTable()->begin();
+         mat != G4Material::GetMaterialTable()->end(); ++mat) {
+        G4MaterialPropertiesTable* anMPT = (*mat)->GetMaterialPropertiesTable();
+        if (!anMPT) continue;
+        // Check for a Birks constant value
+        if (anMPT->ConstPropertyExists("BIRKSCONSTANT")) {
+            double oldBC = (*mat)->GetIonisation()->GetBirksConstant();
+            if (oldBC > 1E-6) {
+                EDepSimError("Overriding Birks constant for "
+                             << (*mat)->GetName()
+                             << " from nonzero value of"
+                             << " " << oldBC/(mm/MeV) << " mm/MeV");
+            }
+
+            double bc = anMPT->GetConstProperty("BIRKSCONSTANT");
+            EDepSimLog((*mat)->GetName() << " Birks constant set to"
+                       << " " << bc/(mm/MeV) << " mm/MeV"
+                       << " from BIRKSCONSTANT property");
+            (*mat)->GetIonisation()->SetBirksConstant(bc);
+        }
     }
 }
 
@@ -676,5 +707,6 @@ G4VPhysicalVolume* EDepSim::UserDetectorConstruction::ConstructDetector() {
 
 void EDepSim::UserDetectorConstruction::UpdateGeometry() {
     // Initialize the run manager.  This sets everything in motion.
+    EDepSimLog("Update the geometry and initialize the G4RunManager");
     G4RunManager::GetRunManager()->Initialize();
 }

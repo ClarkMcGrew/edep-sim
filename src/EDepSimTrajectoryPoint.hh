@@ -70,6 +70,9 @@ public:
     /// track is just exiting. 
     int GetVolumeNode() const;
 
+    // Return Material 
+    G4String GetMaterial() const { return fStepMaterial; }
+
     // Get method for HEPRep style attributes
 
     virtual const std::map<G4String,G4AttDef>* GetAttDefs() const;
@@ -90,6 +93,7 @@ public:
     G4double fProcessDeposit;
     G4String fPhysVolName;
     G4ThreeVector fPrevPosition;
+    G4String fStepMaterial;
 };
 
 #if defined G4TRACKING_ALLOC_EXPORT

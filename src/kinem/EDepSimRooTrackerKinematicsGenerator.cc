@@ -18,6 +18,7 @@
 #include <G4ParticleDefinition.hh>
 #include <G4Tokenizer.hh>
 #include <G4UnitsTable.hh>
+#include <Randomize.hh>
 
 #include <TFile.h>
 #include <TBits.h>
@@ -61,42 +62,77 @@ EDepSim::RooTrackerKinematicsGenerator::RooTrackerKinematicsGenerator(
     std::string basename(filename,start_pos);
     fFilename = basename + ":" + treeName;
 
+    // Count fatal errors while connecting to the rooTracker tree.  Some of
+    // the branches are not used, or can be ignored, but *some* absolutely
+    // must be correct or the output is wrong.
+    int fatalErrors = 0;
+    int branchResult; // Should be zero.
+
     fEvtFlags = NULL;
-    fTree->SetBranchAddress("EvtFlags",       &fEvtFlags);
+    branchResult = fTree->SetBranchAddress("EvtFlags",       &fEvtFlags);
     fEvtCode = NULL;
-    fTree->SetBranchAddress("EvtCode",        &fEvtCode);
-    fTree->SetBranchAddress("EvtNum",         &fEvtNum);
-    fTree->SetBranchAddress("EvtXSec",        &fEvtXSec);
-    fTree->SetBranchAddress("EvtDXSec",       &fEvtDXSec);
-    fTree->SetBranchAddress("EvtWght",        &fEvtWght);
-    fTree->SetBranchAddress("EvtProb",        &fEvtProb);
-    fTree->SetBranchAddress("EvtVtx",          fEvtVtx);
-    fTree->SetBranchAddress("StdHepN",        &fStdHepN);
-    fTree->SetBranchAddress("StdHepPdg",       fStdHepPdg);
-    fTree->SetBranchAddress("StdHepStatus",    fStdHepStatus);
-    fTree->SetBranchAddress("StdHepX4",        fStdHepX4);
-    fTree->SetBranchAddress("StdHepP4",        fStdHepP4);
-    fTree->SetBranchAddress("StdHepPolz",      fStdHepPolz);
-    fTree->SetBranchAddress("StdHepFd",        fStdHepFd);
-    fTree->SetBranchAddress("StdHepLd",        fStdHepLd);
-    fTree->SetBranchAddress("StdHepFm",        fStdHepFm);
-    fTree->SetBranchAddress("StdHepLm",        fStdHepLm);
+    branchResult = fTree->SetBranchAddress("EvtCode",        &fEvtCode);
+    branchResult = fTree->SetBranchAddress("EvtNum",         &fEvtNum);
+    if (branchResult) {
+        EDepSimError("Previous error causes a fatally malformed file");
+        ++fatalErrors;
+    }
+    branchResult = fTree->SetBranchAddress("EvtXSec",        &fEvtXSec);
+    branchResult = fTree->SetBranchAddress("EvtDXSec",       &fEvtDXSec);
+    branchResult = fTree->SetBranchAddress("EvtWght",        &fEvtWght);
+    branchResult = fTree->SetBranchAddress("EvtProb",        &fEvtProb);
+    branchResult = fTree->SetBranchAddress("EvtVtx",          fEvtVtx);
+    if (branchResult) {
+        EDepSimError("Previous error causes a fatally malformed file");
+        ++fatalErrors;
+    }
+    branchResult = fTree->SetBranchAddress("StdHepN",        &fStdHepN);
+    if (branchResult) {
+        EDepSimError("Previous error causes a fatally malformed file");
+        ++fatalErrors;
+    }
+    branchResult = fTree->SetBranchAddress("StdHepPdg",       fStdHepPdg);
+    if (branchResult) {
+        EDepSimError("Previous error causes a fatally malformed file");
+        ++fatalErrors;
+    }
+    branchResult = fTree->SetBranchAddress("StdHepStatus",    fStdHepStatus);
+    if (branchResult) {
+        EDepSimError("Previous error causes a fatally malformed file");
+        ++fatalErrors;
+    }
+    branchResult = fTree->SetBranchAddress("StdHepX4",        fStdHepX4);
+    branchResult = fTree->SetBranchAddress("StdHepP4",        fStdHepP4);
+    if (branchResult) {
+        EDepSimError("Previous error causes a fatally malformed file");
+        ++fatalErrors;
+    }
+    branchResult = fTree->SetBranchAddress("StdHepPolz",      fStdHepPolz);
+    branchResult = fTree->SetBranchAddress("StdHepFd",        fStdHepFd);
+    branchResult = fTree->SetBranchAddress("StdHepLd",        fStdHepLd);
+    branchResult = fTree->SetBranchAddress("StdHepFm",        fStdHepFm);
+    branchResult = fTree->SetBranchAddress("StdHepLm",        fStdHepLm);
 #define PARENT_PARTICLE_PASS_THROUGH
 #ifdef PARENT_PARTICLE_PASS_THROUGH
-    fTree->SetBranchAddress("NuParentPdg",    &fNuParentPdg);
-    fTree->SetBranchAddress("NuParentDecMode",&fNuParentDecMode);
-    fTree->SetBranchAddress("NuParentDecP4",   fNuParentDecP4);
-    fTree->SetBranchAddress("NuParentDecX4",   fNuParentDecX4);
-    fTree->SetBranchAddress("NuParentProP4",   fNuParentProP4);
-    fTree->SetBranchAddress("NuParentProX4",   fNuParentProX4);
-    fTree->SetBranchAddress("NuParentProNVtx",&fNuParentProNVtx);
+    branchResult = fTree->SetBranchAddress("NuParentPdg",    &fNuParentPdg);
+    branchResult = fTree->SetBranchAddress("NuParentDecMode",&fNuParentDecMode);
+    branchResult = fTree->SetBranchAddress("NuParentDecP4",   fNuParentDecP4);
+    branchResult = fTree->SetBranchAddress("NuParentDecX4",   fNuParentDecX4);
+    branchResult = fTree->SetBranchAddress("NuParentProP4",   fNuParentProP4);
+    branchResult = fTree->SetBranchAddress("NuParentProX4",   fNuParentProX4);
+    branchResult = fTree->SetBranchAddress("NuParentProNVtx",&fNuParentProNVtx);
 #endif
+
+    if (fatalErrors) {
+        EDepSimError("Fatally malformed rooTracker file");
+        throw std::runtime_error("Malformed rooTracker file");
+    }
 
     // Set the input tree to the current rootracker tree that this class is
     // using.
     EDepSim::KinemPassThrough::GetInstance()->AddInputTree(fTree,
-                                                       filename,
-                                                       GetName());
+                                                           filename,
+                                                           GetName());
 
     // Generate a vector of entries to be used by this generator.
 
@@ -125,8 +161,10 @@ EDepSim::RooTrackerKinematicsGenerator::RooTrackerKinematicsGenerator(
         entry = (entry + stride)%entries;
     }
     if (order == "random") {
-        unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
-        std::shuffle(fEntryVector.begin(), fEntryVector.end(),std::default_random_engine(seed));
+        for (std::size_t i = fEntryVector.size()-1; i > 0; --i) {
+            int j = (i+1)*G4UniformRand();
+            std::swap(fEntryVector[i],fEntryVector[j]);
+        }
     }
 
     if (firstEvent > 0) {
@@ -171,9 +209,19 @@ EDepSim::RooTrackerKinematicsGenerator::GeneratePrimaryVertex(
     // Store current entry in the pass-through obj. N.B. To avoid mismatch
     // and false results call EDepSim::KinemPassThrough::AddEntry(fTreePtr, X)
     // where X is same as X in most recent call to fTreePtr->GetEntry(X).
-    EDepSim::KinemPassThrough::GetInstance()->AddEntry(fTree, entry);
+    // EDepSim::KinemPassThrough::GetInstance()->AddEntry(fTree, entry);
+    // NOTE: This is now done in EDepSim::RootPersistencyManager so that we can
+    // filter out the pass-through entries for events that don't leave any hits.
     EDepSimVerbose("Use rooTracker event number " << fEvtNum
                  << " (entry #" << entry << " in tree)");
+
+    std::string eventCode("not-specified");
+    if (fEvtCode) {
+        eventCode = fEvtCode->String();
+    }
+    else {
+        EDepSimError("Malformed input file -- missing EvtCode");
+    }
 
     // Increment the next entry counter.
     ++fNextEntry;
@@ -184,6 +232,7 @@ EDepSim::RooTrackerKinematicsGenerator::GeneratePrimaryVertex(
 
     // Check if this is an end-of-sequence marker.
     if (fStdHepN == 1 && fStdHepStatus[0]<0) {
+        EDepSimLog("End of event");
         return kEndEvent;
     }
 
@@ -204,7 +253,8 @@ EDepSim::RooTrackerKinematicsGenerator::GeneratePrimaryVertex(
     theVertex->SetUserInformation(vertexInfo);
 
     // Fill the information fields for this vertex.
-    vertexInfo->SetReaction(std::string(fEvtCode->String().Data()));
+    vertexInfo->SetReaction(eventCode);
+
     // Set the file name for this event.
     std::ostringstream fs;
     fs << fFilename << ":" << entry;
@@ -229,7 +279,7 @@ EDepSim::RooTrackerKinematicsGenerator::GeneratePrimaryVertex(
     // Add an information field to the vertex.
     EDepSim::VertexInfo *incomingVertexInfo = new EDepSim::VertexInfo;
     incomingVertexInfo->SetName("initial-state");
-    incomingVertexInfo->SetReaction(std::string(fEvtCode->String().Data()));
+    incomingVertexInfo->SetReaction(eventCode);
     theIncomingVertex->SetUserInformation(incomingVertexInfo);
 
     // Fill the particles to be tracked (status ==1).  These particles are
