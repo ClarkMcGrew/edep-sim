@@ -33,20 +33,26 @@
 
 G4Allocator<EDepSim::HitSegment> edepHitSegmentAllocator;
 
-EDepSim::HitSegment::HitSegment(double maxSagitta, double maxLength) 
-    : fMaxSagitta(maxSagitta), fMaxLength(maxLength),
-      fPrimaryId(0), fEnergyDeposit(0), fSecondaryDeposit(0), fTrackLength(0), 
+EDepSim::HitSegment::HitSegment(
+    double maxSagitta, double maxSeparation, double maxLength)
+    : fMaxSagitta(maxSagitta), fMaxSeparation(maxSeparation),
+      fMaxLength(maxLength),
+      fPrimaryId(0), fEnergyDeposit(0), fSecondaryDeposit(0), fTrackLength(0),
       fStart(0,0,0,0), fStop(0,0,0,0) {
-    fPath.reserve(500);
+    fPath.reserve(50);
+    if (fMaxSeparation > fMaxSagitta) fMaxSeparation = fMaxSagitta;
+    if (fMaxSeparation > fMaxLength) fMaxSeparation = fMaxLength;
+
 }
 
 EDepSim::HitSegment::HitSegment(const EDepSim::HitSegment& rhs)
-    : G4VHit(rhs), 
-      fMaxSagitta(rhs.fMaxSagitta), fMaxLength(rhs.fMaxLength),
+    : G4VHit(rhs),
+      fMaxSagitta(rhs.fMaxSagitta), fMaxSeparation(rhs.fMaxSeparation),
+      fMaxLength(rhs.fMaxLength),
       fContributors(rhs.fContributors), fPrimaryId(rhs.fPrimaryId),
       fEnergyDeposit(rhs.fEnergyDeposit),
       fSecondaryDeposit(rhs.fSecondaryDeposit),
-      fTrackLength(rhs.fTrackLength), 
+      fTrackLength(rhs.fTrackLength),
       fStart(rhs.fStart), fStop(rhs.fStop) {}
 
 
@@ -54,7 +60,7 @@ EDepSim::HitSegment::~HitSegment() { }
 
 bool EDepSim::HitSegment::SameHit(G4Step* theStep) {
     // Check that the hit and new step are in the same volume
-    G4TouchableHandle touchable 
+    G4TouchableHandle touchable
         = theStep->GetPreStepPoint()->GetTouchableHandle();
     if (fHitVolume != touchable) {
         return false;
@@ -86,10 +92,12 @@ bool EDepSim::HitSegment::SameHit(G4Step* theStep) {
         }
     }
     else {
+        // Short cut when separation is negative (or zero).
+        if (fMaxSeparation <= 0.0) return false;
         // This is not the same track that started this hit, but check to see
         // if it is a delta-ray that should be added to this segment.
         double separation = FindSeparation(theStep);
-        if (separation > fMaxSagitta) {
+        if (separation > fMaxSeparation) {
             return false;
         }
     }
@@ -102,7 +110,7 @@ int EDepSim::HitSegment::FindPrimaryId(G4Track *theTrack) {
 }
 
 void EDepSim::HitSegment::AddStep(G4Step* theStep) {
-    G4TouchableHandle touchable 
+    G4TouchableHandle touchable
         = theStep->GetPreStepPoint()->GetTouchableHandle();
     G4ThreeVector prePos = theStep->GetPreStepPoint()->GetPosition();
     G4ThreeVector postPos = theStep->GetPostStepPoint()->GetPosition();
@@ -112,26 +120,27 @@ void EDepSim::HitSegment::AddStep(G4Step* theStep) {
     double stepLength = (prePos-postPos).mag();
     double trackLength = theStep->GetStepLength();
     double nonIonizingDeposit = theStep->GetNonIonizingEnergyDeposit();
-    
+
     if (trackLength < 0.75*stepLength || trackLength < stepLength - 1*mm) {
-        EDepSimWarn("Track length shorter than step: " 
-                 << trackLength/mm << " mm "
-                 << "<" << stepLength/mm << " mm");
+        EDepSimWarn("Track length shorter than step: "
+                    << trackLength/mm << " mm "
+                    << "<" << stepLength/mm << " mm");
         EDepSimWarn("    Volume: "
-                  << theStep->GetTrack()->GetVolume()->GetName());
+                    << theStep->GetTrack()->GetVolume()->GetName());
         EDepSimWarn("    Particle: " << particle->GetParticleName()
-                 << " Depositing " << energyDeposit/MeV << " MeV");
-        EDepSimWarn("    Total Energy: " 
-                  << theStep->GetTrack()->GetTotalEnergy());
+                    << " Depositing " << energyDeposit/MeV << " MeV");
+        EDepSimWarn("    Total Energy: "
+                    << theStep->GetTrack()->GetTotalEnergy());
     }
 
     trackLength = std::max(trackLength,stepLength);
 
-    EDepSimTrace("Add Step with " << energyDeposit 
-              << " in " << theStep->GetTrack()->GetVolume()->GetName());
+    EDepSimTrace("Add Step with " << energyDeposit
+                 << " in " << theStep->GetTrack()->GetVolume()->GetName());
 
     if (energyDeposit <= 0.) {
-        EDepSimWarn("EDepSim::HitSegment:: No energy deposited: " << energyDeposit);
+        EDepSimWarn("EDepSim::HitSegment:: No energy deposited: "
+                    << energyDeposit);
     }
 
     if (trackLength <= 0.) {
@@ -148,7 +157,7 @@ void EDepSim::HitSegment::AddStep(G4Step* theStep) {
         stepLength = trackLength = std::min(0.5*mm,0.8*origStep);
         prePos = postPos - stepLength*mm*dir;
         EDepSimDebug("EDepSim::HitSegment:: " << particle->GetParticleName()
-                  << " Deposited " << energyDeposit/MeV << " MeV");
+                     << " Deposited " << energyDeposit/MeV << " MeV");
         EDepSimDebug("    Original step: " << origStep/mm << " mm");
         EDepSimDebug("    New step: " << stepLength/mm << " mm");
     }
@@ -156,20 +165,21 @@ void EDepSim::HitSegment::AddStep(G4Step* theStep) {
     if (stepLength>fMaxLength || trackLength>fMaxLength) {
         G4Track* trk = theStep->GetTrack();
         EDepSimWarn("EDepSim::HitSegment:: Long step in "
-                  << trk->GetVolume()->GetName());
-        EDepSimWarn("  Step Length is " 
-                  << stepLength/mm 
-                  << " mm and track length is " 
-                  << trackLength/mm << " mm");
+                    << trk->GetVolume()->GetName());
+        EDepSimWarn("  Step Length is "
+                    << stepLength/mm
+                    << " mm and track length is "
+                    << trackLength/mm << " mm");
 
         EDepSimWarn("  PID: " << particle->GetParticleName()
-                  << " E: " << trk->GetTotalEnergy()/MeV << " MeV"
-                  << " (kin: " << trk->GetKineticEnergy()/MeV << " MeV"
-                  << " Deposit: " 
-                  << energyDeposit/MeV << "MeV"
-                  << " Status: " << theStep->GetPreStepPoint()->GetStepStatus()
-                  << " -> " << theStep->GetPostStepPoint()->GetStepStatus());
-        
+                    << " E: " << trk->GetTotalEnergy()/MeV << " MeV"
+                    << " (kin: " << trk->GetKineticEnergy()/MeV << " MeV"
+                    << " Deposit: "
+                    << energyDeposit/MeV << "MeV"
+                    << " Status: "
+                    << theStep->GetPreStepPoint()->GetStepStatus()
+                    << " -> " << theStep->GetPostStepPoint()->GetStepStatus());
+
         const G4VProcess* proc = theStep->GetPostStepPoint()
             ->GetProcessDefinedStep();
         if (!proc) {
@@ -177,7 +187,8 @@ void EDepSim::HitSegment::AddStep(G4Step* theStep) {
         }
         else {
             EDepSimWarn("    Process: " << proc->GetProcessName()
-                      <<"/"<< proc->GetProcessTypeName(proc->GetProcessType()));
+                        << "/"
+                        << proc->GetProcessTypeName(proc->GetProcessType()));
         }
     }
 
@@ -189,7 +200,7 @@ void EDepSim::HitSegment::AddStep(G4Step* theStep) {
                    theStep->GetPreStepPoint()->GetGlobalTime());
         fPath.push_back(fStart.vect());
         fStop.set(postPos.x(),postPos.y(),postPos.z(),
-                      theStep->GetPostStepPoint()->GetGlobalTime());
+                  theStep->GetPostStepPoint()->GetGlobalTime());
         fPath.push_back(fStop.vect());
         fContributors.push_back(theStep->GetTrack()->GetTrackID());
     }
@@ -212,11 +223,11 @@ void EDepSim::HitSegment::AddStep(G4Step* theStep) {
     fTrackLength += trackLength;
 
     EDepSimDebug("EDepSim::HitSegment:: Deposit " << particle->GetParticleName()
-              << " adds " << energyDeposit/MeV << " MeV"
-              << " to " << fContributors.front()
-              << " w/ " << fEnergyDeposit
-              << " L " << trackLength
-              << " " << fTrackLength);
+                 << " adds " << energyDeposit/MeV << " MeV"
+                 << " to " << fContributors.front()
+                 << " w/ " << fEnergyDeposit
+                 << " L " << trackLength
+                 << " " << fTrackLength);
 }
 
 double EDepSim::HitSegment::FindSagitta(G4Step* theStep) {
@@ -228,9 +239,9 @@ double EDepSim::HitSegment::FindSagitta(G4Step* theStep) {
     if ((point-preStep).mag()>0.01*mm) return 10*m;
 
     const G4ThreeVector& postStep = theStep->GetPostStepPoint()->GetPosition();
-    // The proposed new segment direction; 
+    // The proposed new segment direction;
     G4ThreeVector newDir = (postStep-point).unit();
-    
+
     // Initialize the maximum sagitta found.
     double maxSagitta = 0.0;
 
@@ -271,13 +282,12 @@ double EDepSim::HitSegment::FindSeparation(G4Step* theStep) {
     // the new step.
     double s1 = (frontDelta - cosDelta*dir).mag();
 
-
     // Find the distance from the segment center line to the final point of
     // the new step.
     G4ThreeVector rearDelta = postStep-front;
     cosDelta = rearDelta*dir;
     double s2 = (rearDelta - cosDelta*dir).mag();
-    
+
     return std::max(s1,s2);
 }
 
@@ -295,9 +305,9 @@ void EDepSim::HitSegment::Draw(void) {
 }
 
 void EDepSim::HitSegment::Print(void) {
-    std::cout << "Hit Energy Deposit: " 
-        << G4BestUnit(fEnergyDeposit,"Energy")
-        << std::endl;
+    std::cout << "Hit Energy Deposit: "
+              << G4BestUnit(fEnergyDeposit,"Energy")
+              << std::endl;
 }
 
 double EDepSim::HitSegment::GetLength() const {

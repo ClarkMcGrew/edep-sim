@@ -3,10 +3,13 @@
 # Generate events using a non-trivial GDML geometry.
 #
 
-BASE=../fast-tests/060GDMLGeometry
+BASE=060GDMLGeometry
+INPUTBASE=../fast-tests/${BASE}
+
+GDML=${INPUTBASE}.gdml
+
 OUTPUT=${BASE}.root
 MACRO=${BASE}.mac
-GDML=${BASE}.gdml
 
 if [ -f ${OUTPUT} ]; then
     rm ${OUTPUT}

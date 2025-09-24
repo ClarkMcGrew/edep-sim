@@ -90,6 +90,24 @@ EDepSim::DetectorMessenger::DetectorMessenger(EDepSim::UserDetectorConstruction*
     par = new G4UIparameter("Unit", 's', false);
     fHitSagittaCmd->SetParameter(par);
 
+    fHitSeparationCmd = new G4UIcommand("/edep/hitSeparation",this);
+    fHitSeparationCmd->SetGuidance(
+        "Set the maximum separation for hit segments.");
+    fHitSeparationCmd->AvailableForStates(G4State_PreInit);
+
+    // The name of the sensitive detector.
+    par = new G4UIparameter("Sensitive", 's', false);
+    fHitSeparationCmd->SetParameter(par);
+
+    // The name of the sensitive detector.
+    par = new G4UIparameter("Separation", 'd', false);
+    fHitSeparationCmd->SetParameter(par);
+
+    // The name of the sensitive detector.
+    par = new G4UIparameter("Unit", 's', false);
+    fHitSeparationCmd->SetParameter(par);
+
+    ////////////
     fHitLengthCmd = new G4UIcommand("/edep/hitLength",this);
     fHitLengthCmd->SetGuidance(
         "Set the length for hit segments to stop growing.");
@@ -160,6 +178,7 @@ EDepSim::DetectorMessenger::~DetectorMessenger()
     delete fExportCmd;
     delete fControlCmd;
     delete fHitSagittaCmd;
+    delete fHitSeparationCmd;
     delete fHitLengthCmd;
     delete fHitExcludedCmd;
     delete fGDMLReadCmd;
@@ -232,6 +251,22 @@ void EDepSim::DetectorMessenger::SetNewValue(G4UIcommand * cmd,
         SegmentSD* sd = dynamic_cast<SegmentSD*>(factory.MakeSD(sdName));
         if (sd) {
             sd->SetMaximumHitSagitta(sagitta);
+        }
+        else {
+            std::cout << "Invalid sensitive detector" << std::endl;
+        }
+    }
+    else if (cmd == fHitSeparationCmd) {
+        std::istringstream input((const char*)newValue);
+        std::string sdName;
+        double separation;
+        std::string unitName;
+        input >> sdName >> separation >> unitName;
+        separation *= G4UnitDefinition::GetValueOf(unitName);
+        SDFactory factory("segment");
+        SegmentSD* sd = dynamic_cast<SegmentSD*>(factory.MakeSD(sdName));
+        if (sd) {
+            sd->SetMaximumHitSeparation(separation);
         }
         else {
             std::cout << "Invalid sensitive detector" << std::endl;

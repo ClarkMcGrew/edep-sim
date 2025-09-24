@@ -341,3 +341,9 @@ int main(int argc,char** argv) {
 
     return 0;
 }
+
+// Local Variables:
+// mode:c++
+// c-basic-offset:4
+// compile-command:"$(git rev-parse --show-toplevel)/build/edep-build.sh force"
+// End:

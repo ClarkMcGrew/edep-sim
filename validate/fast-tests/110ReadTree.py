@@ -1,4 +1,4 @@
-#! /usr/bin/env python
+#! /usr/bin/env python3
 #
 # Read almost every field in the event tree.
 #
@@ -114,7 +114,7 @@ def main(argv=None):
 
     # Read all of the events.
     entries=inputTree.GetEntriesFast()
-    for jentry in xrange(entries):
+    for jentry in range(entries):
         nb = inputTree.GetEntry(jentry)
         if nb<=0: continue
         print("Class: ", event.ClassName())

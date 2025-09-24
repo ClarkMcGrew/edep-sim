@@ -7297,6 +7297,7 @@ Guidance :
 Control kinematics generators.
 
  Sub-directories : 
+   /generator/kinematics/hepevt/   ...Title not available...
    /generator/kinematics/rooTracker/   Control of the rooTracker kinematics factory.
  Commands : 
    set * Set the current kinematics factory.
@@ -7309,7 +7310,32 @@ Set the current kinematics factory.
 Parameter : Factory
  Parameter type  : s
  Omittable       : False
- Candidates      : gps rock rooTracker 
+ Candidates      : gps hepevt rock rooTracker 
+
+Command directory path : /generator/kinematics/hepevt/
+ Sub-directories : 
+ Commands : 
+   input * Set the input file.
+   verbose * Set verbosity level (0 is default, 2 is max).
+
+
+Command /generator/kinematics/hepevt/input
+Guidance :
+Set the input file.
+
+Parameter : name
+ Parameter type  : s
+ Omittable       : False
+
+
+
+Command /generator/kinematics/hepevt/verbose
+Guidance :
+Set verbosity level (0 is default, 2 is max).
+
+Parameter : number
+ Parameter type  : i
+ Omittable       : False
 
 Command directory path : /generator/kinematics/rooTracker/
 
@@ -9106,4 +9132,4 @@ Parameter : int
  Default value   : Lin
  Candidates      : Lin Log Exp Spline
 
-ERROR: /home/mcgrew/work/dune/software/edep-sim/src/EDepSimRootPersistencyManager.cc:63: EDepSim::RootPersistencyManager::Close -- No Output File
+ERROR: /home/mcgrew/work/dune/software/edep-sim/src/EDepSimRootPersistencyManager.cc:62: EDepSim::RootPersistencyManager::Close -- No Output File

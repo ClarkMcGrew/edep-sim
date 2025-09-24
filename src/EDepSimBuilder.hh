@@ -66,23 +66,23 @@ public:
 
     /// Set the relative opacity of the constructed object.
     void SetOpacity(double v);
-    
+
     /// Get the relative opacity of the constructed object.
     double GetOpacity(void) const {return fOpacity;}
 
     /// Set the relative opacity of the object daughters
     void SetDaughterOpacity(double v);
-    
+
     /// Return the detector construction that is building this piece.
     EDepSim::UserDetectorConstruction* GetConstruction(void) {
         return fConstruction;
     };
-    
+
     /// Set the sensitive detector for this component.
     virtual void SetSensitiveDetector(G4VSensitiveDetector* s) {
         fSensitiveDetector = s;
     }
-    
+
     /// Get the sensitive detector for this component.
     virtual G4VSensitiveDetector* GetSensitiveDetector(void) {
         return fSensitiveDetector;
@@ -90,12 +90,17 @@ public:
 
     /// Set the sensitive detector for this component by name.
     virtual void SetSensitiveDetector(G4String name, G4String type);
-    
+
     /// Set the maximum sagitta for a track being added to a single hit
-    /// segment.
+    /// segment.  This is passed to the sensitive detector.
     virtual void SetMaximumHitSagitta(double sagitta);
 
-    /// Set the maximum length of a single hit segment.
+    /// Set the maximum separation between deposits being added to a single
+    /// hit segment.  This is passed to the sensitive detector.
+    virtual void SetMaximumHitSeparation(double separation);
+
+    /// Set the maximum length of a single hit segment.  This is passed to the
+    /// sensitive detector.
     virtual void SetMaximumHitLength(double length);
 
     /// Return the messenger for this constructor
@@ -111,9 +116,9 @@ public:
     /// that will be used by the derived class should be added using this
     /// method.
     void AddBuilder(EDepSim::Builder* c) {
-        if (fSubBuilders.find(c->GetLocalName()) 
+        if (fSubBuilders.find(c->GetLocalName())
             != fSubBuilders.end()) {
-            std::cout << "Multiply defined constructor name " 
+            std::cout << "Multiply defined constructor name "
                       << c->GetName()
                       << std::endl;
             EDepSimThrow("EDepSim::Builder::AddBuilder(): Multiple defines");
@@ -124,7 +129,7 @@ public:
     /// Get a sub constructor by name and do the dynamic cast.  This will
     /// abort with an error message if you request an undefined name.
     template <class T> T& Get(G4String n) {
-        std::map<G4String,EDepSim::Builder*>::iterator p 
+        std::map<G4String,EDepSim::Builder*>::iterator p
             = fSubBuilders.find(n);
         if (p==fSubBuilders.end()) {
             std::cout << "Error in " << GetName() << std::endl;
@@ -143,7 +148,7 @@ public:
         T* c = dynamic_cast<T*>((*p).second);
         if (!c) {
             std::cout << "Error in " << GetName() << std::endl;
-            std::cout << "  Cannot type cast " << n 
+            std::cout << "  Cannot type cast " << n
                       << " to requested class" << std::endl;
             EDepSimThrow("EDepSim::Builder::Get<>:"
                         " Bad typecast");
@@ -154,7 +159,7 @@ public:
     /// Find a sub constructor by name and do the dynamic cast.  This returns
     /// a pointer that will be NULL if you request an undefined name.
     template <class T> T* Find(G4String n) {
-        std::map<G4String,EDepSim::Builder*>::iterator p 
+        std::map<G4String,EDepSim::Builder*>::iterator p
             = fSubBuilders.find(n);
         if (p==fSubBuilders.end()) return NULL;
         T* c = dynamic_cast<T*>((*p).second);
@@ -203,7 +208,7 @@ private:
     /// The parent of this constructor
     EDepSim::Builder* fParent;
 
-    /// The user interface messenger that will provide values for this class. 
+    /// The user interface messenger that will provide values for this class.
     G4UImessenger* fMessenger;
 
     /// The sensitive detector for this tracking component.
@@ -236,6 +241,7 @@ private:
     G4UIcmdWithABool*          fCheckCMD;
     G4UIcommand*               fSensitiveCMD;
     G4UIcmdWithADoubleAndUnit* fMaximumHitSagittaCMD;
+    G4UIcmdWithADoubleAndUnit* fMaximumHitSeparationCMD;
     G4UIcmdWithADoubleAndUnit* fMaximumHitLengthCMD;
 
 public:

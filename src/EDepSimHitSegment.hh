@@ -2,7 +2,7 @@
 // $Id: EDepSim::HitSegment.hh,v 1.5 2011/06/29 04:35:53 mcgrew Exp $
 
 #ifndef EDepSim_HitSegment_h
-#define EDepSim_HitSegment_h 
+#define EDepSim_HitSegment_h
 
 #include <vector>
 
@@ -34,16 +34,17 @@ public:
     /// The default values are set so that normally, a scintillator element
     /// will only have a single hit for a through going track (& delta-rays).
     HitSegment(double maxSagitta = 1*CLHEP::mm,
-                   double maxLength = 5*CLHEP::mm);
-    
+               double maxSeparation = 1*CLHEP::mm,
+               double maxLength = 5*CLHEP::mm);
+
     HitSegment(const EDepSim::HitSegment& rhs);
     virtual ~HitSegment();
 
     typedef G4THitsCollection<EDepSim::HitSegment> HitSegmentCollection;
-    
+
     inline void* operator new(size_t);
     inline void  operator delete(void*);
-    
+
     /// Add the effects of a part of a step to this hit.
     virtual void AddStep(G4Step* theStep);
 
@@ -93,11 +94,11 @@ public:
 
     /// Get the total energy deposited in this hit.
     double GetEnergyDeposit(void) const {return fEnergyDeposit;}
-    
+
     /// Get the secondary energy deposited in this hit (see the field
     /// documentation).
     double GetSecondaryDeposit(void) const {return fSecondaryDeposit;}
-    
+
     /// Get the total charged track length in this hit.  This includes all of
     /// the contributions from secondary particles that got lumped into this
     /// hit (e.g. the contributions from delta-rays).
@@ -108,12 +109,12 @@ public:
 
     /// The position of the stopping point.
     const G4LorentzVector& GetStop() const {return fStop;}
-    
+
 #ifdef BOGUS
     /// The X position of the hit starting point.  Note that a hit by
     /// definition is in a single volume.  If the hit is spread over two
     /// volumes, it's a result of round-off error (and is almost a bug).  The
-    /// GeoNodeId should be defined by the average position of the hit. 
+    /// GeoNodeId should be defined by the average position of the hit.
     double GetStartX(void) const {return fStartX;}
 
     /// The Y position of the hit starting point.  Note that a hit by
@@ -158,7 +159,7 @@ public:
     /// GeoNodeId should be defined by the average position of the hit.
     double GetStopT(void) const {return fStopT;}
 #endif
-    
+
     /// Print the hit information.
     void ls(std::string = "") const;
 
@@ -182,18 +183,24 @@ private:
     /// The sagitta tolerance for the segment.
     double fMaxSagitta;
 
+    /// The maximum distance between deposits that can be combined
+    /// into a segment.  This sets the tolerance for combining things
+    /// like delta-rays into an existing segment.  When this is zero,
+    /// then only one track id can be in a particular segment.
+    double fMaxSeparation;
+
     /// The maximum length between the start and stop points of the segment.
     double fMaxLength;
 
     /// The TrackID for each trajectory that contributed to this hit.  This
     /// could contain the TrackID of the primary particle, but not
-    /// necessarily.  
+    /// necessarily.
     std::vector<int> fContributors;
 
     /// The track id of the primary particle.
     int fPrimaryId;
 
-    /// The total energy deposit in this hit.  
+    /// The total energy deposit in this hit.
     double fEnergyDeposit;
 
     /// The "secondary" energy deposit in this hit.  This is used to help
@@ -208,7 +215,7 @@ private:
     /// and N_e = N_q - N_ph.  Thd fSecondaryDeposit value already includes
     /// the binomial fluctuation, so don't fluctuate N_ph or N_e.
     double fSecondaryDeposit;
-    
+
     /// The total charged track length in this hit.  This includes the
     /// contribution from all of the secondary particles (e.g. delta-rays)
     /// that are included in this hit.
@@ -228,7 +235,7 @@ private:
     /// make sure that the current hit stays inside of it's allowed
     /// tolerances.
     std::vector<G4ThreeVector> fPath;
-    
+
 };
 
 extern G4Allocator<EDepSim::HitSegment> edepHitSegmentAllocator;

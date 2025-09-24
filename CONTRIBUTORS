@@ -4,10 +4,12 @@ This is an alphabetical list of people making contributions to
 edep-sim.  It is hopefully complete, and if there are mistakes, please
 let me (clark.mcgrew@stonybrook.edu) know.
 
-A. Cudd
-M. Kordosky
+C. Backhouse -- Compilation improvements
+A. Cudd      -- Arbitrary EM fields
+M. Kordosky  -- New geometry shapes
 C. McGrew
-B. Viren
+A. Mogan     -- starting point for HEPEVT reader
+B. Viren     -- Better ROOT integration
 
 The ideas here were developed within the T2K (ND280) and CAPTAIN
 collaborations.

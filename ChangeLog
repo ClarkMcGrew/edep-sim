@@ -1,6 +1,22 @@
-Changes in XXXX
+Changes in XXXXX
 
-* Update the detector construction so that it look for BIRKSCONSTANT
+* EDepSim::HitSegment -- Add a new parameter to control when very
+  short tracks (e.g. delta rays) are combined with an existing hit
+  segment.  This was previously controlled by the maximum allowed
+  segment sagitta.  The sagitta and separation for segments can now be
+  controlled by the /edep/hitSagitta (previously existed) and
+  /edep/hitSeparation (new) macro commands.
+
+Changes in 3.2.0
+
+* Add a new kinematics generator to accept HEPEVT format files.  The
+  generator input file is set using
+  "/generator/kinematics/hepevt/input [file]" and selected using
+  "/generator/kinematics/set hepevt".  The reader checks the syntax of
+  the input file and adds (hopefully) useful error messages.  The
+  current behavior is to terminate when an input error is found.
+
+* Update the detector construction so that it looks for BIRKSCONSTANT
   in the material properties table and copies the value into the
   material ionization properties.  This works around a missing feature
   in GDML where certain material description values cannot be set.  In
