@@ -1,5 +1,5 @@
-#include "kinem/ParticleBombFactory.hh"
-#include "kinem/ParticleBombGenerator.hh"
+#include "kinem/ParticleBomb/ParticleBombFactory.hh"
+#include "kinem/ParticleBomb/ParticleBombGenerator.hh"
 
 EDepSim::ParticleBombFactory::ParticleBombFactory(
     EDepSim::UserPrimaryGeneratorMessenger* parent)

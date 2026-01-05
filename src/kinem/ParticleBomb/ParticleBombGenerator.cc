@@ -1,4 +1,4 @@
-#include "kinem/ParticleBombGenerator.hh"
+#include "kinem/ParticleBomb/ParticleBombGenerator.hh"
 #include "EDepSimException.hh"
 
 #include <G4Event.hh>
