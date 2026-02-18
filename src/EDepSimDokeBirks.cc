@@ -97,6 +97,12 @@ EDepSim::DokeBirks::PostStepDoIt(const G4Track& aTrack, const G4Step& aStep)
     }
 
     if (!inLiquidArgon) {
+#if G4VERSION_NUMBER >= 1100
+        // The G4 EMSaturation model is update to expect a charged particle.
+        if (std::abs(aParticle->GetCharge()) < 0.1) {
+            return G4VRestDiscreteProcess::PostStepDoIt(aTrack, aStep);
+        }
+#endif
         if (!fEmSaturation) fEmSaturation = new G4EmSaturation(0);
         G4double nonIonizingEnergy
             = fEmSaturation->VisibleEnergyDepositionAtAStep(&aStep);
