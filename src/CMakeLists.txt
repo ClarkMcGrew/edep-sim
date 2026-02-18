@@ -1,4 +1,4 @@
-message("Energy Deposition Simulation")
+message(STATUS "Build Energy Deposition Simulation")
 
 # Suck up all of the .cc files for the source.  This isn't good CMAKE
 # practice, but it makes maintaining this file easier.

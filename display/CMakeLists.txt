@@ -9,7 +9,7 @@ set(VERSION_MINOR "0")
 set(VERSION_PATCH "0")
 set(VERSION "${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_PATCH}")
 
-message("Energy Deposition Display -- ${VERSION}")
+message(STATUS "Energy Deposition Display -- ${VERSION}")
 
 # Set the default verbosity of the compilation...
 set(CMAKE_VERBOSE_MAKEFILE TRUE)
@@ -23,9 +23,9 @@ if(ROOT_FOUND)
 endif(ROOT_FOUND)
 
 if(ROOT_Eve_LIBRARY)
-  message("Building the edep-disp event display")
+  message(STATUS "Building the edep-disp event display")
 else(ROOT_Eve_LIBRARY)
-  message("NOT BUILDING THE EVENT DISPLAY: eve not found")
+  message(WARNING "NOT BUILDING THE EVENT DISPLAY: eve not found")
   return()
 endif(ROOT_Eve_LIBRARY)
 
