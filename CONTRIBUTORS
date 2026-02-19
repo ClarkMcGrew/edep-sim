@@ -7,8 +7,8 @@ let me (clark.mcgrew@stonybrook.edu) know.
 C. Backhouse -- Compilation improvements
 A. Cudd      -- Arbitrary EM fields
 M. Kordosky  -- New geometry shapes
-C. McGrew
-A. Mogan     -- starting point for HEPEVT reader
+C. McGrew    
+A. Mogan     -- The HEPEVT reader
 B. Viren     -- Better ROOT integration
 
 The ideas here were developed within the T2K (ND280) and CAPTAIN
