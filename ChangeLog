@@ -1,11 +1,23 @@
-Changes in XXXXX
+Changes in 3.3.0
 
-* EDepSim::HitSegment -- Add a new parameter to control when very
-  short tracks (e.g. delta rays) are combined with an existing hit
-  segment.  This was previously controlled by the maximum allowed
-  segment sagitta.  The sagitta and separation for segments can now be
-  controlled by the /edep/hitSagitta (previously existed) and
-  /edep/hitSeparation (new) macro commands.
+* Support G4 v11: The code is largely upgraded to primarily support the G4
+  v11 coding practices.  Testing and development is done using G4.11.  The
+  G4 v10 interface is still supported via `ifdef` using G4Version, and will
+  be supported as long as it is not very incompatible with newer G4
+  versions.
+
+* HepEVT Kinematics -- Add features ot the HEPEvt reader from Andrew Mogan.
+  The flexibility is extended, and allows for multi-vertex events.
+
+* EDepSim::HitSegment -- Add a new parameter to control when very short
+  tracks (e.g. delta rays) are combined with an existing hit segment.  This
+  was previously controlled by the maximum allowed segment sagitta.  The
+  sagitta and separation for segments can now be controlled by the
+  /edep/hitSagitta (previously existed) and /edep/hitSeparation (new) macro
+  commands.
+
+* Use G4cout so that EDepSimLog (and friends) leverages the full
+  GEANT4 ios interface.
 
 Changes in 3.2.0
 
