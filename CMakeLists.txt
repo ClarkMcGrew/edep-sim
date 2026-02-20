@@ -2,9 +2,9 @@ cmake_minimum_required(VERSION 3.30)
 
 # Set the project name and version.  The project name will be used to
 # import this into other CMAKE files.
-project(EDepSim VERSION 1.0.0)
+project(EDepSim VERSION 3.2.0)
 
-message("Energy Deposition Simulation -- ${VERSION}")
+message(STATUS "Energy Deposition Simulation -- ${VERSION}")
 
 # Define the options that can be set in the cache, or on the cmake
 # command line.
@@ -51,10 +51,43 @@ if(NOT EDEPSIM_READONLY)
   if (Geant4_FOUND)
     include(${Geant4_USE_FILE})
   else (Geant4_FOUND)
-    message("GEANT not found")
+    message(WARNING "GEANT not found")
     set(EDEPSIM_READONLY TRUE)
   endif (Geant4_FOUND)
 endif(NOT EDEPSIM_READONLY)
+
+set(IS_ROOT_CXX_STANDARD_SET OFF)
+get_target_property(root_features ROOT::Core INTERFACE_COMPILE_FEATURES)
+foreach(cxxstd IN ITEMS 23 20 17 14 11)
+  if("cxx_std_${cxxstd}" IN_LIST root_features)
+    message(STATUS "ROOT compiled with C++${cxxstd}")
+    set(IS_ROOT_CXX_STANDARD_SET ON)
+    set(CMAKE_CXX_STANDARD ${cxxstd})
+    set(CMAKE_CXX_STANDARD_REQUIRED ON)
+    break()
+  endif()
+endforeach()
+
+if(!IS_ROOT_CXX_STANDARD_SET)
+  # !! This is an old routine that use to work in 2025 !!
+  # Explicitly set the compiler version so that it will match the
+  # compiler that was used to compile ROOT.  Recent ROOT documentation
+  # explicitly notes that the appliation needs to use the same C++
+  # standard as ROOT.
+  if ( ROOT_cxx14_FOUND )
+    message(STATUS "ROOT compiled with C++14")
+    set(CMAKE_CXX_STANDARD 14)
+  elseif ( ROOT_cxx17_FOUND )
+    message(STATUS "ROOT compiled with C++17")
+    set(CMAKE_CXX_STANDARD 17)
+  elseif ( ROOT_cxx20_FOUND )
+    message(STATUS "ROOT compiled with C++20")
+    set(CMAKE_CXX_STANDARD 20)
+  else ( ROOT_cxx14_FOUND )
+    message(ALERT "ROOT C++ standard not set, use ROOT minimum (C++14)")
+    set(CMAKE_CXX_STANDARD 14)
+  endif ( ROOT_cxx14_FOUND)
+endif()
 
 # Compile the input/output classes needed to read edep-sim output.
 # This does not depend on geant4.
@@ -64,7 +97,7 @@ add_subdirectory(io)
 # displays out there, but this is what I use to debug the code.  This
 # does not depend on geant4.
 if(EDEPSIM_DISPLAY)
-  message("Building edep-disp event display")
+  message(STATUS "Building edep-disp event display")
   add_subdirectory(display)
 endif(EDEPSIM_DISPLAY)
 

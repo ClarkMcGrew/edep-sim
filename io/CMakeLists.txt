@@ -1,4 +1,4 @@
-message("Energy Deposition Display")
+message(STATUS "Energy Deposition I/O")
 
 # Set the default verbosity of the compilation...
 # set(CMAKE_VERBOSE_MAKEFILE TRUE)

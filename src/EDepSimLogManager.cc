@@ -5,6 +5,8 @@
 
 #include "EDepSimLog.hh"
 
+#include "G4ios.hh"
+
 EDepSim::LogManager::ErrorPriority EDepSim::LogManager::fErrorPriority = EDepSim::LogManager::ErrorLevel;
 EDepSim::LogManager::LogPriority EDepSim::LogManager::fLogPriority = EDepSim::LogManager::LogLevel;
 std::ostream* EDepSim::LogManager::fDebugStream = NULL;
@@ -15,7 +17,7 @@ int EDepSim::LogManager::fIndentation = 0;
 
 EDepSim::LogManager::~LogManager() { }
 
-void EDepSim::LogManager::SetDebugLevel(const char* trace, 
+void EDepSim::LogManager::SetDebugLevel(const char* trace,
                               EDepSim::LogManager::ErrorPriority level) {
     fErrorTraces[trace] = level;
 }
@@ -37,7 +39,7 @@ namespace {
         struct tm *utc = gmtime(&t);
         if (!utc) return stamp;
         char utcTime[80];
-        if (!strftime(utcTime,sizeof(utcTime),"%Y-%m-%d %H:%M (UTC)",utc)) 
+        if (!strftime(utcTime,sizeof(utcTime),"%Y-%m-%d %H:%M (UTC)",utc))
             return stamp;
         stamp = localTime;
         stamp += " [";
@@ -56,11 +58,11 @@ void EDepSim::LogManager::SetDebugStream(std::ostream* err) {
         EDepSimSevere("Debug stream is not open.");
     }
     *fDebugStream << std::endl
-                  << "##################################################" 
+                  << "##################################################"
                   << std::endl
                   << "# ERROR LOG STARTS AT: " << MakeTimeStamp()
                   << std::endl
-                  << "##################################################" 
+                  << "##################################################"
                   << std::endl
                   << std::endl;
 }
@@ -69,8 +71,8 @@ std::ostream& EDepSim::LogManager::GetDebugStream() {
     if (!EDepSim::LogManager::fDebugStream ) return GetLogStream();
     return *EDepSim::LogManager::fDebugStream;
 }
-    
-void EDepSim::LogManager::SetLogLevel(const char* trace, 
+
+void EDepSim::LogManager::SetLogLevel(const char* trace,
                             EDepSim::LogManager::LogPriority level) {
     fLogTraces[trace] = level;
 }
@@ -90,17 +92,17 @@ void EDepSim::LogManager::SetLogStream(std::ostream* log) {
         EDepSimSevere("Log stream is not open.");
     }
     *fLogStream << std::endl
-                << "##################################################" 
+                << "##################################################"
                 << std::endl
                 << "# LOG STARTS AT: " << MakeTimeStamp()
                 << std::endl
-                << "##################################################" 
+                << "##################################################"
                 << std::endl
                 << std::endl;
 }
 
 std::ostream& EDepSim::LogManager::GetLogStream() {
-    if (!EDepSim::LogManager::fLogStream) return std::cout;
+    if (!EDepSim::LogManager::fLogStream) return G4cout;
     return *EDepSim::LogManager::fLogStream;
 }
 
@@ -115,7 +117,7 @@ void EDepSim::LogManager::IncreaseIndentation() {
 void EDepSim::LogManager::DecreaseIndentation() {
     if (EDepSim::LogManager::fIndentation>0) --EDepSim::LogManager::fIndentation;
 }
-    
+
 void EDepSim::LogManager::ResetIndentation() {
     EDepSim::LogManager::fIndentation = 0;
 }
@@ -132,7 +134,7 @@ std::string EDepSim::LogManager::MakeIndent() {
 }
 
 namespace {
-    bool TranslateLogLevel(const std::string& name, 
+    bool TranslateLogLevel(const std::string& name,
                            EDepSim::LogManager::LogPriority& level) {
         if (name == "QuietLevel") {
             level = EDepSim::LogManager::QuietLevel;
@@ -153,7 +155,7 @@ namespace {
         return false;
     }
 
-    bool TranslateErrorLevel(const std::string& name, 
+    bool TranslateErrorLevel(const std::string& name,
                              EDepSim::LogManager::ErrorPriority& level) {
         if (name == "SilentLevel") {
             level = EDepSim::LogManager::SilentLevel;
@@ -183,8 +185,8 @@ namespace {
     }
 
     std::ostream* StreamPointer(const std::string& name) {
-        if (name == "STDCOUT") return &std::cout;
-        if (name == "STDCERR") return &std::cerr;
+        if (name == "STDCOUT") return &G4cout;
+        if (name == "STDCERR") return &G4cerr;
         if (name[0] != '"') return NULL;
         if (name[name.size()-1] != '"') return NULL;
         std::string file = name.substr(1,name.size()-2);
@@ -208,7 +210,7 @@ namespace {
             // messages can be printed later.
             std::string cache(line);
             ++inputLine;
-            
+
             // Strip the comments out of the file.
             std::string::size_type position = line.find("#");
             if (position != std::string::npos) line.erase(position);
@@ -223,12 +225,12 @@ namespace {
             position = line.find("=");
             if (position == std::string::npos) {
                 // Houston, we have a problem... There isn't a value.
-                std::cerr << "WARNING: " << config << ":" << inputLine << ": "
+                G4cerr << "WARNING: " << config << ":" << inputLine << ": "
                           << "Configuration line missing an '='"
                           << std::endl;
-                std::cerr << "  Line: <" << cache << ">"
+                G4cerr << "  Line: <" << cache << ">"
                           << std::endl;
-                std::cerr << "  Configuration line has been skip" << std::endl;
+                G4cerr << "  Configuration line has been skip" << std::endl;
                 continue;
             }
 
@@ -242,11 +244,11 @@ namespace {
             // Strip the white space at the end of the value.
             position = value.find_last_not_of("\t ");
             if (position != std::string::npos) value.erase(position+1);
-            
+
             // Strip the white space at the end of the fields.
             position = line.find_last_not_of("\t ");
             if (position != std::string::npos) line.erase(position+1);
-            
+
             // Split the remaining line in to fields.
             std::vector<std::string> fields;
             for (;;) {
@@ -257,8 +259,8 @@ namespace {
                 }
                 fields.push_back(line.substr(0,position));
                 line.erase(0,position+1);
-            } 
-            
+            }
+
             // Process the fields and value.
             if (fields.size() == 2
                 && fields[0] == "log"
@@ -266,13 +268,13 @@ namespace {
                 // Set the log file name.
                 std::ostream* str = StreamPointer(value);
                 if (!str) {
-                    std::cerr << "WARNING: " << config << ":" 
+                    G4cerr << "WARNING: " << config << ":"
                               << inputLine << ": "
                               << "Cannot open log stream."
                               << std::endl;
-                    std::cerr << "  Line: <" << cache << ">"
+                    G4cerr << "  Line: <" << cache << ">"
                               << std::endl;
-                    std::cerr << "  Configuration line has been skip" 
+                    G4cerr << "  Configuration line has been skip"
                               << std::endl;
                     continue;
                 }
@@ -284,13 +286,13 @@ namespace {
                 // Set the error file name.
                 std::ostream* str = StreamPointer(value);
                 if (!str) {
-                    std::cerr << "WARNING: " << config << ":" 
+                    G4cerr << "WARNING: " << config << ":"
                               << inputLine << ": "
                               << "Cannot open error stream."
                               << std::endl;
-                    std::cerr << "  Line: <" << cache << ">"
+                    G4cerr << "  Line: <" << cache << ">"
                               << std::endl;
-                    std::cerr << "  Configuration line has been skip" 
+                    G4cerr << "  Configuration line has been skip"
                               << std::endl;
                     continue;
                 }
@@ -303,13 +305,13 @@ namespace {
                 // Set the default log level.
                 EDepSim::LogManager::LogPriority level;
                 if (!TranslateLogLevel(value,level)) {
-                    std::cerr << "WARNING: " << config << ":" 
+                    G4cerr << "WARNING: " << config << ":"
                               << inputLine << ": "
                               << "Unknown log level name."
                               << std::endl;
-                    std::cerr << "  Line: <" << cache << ">"
+                    G4cerr << "  Line: <" << cache << ">"
                               << std::endl;
-                    std::cerr << "  Configuration line has been skip" 
+                    G4cerr << "  Configuration line has been skip"
                               << std::endl;
                     continue;
                 }
@@ -322,13 +324,13 @@ namespace {
                 // Set the default error level.
                 EDepSim::LogManager::ErrorPriority level;
                 if (!TranslateErrorLevel(value,level)) {
-                    std::cerr << "WARNING: " << config << ":" 
+                    G4cerr << "WARNING: " << config << ":"
                               << inputLine << ": "
                               << "Unknown error level name."
                               << std::endl;
-                    std::cerr << "  Line: <" << cache << ">"
+                    G4cerr << "  Line: <" << cache << ">"
                               << std::endl;
-                    std::cerr << "  Configuration line has been skip" 
+                    G4cerr << "  Configuration line has been skip"
                               << std::endl;
                     continue;
                 }
@@ -340,13 +342,13 @@ namespace {
                 // Set the log level.
                 EDepSim::LogManager::LogPriority level;
                 if (!TranslateLogLevel(value,level)) {
-                    std::cerr << "WARNING: " << config << ":" 
+                    G4cerr << "WARNING: " << config << ":"
                               << inputLine << ": "
                               << "Unknown log level name."
                               << std::endl;
-                    std::cerr << "  Line: <" << cache << ">"
+                    G4cerr << "  Line: <" << cache << ">"
                               << std::endl;
-                    std::cerr << "  Configuration line has been skip" 
+                    G4cerr << "  Configuration line has been skip"
                               << std::endl;
                     continue;
                 }
@@ -358,26 +360,26 @@ namespace {
                 // Set the error level.
                 EDepSim::LogManager::ErrorPriority level;
                 if (!TranslateErrorLevel(value,level)) {
-                    std::cerr << "WARNING: " << config << ":" 
+                    G4cerr << "WARNING: " << config << ":"
                               << inputLine << ": "
                               << "Unknown error level name."
                               << std::endl;
-                    std::cerr << "  Line: <" << cache << ">"
+                    G4cerr << "  Line: <" << cache << ">"
                               << std::endl;
-                    std::cerr << "  Configuration line has been skip" 
+                    G4cerr << "  Configuration line has been skip"
                               << std::endl;
                     continue;
                 }
                 EDepSim::LogManager::SetDebugLevel(fields[1].c_str(),level);
             }
             else {
-                std::cerr << "WARNING: " << config << ":" << inputLine << ": "
+                G4cerr << "WARNING: " << config << ":" << inputLine << ": "
                           << "Unknown command."
                           << std::endl;
-                std::cerr << "  Line: <" << cache << ">"
+                G4cerr << "  Line: <" << cache << ">"
                           << std::endl;
-                std::cerr << "  Configuration line has been skip" << std::endl;
-            }                
+                G4cerr << "  Configuration line has been skip" << std::endl;
+            }
         }
 
         return true;
@@ -385,10 +387,10 @@ namespace {
 }
 
 void EDepSim::LogManager::Configure(const char* conf) {
-    // Try to read a local configuration file.  
+    // Try to read a local configuration file.
     ReadConfigurationFile("./edeplog.config");
     if (conf) {
         bool success = ReadConfigurationFile(conf);
-        if (!success) EDepSimLog("EDepSim::Log configuration file was not read.");
+        if (!success) EDepSimWarn("EDepSim::Log configuration file was not read.");
     }
 }
