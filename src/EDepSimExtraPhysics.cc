@@ -7,7 +7,7 @@
 #include "NESTVersion098/G4ThermalElectron.hh"
 #endif
 
-#include "EDepSimDokeBirks.hh"
+#include "EDepSimSecondaryEnergy.hh"
 #include "EDepSimLog.hh"
 
 #include <globals.hh>

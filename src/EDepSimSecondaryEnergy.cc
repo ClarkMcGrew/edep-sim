@@ -9,7 +9,7 @@
 
 #include "EDepSimLog.hh"
 
-#include "EDepSimDokeBirks.hh"
+#include "EDepSimSecondaryEnergy.hh"
 
 // The physics in EDepSim::DokeBirks is shamelessly stolen from NEST, so cite
 // the NEST paper to give credit where credit is due.  However, all of the
