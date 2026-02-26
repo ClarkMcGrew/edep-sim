@@ -2,6 +2,7 @@
 #include "EDepSimPhysicsListMessenger.hh"
 #include "EDepSimException.hh"
 #include "EDepSimExtraPhysics.hh"
+#include "EDepSimDokeBirksSaturation.hh"
 
 #include <EDepSimLog.hh>
 
@@ -78,6 +79,10 @@ EDepSim::PhysicsList::PhysicsList(G4String physName)
     fExtra = new EDepSim::ExtraPhysics();
     RegisterPhysics(fExtra);
     RegisterPhysics(new G4OpticalPhysics());
+
+    // Setup the parameters (override if necesssary)
+    G4EmParameters* params = G4EmParameters::Instance();
+    params->SetEmSaturation(new EDepSim::DokeBirksSaturation(0));
 
 }
 
