@@ -176,6 +176,22 @@ public:
         return fSaveAllPrimaryTrajectories;
     }
 
+    /// Set the threshold to save particle trajectories.  If this is positive,
+    /// then only trajectories more than this value are saved.  If this is
+    /// negative, then all trajectories are saved.  If this is nan, then none
+    /// of the trajectories are saved.
+    virtual void SetSaveAllTrajectories(double val) {
+        fSaveAllTrajectories = val;
+    }
+
+    /// Get the threshold to save particle trajectories.  If this is positive,
+    /// then only trajectories more than this value are saved.  If this is
+    /// negative, then all trajectories are saved.  If this is nan, then none
+    /// of the trajectories are saved unless otherwise marked.
+    virtual double GetSaveAllTrajectories() {
+        return fSaveAllTrajectories;
+    }
+
     /// Add a regular expression to define a volume boundary at which a
     /// trajectory point should be saved.  The volume names are defined by the
     /// constructors which built the volume.  Most of the names can be found
@@ -302,6 +318,12 @@ private:
     /// that ultimately create energy in a sensitive detector.  The primary
     /// particles are always saved.
     bool fSaveAllPrimaryTrajectories;
+
+    /// A threshold to determine if all trajectories are saved, including
+    /// things like neutrinos.  Everything with more than this momentum will
+    /// be saved (a negative value saves everything, including the neutrinos).
+    /// The default is nan, which won't save anything by default.
+    double fSaveAllTrajectories;
 
     /// A list of detectors for which trajectory points should be saved as
     /// particles enter and exit.
