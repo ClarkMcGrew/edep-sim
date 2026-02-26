@@ -38,7 +38,7 @@ public:
 
     /// Determine which particles this process should be applied too.
     G4bool IsApplicable(const G4ParticleDefinition& aParticleType);
-    
+
     /// Don't limit the step since this process doesn't actually change the
     /// energy deposit (it returns infinity).  The process does set the
     /// 'StronglyForced' condition so the DoIt is invoked at every step.
@@ -51,7 +51,7 @@ public:
     /// 'StronglyForced' condition so the DoIt is invoked at every step.
     G4double GetMeanLifeTime(const G4Track& aTrack,
                              G4ForceCondition* );
-  
+
     /// Apply the scintilation process for an in-flight particle.
     G4VParticleChange* PostStepDoIt(const G4Track& aTrack,
                                     const G4Step& aStep);
@@ -60,15 +60,6 @@ public:
     /// PostStepDoIt().
     G4VParticleChange* AtRestDoIt ( const G4Track& aTrack,
                                     const G4Step& aStep);
-  
-private:
 
-    /// Get the expected electron electron dEdX as a function of energy.  This
-    /// is normalized to denstity.  The energy must be in MeV.
-    G4double CalculateElectronLET ( G4double E);
-
-    // The EM Saturation model for when the material is not LAr.
-    G4EmSaturation* fEmSaturation;
-  
 };
 #endif
