@@ -377,7 +377,7 @@ void EDepSim::PersistencyManager::MarkTrajectories(const G4Event* event) {
         if (processName == "Decay") {
             if (ndTraj->GetSDTotalEnergyDeposit()>1*eV
                 || GetSaveAllPrimaryTrajectories()) {
-                ndTraj->MarkTrajectory(false);
+                ndTraj->MarkTrajectory(0);
                 continue;
             }
         }
@@ -386,7 +386,7 @@ void EDepSim::PersistencyManager::MarkTrajectories(const G4Event* event) {
         // detector.  This doesn't automatically save, but the parents will be
         // automatically considered for saving by the next bit of code.
         if (ndTraj->GetSDLength() > GetLengthThreshold()) {
-            ndTraj->MarkTrajectory(false);
+            ndTraj->MarkTrajectory(0);
             continue;
         }
 
@@ -400,7 +400,7 @@ void EDepSim::PersistencyManager::MarkTrajectories(const G4Event* event) {
         // energy in a sensitive detector.  This only affects secondary
         // photons since primary photons are handled above.
         if (particleName == "gamma" && initialMomentum > GetGammaThreshold()) {
-            ndTraj->MarkTrajectory(false);
+            ndTraj->MarkTrajectory(0);
             continue;
         }
 
@@ -409,7 +409,7 @@ void EDepSim::PersistencyManager::MarkTrajectories(const G4Event* event) {
         // since primary neutrons are controlled above.
         if (particleName == "neutron"
             && initialMomentum > GetNeutronThreshold()) {
-            ndTraj->MarkTrajectory(false);
+            ndTraj->MarkTrajectory(0);
             continue;
         }
     }
@@ -440,7 +440,7 @@ void EDepSim::PersistencyManager::MarkTrajectories(const G4Event* event) {
                 = dynamic_cast<EDepSim::Trajectory*>(
                     EDepSim::TrajectoryMap::Get(primaryId));
             if (ndTraj) {
-                ndTraj->MarkTrajectory(false);
+                ndTraj->MarkTrajectory(0);
             }
             else {
                 EDepSimError("Primary trajectory not found");
@@ -454,7 +454,7 @@ void EDepSim::PersistencyManager::MarkTrajectories(const G4Event* event) {
                     = dynamic_cast<EDepSim::Trajectory*>(
                         EDepSim::TrajectoryMap::Get(contribId));
                 if (contribTraj) {
-                    contribTraj->MarkTrajectory(false);
+                    contribTraj->MarkTrajectory(0);
                 }
                 else {
                     EDepSimError("Contributor trajectory not found");
