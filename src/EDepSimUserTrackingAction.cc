@@ -15,10 +15,14 @@ EDepSim::UserTrackingAction::UserTrackingAction() {}
 EDepSim::UserTrackingAction::~UserTrackingAction() {}
 
 void EDepSim::UserTrackingAction::PreUserTrackingAction(const G4Track* trk) {
-    EDepSimTrace("Pre-tracking action");
+    EDepSimTrace("Pre-tracking action ");
+
     G4VTrajectory* traj = new EDepSim::Trajectory(trk);
     fpTrackingManager->SetTrajectory(traj);
     fpTrackingManager->SetStoreTrajectory(true);
     EDepSim::TrajectoryMap::Add(traj);
 }
 
+void EDepSim::UserTrackingAction::PostUserTrackingAction(const G4Track*) {
+    EDepSimTrace("Post-tracking action");
+}
