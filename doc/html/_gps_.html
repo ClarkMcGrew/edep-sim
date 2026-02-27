@@ -1,0 +1,171 @@
+<html><head><title>Commands in /gps/</title></head>
+<style>     table,table td,table th {        border:1px solid #eee     }     table td,table th {       padding:5px 20px;       line-height:1.3;       text-align:inherit     }     a {       color:#17a81a;       text-decoration:none;       transition-duration:0.3s     }       a:hover {       color:#17a81a     }     table {       border-collapse:collapse;       border-spacing:0;       margin-bottom:5px;     }     h1 {       font-size:2.25em;       font-weight:300;       letter-spacing:-1px;       line-height:1.15em;       margin-bottom:0.5em;       word-wrap:break-word     }     h2 {       font-size:1.5em;       font-weight:300;       letter-spacing:-1px;       line-height:1.15em;       margin-bottom:0.5em;       word-wrap:break-word     }     h3 {       color:#26282a;       font-weight:300;       font-size:1.3em;       padding:15px 0 15px 0;       border-bottom:2px #eee solid;       word-wrap:break-word     }     .sidebar {       display:block;       position:relative;       position:sticky;       float:left;       -webkit-box-sizing:border-box;       -moz-box-sizing:border-box;       -ms-box-sizing:border-box;       box-sizing:border-box;       width:20%;       padding-right:20px     }     .context {     width:80%;     display:inline-block;     background-color:#fff;     padding: 25px 35px 20px 30px;     -webkit-box-sizing:border-box;     -moz-box-sizing:border-box;     -ms-box-sizing:border-box;     box-sizing:border-box   }     </style>
+<body bgcolor="#ffffff">
+<div class="sidebar"><h2><a href="_.html">Top level </a></h2><table><tr><td><a href="_control_.html">/control/</a><tr><td><a href="_units_.html">/units/</a><tr><td><a href="_profiler_.html">/profiler/</a><tr><td><a href="_particle_.html">/particle/</a><tr><td><a href="_tracking_.html">/tracking/</a><tr><td><a href="_geometry_.html">/geometry/</a><tr><td><a href="_process_.html">/process/</a><tr><td><a href="_event_.html">/event/</a><tr><td><a href="_cuts_.html">/cuts/</a><tr><td><a href="_run_.html">/run/</a><tr><td><a href="_random_.html">/random/</a><tr><td><a href="_edep_.html">/edep/</a><tr><td><a href="_Captain_.html">/Captain/</a><tr><td><a href="_hits_.html">/hits/</a><tr><td><a href="_material_.html">/material/</a><tr><td><a href="_physics_lists_.html">/physics_lists/</a><tr><td><a href="_generator_.html">/generator/</a><tr><td><a href="_gps_.html">/gps/</a></table></div>
+<div class="context"><h1>/gps/</h1>
+General Particle Source control commands.<br>
+<h2>Sub-directories </h2><table><tr><td><a href="_gps_source_.html">/gps/source/</a></td><td>Multiple source control sub-directory</tr><tr><td><a href="_gps_pos_.html">/gps/pos/</a></td><td>Positional commands sub-directory</tr><tr><td><a href="_gps_ang_.html">/gps/ang/</a></td><td>Angular commands sub-directory</tr><tr><td><a href="_gps_ene_.html">/gps/ene/</a></td><td>Spectral commands sub-directory</tr><tr><td><a href="_gps_hist_.html">/gps/hist/</a></td><td>Histogram, biasing commands sub-directory</tr></table>
+<h2>Commands </h2>
+<table>
+<tr><td><a href="#c0">List</a></td></tr>
+<tr><td><a href="#c1">particle</a></td></tr>
+<tr><td><a href="#c2">direction</a></td></tr>
+<tr><td><a href="#c3">energy</a></td></tr>
+<tr><td><a href="#c4">position</a></td></tr>
+<tr><td><a href="#c5">ion</a></td></tr>
+<tr><td><a href="#c6">ionLvl</a></td></tr>
+<tr><td><a href="#c7">time</a></td></tr>
+<tr><td><a href="#c8">polarization</a></td></tr>
+<tr><td><a href="#c9">number</a></td></tr>
+<tr><td><a href="#c10">verbose</a></td></tr>
+</table>
+<h3 id="c0">List</h3>
+<p>
+List available particles.<br>
+ Invoke G4ParticleTable.<br>
+<p>Available at all Geant4 states.
+<h3 id="c1">particle [<i>particleName</i>]</h3>
+<p>
+Set particle to be generated.<br>
+ (geantino is default)<br>
+ (ion can be specified for shooting ions)<br>
+<p>Available at all Geant4 states.
+<p>Parameters<table border=1>
+<tr><td>particleName
+<td>type s
+<td>Omittable : default value = geantino
+<td>Parameter candidates : B+ B- B0 Bc+ Bc- Bs0 D+ D- D0 Ds+ Ds- GenericIon He3 J/psi N(1440)+ N(1440)0 N(1520)+ N(1520)0 N(1535)+ N(1535)0 N(1650)+ N(1650)0 N(1675)+ N(1675)0 N(1680)+ N(1680)0 N(1700)+ N(1700)0 N(1710)+ N(1710)0 N(1720)+ N(1720)0 N(1900)+ N(1900)0 N(1990)+ N(1990)0 N(2090)+ N(2090)0 N(2190)+ N(2190)0 N(2220)+ N(2220)0 N(2250)+ N(2250)0 Upsilon a0(1450)+ a0(1450)- a0(1450)0 a0(980)+ a0(980)- a0(980)0 a1(1260)+ a1(1260)- a1(1260)0 a2(1320)+ a2(1320)- a2(1320)0 alpha anti_B0 anti_Bs0 anti_D0 anti_He3 anti_N(1440)+ anti_N(1440)0 anti_N(1520)+ anti_N(1520)0 anti_N(1535)+ anti_N(1535)0 anti_N(1650)+ anti_N(1650)0 anti_N(1675)+ anti_N(1675)0 anti_N(1680)+ anti_N(1680)0 anti_N(1700)+ anti_N(1700)0 anti_N(1710)+ anti_N(1710)0 anti_N(1720)+ anti_N(1720)0 anti_N(1900)+ anti_N(1900)0 anti_N(1990)+ anti_N(1990)0 anti_N(2090)+ anti_N(2090)0 anti_N(2190)+ anti_N(2190)0 anti_N(2220)+ anti_N(2220)0 anti_N(2250)+ anti_N(2250)0 anti_alpha anti_b_quark anti_bb1_diquark anti_bc0_diquark anti_bc1_diquark anti_bd0_diquark anti_bd1_diquark anti_bs0_diquark anti_bs1_diquark anti_bu0_diquark anti_bu1_diquark anti_c_quark anti_cc1_diquark anti_cd0_diquark anti_cd1_diquark anti_cs0_diquark anti_cs1_diquark anti_cu0_diquark anti_cu1_diquark anti_d_quark anti_dd1_diquark anti_delta(1600)+ anti_delta(1600)++ anti_delta(1600)- anti_delta(1600)0 anti_delta(1620)+ anti_delta(1620)++ anti_delta(1620)- anti_delta(1620)0 anti_delta(1700)+ anti_delta(1700)++ anti_delta(1700)- anti_delta(1700)0 anti_delta(1900)+ anti_delta(1900)++ anti_delta(1900)- anti_delta(1900)0 anti_delta(1905)+ anti_delta(1905)++ anti_delta(1905)- anti_delta(1905)0 anti_delta(1910)+ anti_delta(1910)++ anti_delta(1910)- anti_delta(1910)0 anti_delta(1920)+ anti_delta(1920)++ anti_delta(1920)- anti_delta(1920)0 anti_delta(1930)+ anti_delta(1930)++ anti_delta(1930)- anti_delta(1930)0 anti_delta(1950)+ anti_delta(1950)++ anti_delta(1950)- anti_delta(1950)0 anti_delta+ anti_delta++ anti_delta- anti_delta0 anti_deuteron anti_doublehyperH4 anti_doublehyperdoubleneutron anti_hyperH4 anti_hyperHe5 anti_hyperalpha anti_hypertriton anti_k(1460)0 anti_k0_star(1430)0 anti_k1(1270)0 anti_k1(1400)0 anti_k2(1770)0 anti_k2_star(1430)0 anti_k2_star(1980)0 anti_k3_star(1780)0 anti_k_star(1410)0 anti_k_star(1680)0 anti_k_star0 anti_kaon0 anti_lambda anti_lambda(1405) anti_lambda(1520) anti_lambda(1600) anti_lambda(1670) anti_lambda(1690) anti_lambda(1800) anti_lambda(1810) anti_lambda(1820) anti_lambda(1830) anti_lambda(1890) anti_lambda(2100) anti_lambda(2110) anti_lambda_b anti_lambda_c+ anti_neutron anti_nu_e anti_nu_mu anti_nu_tau anti_omega- anti_omega_b- anti_omega_c0 anti_proton anti_s_quark anti_sd0_diquark anti_sd1_diquark anti_sigma(1385)+ anti_sigma(1385)- anti_sigma(1385)0 anti_sigma(1660)+ anti_sigma(1660)- anti_sigma(1660)0 anti_sigma(1670)+ anti_sigma(1670)- anti_sigma(1670)0 anti_sigma(1750)+ anti_sigma(1750)- anti_sigma(1750)0 anti_sigma(1775)+ anti_sigma(1775)- anti_sigma(1775)0 anti_sigma(1915)+ anti_sigma(1915)- anti_sigma(1915)0 anti_sigma(1940)+ anti_sigma(1940)- anti_sigma(1940)0 anti_sigma(2030)+ anti_sigma(2030)- anti_sigma(2030)0 anti_sigma+ anti_sigma- anti_sigma0 anti_sigma_b+ anti_sigma_b- anti_sigma_b0 anti_sigma_c+ anti_sigma_c++ anti_sigma_c0 anti_ss1_diquark anti_su0_diquark anti_su1_diquark anti_t_quark anti_triton anti_u_quark anti_ud0_diquark anti_ud1_diquark anti_uu1_diquark anti_xi(1530)- anti_xi(1530)0 anti_xi(1690)- anti_xi(1690)0 anti_xi(1820)- anti_xi(1820)0 anti_xi(1950)- anti_xi(1950)0 anti_xi(2030)- anti_xi(2030)0 anti_xi- anti_xi0 anti_xi_b- anti_xi_b0 anti_xi_c+ anti_xi_c0 b1(1235)+ b1(1235)- b1(1235)0 b_quark bb1_diquark bc0_diquark bc1_diquark bd0_diquark bd1_diquark bs0_diquark bs1_diquark bu0_diquark bu1_diquark c_quark cc1_diquark cd0_diquark cd1_diquark chargedgeantino cs0_diquark cs1_diquark cu0_diquark cu1_diquark d_quark dd1_diquark delta(1600)+ delta(1600)++ delta(1600)- delta(1600)0 delta(1620)+ delta(1620)++ delta(1620)- delta(1620)0 delta(1700)+ delta(1700)++ delta(1700)- delta(1700)0 delta(1900)+ delta(1900)++ delta(1900)- delta(1900)0 delta(1905)+ delta(1905)++ delta(1905)- delta(1905)0 delta(1910)+ delta(1910)++ delta(1910)- delta(1910)0 delta(1920)+ delta(1920)++ delta(1920)- delta(1920)0 delta(1930)+ delta(1930)++ delta(1930)- delta(1930)0 delta(1950)+ delta(1950)++ delta(1950)- delta(1950)0 delta+ delta++ delta- delta0 deuteron doublehyperH4 doublehyperdoubleneutron e+ e- eta eta(1295) eta(1405) eta(1475) eta2(1645) eta2(1870) eta_prime etac f0(1370) f0(1500) f0(1710) f0(500) f0(980) f1(1285) f1(1420) f2(1270) f2(1810) f2(2010) f2_prime(1525) gamma geantino gluon h1(1170) h1(1380) hyperH4 hyperHe5 hyperalpha hypertriton k(1460)+ k(1460)- k(1460)0 k0_star(1430)+ k0_star(1430)- k0_star(1430)0 k1(1270)+ k1(1270)- k1(1270)0 k1(1400)+ k1(1400)- k1(1400)0 k2(1770)+ k2(1770)- k2(1770)0 k2_star(1430)+ k2_star(1430)- k2_star(1430)0 k2_star(1980)+ k2_star(1980)- k2_star(1980)0 k3_star(1780)+ k3_star(1780)- k3_star(1780)0 k_star(1410)+ k_star(1410)- k_star(1410)0 k_star(1680)+ k_star(1680)- k_star(1680)0 k_star+ k_star- k_star0 kaon+ kaon- kaon0 kaon0L kaon0S lambda lambda(1405) lambda(1520) lambda(1600) lambda(1670) lambda(1690) lambda(1800) lambda(1810) lambda(1820) lambda(1830) lambda(1890) lambda(2100) lambda(2110) lambda_b lambda_c+ mu+ mu- neutron nu_e nu_mu nu_tau omega omega(1420) omega(1650) omega- omega3(1670) omega_b- omega_c0 opticalphoton phi phi(1680) phi3(1850) pi(1300)+ pi(1300)- pi(1300)0 pi+ pi- pi0 pi2(1670)+ pi2(1670)- pi2(1670)0 proton rho(1450)+ rho(1450)- rho(1450)0 rho(1700)+ rho(1700)- rho(1700)0 rho+ rho- rho0 rho3(1690)+ rho3(1690)- rho3(1690)0 s_quark sd0_diquark sd1_diquark sigma(1385)+ sigma(1385)- sigma(1385)0 sigma(1660)+ sigma(1660)- sigma(1660)0 sigma(1670)+ sigma(1670)- sigma(1670)0 sigma(1750)+ sigma(1750)- sigma(1750)0 sigma(1775)+ sigma(1775)- sigma(1775)0 sigma(1915)+ sigma(1915)- sigma(1915)0 sigma(1940)+ sigma(1940)- sigma(1940)0 sigma(2030)+ sigma(2030)- sigma(2030)0 sigma+ sigma- sigma0 sigma_b+ sigma_b- sigma_b0 sigma_c+ sigma_c++ sigma_c0 ss1_diquark su0_diquark su1_diquark t_quark tau+ tau- thermalelectron triton u_quark ud0_diquark ud1_diquark uu1_diquark xi(1530)- xi(1530)0 xi(1690)- xi(1690)0 xi(1820)- xi(1820)0 xi(1950)- xi(1950)0 xi(2030)- xi(2030)0 xi- xi0 xi_b- xi_b0 xi_c+ xi_c0 ion 
+</table>
+<h3 id="c2">direction [<i>Px</i>] [<i>Py</i>] [<i>Pz</i>]</h3>
+<p>
+Set momentum direction.<br>
+ Direction needs not to be a unit vector.<br>
+ Angular distribution type is set to planar.<br>
+<p>Range : Px != 0 || Py != 0 || Pz != 0
+<p>Available at all Geant4 states.
+<p>Parameters<table border=1>
+<tr><td>Px
+<td>type d
+<td><td><tr><td>Py
+<td>type d
+<td><td><tr><td>Pz
+<td>type d
+<td><td></table>
+<h3 id="c3">energy [<i>Energy</i>] [<i>Unit</i>]</h3>
+<p>
+Set kinetic energy.<br>
+<p>Available at all Geant4 states.
+<p>Parameters<table border=1>
+<tr><td>Energy
+<td>type d
+<td><td><tr><td>Unit
+<td>type s
+<td>Omittable : default value = GeV
+<td>Parameter candidates : eV keV MeV GeV TeV PeV meV J electronvolt kiloelectronvolt megaelectronvolt gigaelectronvolt teraelectronvolt petaelectronvolt millielectronVolt joule
+</table>
+<h3 id="c4">position [<i>X</i>] [<i>Y</i>] [<i>Z</i>] [<i>Unit</i>]</h3>
+<p>
+Set starting position of the particle for a Point like source.<br>
+ Same effect as the two /gps/pos/type Point /gps/pos/centre commands.<br>
+<p>Available at all Geant4 states.
+<p>Parameters<table border=1>
+<tr><td>X
+<td>type d
+<td><td><tr><td>Y
+<td>type d
+<td><td><tr><td>Z
+<td>type d
+<td><td><tr><td>Unit
+<td>type s
+<td>Omittable : default value = cm
+<td>Parameter candidates : pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
+</table>
+<h3 id="c5">ion [<i>Z</i>] [<i>A</i>] [<i>Q</i>] [<i>E</i>]</h3>
+<p>
+Set properties of ion to be generated.<br>
+[usage] /gps/ion Z A Q E<br>
+        Z:(int) AtomicNumber<br>
+        A:(int) AtomicMass<br>
+        Q:(int) Charge of Ion (in unit of e)<br>
+        E:(double) Excitation energy (in keV)<br>
+<p>Available at all Geant4 states.
+<p>Parameters<table border=1>
+<tr><td>Z
+<td>type i
+<td><td><tr><td>A
+<td>type i
+<td><td><tr><td>Q
+<td>type i
+<td>Omittable : default value = 0
+<td><tr><td>E
+<td>type d
+<td>Omittable : default value = 0.0
+<td></table>
+<h3 id="c6">ionLvl [<i>Z</i>] [<i>A</i>] [<i>Q</i>] [<i>Lvl</i>]</h3>
+<p>
+Set properties of ion to be generated.<br>
+[usage] /gps/ion Z A Q Lvl<br>
+        Z:(int) AtomicNumber<br>
+        A:(int) AtomicMass<br>
+        Q:(int) Charge of Ion (in unit of e)<br>
+        Lvl:(int) Number of metastable state excitation level (0-9)<br>
+<p>Available at all Geant4 states.
+<p>Parameters<table border=1>
+<tr><td>Z
+<td>type i
+<td><td><tr><td>A
+<td>type i
+<td><td><tr><td>Q
+<td>type i
+<td>Omittable : default value = 0
+<td><tr><td>Lvl
+<td>type i
+<td>Omittable : default value = 0.0
+<td></table>
+<h3 id="c7">time [<i>t0</i>] [<i>Unit</i>]</h3>
+<p>
+Set initial time of the particle.<br>
+<p>Available at all Geant4 states.
+<p>Parameters<table border=1>
+<tr><td>t0
+<td>type d
+<td><td><tr><td>Unit
+<td>type s
+<td>Omittable : default value = ns
+<td>Parameter candidates : s ms us ns ps min h d y second millisecond microsecond nanosecond picosecond minute hour day year
+</table>
+<h3 id="c8">polarization [<i>Px</i>] [<i>Py</i>] [<i>Pz</i>]</h3>
+<p>
+Set polarization.<br>
+<p>Range : Px&gt;=-1.&amp;&amp;Px&lt;=1.&amp;&amp;Py&gt;=-1.&amp;&amp;Py&lt;=1.&amp;&amp;Pz&gt;=-1.&amp;&amp;Pz&lt;=1.
+<p>Available at all Geant4 states.
+<p>Parameters<table border=1>
+<tr><td>Px
+<td>type d
+<td><td><tr><td>Py
+<td>type d
+<td><td><tr><td>Pz
+<td>type d
+<td><td></table>
+<h3 id="c9">number [<i>N</i>]</h3>
+<p>
+Set number of particles to be generated per vertex.<br>
+<p>Range : N&gt;0
+<p>Available at all Geant4 states.
+<p>Parameters<table border=1>
+<tr><td>N
+<td>type i
+<td><td></table>
+<h3 id="c10">verbose [<i>level</i>]</h3>
+<p>
+Set Verbose level for GPS<br>
+ 0 : Silent<br>
+ 1 : Limited information<br>
+ 2 : Detailed information<br>
+<p>Range : level&gt;=0 &amp;&amp; level &lt;=2
+<p>Available at all Geant4 states.
+<p>Parameters<table border=1>
+<tr><td>level
+<td>type i
+<td><td></table>
+</div></body></html>

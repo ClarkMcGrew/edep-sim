@@ -1,0 +1,234 @@
+<html><head><title>Commands in /gps/pos/</title></head>
+<style>     table,table td,table th {        border:1px solid #eee     }     table td,table th {       padding:5px 20px;       line-height:1.3;       text-align:inherit     }     a {       color:#17a81a;       text-decoration:none;       transition-duration:0.3s     }       a:hover {       color:#17a81a     }     table {       border-collapse:collapse;       border-spacing:0;       margin-bottom:5px;     }     h1 {       font-size:2.25em;       font-weight:300;       letter-spacing:-1px;       line-height:1.15em;       margin-bottom:0.5em;       word-wrap:break-word     }     h2 {       font-size:1.5em;       font-weight:300;       letter-spacing:-1px;       line-height:1.15em;       margin-bottom:0.5em;       word-wrap:break-word     }     h3 {       color:#26282a;       font-weight:300;       font-size:1.3em;       padding:15px 0 15px 0;       border-bottom:2px #eee solid;       word-wrap:break-word     }     .sidebar {       display:block;       position:relative;       position:sticky;       float:left;       -webkit-box-sizing:border-box;       -moz-box-sizing:border-box;       -ms-box-sizing:border-box;       box-sizing:border-box;       width:20%;       padding-right:20px     }     .context {     width:80%;     display:inline-block;     background-color:#fff;     padding: 25px 35px 20px 30px;     -webkit-box-sizing:border-box;     -moz-box-sizing:border-box;     -ms-box-sizing:border-box;     box-sizing:border-box   }     </style>
+<body bgcolor="#ffffff">
+<div class="sidebar"><h2><a href="_gps_.html">Top level </a></h2><table><tr><td><a href="_gps_source_.html">/gps/source/</a><tr><td><a href="_gps_pos_.html">/gps/pos/</a><tr><td><a href="_gps_ang_.html">/gps/ang/</a><tr><td><a href="_gps_ene_.html">/gps/ene/</a><tr><td><a href="_gps_hist_.html">/gps/hist/</a></table></div>
+<div class="context"><h1>/gps/pos/</h1>
+Positional commands sub-directory<br>
+<h2>Commands </h2>
+<table>
+<tr><td><a href="#c0">type</a></td></tr>
+<tr><td><a href="#c1">shape</a></td></tr>
+<tr><td><a href="#c2">centre</a></td></tr>
+<tr><td><a href="#c3">rot1</a></td></tr>
+<tr><td><a href="#c4">rot2</a></td></tr>
+<tr><td><a href="#c5">halfx</a></td></tr>
+<tr><td><a href="#c6">halfy</a></td></tr>
+<tr><td><a href="#c7">halfz</a></td></tr>
+<tr><td><a href="#c8">radius</a></td></tr>
+<tr><td><a href="#c9">inner_radius</a></td></tr>
+<tr><td><a href="#c10">sigma_r</a></td></tr>
+<tr><td><a href="#c11">sigma_x</a></td></tr>
+<tr><td><a href="#c12">sigma_y</a></td></tr>
+<tr><td><a href="#c13">paralp</a></td></tr>
+<tr><td><a href="#c14">parthe</a></td></tr>
+<tr><td><a href="#c15">parphi</a></td></tr>
+<tr><td><a href="#c16">confine</a></td></tr>
+</table>
+<h3 id="c0">type [<i>DisType</i>]</h3>
+<p>
+Sets source distribution type.<br>
+Either Point, Beam, Plane, Surface or Volume<br>
+<p>Available at all Geant4 states.
+<p>Parameters<table border=1>
+<tr><td>DisType
+<td>type s
+<td><td>Parameter candidates : Point Beam Plane Surface Volume
+</table>
+<h3 id="c1">shape [<i>Shape</i>]</h3>
+<p>
+Sets source shape for Plan, Surface or Volume type source.<br>
+<p>Available at all Geant4 states.
+<p>Parameters<table border=1>
+<tr><td>Shape
+<td>type s
+<td><td>Parameter candidates : Circle Annulus Ellipse Square Rectangle Sphere Ellipsoid Cylinder EllipticCylinder Para
+</table>
+<h3 id="c2">centre [<i>X</i>] [<i>Y</i>] [<i>Z</i>] [<i>Unit</i>]</h3>
+<p>
+Set centre coordinates of source.<br>
+<p>Available at all Geant4 states.
+<p>Parameters<table border=1>
+<tr><td>X
+<td>type d
+<td><td><tr><td>Y
+<td>type d
+<td><td><tr><td>Z
+<td>type d
+<td><td><tr><td>Unit
+<td>type s
+<td>Omittable : default value = cm
+<td>Parameter candidates : pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
+</table>
+<h3 id="c3">rot1 [<i>R1x</i>] [<i>R1y</i>] [<i>R1z</i>]</h3>
+<p>
+Set the 1st vector defining the rotation matrix'.<br>
+It does not need to be a unit vector.<br>
+<p>Range : R1x != 0 || R1y != 0 || R1z != 0
+<p>Available at all Geant4 states.
+<p>Parameters<table border=1>
+<tr><td>R1x
+<td>type d
+<td><td><tr><td>R1y
+<td>type d
+<td><td><tr><td>R1z
+<td>type d
+<td><td></table>
+<h3 id="c4">rot2 [<i>R2x</i>] [<i>R2y</i>] [<i>R2z</i>]</h3>
+<p>
+Set the 2nd vector defining the rotation matrix'.<br>
+It does not need to be a unit vector.<br>
+<p>Range : R2x != 0 || R2y != 0 || R2z != 0
+<p>Available at all Geant4 states.
+<p>Parameters<table border=1>
+<tr><td>R2x
+<td>type d
+<td><td><tr><td>R2y
+<td>type d
+<td><td><tr><td>R2z
+<td>type d
+<td><td></table>
+<h3 id="c5">halfx [<i>Halfx</i>] [<i>Unit</i>]</h3>
+<p>
+Set x half length of source.<br>
+<p>Available at all Geant4 states.
+<p>Parameters<table border=1>
+<tr><td>Halfx
+<td>type d
+<td><td><tr><td>Unit
+<td>type s
+<td>Omittable : default value = cm
+<td>Parameter candidates : pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
+</table>
+<h3 id="c6">halfy [<i>Halfy</i>] [<i>Unit</i>]</h3>
+<p>
+Set y half length of source.<br>
+<p>Available at all Geant4 states.
+<p>Parameters<table border=1>
+<tr><td>Halfy
+<td>type d
+<td><td><tr><td>Unit
+<td>type s
+<td>Omittable : default value = cm
+<td>Parameter candidates : pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
+</table>
+<h3 id="c7">halfz [<i>Halfz</i>] [<i>Unit</i>]</h3>
+<p>
+Set z half length of source.<br>
+<p>Available at all Geant4 states.
+<p>Parameters<table border=1>
+<tr><td>Halfz
+<td>type d
+<td><td><tr><td>Unit
+<td>type s
+<td>Omittable : default value = cm
+<td>Parameter candidates : pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
+</table>
+<h3 id="c8">radius [<i>Radius</i>] [<i>Unit</i>]</h3>
+<p>
+Set radius of source.<br>
+<p>Available at all Geant4 states.
+<p>Parameters<table border=1>
+<tr><td>Radius
+<td>type d
+<td><td><tr><td>Unit
+<td>type s
+<td>Omittable : default value = cm
+<td>Parameter candidates : pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
+</table>
+<h3 id="c9">inner_radius [<i>Radius0</i>] [<i>Unit</i>]</h3>
+<p>
+Set inner radius of source when required.<br>
+<p>Available at all Geant4 states.
+<p>Parameters<table border=1>
+<tr><td>Radius0
+<td>type d
+<td><td><tr><td>Unit
+<td>type s
+<td>Omittable : default value = cm
+<td>Parameter candidates : pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
+</table>
+<h3 id="c10">sigma_r [<i>Sigmar</i>] [<i>Unit</i>]</h3>
+<p>
+Set standard deviation in radial of the beam positional profile<br>
+ applicable to Beam type source only<br>
+<p>Available at all Geant4 states.
+<p>Parameters<table border=1>
+<tr><td>Sigmar
+<td>type d
+<td><td><tr><td>Unit
+<td>type s
+<td>Omittable : default value = cm
+<td>Parameter candidates : pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
+</table>
+<h3 id="c11">sigma_x [<i>Sigmax</i>] [<i>Unit</i>]</h3>
+<p>
+Set standard deviation of beam positional profile in x-dir<br>
+ applicable to Beam type source only<br>
+<p>Available at all Geant4 states.
+<p>Parameters<table border=1>
+<tr><td>Sigmax
+<td>type d
+<td><td><tr><td>Unit
+<td>type s
+<td>Omittable : default value = cm
+<td>Parameter candidates : pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
+</table>
+<h3 id="c12">sigma_y [<i>Sigmay</i>] [<i>Unit</i>]</h3>
+<p>
+Set standard deviation of beam positional profile in y-dir<br>
+ applicable to Beam type source only<br>
+<p>Available at all Geant4 states.
+<p>Parameters<table border=1>
+<tr><td>Sigmay
+<td>type d
+<td><td><tr><td>Unit
+<td>type s
+<td>Omittable : default value = cm
+<td>Parameter candidates : pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
+</table>
+<h3 id="c13">paralp [<i>paralp</i>] [<i>Unit</i>]</h3>
+<p>
+Angle from y-axis of y' in Para<br>
+<p>Available at all Geant4 states.
+<p>Parameters<table border=1>
+<tr><td>paralp
+<td>type d
+<td><td><tr><td>Unit
+<td>type s
+<td>Omittable : default value = rad
+<td>Parameter candidates : rad mrad deg radian milliradian degree
+</table>
+<h3 id="c14">parthe [<i>parthe</i>] [<i>Unit</i>]</h3>
+<p>
+Polar angle through centres of z faces<br>
+<p>Available at all Geant4 states.
+<p>Parameters<table border=1>
+<tr><td>parthe
+<td>type d
+<td><td><tr><td>Unit
+<td>type s
+<td>Omittable : default value = rad
+<td>Parameter candidates : rad mrad deg radian milliradian degree
+</table>
+<h3 id="c15">parphi [<i>parphi</i>] [<i>Unit</i>]</h3>
+<p>
+Azimuth angle through centres of z faces<br>
+<p>Available at all Geant4 states.
+<p>Parameters<table border=1>
+<tr><td>parphi
+<td>type d
+<td><td><tr><td>Unit
+<td>type s
+<td>Omittable : default value = rad
+<td>Parameter candidates : rad mrad deg radian milliradian degree
+</table>
+<h3 id="c16">confine [<i>VolName</i>]</h3>
+<p>
+Confine source to volume (NULL to unset).<br>
+ Usage: confine VolName<br>
+<p>Available at all Geant4 states.
+<p>Parameters<table border=1>
+<tr><td>VolName
+<td>type s
+<td><td></table>
+</div></body></html>

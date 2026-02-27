@@ -1,0 +1,75 @@
+<html><head><title>Commands in /process/optical/scintillation/</title></head>
+<style>     table,table td,table th {        border:1px solid #eee     }     table td,table th {       padding:5px 20px;       line-height:1.3;       text-align:inherit     }     a {       color:#17a81a;       text-decoration:none;       transition-duration:0.3s     }       a:hover {       color:#17a81a     }     table {       border-collapse:collapse;       border-spacing:0;       margin-bottom:5px;     }     h1 {       font-size:2.25em;       font-weight:300;       letter-spacing:-1px;       line-height:1.15em;       margin-bottom:0.5em;       word-wrap:break-word     }     h2 {       font-size:1.5em;       font-weight:300;       letter-spacing:-1px;       line-height:1.15em;       margin-bottom:0.5em;       word-wrap:break-word     }     h3 {       color:#26282a;       font-weight:300;       font-size:1.3em;       padding:15px 0 15px 0;       border-bottom:2px #eee solid;       word-wrap:break-word     }     .sidebar {       display:block;       position:relative;       position:sticky;       float:left;       -webkit-box-sizing:border-box;       -moz-box-sizing:border-box;       -ms-box-sizing:border-box;       box-sizing:border-box;       width:20%;       padding-right:20px     }     .context {     width:80%;     display:inline-block;     background-color:#fff;     padding: 25px 35px 20px 30px;     -webkit-box-sizing:border-box;     -moz-box-sizing:border-box;     -ms-box-sizing:border-box;     box-sizing:border-box   }     </style>
+<body bgcolor="#ffffff">
+<div class="sidebar"><h2><a href="_process_optical_.html">Top level </a></h2><table><tr><td><a href="_process_optical_cerenkov_.html">/process/optical/cerenkov/</a><tr><td><a href="_process_optical_scintillation_.html">/process/optical/scintillation/</a><tr><td><a href="_process_optical_wls_.html">/process/optical/wls/</a><tr><td><a href="_process_optical_wls2_.html">/process/optical/wls2/</a><tr><td><a href="_process_optical_boundary_.html">/process/optical/boundary/</a><tr><td><a href="_process_optical_mie_.html">/process/optical/mie/</a><tr><td><a href="_process_optical_absorption_.html">/process/optical/absorption/</a><tr><td><a href="_process_optical_rayleigh_.html">/process/optical/rayleigh/</a></table></div>
+<div class="context"><h1>/process/optical/scintillation/</h1>
+Scintillation process commands<br>
+<h2>Commands </h2>
+<table>
+<tr><td><a href="#c0">setByParticleType</a></td></tr>
+<tr><td><a href="#c1">setTrackInfo</a></td></tr>
+<tr><td><a href="#c2">setFiniteRiseTime</a></td></tr>
+<tr><td><a href="#c3">setStackPhotons</a></td></tr>
+<tr><td><a href="#c4">setTrackSecondariesFirst</a></td></tr>
+<tr><td><a href="#c5">verbose</a></td></tr>
+</table>
+<h3 id="c0">setByParticleType [<i>ScintillationByParticleTypeActivation</i>]</h3>
+<p>
+Activate/Inactivate scintillation process by particle type<br>
+<p>Available Geant4 state(s) : PreInit 
+Idle 
+<p>Parameters<table border=1>
+<tr><td>ScintillationByParticleTypeActivation
+<td>type b
+<td><td></table>
+<h3 id="c1">setTrackInfo [<i>ScintillationTrackInfo</i>]</h3>
+<p>
+Activate/Inactivate scintillation TrackInformation<br>
+<p>Available Geant4 state(s) : PreInit 
+Idle 
+<p>Parameters<table border=1>
+<tr><td>ScintillationTrackInfo
+<td>type b
+<td><td></table>
+<h3 id="c2">setFiniteRiseTime [<i>FiniteRiseTime</i>]</h3>
+<p>
+Set option of a finite rise-time for G4Scintillation<br>
+If set, the G4Scintillation process expects the user to have set the<br>
+constant material property SCINTILLATIONRISETIME{1,2,3}<br>
+<p>Available Geant4 state(s) : PreInit 
+Idle 
+<p>Parameters<table border=1>
+<tr><td>FiniteRiseTime
+<td>type b
+<td><td></table>
+<h3 id="c3">setStackPhotons [<i>ScintillationStackPhotons</i>]</h3>
+<p>
+Set whether or not to stack secondary Scintillation photons<br>
+<p>Available Geant4 state(s) : PreInit 
+Idle 
+<p>Parameters<table border=1>
+<tr><td>ScintillationStackPhotons
+<td>type b
+<td>Omittable : default value = 1
+<td></table>
+<h3 id="c4">setTrackSecondariesFirst [<i></i>]</h3>
+<p>
+Whether to track scintillation secondaries before primary.<br>
+<p>Available Geant4 state(s) : PreInit 
+Idle 
+<p>Parameters<table border=1>
+<tr><td>
+<td>type b
+<td><td></table>
+<h3 id="c5">verbose [<i>verbose</i>]</h3>
+<p>
+Verbose level for scintillation process.<br>
+<p>Range : verbose &gt;= 0 &amp;&amp; verbose &lt;= 2
+<p>Available Geant4 state(s) : Idle 
+PreInit 
+<p>Parameters<table border=1>
+<tr><td>verbose
+<td>type i
+<td>Omittable : default value = 
+<td></table>
+</div></body></html>

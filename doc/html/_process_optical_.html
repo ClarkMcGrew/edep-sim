@@ -1,0 +1,41 @@
+<html><head><title>Commands in /process/optical/</title></head>
+<style>     table,table td,table th {        border:1px solid #eee     }     table td,table th {       padding:5px 20px;       line-height:1.3;       text-align:inherit     }     a {       color:#17a81a;       text-decoration:none;       transition-duration:0.3s     }       a:hover {       color:#17a81a     }     table {       border-collapse:collapse;       border-spacing:0;       margin-bottom:5px;     }     h1 {       font-size:2.25em;       font-weight:300;       letter-spacing:-1px;       line-height:1.15em;       margin-bottom:0.5em;       word-wrap:break-word     }     h2 {       font-size:1.5em;       font-weight:300;       letter-spacing:-1px;       line-height:1.15em;       margin-bottom:0.5em;       word-wrap:break-word     }     h3 {       color:#26282a;       font-weight:300;       font-size:1.3em;       padding:15px 0 15px 0;       border-bottom:2px #eee solid;       word-wrap:break-word     }     .sidebar {       display:block;       position:relative;       position:sticky;       float:left;       -webkit-box-sizing:border-box;       -moz-box-sizing:border-box;       -ms-box-sizing:border-box;       box-sizing:border-box;       width:20%;       padding-right:20px     }     .context {     width:80%;     display:inline-block;     background-color:#fff;     padding: 25px 35px 20px 30px;     -webkit-box-sizing:border-box;     -moz-box-sizing:border-box;     -ms-box-sizing:border-box;     box-sizing:border-box   }     </style>
+<body bgcolor="#ffffff">
+<div class="sidebar"><h2><a href="_process_.html">Top level </a></h2><table><tr><td><a href="_process_em_.html">/process/em/</a><tr><td><a href="_process_eLoss_.html">/process/eLoss/</a><tr><td><a href="_process_msc_.html">/process/msc/</a><tr><td><a href="_process_gconv_.html">/process/gconv/</a><tr><td><a href="_process_dna_.html">/process/dna/</a><tr><td><a href="_process_had_.html">/process/had/</a><tr><td><a href="_process_optical_.html">/process/optical/</a></table></div>
+<div class="context"><h1>/process/optical/</h1>
+Commands related to the optical physics simulation engine.<br>
+<h2>Sub-directories </h2><table><tr><td><a href="_process_optical_cerenkov_.html">/process/optical/cerenkov/</a></td><td>Cerenkov process commands</tr><tr><td><a href="_process_optical_scintillation_.html">/process/optical/scintillation/</a></td><td>Scintillation process commands</tr><tr><td><a href="_process_optical_wls_.html">/process/optical/wls/</a></td><td>Wave length shifting process commands</tr><tr><td><a href="_process_optical_wls2_.html">/process/optical/wls2/</a></td><td>Second Wave length shifting process commands</tr><tr><td><a href="_process_optical_boundary_.html">/process/optical/boundary/</a></td><td>Boundary scattering commands</tr><tr><td><a href="_process_optical_mie_.html">/process/optical/mie/</a></td><td>Mie scattering process commands</tr><tr><td><a href="_process_optical_absorption_.html">/process/optical/absorption/</a></td><td>absorption process commands</tr><tr><td><a href="_process_optical_rayleigh_.html">/process/optical/rayleigh/</a></td><td>Rayleigh scattering commands</tr></table>
+<h2>Commands </h2>
+<table>
+<tr><td><a href="#c0">processActivation</a></td></tr>
+<tr><td><a href="#c1">verbose</a></td></tr>
+<tr><td><a href="#c2">printParameters</a></td></tr>
+</table>
+<h3 id="c0">processActivation [<i>proc_name</i>] [<i>flag</i>]</h3>
+<p>
+Activate/deactivate the specified optical process<br>
+<p>Available Geant4 state(s) : PreInit 
+<p>Parameters<table border=1>
+<tr><td>proc_name
+<td>type s
+<td><td>Parameter candidates : Cerenkov Scintillation OpAbsorption OpRayleigh OpMieHG OpBoundary OpWLS OpWLS2 
+<tr><td>flag
+<td>type b
+<td>Omittable : default value = 1
+<td></table>
+<h3 id="c1">verbose [<i>ver</i>]</h3>
+<p>
+Set default verbose level for optical processes<br>
+<p>Range : ver&gt;=0
+<p>Available Geant4 state(s) : PreInit 
+Idle 
+<p>Parameters<table border=1>
+<tr><td>ver
+<td>type i
+<td>Omittable : default value = 1
+<td></table>
+<h3 id="c2">printParameters</h3>
+<p>
+Print all optical parameters.<br>
+<p>Available at all Geant4 states.
+</div></body></html>

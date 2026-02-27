@@ -1,0 +1,131 @@
+<html><head><title>Commands in /edep/db/set/</title></head>
+<style>     table,table td,table th {        border:1px solid #eee     }     table td,table th {       padding:5px 20px;       line-height:1.3;       text-align:inherit     }     a {       color:#17a81a;       text-decoration:none;       transition-duration:0.3s     }       a:hover {       color:#17a81a     }     table {       border-collapse:collapse;       border-spacing:0;       margin-bottom:5px;     }     h1 {       font-size:2.25em;       font-weight:300;       letter-spacing:-1px;       line-height:1.15em;       margin-bottom:0.5em;       word-wrap:break-word     }     h2 {       font-size:1.5em;       font-weight:300;       letter-spacing:-1px;       line-height:1.15em;       margin-bottom:0.5em;       word-wrap:break-word     }     h3 {       color:#26282a;       font-weight:300;       font-size:1.3em;       padding:15px 0 15px 0;       border-bottom:2px #eee solid;       word-wrap:break-word     }     .sidebar {       display:block;       position:relative;       position:sticky;       float:left;       -webkit-box-sizing:border-box;       -moz-box-sizing:border-box;       -ms-box-sizing:border-box;       box-sizing:border-box;       width:20%;       padding-right:20px     }     .context {     width:80%;     display:inline-block;     background-color:#fff;     padding: 25px 35px 20px 30px;     -webkit-box-sizing:border-box;     -moz-box-sizing:border-box;     -ms-box-sizing:border-box;     box-sizing:border-box   }     </style>
+<body bgcolor="#ffffff">
+<div class="sidebar"><h2><a href="_edep_db_.html">Top level </a></h2><table><tr><td><a href="_edep_db_set_.html">/edep/db/set/</a></table></div>
+<div class="context"><h1>/edep/db/set/</h1>
+Set various parameters<br>
+<h2>Commands </h2>
+<table>
+<tr><td><a href="#c0">gammaThreshold</a></td></tr>
+<tr><td><a href="#c1">neutronThreshold</a></td></tr>
+<tr><td><a href="#c2">lengthThreshold</a></td></tr>
+<tr><td><a href="#c3">saveAllPrimTraj</a></td></tr>
+<tr><td><a href="#c4">saveAllTraj</a></td></tr>
+<tr><td><a href="#c5">trajectoryAccuracy</a></td></tr>
+<tr><td><a href="#c6">trajectoryDeposit</a></td></tr>
+<tr><td><a href="#c7">trajectoryBoundary</a></td></tr>
+<tr><td><a href="#c8">clearBoundaries</a></td></tr>
+<tr><td><a href="#c9">trajectoryRule</a></td></tr>
+<tr><td><a href="#c10">clearTrajectoryRules</a></td></tr>
+</table>
+<h3 id="c0">gammaThreshold [<i>momentum</i>] [<i>Unit</i>]</h3>
+<p>
+Set momentum threshold for writing out gamma-ray trajectories<br>
+<p>Available at all Geant4 states.
+<p>Parameters<table border=1>
+<tr><td>momentum
+<td>type d
+<td><td><tr><td>Unit
+<td>type s
+<td><td>Parameter candidates : eV keV MeV GeV TeV PeV meV J electronvolt kiloelectronvolt megaelectronvolt gigaelectronvolt teraelectronvolt petaelectronvolt millielectronVolt joule
+</table>
+<h3 id="c1">neutronThreshold [<i>momentum</i>] [<i>Unit</i>]</h3>
+<p>
+Set momentum threshold for writing out neutron trajectories<br>
+<p>Available at all Geant4 states.
+<p>Parameters<table border=1>
+<tr><td>momentum
+<td>type d
+<td><td><tr><td>Unit
+<td>type s
+<td><td>Parameter candidates : eV keV MeV GeV TeV PeV meV J electronvolt kiloelectronvolt megaelectronvolt gigaelectronvolt teraelectronvolt petaelectronvolt millielectronVolt joule
+</table>
+<h3 id="c2">lengthThreshold [<i>length</i>] [<i>Unit</i>]</h3>
+<p>
+Set length of track in an SD for writing out particle trajectories<br>
+<p>Available at all Geant4 states.
+<p>Parameters<table border=1>
+<tr><td>length
+<td>type d
+<td><td><tr><td>Unit
+<td>type s
+<td><td>Parameter candidates : pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
+</table>
+<h3 id="c3">saveAllPrimTraj [<i></i>]</h3>
+<p>
+Control which primaries have saved trajectories -- True: Save all prim. part. trajectories. False: Save prim. that ultimately deposit energy in SD.<br>
+<p>Available at all Geant4 states.
+<p>Parameters<table border=1>
+<tr><td>
+<td>type b
+<td><td></table>
+<h3 id="c4">saveAllTraj [<i>energy</i>] [<i>Unit</i>]</h3>
+<p>
+If positive, then save all trajectories with more than this much energy deposit. If negative, the save all trajectories. Use with care since the file becomes large.<br>
+<p>Available at all Geant4 states.
+<p>Parameters<table border=1>
+<tr><td>energy
+<td>type d
+<td><td><tr><td>Unit
+<td>type s
+<td><td>Parameter candidates : eV keV MeV GeV TeV PeV meV J electronvolt kiloelectronvolt megaelectronvolt gigaelectronvolt teraelectronvolt petaelectronvolt millielectronVolt joule
+</table>
+<h3 id="c5">trajectoryAccuracy [<i>length</i>] [<i>Unit</i>]</h3>
+<p>
+Set the minimum accuracy of the trajectory.<br>
+<p>Available at all Geant4 states.
+<p>Parameters<table border=1>
+<tr><td>length
+<td>type d
+<td><td><tr><td>Unit
+<td>type s
+<td><td>Parameter candidates : pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
+</table>
+<h3 id="c6">trajectoryDeposit [<i>energy</i>] [<i>Unit</i>]</h3>
+<p>
+Set the minimum energy deposit for a trajectory point.<br>
+<p>Available at all Geant4 states.
+<p>Parameters<table border=1>
+<tr><td>energy
+<td>type d
+<td><td><tr><td>Unit
+<td>type s
+<td><td>Parameter candidates : eV keV MeV GeV TeV PeV meV J electronvolt kiloelectronvolt megaelectronvolt gigaelectronvolt teraelectronvolt petaelectronvolt millielectronVolt joule
+</table>
+<h3 id="c7">trajectoryBoundary [<i>boundary</i>]</h3>
+<p>
+Add a Perl RegExp for a phys. vol. boundary where a trajectory point is saved. The expression is compared to a string constructed ":particle:charge:volume:" where particle is the particle name, charge is "charged" or "neutral" and volume is the physical volume name.<br>
+<p>Available Geant4 state(s) : PreInit 
+Idle 
+<p>Parameters<table border=1>
+<tr><td>boundary
+<td>type s
+<td>Omittable : default value = 
+<td></table>
+<h3 id="c8">clearBoundaries</h3>
+<p>
+Remove all of the boundaries for trajectory points.<br>
+<p>Available at all Geant4 states.
+<h3 id="c9">trajectoryRule [<i>process</i>] [<i>subprocess</i>] [<i>threshold</i>] [<i>energy unit</i>]</h3>
+<p>
+Add a rule to save a trajectory point.<br>
+<p>Available Geant4 state(s) : PreInit 
+Idle 
+<p>Parameters<table border=1>
+<tr><td>process
+<td>type i
+<td><td><tr><td>subprocess
+<td>type i
+<td>Omittable : default value = -1
+<td><tr><td>threshold
+<td>type d
+<td>Omittable : default value = -1
+<td><tr><td>energy unit
+<td>type s
+<td>Omittable : default value = MeV
+<td></table>
+<h3 id="c10">clearTrajectoryRules</h3>
+<p>
+Clear all of the trajectory point save rules.<br>
+<p>Available at all Geant4 states.
+</div></body></html>

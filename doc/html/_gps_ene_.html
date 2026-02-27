@@ -1,0 +1,166 @@
+<html><head><title>Commands in /gps/ene/</title></head>
+<style>     table,table td,table th {        border:1px solid #eee     }     table td,table th {       padding:5px 20px;       line-height:1.3;       text-align:inherit     }     a {       color:#17a81a;       text-decoration:none;       transition-duration:0.3s     }       a:hover {       color:#17a81a     }     table {       border-collapse:collapse;       border-spacing:0;       margin-bottom:5px;     }     h1 {       font-size:2.25em;       font-weight:300;       letter-spacing:-1px;       line-height:1.15em;       margin-bottom:0.5em;       word-wrap:break-word     }     h2 {       font-size:1.5em;       font-weight:300;       letter-spacing:-1px;       line-height:1.15em;       margin-bottom:0.5em;       word-wrap:break-word     }     h3 {       color:#26282a;       font-weight:300;       font-size:1.3em;       padding:15px 0 15px 0;       border-bottom:2px #eee solid;       word-wrap:break-word     }     .sidebar {       display:block;       position:relative;       position:sticky;       float:left;       -webkit-box-sizing:border-box;       -moz-box-sizing:border-box;       -ms-box-sizing:border-box;       box-sizing:border-box;       width:20%;       padding-right:20px     }     .context {     width:80%;     display:inline-block;     background-color:#fff;     padding: 25px 35px 20px 30px;     -webkit-box-sizing:border-box;     -moz-box-sizing:border-box;     -ms-box-sizing:border-box;     box-sizing:border-box   }     </style>
+<body bgcolor="#ffffff">
+<div class="sidebar"><h2><a href="_gps_.html">Top level </a></h2><table><tr><td><a href="_gps_source_.html">/gps/source/</a><tr><td><a href="_gps_pos_.html">/gps/pos/</a><tr><td><a href="_gps_ang_.html">/gps/ang/</a><tr><td><a href="_gps_ene_.html">/gps/ene/</a><tr><td><a href="_gps_hist_.html">/gps/hist/</a></table></div>
+<div class="context"><h1>/gps/ene/</h1>
+Spectral commands sub-directory<br>
+<h2>Commands </h2>
+<table>
+<tr><td><a href="#c0">type</a></td></tr>
+<tr><td><a href="#c1">min</a></td></tr>
+<tr><td><a href="#c2">max</a></td></tr>
+<tr><td><a href="#c3">mono</a></td></tr>
+<tr><td><a href="#c4">sigma</a></td></tr>
+<tr><td><a href="#c5">alpha</a></td></tr>
+<tr><td><a href="#c6">temp</a></td></tr>
+<tr><td><a href="#c7">ezero</a></td></tr>
+<tr><td><a href="#c8">gradient</a></td></tr>
+<tr><td><a href="#c9">intercept</a></td></tr>
+<tr><td><a href="#c10">biasAlpha</a></td></tr>
+<tr><td><a href="#c11">calculate</a></td></tr>
+<tr><td><a href="#c12">emspec</a></td></tr>
+<tr><td><a href="#c13">diffspec</a></td></tr>
+<tr><td><a href="#c14">applyEneWeight</a></td></tr>
+</table>
+<h3 id="c0">type [<i>EnergyDis</i>]</h3>
+<p>
+Sets energy distribution type<br>
+<p>Available at all Geant4 states.
+<p>Parameters<table border=1>
+<tr><td>EnergyDis
+<td>type s
+<td><td>Parameter candidates : Mono Lin Pow Exp CPow Gauss Brem Bbody Cdg User Arb Epn LW
+</table>
+<h3 id="c1">min [<i>emin</i>] [<i>Unit</i>]</h3>
+<p>
+Sets minimum energy<br>
+<p>Available at all Geant4 states.
+<p>Parameters<table border=1>
+<tr><td>emin
+<td>type d
+<td><td><tr><td>Unit
+<td>type s
+<td>Omittable : default value = keV
+<td>Parameter candidates : eV keV MeV GeV TeV PeV meV J electronvolt kiloelectronvolt megaelectronvolt gigaelectronvolt teraelectronvolt petaelectronvolt millielectronVolt joule
+</table>
+<h3 id="c2">max [<i>emax</i>] [<i>Unit</i>]</h3>
+<p>
+Sets maximum energy<br>
+<p>Available at all Geant4 states.
+<p>Parameters<table border=1>
+<tr><td>emax
+<td>type d
+<td><td><tr><td>Unit
+<td>type s
+<td>Omittable : default value = keV
+<td>Parameter candidates : eV keV MeV GeV TeV PeV meV J electronvolt kiloelectronvolt megaelectronvolt gigaelectronvolt teraelectronvolt petaelectronvolt millielectronVolt joule
+</table>
+<h3 id="c3">mono [<i>monoenergy</i>] [<i>Unit</i>]</h3>
+<p>
+Sets a monocromatic energy (same as  gps/energy)<br>
+<p>Available at all Geant4 states.
+<p>Parameters<table border=1>
+<tr><td>monoenergy
+<td>type d
+<td><td><tr><td>Unit
+<td>type s
+<td>Omittable : default value = keV
+<td>Parameter candidates : eV keV MeV GeV TeV PeV meV J electronvolt kiloelectronvolt megaelectronvolt gigaelectronvolt teraelectronvolt petaelectronvolt millielectronVolt joule
+</table>
+<h3 id="c4">sigma [<i>Sigmae</i>] [<i>Unit</i>]</h3>
+<p>
+Sets the standard deviation for Gaussian energy dist.<br>
+<p>Available at all Geant4 states.
+<p>Parameters<table border=1>
+<tr><td>Sigmae
+<td>type d
+<td><td><tr><td>Unit
+<td>type s
+<td>Omittable : default value = keV
+<td>Parameter candidates : eV keV MeV GeV TeV PeV meV J electronvolt kiloelectronvolt megaelectronvolt gigaelectronvolt teraelectronvolt petaelectronvolt millielectronVolt joule
+</table>
+<h3 id="c5">alpha [<i>alpha</i>]</h3>
+<p>
+Sets Alpha (index) for power-law energy dist.<br>
+<p>Available at all Geant4 states.
+<p>Parameters<table border=1>
+<tr><td>alpha
+<td>type d
+<td><td></table>
+<h3 id="c6">temp [<i>temp</i>]</h3>
+<p>
+Sets the temperature for Brem and BBody distributions (in Kelvin)<br>
+<p>Available at all Geant4 states.
+<p>Parameters<table border=1>
+<tr><td>temp
+<td>type d
+<td><td></table>
+<h3 id="c7">ezero [<i>ezero</i>]</h3>
+<p>
+Sets E_0 for exponential distribution (in MeV)<br>
+<p>Available at all Geant4 states.
+<p>Parameters<table border=1>
+<tr><td>ezero
+<td>type d
+<td><td></table>
+<h3 id="c8">gradient [<i>gradient</i>]</h3>
+<p>
+Sets the gradient for Lin distribution (in 1/MeV)<br>
+<p>Available at all Geant4 states.
+<p>Parameters<table border=1>
+<tr><td>gradient
+<td>type d
+<td><td></table>
+<h3 id="c9">intercept [<i>intercept</i>]</h3>
+<p>
+Sets the intercept for Lin distributions (in MeV)<br>
+<p>Available at all Geant4 states.
+<p>Parameters<table border=1>
+<tr><td>intercept
+<td>type d
+<td><td></table>
+<h3 id="c10">biasAlpha [<i>arbeint</i>]</h3>
+<p>
+Sets the power-law index for the energy sampling distri. )<br>
+<p>Available at all Geant4 states.
+<p>Parameters<table border=1>
+<tr><td>arbeint
+<td>type d
+<td><td></table>
+<h3 id="c11">calculate</h3>
+<p>
+Calculates the distributions for Cdg and BBody<br>
+<p>Available at all Geant4 states.
+<h3 id="c12">emspec [<i>energyspec</i>]</h3>
+<p>
+True for energy and false for momentum spectra<br>
+<p>Available at all Geant4 states.
+<p>Parameters<table border=1>
+<tr><td>energyspec
+<td>type b
+<td>Omittable : default value = 1
+<td></table>
+<h3 id="c13">diffspec [<i>diffspec</i>]</h3>
+<p>
+True for differential and flase for integral spectra<br>
+<p>Available at all Geant4 states.
+<p>Parameters<table border=1>
+<tr><td>diffspec
+<td>type b
+<td>Omittable : default value = 1
+<td></table>
+<h3 id="c14">applyEneWeight [<i>flag</i>]</h3>
+<p>
+Apply energy weight.<br>
+- Instead of using the Arb type histogram for sampling the energy spectrum,<br>
+ energy is sampled by Linear distribution, and the Arb type histogram is<br>
+ used for the weight of the generated particle.<br>
+- "/gps/ene/type LW" automatically applies this command.<br>
+- If this command has to be explicitly used, "/gps/ene/type" distribution mush be Lin.<br>
+<p>Available at all Geant4 states.
+<p>Parameters<table border=1>
+<tr><td>flag
+<td>type b
+<td>Omittable : default value = 1
+<td></table>
+</div></body></html>
