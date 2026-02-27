@@ -40,6 +40,8 @@ private:
     G4UIcmdWithADoubleAndUnit* fTrajectoryPointDepositCMD;
     G4UIcmdWithAString*        fTrajectoryBoundaryCMD;
     G4UIcmdWithoutParameter*   fClearBoundariesCMD;
+    G4UIcommand*               fTrajectoryPointRuleCMD;
+    G4UIcmdWithoutParameter*   fClearTrajectoryPointRulesCMD;
 
 };
 #endif

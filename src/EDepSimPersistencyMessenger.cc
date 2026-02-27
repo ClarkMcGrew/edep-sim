@@ -55,16 +55,16 @@ EDepSim::PersistencyMessenger::PersistencyMessenger(
     fSaveAllPrimaryTrajectoriesCMD
         = new G4UIcmdWithABool("/edep/db/set/saveAllPrimTraj", this);
     fSaveAllPrimaryTrajectoriesCMD->SetGuidance(
-        "Control which primaries have saved trajectories.\n"
-        "  True: Save all prim. part. trajectories.\n"
-        "  False: Save prim. that ultimately deposit energy in SD.");
+        "Control which primaries have saved trajectories --"
+        " True: Save all prim. part. trajectories."
+        " False: Save prim. that ultimately deposit energy in SD.");
 
     fSaveAllTrajectoriesCMD
         = new G4UIcmdWithADoubleAndUnit("/edep/db/set/saveAllTraj", this);
     fSaveAllTrajectoriesCMD->SetGuidance(
-        "If positive, then save all trajectories with more than this\n"
-        "much energy deposit. If negative, the save all trajectories.\n"
-        "Use with care since the file becomes large.");
+        "If positive, then save all trajectories with more than this"
+        " much energy deposit. If negative, the save all trajectories."
+        " Use with care since the file becomes large.");
     fSaveAllTrajectoriesCMD->SetParameterName("energy", false, false);
     fSaveAllTrajectoriesCMD->SetUnitCategory("Energy");
     fSaveAllTrajectoriesCMD->SetDefaultValue(-1.0);
@@ -86,18 +86,56 @@ EDepSim::PersistencyMessenger::PersistencyMessenger(
     fTrajectoryBoundaryCMD
         = new G4UIcmdWithAString("/edep/db/set/trajectoryBoundary",this);
     fTrajectoryBoundaryCMD->SetGuidance(
-        "Add a Perl RegExp for a phys. vol. boundary where a\n"
-        "    trajectory point is saved. The expression is compared to a\n"
-        "    string constructed \":particle:charge:volume:\" where particle\n"
-        "    is the particle name, charge is \"charged\" or \"neutral\" and\n"
-        "    volume is the physical volume name.");
+        "Add a Perl RegExp for a phys. vol. boundary where a"
+        " trajectory point is saved. The expression is compared to a"
+        " string constructed \":particle:charge:volume:\" where particle"
+        " is the particle name, charge is \"charged\" or \"neutral\" and"
+        " volume is the physical volume name.");
     fTrajectoryBoundaryCMD->SetParameterName("boundary",true);
     fTrajectoryBoundaryCMD->AvailableForStates(G4State_PreInit,G4State_Idle);
 
     fClearBoundariesCMD
         = new G4UIcmdWithoutParameter("/edep/db/set/clearBoundaries",this);
-    fClearBoundariesCMD->SetGuidance("Remove all of the boundaries for "
-                                     "trajectory points.");
+    fClearBoundariesCMD->SetGuidance("Remove all of the boundaries for"
+                                     " trajectory points.");
+
+    fTrajectoryPointRuleCMD
+        = new G4UIcommand("/edep/db/set/trajectoryRule",this);
+    fTrajectoryPointRuleCMD->SetGuidance(
+        "Add a rule to save a trajectory point.");
+    fTrajectoryPointRuleCMD->AvailableForStates(
+        G4State_PreInit,G4State_Idle);
+    G4UIparameter* param = new G4UIparameter("process",'i',false);
+    param->SetGuidance(
+        "Select trajectory points with this process."
+        " The process numbers are defined by geant"
+        " in G4ProcessType.h."
+        " A value of -1 specifies all processes.");
+    fTrajectoryPointRuleCMD->SetParameter(param);
+    param = new G4UIparameter("subprocess",'i',true);
+    param->SetGuidance(
+        "Select points with this subprocess."
+        " The subprocess numbers are defined in several"
+        " include files, notably"
+        " G4EmProcessSubType.hh,"
+        " G4OpProcessSubType.hh,"
+        " and G4HadronicProcessType.hh."
+        " A value of -1 specifies all subprocesses.");
+    param->SetDefaultValue(-1);
+    fTrajectoryPointRuleCMD->SetParameter(param);
+    param = new G4UIparameter("threshold",'d',true);
+    param->SetGuidance("Select points with more than this energy deposit.");
+    param->SetDefaultValue(-1.0);
+    fTrajectoryPointRuleCMD->SetParameter(param);
+    param = new G4UIparameter("energy unit",'s',true);
+    param->SetDefaultValue("MeV");
+    fTrajectoryPointRuleCMD->SetParameter(param);
+
+    fClearTrajectoryPointRulesCMD
+        = new G4UIcmdWithoutParameter("/edep/db/set/clearTrajectoryRules",this);
+    fClearTrajectoryPointRulesCMD->SetGuidance(
+        "Clear all of the trajectory point"
+        " save rules.");
 
 }
 
@@ -113,6 +151,8 @@ EDepSim::PersistencyMessenger::~PersistencyMessenger() {
     delete fTrajectoryPointDepositCMD;
     delete fTrajectoryBoundaryCMD;
     delete fClearBoundariesCMD;
+    delete fTrajectoryPointRuleCMD;
+    delete fClearTrajectoryPointRulesCMD;
     delete fPersistencyDIR;
     delete fPersistencySetDIR;
 }
@@ -159,6 +199,19 @@ void EDepSim::PersistencyMessenger::SetNewValue(G4UIcommand* command,
     }
     else if (command == fClearBoundariesCMD) {
         fPersistencyManager->ClearTrajectoryBoundaries();
+    }
+    else if (command == fTrajectoryPointRuleCMD) {
+        int process;
+        int subprocess;
+        double threshold;
+        std::string unit;
+        std::istringstream val(newValue);
+        val >> process >> subprocess >> threshold >> unit;
+        fPersistencyManager->AddTrajectoryPointRule(
+            process,subprocess,threshold*G4UIcommand::ValueOf(unit.c_str()));
+    }
+    else if (command == fClearTrajectoryPointRulesCMD) {
+        fPersistencyManager->ClearTrajectoryPointRules();
     }
 }
 
