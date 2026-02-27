@@ -1,0 +1,117 @@
+<html><head><title>Commands in /Captain/Cryostat/Immersed/Drift/GroundPlane/</title></head>
+<style>     table,table td,table th {        border:1px solid #eee     }     table td,table th {       padding:5px 20px;       line-height:1.3;       text-align:inherit     }     a {       color:#17a81a;       text-decoration:none;       transition-duration:0.3s     }       a:hover {       color:#17a81a     }     table {       border-collapse:collapse;       border-spacing:0;       margin-bottom:5px;     }     h1 {       font-size:2.25em;       font-weight:300;       letter-spacing:-1px;       line-height:1.15em;       margin-bottom:0.5em;       word-wrap:break-word     }     h2 {       font-size:1.5em;       font-weight:300;       letter-spacing:-1px;       line-height:1.15em;       margin-bottom:0.5em;       word-wrap:break-word     }     h3 {       color:#26282a;       font-weight:300;       font-size:1.3em;       padding:15px 0 15px 0;       border-bottom:2px #eee solid;       word-wrap:break-word     }     .sidebar {       display:block;       position:relative;       position:sticky;       float:left;       -webkit-box-sizing:border-box;       -moz-box-sizing:border-box;       -ms-box-sizing:border-box;       box-sizing:border-box;       width:20%;       padding-right:20px     }     .context {     width:80%;     display:inline-block;     background-color:#fff;     padding: 25px 35px 20px 30px;     -webkit-box-sizing:border-box;     -moz-box-sizing:border-box;     -ms-box-sizing:border-box;     box-sizing:border-box   }     </style>
+<body bgcolor="#ffffff">
+<div class="sidebar"><h2><a href="_Captain_Cryostat_Immersed_Drift_.html">Top level </a></h2><table><tr><td><a href="_Captain_Cryostat_Immersed_Drift_XPlane_.html">/Captain/Cryostat/Immersed/Drift/XPlane/</a><tr><td><a href="_Captain_Cryostat_Immersed_Drift_VPlane_.html">/Captain/Cryostat/Immersed/Drift/VPlane/</a><tr><td><a href="_Captain_Cryostat_Immersed_Drift_UPlane_.html">/Captain/Cryostat/Immersed/Drift/UPlane/</a><tr><td><a href="_Captain_Cryostat_Immersed_Drift_GridPlane_.html">/Captain/Cryostat/Immersed/Drift/GridPlane/</a><tr><td><a href="_Captain_Cryostat_Immersed_Drift_GroundPlane_.html">/Captain/Cryostat/Immersed/Drift/GroundPlane/</a></table></div>
+<div class="context"><h1>/Captain/Cryostat/Immersed/Drift/GroundPlane/</h1>
+Control the drift region geometry.<br>
+<h2>Commands </h2>
+<table>
+<tr><td><a href="#c0">opacity</a></td></tr>
+<tr><td><a href="#c1">daughterOpacity</a></td></tr>
+<tr><td><a href="#c2">check</a></td></tr>
+<tr><td><a href="#c3">sensitive</a></td></tr>
+<tr><td><a href="#c4">maxHitSagitta</a></td></tr>
+<tr><td><a href="#c5">maxHitSeparation</a></td></tr>
+<tr><td><a href="#c6">maxHitLength</a></td></tr>
+<tr><td><a href="#c7">apothem</a></td></tr>
+<tr><td><a href="#c8">wireSpacing</a></td></tr>
+<tr><td><a href="#c9">maxWireCount</a></td></tr>
+</table>
+<h3 id="c0">opacity [<i>opacity</i>]</h3>
+<p>
+Set the log of the relative opacity. Useful values are between [-0.5, 0.5], and +/-10 makes the object opague or transparent. A value of 0 leaves the opacity unchanged.<br>
+<p>Available at all Geant4 states.
+<p>Parameters<table border=1>
+<tr><td>opacity
+<td>type d
+<td><td></table>
+<h3 id="c1">daughterOpacity [<i>opacity</i>]</h3>
+<p>
+Set the log of the relative opacity of the daughters.<br>
+<p>Available at all Geant4 states.
+<p>Parameters<table border=1>
+<tr><td>opacity
+<td>type d
+<td><td></table>
+<h3 id="c2">check [<i>check</i>]</h3>
+<p>
+If this is true then check for overlaps<br>
+<p>Available at all Geant4 states.
+<p>Parameters<table border=1>
+<tr><td>check
+<td>type b
+<td><td></table>
+<h3 id="c3">sensitive [<i>Name</i>] [<i>Type</i>]</h3>
+<p>
+Set the name of the sensitive detector<br>
+<p>Available at all Geant4 states.
+<p>Parameters<table border=1>
+<tr><td>Name
+<td>type s
+<td><td><tr><td>Type
+<td>type s
+<td><td></table>
+<h3 id="c4">maxHitSagitta [<i>Sagitta</i>] [<i>Unit</i>]</h3>
+<p>
+Set the maximum sagitta for a hit.<br>
+<p>Available at all Geant4 states.
+<p>Parameters<table border=1>
+<tr><td>Sagitta
+<td>type d
+<td><td><tr><td>Unit
+<td>type s
+<td><td>Parameter candidates : pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
+</table>
+<h3 id="c5">maxHitSeparation [<i>Separation</i>] [<i>Unit</i>]</h3>
+<p>
+Set the maximum separation for a hit.<br>
+<p>Available at all Geant4 states.
+<p>Parameters<table border=1>
+<tr><td>Separation
+<td>type d
+<td><td><tr><td>Unit
+<td>type s
+<td><td>Parameter candidates : pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
+</table>
+<h3 id="c6">maxHitLength [<i>HitLength</i>] [<i>Unit</i>]</h3>
+<p>
+Set the maximum length for a hit.<br>
+<p>Available at all Geant4 states.
+<p>Parameters<table border=1>
+<tr><td>HitLength
+<td>type d
+<td><td><tr><td>Unit
+<td>type s
+<td><td>Parameter candidates : pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
+</table>
+<h3 id="c7">apothem [<i>apothem</i>] [<i>Unit</i>]</h3>
+<p>
+Set the apothem of the drift region.<br>
+<p>Available at all Geant4 states.
+<p>Parameters<table border=1>
+<tr><td>apothem
+<td>type d
+<td><td><tr><td>Unit
+<td>type s
+<td><td>Parameter candidates : pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
+</table>
+<h3 id="c8">wireSpacing [<i>spacing</i>] [<i>Unit</i>]</h3>
+<p>
+Set the wire spacing.<br>
+<p>Available at all Geant4 states.
+<p>Parameters<table border=1>
+<tr><td>spacing
+<td>type d
+<td><td><tr><td>Unit
+<td>type s
+<td><td>Parameter candidates : pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
+</table>
+<h3 id="c9">maxWireCount [<i>count</i>]</h3>
+<p>
+Set the maximum number of wires in a plane.<br>
+<p>Available at all Geant4 states.
+<p>Parameters<table border=1>
+<tr><td>count
+<td>type i
+<td><td></table>
+</div></body></html>

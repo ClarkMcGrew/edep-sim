@@ -1,0 +1,58 @@
+<html><head><title>Commands in /tracking/</title></head>
+<style>     table,table td,table th {        border:1px solid #eee     }     table td,table th {       padding:5px 20px;       line-height:1.3;       text-align:inherit     }     a {       color:#17a81a;       text-decoration:none;       transition-duration:0.3s     }       a:hover {       color:#17a81a     }     table {       border-collapse:collapse;       border-spacing:0;       margin-bottom:5px;     }     h1 {       font-size:2.25em;       font-weight:300;       letter-spacing:-1px;       line-height:1.15em;       margin-bottom:0.5em;       word-wrap:break-word     }     h2 {       font-size:1.5em;       font-weight:300;       letter-spacing:-1px;       line-height:1.15em;       margin-bottom:0.5em;       word-wrap:break-word     }     h3 {       color:#26282a;       font-weight:300;       font-size:1.3em;       padding:15px 0 15px 0;       border-bottom:2px #eee solid;       word-wrap:break-word     }     .sidebar {       display:block;       position:relative;       position:sticky;       float:left;       -webkit-box-sizing:border-box;       -moz-box-sizing:border-box;       -ms-box-sizing:border-box;       box-sizing:border-box;       width:20%;       padding-right:20px     }     .context {     width:80%;     display:inline-block;     background-color:#fff;     padding: 25px 35px 20px 30px;     -webkit-box-sizing:border-box;     -moz-box-sizing:border-box;     -ms-box-sizing:border-box;     box-sizing:border-box   }     </style>
+<body bgcolor="#ffffff">
+<div class="sidebar"><h2><a href="_.html">Top level </a></h2><table><tr><td><a href="_control_.html">/control/</a><tr><td><a href="_units_.html">/units/</a><tr><td><a href="_profiler_.html">/profiler/</a><tr><td><a href="_particle_.html">/particle/</a><tr><td><a href="_tracking_.html">/tracking/</a><tr><td><a href="_geometry_.html">/geometry/</a><tr><td><a href="_process_.html">/process/</a><tr><td><a href="_event_.html">/event/</a><tr><td><a href="_cuts_.html">/cuts/</a><tr><td><a href="_run_.html">/run/</a><tr><td><a href="_random_.html">/random/</a><tr><td><a href="_edep_.html">/edep/</a><tr><td><a href="_Captain_.html">/Captain/</a><tr><td><a href="_hits_.html">/hits/</a><tr><td><a href="_material_.html">/material/</a><tr><td><a href="_physics_lists_.html">/physics_lists/</a><tr><td><a href="_generator_.html">/generator/</a><tr><td><a href="_gps_.html">/gps/</a></table></div>
+<div class="context"><h1>/tracking/</h1>
+TrackingManager and SteppingManager control commands.<br>
+<h2>Commands </h2>
+<table>
+<tr><td><a href="#c0">abort</a></td></tr>
+<tr><td><a href="#c1">resume</a></td></tr>
+<tr><td><a href="#c2">storeTrajectory</a></td></tr>
+<tr><td><a href="#c3">verbose</a></td></tr>
+</table>
+<h3 id="c0">abort</h3>
+<p>
+Abort current G4Track processing.<br>
+<p>Available at all Geant4 states.
+<h3 id="c1">resume</h3>
+<p>
+Resume current G4Track processing.<br>
+<p>Available at all Geant4 states.
+<h3 id="c2">storeTrajectory [<i>Store</i>]</h3>
+<p>
+Store trajectories or not.<br>
+ 0 : Don't Store trajectories.<br>
+ !=0 : Store trajectories.<br>
+ 1 : Choose G4Trajectory as default.<br>
+ 2 : Choose G4SmoothTrajectory as default.<br>
+ 3 : Choose G4RichTrajectory as default.<br>
+ 4 : Choose G4RichTrajectory with auxiliary points as default.<br>
+<p>Range : Store &gt;=0 &amp;&amp; Store &lt;= 4
+<p>Available at all Geant4 states.
+<p>Parameters<table border=1>
+<tr><td>Store
+<td>type i
+<td>Omittable : default value = 0
+<td></table>
+<h3 id="c3">verbose [<i>verbose_level</i>]</h3>
+<p>
+Set Verbose level of tracking category.<br>
+ -1 : Silent.<br>
+ 0 : Silent.<br>
+ 1 : Minimum information of each Step.<br>
+ 2 : Addition to Level=1, info of secondary particles.<br>
+ 3 : Addition to Level=1, pre/postStepoint information<br>
+     after all AlongStep/PostStep process executions.<br>
+ 4 : Addition to Level=3, pre/postStepoint information<br>
+     at each AlongStepPostStep process execution.<br>
+ 5 : Addition to Level=4, proposed Step length information<br>
+     from each AlongStepPostStep process.<br>
+<p>Range : verbose_level &gt;=-1  
+<p>Available at all Geant4 states.
+<p>Parameters<table border=1>
+<tr><td>verbose_level
+<td>type i
+<td>Omittable : default value = 0
+<td></table>
+</div></body></html>

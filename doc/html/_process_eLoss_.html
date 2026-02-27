@@ -1,0 +1,270 @@
+<html><head><title>Commands in /process/eLoss/</title></head>
+<style>     table,table td,table th {        border:1px solid #eee     }     table td,table th {       padding:5px 20px;       line-height:1.3;       text-align:inherit     }     a {       color:#17a81a;       text-decoration:none;       transition-duration:0.3s     }       a:hover {       color:#17a81a     }     table {       border-collapse:collapse;       border-spacing:0;       margin-bottom:5px;     }     h1 {       font-size:2.25em;       font-weight:300;       letter-spacing:-1px;       line-height:1.15em;       margin-bottom:0.5em;       word-wrap:break-word     }     h2 {       font-size:1.5em;       font-weight:300;       letter-spacing:-1px;       line-height:1.15em;       margin-bottom:0.5em;       word-wrap:break-word     }     h3 {       color:#26282a;       font-weight:300;       font-size:1.3em;       padding:15px 0 15px 0;       border-bottom:2px #eee solid;       word-wrap:break-word     }     .sidebar {       display:block;       position:relative;       position:sticky;       float:left;       -webkit-box-sizing:border-box;       -moz-box-sizing:border-box;       -ms-box-sizing:border-box;       box-sizing:border-box;       width:20%;       padding-right:20px     }     .context {     width:80%;     display:inline-block;     background-color:#fff;     padding: 25px 35px 20px 30px;     -webkit-box-sizing:border-box;     -moz-box-sizing:border-box;     -ms-box-sizing:border-box;     box-sizing:border-box   }     </style>
+<body bgcolor="#ffffff">
+<div class="sidebar"><h2><a href="_process_.html">Top level </a></h2><table><tr><td><a href="_process_em_.html">/process/em/</a><tr><td><a href="_process_eLoss_.html">/process/eLoss/</a><tr><td><a href="_process_msc_.html">/process/msc/</a><tr><td><a href="_process_gconv_.html">/process/gconv/</a><tr><td><a href="_process_dna_.html">/process/dna/</a><tr><td><a href="_process_had_.html">/process/had/</a><tr><td><a href="_process_optical_.html">/process/optical/</a></table></div>
+<div class="context"><h1>/process/eLoss/</h1>
+Commands for energy loss processes.<br>
+<h2>Commands </h2>
+<table>
+<tr><td><a href="#c0">fluct</a></td></tr>
+<tr><td><a href="#c1">CSDARange</a></td></tr>
+<tr><td><a href="#c2">LPM</a></td></tr>
+<tr><td><a href="#c3">useCutAsFinalRange</a></td></tr>
+<tr><td><a href="#c4">UseAngularGenerator</a></td></tr>
+<tr><td><a href="#c5">UseICRU90</a></td></tr>
+<tr><td><a href="#c6">minKinEnergy</a></td></tr>
+<tr><td><a href="#c7">maxKinEnergy</a></td></tr>
+<tr><td><a href="#c8">maxKinEnergyCSDA</a></td></tr>
+<tr><td><a href="#c9">linLossLimit</a></td></tr>
+<tr><td><a href="#c10">bremThreshold</a></td></tr>
+<tr><td><a href="#c11">bremMuHadThreshold</a></td></tr>
+<tr><td><a href="#c12">LambdaFactor</a></td></tr>
+<tr><td><a href="#c13">verbose</a></td></tr>
+<tr><td><a href="#c14">setFluctModel</a></td></tr>
+<tr><td><a href="#c15">subsecRegion</a></td></tr>
+<tr><td><a href="#c16">StepFunction</a></td></tr>
+<tr><td><a href="#c17">StepFunctionMuHad</a></td></tr>
+<tr><td><a href="#c18">StepFunctionLightIons</a></td></tr>
+<tr><td><a href="#c19">StepFunctionIons</a></td></tr>
+</table>
+<h3 id="c0">fluct [<i>choice</i>]</h3>
+<p>
+Enable/disable energy loss fluctuations.<br>
+<p>Available Geant4 state(s) : PreInit 
+Idle 
+<p>Parameters<table border=1>
+<tr><td>choice
+<td>type b
+<td>Omittable : default value = 1
+<td></table>
+<h3 id="c1">CSDARange [<i>range</i>]</h3>
+<p>
+Enable/disable CSDA range calculation<br>
+<p>Available Geant4 state(s) : PreInit 
+<p>Parameters<table border=1>
+<tr><td>range
+<td>type b
+<td>Omittable : default value = 0
+<td></table>
+<h3 id="c2">LPM [<i>lpm</i>]</h3>
+<p>
+Enable/disable LPM effect calculation<br>
+<p>Available Geant4 state(s) : PreInit 
+Idle 
+<p>Parameters<table border=1>
+<tr><td>lpm
+<td>type b
+<td>Omittable : default value = 1
+<td></table>
+<h3 id="c3">useCutAsFinalRange [<i>choice</i>]</h3>
+<p>
+Enable/disable use of cut in range as a final range<br>
+<p>Available Geant4 state(s) : PreInit 
+Idle 
+<p>Parameters<table border=1>
+<tr><td>choice
+<td>type b
+<td>Omittable : default value = 0
+<td></table>
+<h3 id="c4">UseAngularGenerator [<i>del</i>]</h3>
+<p>
+Enable usage of angular generator for ionisation<br>
+<p>Available Geant4 state(s) : PreInit 
+<p>Parameters<table border=1>
+<tr><td>del
+<td>type b
+<td>Omittable : default value = 0
+<td></table>
+<h3 id="c5">UseICRU90 [<i>icru90</i>]</h3>
+<p>
+Enable usage of ICRU90 stopping powers<br>
+<p>Available Geant4 state(s) : PreInit 
+<p>Parameters<table border=1>
+<tr><td>icru90
+<td>type b
+<td>Omittable : default value = 0
+<td></table>
+<h3 id="c6">minKinEnergy [<i>emin</i>] [<i>Unit</i>]</h3>
+<p>
+Set the min kinetic energy for EM tables<br>
+<p>Available Geant4 state(s) : PreInit 
+<p>Parameters<table border=1>
+<tr><td>emin
+<td>type d
+<td>Omittable : default value = 
+<td><tr><td>Unit
+<td>type s
+<td><td>Parameter candidates : eV keV MeV GeV TeV PeV meV J electronvolt kiloelectronvolt megaelectronvolt gigaelectronvolt teraelectronvolt petaelectronvolt millielectronVolt joule
+</table>
+<h3 id="c7">maxKinEnergy [<i>emax</i>] [<i>Unit</i>]</h3>
+<p>
+Set the max kinetic energy for EM tables<br>
+<p>Available Geant4 state(s) : PreInit 
+<p>Parameters<table border=1>
+<tr><td>emax
+<td>type d
+<td>Omittable : default value = 
+<td><tr><td>Unit
+<td>type s
+<td><td>Parameter candidates : eV keV MeV GeV TeV PeV meV J electronvolt kiloelectronvolt megaelectronvolt gigaelectronvolt teraelectronvolt petaelectronvolt millielectronVolt joule
+</table>
+<h3 id="c8">maxKinEnergyCSDA [<i>emaxCSDA</i>] [<i>Unit</i>]</h3>
+<p>
+Set the max kinetic energy for CSDA table<br>
+<p>Available Geant4 state(s) : PreInit 
+<p>Parameters<table border=1>
+<tr><td>emaxCSDA
+<td>type d
+<td>Omittable : default value = 
+<td><tr><td>Unit
+<td>type s
+<td><td>Parameter candidates : eV keV MeV GeV TeV PeV meV J electronvolt kiloelectronvolt megaelectronvolt gigaelectronvolt teraelectronvolt petaelectronvolt millielectronVolt joule
+</table>
+<h3 id="c9">linLossLimit [<i>linlim</i>]</h3>
+<p>
+Set linearLossLimit parameter<br>
+<p>Available Geant4 state(s) : PreInit 
+Idle 
+<p>Parameters<table border=1>
+<tr><td>linlim
+<td>type d
+<td>Omittable : default value = 
+<td></table>
+<h3 id="c10">bremThreshold [<i>emaxBrem</i>] [<i>Unit</i>]</h3>
+<p>
+Set e+- bremsstrahlung energy threshold<br>
+<p>Available Geant4 state(s) : PreInit 
+<p>Parameters<table border=1>
+<tr><td>emaxBrem
+<td>type d
+<td>Omittable : default value = 
+<td><tr><td>Unit
+<td>type s
+<td><td>Parameter candidates : eV keV MeV GeV TeV PeV meV J electronvolt kiloelectronvolt megaelectronvolt gigaelectronvolt teraelectronvolt petaelectronvolt millielectronVolt joule
+</table>
+<h3 id="c11">bremMuHadThreshold [<i>emaxMuHadBrem</i>] [<i>Unit</i>]</h3>
+<p>
+Set muon/hadron bremsstrahlung energy threshold<br>
+<p>Available Geant4 state(s) : PreInit 
+<p>Parameters<table border=1>
+<tr><td>emaxMuHadBrem
+<td>type d
+<td>Omittable : default value = 
+<td><tr><td>Unit
+<td>type s
+<td><td>Parameter candidates : eV keV MeV GeV TeV PeV meV J electronvolt kiloelectronvolt megaelectronvolt gigaelectronvolt teraelectronvolt petaelectronvolt millielectronVolt joule
+</table>
+<h3 id="c12">LambdaFactor [<i>Fl</i>]</h3>
+<p>
+Set lambdaFactor parameter for integral option<br>
+<p>Available Geant4 state(s) : PreInit 
+Idle 
+<p>Parameters<table border=1>
+<tr><td>Fl
+<td>type d
+<td>Omittable : default value = 
+<td></table>
+<h3 id="c13">verbose [<i>verb</i>]</h3>
+<p>
+Set verbose level for EM physics<br>
+<p>Available Geant4 state(s) : PreInit 
+Idle 
+<p>Parameters<table border=1>
+<tr><td>verb
+<td>type i
+<td>Omittable : default value = 1
+<td></table>
+<h3 id="c14">setFluctModel [<i>Fluc1</i>]</h3>
+<p>
+Define type of energy loss fluctuation model<br>
+<p>Available Geant4 state(s) : PreInit 
+<p>Parameters<table border=1>
+<tr><td>Fluc1
+<td>type s
+<td>Omittable : default value = 
+<td>Parameter candidates : Dummy Universal Urban
+</table>
+<h3 id="c15">subsecRegion [<i></i>]</h3>
+<p>
+Enable subcut generation per region.<br>
+  Region   : region name<br>
+<p>Available Geant4 state(s) : PreInit 
+<p>Parameters<table border=1>
+<tr><td>
+<td>type s
+<td><td></table>
+<h3 id="c16">StepFunction [<i>dRoverR</i>] [<i>finalRange</i>] [<i>unit</i>]</h3>
+<p>
+Set the energy loss step limitation parameters for e+-.<br>
+  dRoverR   : max Range variation per step<br>
+  finalRange: range for final step<br>
+  unit      : unit of finalRange<br>
+<p>Available Geant4 state(s) : PreInit 
+Idle 
+<p>Parameters<table border=1>
+<tr><td>dRoverR
+<td>type d
+<td><td>Parameter range : dRoverR&gt;0. &amp;&amp; dRoverR&lt;=1.
+<tr><td>finalRange
+<td>type d
+<td><td>Parameter range : finalRange&gt;0.
+<tr><td>unit
+<td>type s
+<td>Omittable : default value = mm
+<td>Parameter candidates : pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
+</table>
+<h3 id="c17">StepFunctionMuHad [<i>dRoverRMuHad</i>] [<i>finalRangeMuHad</i>] [<i>unit</i>]</h3>
+<p>
+Set the energy loss step limitation parameters for muon/hadron.<br>
+  dRoverR   : max Range variation per step<br>
+  finalRange: range for final step<br>
+<p>Available Geant4 state(s) : PreInit 
+Idle 
+<p>Parameters<table border=1>
+<tr><td>dRoverRMuHad
+<td>type d
+<td><td>Parameter range : dRoverRMuHad&gt;0. &amp;&amp; dRoverRMuHad&lt;=1.
+<tr><td>finalRangeMuHad
+<td>type d
+<td><td>Parameter range : finalRangeMuHad&gt;0.
+<tr><td>unit
+<td>type s
+<td>Omittable : default value = mm
+<td></table>
+<h3 id="c18">StepFunctionLightIons [<i>dRoverRLIons</i>] [<i>finalRangeLIons</i>] [<i>unit</i>]</h3>
+<p>
+Set the energy loss step limitation parameters for light ions.<br>
+  dRoverR   : max Range variation per step<br>
+  finalRange: range for final step<br>
+<p>Available Geant4 state(s) : PreInit 
+Idle 
+<p>Parameters<table border=1>
+<tr><td>dRoverRLIons
+<td>type d
+<td><td>Parameter range : dRoverRLIons&gt;0. &amp;&amp; dRoverRLIons&lt;=1.
+<tr><td>finalRangeLIons
+<td>type d
+<td><td>Parameter range : finalRangeLIons&gt;0.
+<tr><td>unit
+<td>type s
+<td>Omittable : default value = mm
+<td></table>
+<h3 id="c19">StepFunctionIons [<i>dRoverRIons</i>] [<i>finalRangeIons</i>] [<i>unit</i>]</h3>
+<p>
+Set the energy loss step limitation parameters for ions.<br>
+  dRoverR   : max Range variation per step<br>
+  finalRange: range for final step<br>
+<p>Available Geant4 state(s) : PreInit 
+Idle 
+<p>Parameters<table border=1>
+<tr><td>dRoverRIons
+<td>type d
+<td><td>Parameter range : dRoverRIons&gt;0. &amp;&amp; dRoverRIons&lt;=1.
+<tr><td>finalRangeIons
+<td>type d
+<td><td>Parameter range : finalRangeIons&gt;0.
+<tr><td>unit
+<td>type s
+<td>Omittable : default value = mm
+<td></table>
+</div></body></html>

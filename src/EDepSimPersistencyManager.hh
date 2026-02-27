@@ -203,6 +203,20 @@ public:
     /// point to be saved.
     virtual void ClearTrajectoryBoundaries();
 
+    /// Add a rule to save trajectory points.  The process type values are
+    /// defined in G4ProcessType.hh, and the subtype values are defined in
+    /// several include files (particularly G4HadronicProcessType.hh, and
+    /// G4EmProcessSubType.hh).  A value of -1 for either process or
+    /// subprocess will match everything.
+    virtual void AddTrajectoryPointRule(int process,
+                                        int subprocess,
+                                        double threshold);
+
+    /// Clear the rulees for trajectory points.
+    virtual void ClearTrajectoryPointRules() {
+        fTrajectoryPointRules.clear();
+    }
+
     /// Set the detector mask.
     void SetDetectorPartition(int partition) {fDetectorPartition = partition;}
 
@@ -328,6 +342,23 @@ private:
     /// A list of detectors for which trajectory points should be saved as
     /// particles enter and exit.
     std::vector<TPRegexp*> fTrajectoryBoundaries;
+
+    /// An internal class to keep the rules used to save trajectory points.
+    class TrajectoryPointRule {
+    public:
+        TrajectoryPointRule(int p, int s, double t)
+            : fProcess(p), fSubprocess(s), fThreshold(t) {}
+        /// A process to be saved, or negative if all processes should be
+        /// saved.
+        int fProcess;
+        /// A subprocess to be saved, or negative if all subprocesses should
+        /// be saved.
+        int fSubprocess;
+        /// The minimum deposited energy to save a trajectory point.  A
+        /// negative value removes the threshold.
+        double fThreshold;
+    };
+    std::vector<TrajectoryPointRule> fTrajectoryPointRules;
 
     /// The detector partition
     int fDetectorPartition;

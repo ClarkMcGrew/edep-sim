@@ -15,7 +15,8 @@ be linked as a library into another application, and makes the same
 information as a class.
 
 This documentation assumes that you have a passing familiarity with how to
-write GEANT4 macro control files.
+write GEANT4 macro control files, and edep-sim can be configured using the supported macro commands in [text](./doc/edepsim-command.list) or 
+[html](https://github.com/ClarkMcGrew/edep-sim/doc/html/_.html). 
 
 Where it's available (and in particular for argon), the simulation
 implements a fairly detailed model of the energy deposited as
@@ -367,8 +368,8 @@ use the accessors instead of the field:
 
   * Contrib: A vector of track identifiers which contributed to this hit
     segment.  There is almost always only one contributor, but for certain
-    run settings there may be several particles associated with one segment
-    (this is a very unusual situation).  This has type
+    run settings it is possible for several particles associated with one
+    segment (this is a very unusual situation).  This has type
     TG4HitSegment::Contributors and is equivalent to a vector of integers.
 
   * PrimaryId [GetPrimaryId()]: The track identifier for the primary

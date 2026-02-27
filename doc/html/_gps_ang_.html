@@ -1,0 +1,185 @@
+<html><head><title>Commands in /gps/ang/</title></head>
+<style>     table,table td,table th {        border:1px solid #eee     }     table td,table th {       padding:5px 20px;       line-height:1.3;       text-align:inherit     }     a {       color:#17a81a;       text-decoration:none;       transition-duration:0.3s     }       a:hover {       color:#17a81a     }     table {       border-collapse:collapse;       border-spacing:0;       margin-bottom:5px;     }     h1 {       font-size:2.25em;       font-weight:300;       letter-spacing:-1px;       line-height:1.15em;       margin-bottom:0.5em;       word-wrap:break-word     }     h2 {       font-size:1.5em;       font-weight:300;       letter-spacing:-1px;       line-height:1.15em;       margin-bottom:0.5em;       word-wrap:break-word     }     h3 {       color:#26282a;       font-weight:300;       font-size:1.3em;       padding:15px 0 15px 0;       border-bottom:2px #eee solid;       word-wrap:break-word     }     .sidebar {       display:block;       position:relative;       position:sticky;       float:left;       -webkit-box-sizing:border-box;       -moz-box-sizing:border-box;       -ms-box-sizing:border-box;       box-sizing:border-box;       width:20%;       padding-right:20px     }     .context {     width:80%;     display:inline-block;     background-color:#fff;     padding: 25px 35px 20px 30px;     -webkit-box-sizing:border-box;     -moz-box-sizing:border-box;     -ms-box-sizing:border-box;     box-sizing:border-box   }     </style>
+<body bgcolor="#ffffff">
+<div class="sidebar"><h2><a href="_gps_.html">Top level </a></h2><table><tr><td><a href="_gps_source_.html">/gps/source/</a><tr><td><a href="_gps_pos_.html">/gps/pos/</a><tr><td><a href="_gps_ang_.html">/gps/ang/</a><tr><td><a href="_gps_ene_.html">/gps/ene/</a><tr><td><a href="_gps_hist_.html">/gps/hist/</a></table></div>
+<div class="context"><h1>/gps/ang/</h1>
+Angular commands sub-directory<br>
+<h2>Commands </h2>
+<table>
+<tr><td><a href="#c0">type</a></td></tr>
+<tr><td><a href="#c1">rot1</a></td></tr>
+<tr><td><a href="#c2">rot2</a></td></tr>
+<tr><td><a href="#c3">mintheta</a></td></tr>
+<tr><td><a href="#c4">maxtheta</a></td></tr>
+<tr><td><a href="#c5">minphi</a></td></tr>
+<tr><td><a href="#c6">maxphi</a></td></tr>
+<tr><td><a href="#c7">sigma_r</a></td></tr>
+<tr><td><a href="#c8">sigma_x</a></td></tr>
+<tr><td><a href="#c9">sigma_y</a></td></tr>
+<tr><td><a href="#c10">focuspoint</a></td></tr>
+<tr><td><a href="#c11">user_coor</a></td></tr>
+<tr><td><a href="#c12">surfnorm</a></td></tr>
+</table>
+<h3 id="c0">type [<i>AngDis</i>]</h3>
+<p>
+Sets angular source distribution type<br>
+ Possible variables are: iso, cos, planar, beam1d, beam2d, focused or user<br>
+<p>Available at all Geant4 states.
+<p>Parameters<table border=1>
+<tr><td>AngDis
+<td>type s
+<td><td>Parameter candidates : iso cos planar beam1d beam2d focused user
+</table>
+<h3 id="c1">rot1 [<i>AR1x</i>] [<i>AR1y</i>] [<i>AR1z</i>]</h3>
+<p>
+Sets the 1st vector for angular distribution rotation matrix<br>
+ Need not be a unit vector<br>
+<p>Range : AR1x != 0 || AR1y != 0 || AR1z != 0
+<p>Available at all Geant4 states.
+<p>Parameters<table border=1>
+<tr><td>AR1x
+<td>type d
+<td><td><tr><td>AR1y
+<td>type d
+<td><td><tr><td>AR1z
+<td>type d
+<td><td></table>
+<h3 id="c2">rot2 [<i>AR2x</i>] [<i>AR2y</i>] [<i>AR2z</i>]</h3>
+<p>
+Sets the 2nd vector for angular distribution rotation matrix<br>
+ Need not be a unit vector<br>
+<p>Range : AR2x != 0 || AR2y != 0 || AR2z != 0
+<p>Available at all Geant4 states.
+<p>Parameters<table border=1>
+<tr><td>AR2x
+<td>type d
+<td><td><tr><td>AR2y
+<td>type d
+<td><td><tr><td>AR2z
+<td>type d
+<td><td></table>
+<h3 id="c3">mintheta [<i>MinTheta</i>] [<i>Unit</i>]</h3>
+<p>
+Set minimum theta<br>
+<p>Available at all Geant4 states.
+<p>Parameters<table border=1>
+<tr><td>MinTheta
+<td>type d
+<td>Omittable : default value = 0
+<td><tr><td>Unit
+<td>type s
+<td>Omittable : default value = rad
+<td>Parameter candidates : rad mrad deg radian milliradian degree
+</table>
+<h3 id="c4">maxtheta [<i>MaxTheta</i>] [<i>Unit</i>]</h3>
+<p>
+Set maximum theta<br>
+<p>Available at all Geant4 states.
+<p>Parameters<table border=1>
+<tr><td>MaxTheta
+<td>type d
+<td>Omittable : default value = 3.14159
+<td><tr><td>Unit
+<td>type s
+<td>Omittable : default value = rad
+<td>Parameter candidates : rad mrad deg radian milliradian degree
+</table>
+<h3 id="c5">minphi [<i>MinPhi</i>] [<i>Unit</i>]</h3>
+<p>
+Set minimum phi<br>
+<p>Available at all Geant4 states.
+<p>Parameters<table border=1>
+<tr><td>MinPhi
+<td>type d
+<td>Omittable : default value = 0
+<td><tr><td>Unit
+<td>type s
+<td>Omittable : default value = rad
+<td>Parameter candidates : rad mrad deg radian milliradian degree
+</table>
+<h3 id="c6">maxphi [<i>MaxPhi</i>] [<i>Unit</i>]</h3>
+<p>
+Set maximum phi<br>
+<p>Available at all Geant4 states.
+<p>Parameters<table border=1>
+<tr><td>MaxPhi
+<td>type d
+<td>Omittable : default value = 6.28319
+<td><tr><td>Unit
+<td>type s
+<td>Omittable : default value = rad
+<td>Parameter candidates : rad mrad deg radian milliradian degree
+</table>
+<h3 id="c7">sigma_r [<i>Sigmara</i>] [<i>Unit</i>]</h3>
+<p>
+Set standard deviation in direction for 1D beam.<br>
+<p>Available at all Geant4 states.
+<p>Parameters<table border=1>
+<tr><td>Sigmara
+<td>type d
+<td><td><tr><td>Unit
+<td>type s
+<td>Omittable : default value = rad
+<td>Parameter candidates : rad mrad deg radian milliradian degree
+</table>
+<h3 id="c8">sigma_x [<i>Sigmaxa</i>] [<i>Unit</i>]</h3>
+<p>
+Set standard deviation in direction in x-direc. for 2D beam<br>
+<p>Available at all Geant4 states.
+<p>Parameters<table border=1>
+<tr><td>Sigmaxa
+<td>type d
+<td><td><tr><td>Unit
+<td>type s
+<td>Omittable : default value = rad
+<td>Parameter candidates : rad mrad deg radian milliradian degree
+</table>
+<h3 id="c9">sigma_y [<i>Sigmaya</i>] [<i>Unit</i>]</h3>
+<p>
+Set standard deviation in direction in y-direc. for 2D beam<br>
+<p>Available at all Geant4 states.
+<p>Parameters<table border=1>
+<tr><td>Sigmaya
+<td>type d
+<td><td><tr><td>Unit
+<td>type s
+<td>Omittable : default value = rad
+<td>Parameter candidates : rad mrad deg radian milliradian degree
+</table>
+<h3 id="c10">focuspoint [<i>x</i>] [<i>y</i>] [<i>z</i>] [<i>Unit</i>]</h3>
+<p>
+Set the focusing point for the beam<br>
+<p>Available at all Geant4 states.
+<p>Parameters<table border=1>
+<tr><td>x
+<td>type d
+<td><td><tr><td>y
+<td>type d
+<td><td><tr><td>z
+<td>type d
+<td><td><tr><td>Unit
+<td>type s
+<td>Omittable : default value = cm
+<td>Parameter candidates : pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
+</table>
+<h3 id="c11">user_coor [<i>useuserangaxis</i>]</h3>
+<p>
+True for using user defined angular co-ordinates<br>
+ Default is false<br>
+<p>Available at all Geant4 states.
+<p>Parameters<table border=1>
+<tr><td>useuserangaxis
+<td>type b
+<td>Omittable : default value = 0
+<td></table>
+<h3 id="c12">surfnorm [<i>surfnorm</i>]</h3>
+<p>
+Makes a user-defined distribution with respect to surface normals rather than x,y,z axes.<br>
+ Default is false<br>
+<p>Available at all Geant4 states.
+<p>Parameters<table border=1>
+<tr><td>surfnorm
+<td>type b
+<td>Omittable : default value = 0
+<td></table>
+</div></body></html>

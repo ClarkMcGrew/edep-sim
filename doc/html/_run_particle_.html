@@ -1,0 +1,147 @@
+<html><head><title>Commands in /run/particle/</title></head>
+<style>     table,table td,table th {        border:1px solid #eee     }     table td,table th {       padding:5px 20px;       line-height:1.3;       text-align:inherit     }     a {       color:#17a81a;       text-decoration:none;       transition-duration:0.3s     }       a:hover {       color:#17a81a     }     table {       border-collapse:collapse;       border-spacing:0;       margin-bottom:5px;     }     h1 {       font-size:2.25em;       font-weight:300;       letter-spacing:-1px;       line-height:1.15em;       margin-bottom:0.5em;       word-wrap:break-word     }     h2 {       font-size:1.5em;       font-weight:300;       letter-spacing:-1px;       line-height:1.15em;       margin-bottom:0.5em;       word-wrap:break-word     }     h3 {       color:#26282a;       font-weight:300;       font-size:1.3em;       padding:15px 0 15px 0;       border-bottom:2px #eee solid;       word-wrap:break-word     }     .sidebar {       display:block;       position:relative;       position:sticky;       float:left;       -webkit-box-sizing:border-box;       -moz-box-sizing:border-box;       -ms-box-sizing:border-box;       box-sizing:border-box;       width:20%;       padding-right:20px     }     .context {     width:80%;     display:inline-block;     background-color:#fff;     padding: 25px 35px 20px 30px;     -webkit-box-sizing:border-box;     -moz-box-sizing:border-box;     -ms-box-sizing:border-box;     box-sizing:border-box   }     </style>
+<body bgcolor="#ffffff">
+<div class="sidebar"><h2><a href="_run_.html">Top level </a></h2><table><tr><td><a href="_run_particle_.html">/run/particle/</a></table></div>
+<div class="context"><h1>/run/particle/</h1>
+Commands for G4VUserPhysicsList.<br>
+<h2>Commands </h2>
+<table>
+<tr><td><a href="#c0">verbose</a></td></tr>
+<tr><td><a href="#c1">dumpList</a></td></tr>
+<tr><td><a href="#c2">addProcManager</a></td></tr>
+<tr><td><a href="#c3">buildPhysicsTable</a></td></tr>
+<tr><td><a href="#c4">storePhysicsTable</a></td></tr>
+<tr><td><a href="#c5">retrievePhysicsTable</a></td></tr>
+<tr><td><a href="#c6">setStoredInAscii</a></td></tr>
+<tr><td><a href="#c7">applyCuts</a></td></tr>
+<tr><td><a href="#c8">dumpCutValues</a></td></tr>
+<tr><td><a href="#c9">dumpOrderingParam</a></td></tr>
+</table>
+<h3 id="c0">verbose [<i>level</i>]</h3>
+<p>
+Set the Verbose level of G4VUserPhysicsList.<br>
+ 0 : Silent (default)<br>
+ 1 : Display warning messages<br>
+ 2 : Display more<br>
+<p>Range : level &gt;=0 &amp;&amp; level &lt;=3
+<p>Available at all Geant4 states.
+<p>Parameters<table border=1>
+<tr><td>level
+<td>type i
+<td>Omittable : default value = 0
+<td></table>
+<h3 id="c1">dumpList</h3>
+<p>
+Dump List of particles in G4VUserPhysicsList. <br>
+<p>Available at all Geant4 states.
+<h3 id="c2">addProcManager [<i>particleType</i>]</h3>
+<p>
+add process manager to specified particle type<br>
+<p>Available Geant4 state(s) : PreInit 
+Init 
+Idle 
+GeomClosed 
+EventProc 
+<p>Parameters<table border=1>
+<tr><td>particleType
+<td>type s
+<td>Omittable : default value = 
+<td></table>
+<h3 id="c3">buildPhysicsTable [<i>particleType</i>]</h3>
+<p>
+build physics table of specified particle type<br>
+<p>Available Geant4 state(s) : Init 
+Idle 
+GeomClosed 
+EventProc 
+<p>Parameters<table border=1>
+<tr><td>particleType
+<td>type s
+<td>Omittable : default value = 
+<td></table>
+<h3 id="c4">storePhysicsTable [<i>dirName</i>]</h3>
+<p>
+Store Physics Table<br>
+  Enter directory name<br>
+<p>Available Geant4 state(s) : Idle 
+<p>Parameters<table border=1>
+<tr><td>dirName
+<td>type s
+<td>Omittable : default value = 
+<td></table>
+<h3 id="c5">retrievePhysicsTable [<i>dirName</i>]</h3>
+<p>
+Retrieve Physics Table<br>
+  Enter directory name or OFF to switch off<br>
+<p>Available Geant4 state(s) : PreInit 
+Idle 
+<p>Parameters<table border=1>
+<tr><td>dirName
+<td>type s
+<td>Omittable : default value = 
+<td></table>
+<h3 id="c6">setStoredInAscii [<i>ascii</i>]</h3>
+<p>
+Switch on/off ascii mode in store/retrieve Physics Table<br>
+  Enter 0(binary) or 1(ascii)<br>
+<p>Range : ascii ==0 || ascii ==1
+<p>Available Geant4 state(s) : PreInit 
+Idle 
+<p>Parameters<table border=1>
+<tr><td>ascii
+<td>type i
+<td>Omittable : default value = 0
+<td></table>
+<h3 id="c7">applyCuts [<i>Flag</i>] [<i>Particle</i>]</h3>
+<p>
+Set applyCuts flag for a particle.<br>
+ Some EM processes which do not have infrared divergence<br>
+may generate gamma, e- and/or e+ with kinetic energies<br>
+below the production threshold. By setting this flag,<br>
+such secondaries below threshold are eliminated and<br>
+kinetic energies of such secondaries are accumulated<br>
+to the energy deposition of their mother.<br>
+ Note that 'applyCuts' makes sense only for gamma,<br>
+e- and e+. If this command is issued for other particle,<br>
+a warning message is displayed and the command is<br>
+ignored.<br>
+ If particle name is 'all', this command affects on<br>
+gamma, e- and e+.<br>
+<p>Available Geant4 state(s) : PreInit 
+Init 
+Idle 
+<p>Parameters<table border=1>
+<tr><td>Flag
+<td>type s
+<td>Omittable : default value = true
+<td><tr><td>Particle
+<td>type s
+<td>Omittable : default value = all
+<td></table>
+<h3 id="c8">dumpCutValues [<i>particle</i>]</h3>
+<p>
+Dump a list of production threshold values in range and energy<br>
+for all registered material-cuts-couples.<br>
+Dumping a list takes place when you issue 'beamOn' and<br>
+actual conversion tables from range to energy are available.<br>
+If you want a list 'immediately', use '/run/dumpRegion' for threshold<br>
+list given in range only. Also, '/run/dumpCouples' gives you the<br>
+current list if you have already issued 'run/beamOn' at least once.<br>
+<p>Available Geant4 state(s) : Idle 
+<p>Parameters<table border=1>
+<tr><td>particle
+<td>type s
+<td>Omittable : default value = all
+<td></table>
+<h3 id="c9">dumpOrderingParam [<i>subtype</i>]</h3>
+<p>
+Dump a list of ordering parameter <br>
+<p>Available Geant4 state(s) : PreInit 
+Init 
+Idle 
+<p>Parameters<table border=1>
+<tr><td>subtype
+<td>type i
+<td>Omittable : default value = -1
+<td></table>
+</div></body></html>

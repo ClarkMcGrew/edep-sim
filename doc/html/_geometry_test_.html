@@ -1,0 +1,108 @@
+<html><head><title>Commands in /geometry/test/</title></head>
+<style>     table,table td,table th {        border:1px solid #eee     }     table td,table th {       padding:5px 20px;       line-height:1.3;       text-align:inherit     }     a {       color:#17a81a;       text-decoration:none;       transition-duration:0.3s     }       a:hover {       color:#17a81a     }     table {       border-collapse:collapse;       border-spacing:0;       margin-bottom:5px;     }     h1 {       font-size:2.25em;       font-weight:300;       letter-spacing:-1px;       line-height:1.15em;       margin-bottom:0.5em;       word-wrap:break-word     }     h2 {       font-size:1.5em;       font-weight:300;       letter-spacing:-1px;       line-height:1.15em;       margin-bottom:0.5em;       word-wrap:break-word     }     h3 {       color:#26282a;       font-weight:300;       font-size:1.3em;       padding:15px 0 15px 0;       border-bottom:2px #eee solid;       word-wrap:break-word     }     .sidebar {       display:block;       position:relative;       position:sticky;       float:left;       -webkit-box-sizing:border-box;       -moz-box-sizing:border-box;       -ms-box-sizing:border-box;       box-sizing:border-box;       width:20%;       padding-right:20px     }     .context {     width:80%;     display:inline-block;     background-color:#fff;     padding: 25px 35px 20px 30px;     -webkit-box-sizing:border-box;     -moz-box-sizing:border-box;     -ms-box-sizing:border-box;     box-sizing:border-box   }     </style>
+<body bgcolor="#ffffff">
+<div class="sidebar"><h2><a href="_geometry_.html">Top level </a></h2><table><tr><td><a href="_geometry_navigator_.html">/geometry/navigator/</a><tr><td><a href="_geometry_test_.html">/geometry/test/</a></table></div>
+<div class="context"><h1>/geometry/test/</h1>
+Geometry verification control setup.<br>
+Helps in detecting possible overlapping regions.<br>
+<h2>Commands </h2>
+<table>
+<tr><td><a href="#c0">tolerance</a></td></tr>
+<tr><td><a href="#c1">verbosity</a></td></tr>
+<tr><td><a href="#c2">resolution</a></td></tr>
+<tr><td><a href="#c3">recursion_start</a></td></tr>
+<tr><td><a href="#c4">recursion_depth</a></td></tr>
+<tr><td><a href="#c5">maximum_errors</a></td></tr>
+<tr><td><a href="#c6">check_parallel</a></td></tr>
+<tr><td><a href="#c7">run</a></td></tr>
+</table>
+<h3 id="c0">tolerance [<i>Tolerance</i>] [<i>Unit</i>]</h3>
+<p>
+Define tolerance (in mm) by which overlaps reports<br>
+should be reported. By default, all overlaps are<br>
+reported, i.e. tolerance is set to: 0*mm.<br>
+<p>Available at all Geant4 states.
+<p>Parameters<table border=1>
+<tr><td>Tolerance
+<td>type d
+<td>Omittable : current value is used as the default value.
+<td><tr><td>Unit
+<td>type s
+<td>Omittable : default value = mm
+<td>Parameter candidates : pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
+</table>
+<h3 id="c1">verbosity [<i>verbosity</i>]</h3>
+<p>
+Specify if running in verbosity mode or not.<br>
+By default verbosity is set to ON (TRUE).<br>
+<p>Available Geant4 state(s) : Idle 
+<p>Parameters<table border=1>
+<tr><td>verbosity
+<td>type b
+<td>Omittable : default value = 1
+<td></table>
+<h3 id="c2">resolution [<i>resolution</i>]</h3>
+<p>
+Set the number of points on surface to be generated for<br>
+checking overlaps.<br>
+<p>Available at all Geant4 states.
+<p>Parameters<table border=1>
+<tr><td>resolution
+<td>type i
+<td>Omittable : default value = 10000
+<td></table>
+<h3 id="c3">recursion_start [<i>initial_level</i>]</h3>
+<p>
+Set the initial level in the geometry tree for recursion.<br>
+recursive_test will then start from the specified level.<br>
+<p>Available at all Geant4 states.
+<p>Parameters<table border=1>
+<tr><td>initial_level
+<td>type i
+<td>Omittable : default value = 0
+<td></table>
+<h3 id="c4">recursion_depth [<i>recursion_depth</i>]</h3>
+<p>
+Set the depth in the geometry tree for recursion.<br>
+recursive_test will then stop after reached the specified depth.<br>
+By default, recursion will proceed for the whole depth.<br>
+<p>Available at all Geant4 states.
+<p>Parameters<table border=1>
+<tr><td>recursion_depth
+<td>type i
+<td>Omittable : default value = -1
+<td></table>
+<h3 id="c5">maximum_errors [<i>maximum_errors</i>]</h3>
+<p>
+Set the maximum number of overlap errors to report<br>
+for each single volume being checked.<br>
+Once reached the maximum number specified, overlaps<br>
+affecting that volume further than that are simply ignored.<br>
+<p>Available at all Geant4 states.
+<p>Parameters<table border=1>
+<tr><td>maximum_errors
+<td>type i
+<td>Omittable : default value = 1
+<td></table>
+<h3 id="c6">check_parallel [<i>check_parallel</i>]</h3>
+<p>
+Check for overlaps in parallel worlds.<br>
+By default, overlaps are only checked in the mass world (FALSE).<br>
+<p>Available at all Geant4 states.
+<p>Parameters<table border=1>
+<tr><td>check_parallel
+<td>type b
+<td>Omittable : default value = 1
+<td></table>
+<h3 id="c7">run</h3>
+<p>
+Start running the recursive overlap check.<br>
+Volumes are recursively asked to verify for overlaps<br>
+for points generated on the surface against their<br>
+respective mother volume and sisters at the same<br>
+level, performing for all daughters and daughters of<br>
+daughters, etc.<br>
+NOTE: it may take a very long time,<br>
+      depending on the geometry complexity !<br>
+<p>Available Geant4 state(s) : Idle 
+</div></body></html>

@@ -106,6 +106,13 @@ void EDepSim::PersistencyManager::ClearTrajectoryBoundaries() {
     fTrajectoryBoundaries.clear();
 }
 
+void EDepSim::PersistencyManager::AddTrajectoryPointRule(int process,
+                                                         int subprocess,
+                                                         double threshold) {
+    fTrajectoryPointRules.emplace_back(
+        TrajectoryPointRule(process,subprocess,threshold));
+}
+
 bool EDepSim::PersistencyManager::SaveTrajectoryBoundary(G4VTrajectory* g4Traj,
                                                     G4StepStatus status,
                                                     G4String currentVolume,
@@ -690,10 +697,12 @@ EDepSim::PersistencyManager::SelectTrajectoryPoints(std::vector<int>& selected,
     // trajectory.
     //////////////////////////////////////////////
     EDepSim::Trajectory* ndTraj = dynamic_cast<EDepSim::Trajectory*>(g4Traj);
-    if (ndTraj->GetSDTotalEnergyDeposit() < 1*eV) return;
+    if (ndTraj->GetSDTotalEnergyDeposit() < 1*eV) return; // ~1.2 um photon
 
+    //////////////////////////////////////////////
     // Find the trajectory points where particles are entering and leaving the
     // detectors.
+    //////////////////////////////////////////////
     EDepSim::TrajectoryPoint* edepPoint
         = dynamic_cast<EDepSim::TrajectoryPoint*>(g4Traj->GetPoint(0));
     G4String prevVolumeName = edepPoint->GetPhysVolName();
@@ -710,30 +719,51 @@ EDepSim::PersistencyManager::SelectTrajectoryPoints(std::vector<int>& selected,
         prevVolumeName = volumeName;
     }
 
-    // Save trajectory points where there is a "big" interaction.
+    //////////////////////////////////////////////
+    // Save trajectory points where there is an "interesting" step.
+    //////////////////////////////////////////////
     for (int tp = 1; tp < lastIndex; ++tp) {
         edepPoint
             = dynamic_cast<EDepSim::TrajectoryPoint*>(g4Traj->GetPoint(tp));
-        // Just navigation....
+        // Apply the trajectory point rules first to see if the user has asked
+        // for this specific point.  A point might be selected multiple times,
+        // but that's OK because duplicates will be rejected later.
+        for (const TrajectoryPointRule& rule : fTrajectoryPointRules) {
+            if (edepPoint->GetProcessDeposit() < rule.fThreshold) {
+                continue;
+            }
+            if (rule.fProcess >= 0
+                and edepPoint->GetProcessType() != rule.fProcess) {
+                continue;
+            }
+            if (rule.fSubprocess >= 0
+                and edepPoint->GetProcessSubType() != rule.fSubprocess) {
+                continue;
+            }
+            selected.push_back(tp);
+        }
+        // Don't save pure navigation....
         if (edepPoint->GetProcessType() == fTransportation) continue;
-        // Not much energy deposit...
-        if (edepPoint->GetProcessDeposit() < GetTrajectoryPointDeposit())
-            continue;
-        // Don't save optical photons...
-        if (edepPoint->GetProcessType() == fOptical) continue;
-        // Not a physics step...
+        // Don't save book keeping steps (i.e. not a physics step)...
         if (edepPoint->GetProcessType() == fGeneral) continue;
         if (edepPoint->GetProcessType() == fUserDefined) continue;
-        // Don't save continuous ionization steps.
+        // Don't save continuous ionization steps...
         if (edepPoint->GetProcessType() == fElectromagnetic
             && edepPoint->GetProcessSubType() == fIonisation) continue;
-        // Don't save multiple scattering.
+        // Don't save multiple scattering steps...
         if (edepPoint->GetProcessType() == fElectromagnetic
             && edepPoint->GetProcessSubType() == fMultipleScattering) continue;
+        // Don't save optical photon steps...
+        if (edepPoint->GetProcessType() == fOptical) continue;
+        // Don't save things below the threshold...
+        if (edepPoint->GetProcessDeposit() < GetTrajectoryPointDeposit())
+            continue;
         selected.push_back(tp);
     }
 
+    //////////////////////////////////////////////
     // Make sure there aren't any duplicates in the selected trajectory points.
+    //////////////////////////////////////////////
     std::sort(selected.begin(), selected.end());
     selected.erase(std::unique(selected.begin(), selected.end()),
                    selected.end());

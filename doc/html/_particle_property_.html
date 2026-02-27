@@ -1,0 +1,60 @@
+<html><head><title>Commands in /particle/property/</title></head>
+<style>     table,table td,table th {        border:1px solid #eee     }     table td,table th {       padding:5px 20px;       line-height:1.3;       text-align:inherit     }     a {       color:#17a81a;       text-decoration:none;       transition-duration:0.3s     }       a:hover {       color:#17a81a     }     table {       border-collapse:collapse;       border-spacing:0;       margin-bottom:5px;     }     h1 {       font-size:2.25em;       font-weight:300;       letter-spacing:-1px;       line-height:1.15em;       margin-bottom:0.5em;       word-wrap:break-word     }     h2 {       font-size:1.5em;       font-weight:300;       letter-spacing:-1px;       line-height:1.15em;       margin-bottom:0.5em;       word-wrap:break-word     }     h3 {       color:#26282a;       font-weight:300;       font-size:1.3em;       padding:15px 0 15px 0;       border-bottom:2px #eee solid;       word-wrap:break-word     }     .sidebar {       display:block;       position:relative;       position:sticky;       float:left;       -webkit-box-sizing:border-box;       -moz-box-sizing:border-box;       -ms-box-sizing:border-box;       box-sizing:border-box;       width:20%;       padding-right:20px     }     .context {     width:80%;     display:inline-block;     background-color:#fff;     padding: 25px 35px 20px 30px;     -webkit-box-sizing:border-box;     -moz-box-sizing:border-box;     -ms-box-sizing:border-box;     box-sizing:border-box   }     </style>
+<body bgcolor="#ffffff">
+<div class="sidebar"><h2><a href="_particle_.html">Top level </a></h2><table><tr><td><a href="_particle_nuclideTable_.html">/particle/nuclideTable/</a><tr><td><a href="_particle_property_.html">/particle/property/</a></table></div>
+<div class="context"><h1>/particle/property/</h1>
+Particle Table control commands.<br>
+<h2>Sub-directories </h2><table><tr><td><a href="_particle_property_decay_.html">/particle/property/decay/</a></td><td>Decay Table control commands.</tr></table>
+<h2>Commands </h2>
+<table>
+<tr><td><a href="#c0">dump</a></td></tr>
+<tr><td><a href="#c1">stable</a></td></tr>
+<tr><td><a href="#c2">lifetime</a></td></tr>
+<tr><td><a href="#c3">verbose</a></td></tr>
+</table>
+<h3 id="c0">dump</h3>
+<p>
+Dump particle properties.<br>
+<p>Available at all Geant4 states.
+<h3 id="c1">stable [<i>stable</i>]</h3>
+<p>
+Set stable flag.<br>
+  false: Unstable   true: Stable<br>
+<p>Available Geant4 state(s) : PreInit 
+Idle 
+GeomClosed 
+<p>Parameters<table border=1>
+<tr><td>stable
+<td>type b
+<td><td></table>
+<h3 id="c2">lifetime [<i>life</i>] [<i>Unit</i>]</h3>
+<p>
+Set life time.<br>
+Unit of the time can be :<br>
+ s, ms, ns (default)<br>
+<p>Range : life &gt;0.0
+<p>Available Geant4 state(s) : PreInit 
+Idle 
+GeomClosed 
+<p>Parameters<table border=1>
+<tr><td>life
+<td>type d
+<td><td><tr><td>Unit
+<td>type s
+<td>Omittable : default value = ns
+<td>Parameter candidates : s ms us ns ps min h d y second millisecond microsecond nanosecond picosecond minute hour day year
+</table>
+<h3 id="c3">verbose [<i>verbose_level</i>]</h3>
+<p>
+Set Verbose level of particle property.<br>
+ 0 : Silent (default)<br>
+ 1 : Display warning messages<br>
+ 2 : Display more<br>
+<p>Range : verbose_level &gt;=0
+<p>Available at all Geant4 states.
+<p>Parameters<table border=1>
+<tr><td>verbose_level
+<td>type i
+<td>Omittable : default value = 0
+<td></table>
+</div></body></html>

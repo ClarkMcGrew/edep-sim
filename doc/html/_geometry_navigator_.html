@@ -1,0 +1,67 @@
+<html><head><title>Commands in /geometry/navigator/</title></head>
+<style>     table,table td,table th {        border:1px solid #eee     }     table td,table th {       padding:5px 20px;       line-height:1.3;       text-align:inherit     }     a {       color:#17a81a;       text-decoration:none;       transition-duration:0.3s     }       a:hover {       color:#17a81a     }     table {       border-collapse:collapse;       border-spacing:0;       margin-bottom:5px;     }     h1 {       font-size:2.25em;       font-weight:300;       letter-spacing:-1px;       line-height:1.15em;       margin-bottom:0.5em;       word-wrap:break-word     }     h2 {       font-size:1.5em;       font-weight:300;       letter-spacing:-1px;       line-height:1.15em;       margin-bottom:0.5em;       word-wrap:break-word     }     h3 {       color:#26282a;       font-weight:300;       font-size:1.3em;       padding:15px 0 15px 0;       border-bottom:2px #eee solid;       word-wrap:break-word     }     .sidebar {       display:block;       position:relative;       position:sticky;       float:left;       -webkit-box-sizing:border-box;       -moz-box-sizing:border-box;       -ms-box-sizing:border-box;       box-sizing:border-box;       width:20%;       padding-right:20px     }     .context {     width:80%;     display:inline-block;     background-color:#fff;     padding: 25px 35px 20px 30px;     -webkit-box-sizing:border-box;     -moz-box-sizing:border-box;     -ms-box-sizing:border-box;     box-sizing:border-box   }     </style>
+<body bgcolor="#ffffff">
+<div class="sidebar"><h2><a href="_geometry_.html">Top level </a></h2><table><tr><td><a href="_geometry_navigator_.html">/geometry/navigator/</a><tr><td><a href="_geometry_test_.html">/geometry/test/</a></table></div>
+<div class="context"><h1>/geometry/navigator/</h1>
+Geometry navigator control setup.<br>
+<h2>Commands </h2>
+<table>
+<tr><td><a href="#c0">reset</a></td></tr>
+<tr><td><a href="#c1">verbose</a></td></tr>
+<tr><td><a href="#c2">check_mode</a></td></tr>
+<tr><td><a href="#c3">push_notify</a></td></tr>
+</table>
+<h3 id="c0">reset</h3>
+<p>
+Reset navigator and navigation history.<br>
+NOTE: must be called only after kernel has been<br>
+      initialized once through the run manager!<br>
+<p>Available Geant4 state(s) : Idle 
+<h3 id="c1">verbose [<i>level</i>]</h3>
+<p>
+Set run-time verbosity for the navigator.<br>
+ 0 : Silent (default)<br>
+ 1 : Display volume positioning and step lengths<br>
+ 2 : Display step/safety info on point location<br>
+ 3 : Display minimal state at -every- step<br>
+ 4 : Maximum verbosity (very detailed!)<br>
+NOTE: this command has effect -only- if Geant4 has<br>
+      been installed with the G4VERBOSE flag set!<br>
+<p>Range : level &gt;=0 &amp;&amp; level &lt;=4
+<p>Available at all Geant4 states.
+<p>Parameters<table border=1>
+<tr><td>level
+<td>type i
+<td>Omittable : default value = 0
+<td></table>
+<h3 id="c2">check_mode [<i>checkFlag</i>]</h3>
+<p>
+Set navigator in -check_mode- state.<br>
+This will cause extra checks to be applied during<br>
+navigation. More strict and less tolerant conditions<br>
+are applied. A run-time performance penalty may be<br>
+observed when the -check_mode- state is activated.<br>
+NOTE: this command has effect -only- if Geant4 has<br>
+      been installed with the G4VERBOSE flag set!<br>
+<p>Available Geant4 state(s) : Idle 
+<p>Parameters<table border=1>
+<tr><td>checkFlag
+<td>type b
+<td>Omittable : default value = 0
+<td></table>
+<h3 id="c3">push_notify [<i>pushFlag</i>]</h3>
+<p>
+Set navigator verbosity push notifications.<br>
+This allows one to disable/re-enable verbosity in<br>
+navigation, when tracks may get stuck and require<br>
+one artificial push along the direction by the<br>
+navigator. Notification is active by default.<br>
+NOTE: this command has effect -only- if Geant4 has<br>
+      been installed with the G4VERBOSE flag set!<br>
+<p>Available Geant4 state(s) : Idle 
+<p>Parameters<table border=1>
+<tr><td>pushFlag
+<td>type b
+<td>Omittable : default value = 1
+<td></table>
+</div></body></html>

@@ -1,0 +1,411 @@
+<html><head><title>Commands in /control/</title></head>
+<style>     table,table td,table th {        border:1px solid #eee     }     table td,table th {       padding:5px 20px;       line-height:1.3;       text-align:inherit     }     a {       color:#17a81a;       text-decoration:none;       transition-duration:0.3s     }       a:hover {       color:#17a81a     }     table {       border-collapse:collapse;       border-spacing:0;       margin-bottom:5px;     }     h1 {       font-size:2.25em;       font-weight:300;       letter-spacing:-1px;       line-height:1.15em;       margin-bottom:0.5em;       word-wrap:break-word     }     h2 {       font-size:1.5em;       font-weight:300;       letter-spacing:-1px;       line-height:1.15em;       margin-bottom:0.5em;       word-wrap:break-word     }     h3 {       color:#26282a;       font-weight:300;       font-size:1.3em;       padding:15px 0 15px 0;       border-bottom:2px #eee solid;       word-wrap:break-word     }     .sidebar {       display:block;       position:relative;       position:sticky;       float:left;       -webkit-box-sizing:border-box;       -moz-box-sizing:border-box;       -ms-box-sizing:border-box;       box-sizing:border-box;       width:20%;       padding-right:20px     }     .context {     width:80%;     display:inline-block;     background-color:#fff;     padding: 25px 35px 20px 30px;     -webkit-box-sizing:border-box;     -moz-box-sizing:border-box;     -ms-box-sizing:border-box;     box-sizing:border-box   }     </style>
+<body bgcolor="#ffffff">
+<div class="sidebar"><h2><a href="_.html">Top level </a></h2><table><tr><td><a href="_control_.html">/control/</a><tr><td><a href="_units_.html">/units/</a><tr><td><a href="_profiler_.html">/profiler/</a><tr><td><a href="_particle_.html">/particle/</a><tr><td><a href="_tracking_.html">/tracking/</a><tr><td><a href="_geometry_.html">/geometry/</a><tr><td><a href="_process_.html">/process/</a><tr><td><a href="_event_.html">/event/</a><tr><td><a href="_cuts_.html">/cuts/</a><tr><td><a href="_run_.html">/run/</a><tr><td><a href="_random_.html">/random/</a><tr><td><a href="_edep_.html">/edep/</a><tr><td><a href="_Captain_.html">/Captain/</a><tr><td><a href="_hits_.html">/hits/</a><tr><td><a href="_material_.html">/material/</a><tr><td><a href="_physics_lists_.html">/physics_lists/</a><tr><td><a href="_generator_.html">/generator/</a><tr><td><a href="_gps_.html">/gps/</a></table></div>
+<div class="context"><h1>/control/</h1>
+UI control commands.<br>
+<h2>Sub-directories </h2><table><tr><td><a href="_control_cout_.html">/control/cout/</a></td><td>Control cout/cerr for local thread.</tr></table>
+<h2>Commands </h2>
+<table>
+<tr><td><a href="#c0">macroPath</a></td></tr>
+<tr><td><a href="#c1">execute</a></td></tr>
+<tr><td><a href="#c2">loop</a></td></tr>
+<tr><td><a href="#c3">foreach</a></td></tr>
+<tr><td><a href="#c4">suppressAbortion</a></td></tr>
+<tr><td><a href="#c5">verbose</a></td></tr>
+<tr><td><a href="#c6">useDoublePrecision</a></td></tr>
+<tr><td><a href="#c7">saveHistory</a></td></tr>
+<tr><td><a href="#c8">stopSavingHistory</a></td></tr>
+<tr><td><a href="#c9">alias</a></td></tr>
+<tr><td><a href="#c10">unalias</a></td></tr>
+<tr><td><a href="#c11">listAlias</a></td></tr>
+<tr><td><a href="#c12">getEnv</a></td></tr>
+<tr><td><a href="#c13">getVal</a></td></tr>
+<tr><td><a href="#c14">echo</a></td></tr>
+<tr><td><a href="#c15">shell</a></td></tr>
+<tr><td><a href="#c16">manual</a></td></tr>
+<tr><td><a href="#c17">createHTML</a></td></tr>
+<tr><td><a href="#c18">maximumStoredHistory</a></td></tr>
+<tr><td><a href="#c19">if</a></td></tr>
+<tr><td><a href="#c20">doif</a></td></tr>
+<tr><td><a href="#c21">add</a></td></tr>
+<tr><td><a href="#c22">subtract</a></td></tr>
+<tr><td><a href="#c23">multiply</a></td></tr>
+<tr><td><a href="#c24">divide</a></td></tr>
+<tr><td><a href="#c25">remainder</a></td></tr>
+<tr><td><a href="#c26">strif</a></td></tr>
+<tr><td><a href="#c27">strdoif</a></td></tr>
+<tr><td><a href="#c28">ifBatch</a></td></tr>
+<tr><td><a href="#c29">ifInteractive</a></td></tr>
+<tr><td><a href="#c30">doifBatch</a></td></tr>
+<tr><td><a href="#c31">doifInteractive</a></td></tr>
+</table>
+<h3 id="c0">macroPath [<i>path</i>]</h3>
+<p>
+Set macro search path with colon-separated list.<br>
+<p>Available at all Geant4 states.
+<p>Parameters<table border=1>
+<tr><td>path
+<td>type s
+<td><td></table>
+<h3 id="c1">execute [<i>fileName</i>]</h3>
+<p>
+Execute a macro file.<br>
+<p>Available at all Geant4 states.
+<p>Parameters<table border=1>
+<tr><td>fileName
+<td>type s
+<td><td></table>
+<h3 id="c2">loop [<i>macroFile</i>] [<i>counterName</i>] [<i>initialValue</i>] [<i>finalValue</i>] [<i>stepSize</i>]</h3>
+<p>
+Execute a macro file more than once.<br>
+Loop counter can be used as an aliased variable.<br>
+<p>Available at all Geant4 states.
+<p>Parameters<table border=1>
+<tr><td>macroFile
+<td>type s
+<td><td><tr><td>counterName
+<td>type s
+<td><td><tr><td>initialValue
+<td>type d
+<td><td><tr><td>finalValue
+<td>type d
+<td><td><tr><td>stepSize
+<td>type d
+<td>Omittable : default value = 1
+<td></table>
+<h3 id="c3">foreach [<i>macroFile</i>] [<i>counterName</i>] [<i>valueList</i>]</h3>
+<p>
+Execute a macro file more than once.<br>
+Loop counter can be used as an aliased variable.<br>
+Values must be separated by a space.<br>
+<p>Available at all Geant4 states.
+<p>Parameters<table border=1>
+<tr><td>macroFile
+<td>type s
+<td><td><tr><td>counterName
+<td>type s
+<td><td><tr><td>valueList
+<td>type s
+<td><td></table>
+<h3 id="c4">suppressAbortion [<i>level</i>]</h3>
+<p>
+Suppress the program abortion caused by G4Exception.<br>
+Suppression level = 0 : no suppression<br>
+                  = 1 : suppress during EventProc state<br>
+                  = 2 : full suppression, i.e. no abortion by G4Exception<br>
+When abortion is suppressed, you will get error messages issued by G4Exception,<br>
+and there is NO guarantee for the correct result after the G4Exception error message.<br>
+<p>Range : level &gt;= 0 &amp;&amp; level &lt;= 2
+<p>Available at all Geant4 states.
+<p>Parameters<table border=1>
+<tr><td>level
+<td>type i
+<td>Omittable : default value = 0
+<td></table>
+<h3 id="c5">verbose [<i>switch</i>]</h3>
+<p>
+Applied command will also be shown on screen.<br>
+This command is useful with MACRO file.<br>
+  0 : silent<br>
+  1 : only the valid commands are shown.<br>
+  2 : comment lines are also shown (default).<br>
+<p>Range : switch &gt;= 0 &amp;&amp; switch &lt;=2
+<p>Available at all Geant4 states.
+<p>Parameters<table border=1>
+<tr><td>switch
+<td>type i
+<td>Omittable : default value = 2
+<td></table>
+<h3 id="c6">useDoublePrecision [<i>useDoublePrecision</i>]</h3>
+<p>
+Use double precision for printing out the current parameter value(s).<br>
+<p>Available at all Geant4 states.
+<p>Parameters<table border=1>
+<tr><td>useDoublePrecision
+<td>type b
+<td>Omittable : default value = 1
+<td></table>
+<h3 id="c7">saveHistory [<i>fileName</i>]</h3>
+<p>
+Store command history to a file.<br>
+Defaul file name is G4history.macro.<br>
+<p>Available at all Geant4 states.
+<p>Parameters<table border=1>
+<tr><td>fileName
+<td>type s
+<td>Omittable : default value = G4History.macro
+<td></table>
+<h3 id="c8">stopSavingHistory</h3>
+<p>
+Stop saving history file.<br>
+<p>Available at all Geant4 states.
+<h3 id="c9">alias [<i>aliasName</i>] [<i>aliasValue</i>]</h3>
+<p>
+Set an alias.<br>
+String can be aliased by this command.<br>
+The string may contain one or more spaces,<br>
+the string must be enclosed by double quotes (").<br>
+To use an alias, enclose the alias name with<br>
+parenthesis "{" and "}".<br>
+<p>Available at all Geant4 states.
+<p>Parameters<table border=1>
+<tr><td>aliasName
+<td>type s
+<td><td><tr><td>aliasValue
+<td>type s
+<td><td></table>
+<h3 id="c10">unalias [<i>aliasName</i>]</h3>
+<p>
+Remove an alias.<br>
+<p>Available at all Geant4 states.
+<p>Parameters<table border=1>
+<tr><td>aliasName
+<td>type s
+<td><td></table>
+<h3 id="c11">listAlias</h3>
+<p>
+List aliases.<br>
+<p>Available at all Geant4 states.
+<h3 id="c12">getEnv [<i></i>]</h3>
+<p>
+Get a shell environment variable and define it as an alias.<br>
+<p>Available at all Geant4 states.
+<p>Parameters<table border=1>
+<tr><td>
+<td>type s
+<td><td></table>
+<h3 id="c13">getVal [<i>alias_name</i>] [<i>UI_command</i>] [<i>iIdx</i>]</h3>
+<p>
+Get the current value of the UI command and define it as an alias.<br>
+Command is ignored if the UI command does not support GetCurrentValue().<br>
+ Syntax : &lt;alias_name&gt; &lt;UI_command&gt; &lt;iIdx&gt;<br>
+<p>Available at all Geant4 states.
+<p>Parameters<table border=1>
+<tr><td>alias_name
+<td>type s
+<td><td><tr><td>UI_command
+<td>type s
+<td><td><tr><td>iIdx
+<td>type i
+<td>Omittable : default value = 0
+<td></table>
+<h3 id="c14">echo [<i></i>]</h3>
+<p>
+Display the valuerameter string.<br>
+If alias is contained, it is converted to the aliased value.<br>
+<p>Available at all Geant4 states.
+<p>Parameters<table border=1>
+<tr><td>
+<td>type s
+<td><td></table>
+<h3 id="c15">shell [<i></i>]</h3>
+<p>
+Execute a (Unix) SHELL command.<br>
+<p>Available at all Geant4 states.
+<p>Parameters<table border=1>
+<tr><td>
+<td>type s
+<td><td></table>
+<h3 id="c16">manual [<i>dirPath</i>]</h3>
+<p>
+Display all of sub-directories and commands.<br>
+Directory path should be given by FULL-PATH.<br>
+<p>Available at all Geant4 states.
+<p>Parameters<table border=1>
+<tr><td>dirPath
+<td>type s
+<td>Omittable : default value = /
+<td></table>
+<h3 id="c17">createHTML [<i>dirPath</i>]</h3>
+<p>
+Generate HTML files for all of sub-directories and commands.<br>
+Directory path should be given by FULL-PATH.<br>
+<p>Available at all Geant4 states.
+<p>Parameters<table border=1>
+<tr><td>dirPath
+<td>type s
+<td>Omittable : default value = /
+<td></table>
+<h3 id="c18">maximumStoredHistory [<i>max</i>]</h3>
+<p>
+Set maximum number of stored UI commands.<br>
+<p>Available at all Geant4 states.
+<p>Parameters<table border=1>
+<tr><td>max
+<td>type i
+<td>Omittable : default value = 20
+<td></table>
+<h3 id="c19">if [<i>left</i>] [<i>comp</i>] [<i>right</i>] [<i>macroFile</i>]</h3>
+<p>
+Execute a macro file if the expression is true.<br>
+ Syntax : &lt;double&gt; &lt;comp&gt; &lt;double&gt; &lt;macro_file&gt;<br>
+<p>Available at all Geant4 states.
+<p>Parameters<table border=1>
+<tr><td>left
+<td>type d
+<td><td><tr><td>comp
+<td>type s
+<td><td>Parameter candidates : &gt; &gt;= &lt; &lt;= == !=
+<tr><td>right
+<td>type d
+<td><td><tr><td>macroFile
+<td>type s
+<td><td></table>
+<h3 id="c20">doif [<i>left</i>] [<i>comp</i>] [<i>right</i>] [<i>UI_command</i>]</h3>
+<p>
+Execute a UI command if the expression is true.<br>
+ Syntax : &lt;double&gt; &lt;comp&gt; &lt;double&gt; &lt;UI_command&gt;<br>
+<p>Available at all Geant4 states.
+<p>Parameters<table border=1>
+<tr><td>left
+<td>type d
+<td><td><tr><td>comp
+<td>type s
+<td><td>Parameter candidates : &gt; &gt;= &lt; &lt;= == !=
+<tr><td>right
+<td>type d
+<td><td><tr><td>UI_command
+<td>type s
+<td><td></table>
+<h3 id="c21">add [<i>new_alias</i>] [<i>value1</i>] [<i>value2</i>]</h3>
+<p>
+Define a new alias as the sum of two values.<br>
+ Syntax : &lt;new_alias&gt; &lt;value1&gt; &lt;value2&gt;<br>
+ &lt;new_alias&gt; may be an already existing alias. If it is the case,<br>
+ aliased value is alternated.<br>
+<p>Available at all Geant4 states.
+<p>Parameters<table border=1>
+<tr><td>new_alias
+<td>type s
+<td><td><tr><td>value1
+<td>type d
+<td><td><tr><td>value2
+<td>type d
+<td><td></table>
+<h3 id="c22">subtract [<i>new_alias</i>] [<i>value1</i>] [<i>value2</i>]</h3>
+<p>
+Define a new alias as the subtraction of two values.<br>
+ Syntax : &lt;new_alias&gt; &lt;value1&gt; &lt;value2&gt;<br>
+ &lt;new_alias&gt; may be an already existing alias. If it is the case,<br>
+ aliased value is alternated.<br>
+<p>Available at all Geant4 states.
+<p>Parameters<table border=1>
+<tr><td>new_alias
+<td>type s
+<td><td><tr><td>value1
+<td>type d
+<td><td><tr><td>value2
+<td>type d
+<td><td></table>
+<h3 id="c23">multiply [<i>new_alias</i>] [<i>value1</i>] [<i>value2</i>]</h3>
+<p>
+Define a new alias as the multiplication of two values.<br>
+ Syntax : &lt;new_alias&gt; &lt;value1&gt; &lt;value2&gt;<br>
+ &lt;new_alias&gt; may be an already existing alias. If it is the case,<br>
+ aliased value is alternated.<br>
+<p>Available at all Geant4 states.
+<p>Parameters<table border=1>
+<tr><td>new_alias
+<td>type s
+<td><td><tr><td>value1
+<td>type d
+<td><td><tr><td>value2
+<td>type d
+<td><td></table>
+<h3 id="c24">divide [<i>new_alias</i>] [<i>value1</i>] [<i>value2</i>]</h3>
+<p>
+Define a new alias as the division of two values.<br>
+ Syntax : &lt;new_alias&gt; &lt;value1&gt; &lt;value2&gt;<br>
+ &lt;new_alias&gt; may be an already existing alias. If it is the case,<br>
+ aliased value is alternated.<br>
+<p>Available at all Geant4 states.
+<p>Parameters<table border=1>
+<tr><td>new_alias
+<td>type s
+<td><td><tr><td>value1
+<td>type d
+<td><td><tr><td>value2
+<td>type d
+<td><td>Parameter range : value2 != 0
+</table>
+<h3 id="c25">remainder [<i>new_alias</i>] [<i>value1</i>] [<i>value2</i>]</h3>
+<p>
+Define a new alias as the remainder of two values.<br>
+ Syntax : &lt;new_alias&gt; &lt;value1&gt; &lt;value2&gt;<br>
+ &lt;new_alias&gt; may be an already existing alias. If it is the case,<br>
+ aliased value is alternated.<br>
+<p>Available at all Geant4 states.
+<p>Parameters<table border=1>
+<tr><td>new_alias
+<td>type s
+<td><td><tr><td>value1
+<td>type i
+<td><td><tr><td>value2
+<td>type i
+<td><td></table>
+<h3 id="c26">strif [<i>left</i>] [<i>comp</i>] [<i>right</i>] [<i>macroFile</i>]</h3>
+<p>
+Execute a macro file if the expression is true.<br>
+ Syntax : &lt;string&gt; &lt;comp&gt; &lt;string&gt; &lt;macro_file&gt;<br>
+<p>Available at all Geant4 states.
+<p>Parameters<table border=1>
+<tr><td>left
+<td>type s
+<td><td><tr><td>comp
+<td>type s
+<td><td>Parameter candidates : == !=
+<tr><td>right
+<td>type s
+<td><td><tr><td>macroFile
+<td>type s
+<td><td></table>
+<h3 id="c27">strdoif [<i>left</i>] [<i>comp</i>] [<i>right</i>] [<i>UI_command</i>]</h3>
+<p>
+Execute a UI command if the expression is true.<br>
+ Syntax : &lt;string&gt; &lt;comp&gt; &lt;string&gt; &lt;UI_command&gt;<br>
+<p>Available at all Geant4 states.
+<p>Parameters<table border=1>
+<tr><td>left
+<td>type s
+<td><td><tr><td>comp
+<td>type s
+<td><td>Parameter candidates : == !=
+<tr><td>right
+<td>type s
+<td><td><tr><td>UI_command
+<td>type s
+<td><td></table>
+<h3 id="c28">ifBatch [<i>macroFile</i>]</h3>
+<p>
+Execute a macro file if program is running in batch mode.<br>
+<p>Available at all Geant4 states.
+<p>Parameters<table border=1>
+<tr><td>macroFile
+<td>type s
+<td><td></table>
+<h3 id="c29">ifInteractive [<i>macroFile</i>]</h3>
+<p>
+Execute a macro file if program is running in interactive mode.<br>
+<p>Available at all Geant4 states.
+<p>Parameters<table border=1>
+<tr><td>macroFile
+<td>type s
+<td><td></table>
+<h3 id="c30">doifBatch [<i>UIcommand</i>]</h3>
+<p>
+Execute a UI command if program is running in batch mode.<br>
+<p>Available at all Geant4 states.
+<p>Parameters<table border=1>
+<tr><td>UIcommand
+<td>type s
+<td><td></table>
+<h3 id="c31">doifInteractive [<i>UIcommand</i>]</h3>
+<p>
+Execute a UI command if program is running in interactive mode.<br>
+<p>Available at all Geant4 states.
+<p>Parameters<table border=1>
+<tr><td>UIcommand
+<td>type s
+<td><td></table>
+</div></body></html>

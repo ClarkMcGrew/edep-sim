@@ -1,0 +1,351 @@
+<html><head><title>Commands in /run/</title></head>
+<style>     table,table td,table th {        border:1px solid #eee     }     table td,table th {       padding:5px 20px;       line-height:1.3;       text-align:inherit     }     a {       color:#17a81a;       text-decoration:none;       transition-duration:0.3s     }       a:hover {       color:#17a81a     }     table {       border-collapse:collapse;       border-spacing:0;       margin-bottom:5px;     }     h1 {       font-size:2.25em;       font-weight:300;       letter-spacing:-1px;       line-height:1.15em;       margin-bottom:0.5em;       word-wrap:break-word     }     h2 {       font-size:1.5em;       font-weight:300;       letter-spacing:-1px;       line-height:1.15em;       margin-bottom:0.5em;       word-wrap:break-word     }     h3 {       color:#26282a;       font-weight:300;       font-size:1.3em;       padding:15px 0 15px 0;       border-bottom:2px #eee solid;       word-wrap:break-word     }     .sidebar {       display:block;       position:relative;       position:sticky;       float:left;       -webkit-box-sizing:border-box;       -moz-box-sizing:border-box;       -ms-box-sizing:border-box;       box-sizing:border-box;       width:20%;       padding-right:20px     }     .context {     width:80%;     display:inline-block;     background-color:#fff;     padding: 25px 35px 20px 30px;     -webkit-box-sizing:border-box;     -moz-box-sizing:border-box;     -ms-box-sizing:border-box;     box-sizing:border-box   }     </style>
+<body bgcolor="#ffffff">
+<div class="sidebar"><h2><a href="_.html">Top level </a></h2><table><tr><td><a href="_control_.html">/control/</a><tr><td><a href="_units_.html">/units/</a><tr><td><a href="_profiler_.html">/profiler/</a><tr><td><a href="_particle_.html">/particle/</a><tr><td><a href="_tracking_.html">/tracking/</a><tr><td><a href="_geometry_.html">/geometry/</a><tr><td><a href="_process_.html">/process/</a><tr><td><a href="_event_.html">/event/</a><tr><td><a href="_cuts_.html">/cuts/</a><tr><td><a href="_run_.html">/run/</a><tr><td><a href="_random_.html">/random/</a><tr><td><a href="_edep_.html">/edep/</a><tr><td><a href="_Captain_.html">/Captain/</a><tr><td><a href="_hits_.html">/hits/</a><tr><td><a href="_material_.html">/material/</a><tr><td><a href="_physics_lists_.html">/physics_lists/</a><tr><td><a href="_generator_.html">/generator/</a><tr><td><a href="_gps_.html">/gps/</a></table></div>
+<div class="context"><h1>/run/</h1>
+Run control commands.<br>
+<h2>Sub-directories </h2><table><tr><td><a href="_run_particle_.html">/run/particle/</a></td><td>Commands for G4VUserPhysicsList.</tr></table>
+<h2>Commands </h2>
+<table>
+<tr><td><a href="#c0">initialize</a></td></tr>
+<tr><td><a href="#c1">beamOn</a></td></tr>
+<tr><td><a href="#c2">verbose</a></td></tr>
+<tr><td><a href="#c3">printProgress</a></td></tr>
+<tr><td><a href="#c4">numberOfThreads</a></td></tr>
+<tr><td><a href="#c5">useMaximumLogicalCores</a></td></tr>
+<tr><td><a href="#c6">pinAffinity</a></td></tr>
+<tr><td><a href="#c7">eventModulo</a></td></tr>
+<tr><td><a href="#c8">dumpRegion</a></td></tr>
+<tr><td><a href="#c9">dumpCouples</a></td></tr>
+<tr><td><a href="#c10">optimizeGeometry</a></td></tr>
+<tr><td><a href="#c11">breakAtBeginOfEvent</a></td></tr>
+<tr><td><a href="#c12">breakAtEndOfEvent</a></td></tr>
+<tr><td><a href="#c13">abort</a></td></tr>
+<tr><td><a href="#c14">abortCurrentEvent</a></td></tr>
+<tr><td><a href="#c15">geometryModified</a></td></tr>
+<tr><td><a href="#c16">reinitializeGeometry</a></td></tr>
+<tr><td><a href="#c17">physicsModified</a></td></tr>
+<tr><td><a href="#c18">constructScoringWorlds</a></td></tr>
+<tr><td><a href="#c19">storeRndmStatToEvent</a></td></tr>
+<tr><td><a href="#c20">workersProcessCmds</a></td></tr>
+<tr><td><a href="#c21">setCut</a></td></tr>
+<tr><td><a href="#c22">setCutForAGivenParticle</a></td></tr>
+<tr><td><a href="#c23">getCutForAGivenParticle</a></td></tr>
+<tr><td><a href="#c24">setCutForRegion</a></td></tr>
+</table>
+<h3 id="c0">initialize</h3>
+<p>
+Initialize G4 kernel.<br>
+<p>Available Geant4 state(s) : PreInit 
+Idle 
+<h3 id="c1">beamOn [<i>numberOfEvent</i>] [<i>macroFile</i>] [<i>nSelect</i>]</h3>
+<p>
+Start a Run.<br>
+If G4 kernel is not initialized, it will be initialized.<br>
+Default number of events to be processed is 1.<br>
+The second and third arguments can be used for<br>
+executing a macro file at the end of each event.<br>
+If the second argument, i.e. name of the macro<br>
+file, is given but the third argument is not,<br>
+the macro file will be executed for all of the<br>
+event.<br>
+If the third argument (nSelect) is given, the<br>
+macro file will be executed only for the first<br>
+nSelect events.<br>
+<p>Available Geant4 state(s) : PreInit 
+Idle 
+<p>Parameters<table border=1>
+<tr><td>numberOfEvent
+<td>type i
+<td>Omittable : default value = 1
+<td>Parameter range : numberOfEvent &gt;= 0
+<tr><td>macroFile
+<td>type s
+<td>Omittable : default value = ***NULL***
+<td><tr><td>nSelect
+<td>type i
+<td>Omittable : default value = -1
+<td>Parameter range : nSelect&gt;=-1
+</table>
+<h3 id="c2">verbose [<i>level</i>]</h3>
+<p>
+Set the Verbose level of G4RunManager.<br>
+ 0 : Silent (default)<br>
+ 1 : Display main topics<br>
+ 2 : Display main topics and run summary<br>
+<p>Range : level &gt;=0 &amp;&amp; level &lt;=2
+<p>Available at all Geant4 states.
+<p>Parameters<table border=1>
+<tr><td>level
+<td>type i
+<td>Omittable : default value = 0
+<td></table>
+<h3 id="c3">printProgress [<i>mod</i>]</h3>
+<p>
+Display begin_of_event information at given frequency.<br>
+If it is set to zero, only the begin_of_run is shown.<br>
+If it is set to -1, no print-out is shown.<br>
+<p>Range : mod&gt;=-1
+<p>Available at all Geant4 states.
+<p>Parameters<table border=1>
+<tr><td>mod
+<td>type i
+<td>Omittable : default value = -1
+<td></table>
+<h3 id="c4">numberOfThreads [<i>nThreads</i>]</h3>
+<p>
+Set the number of threads to be used.<br>
+This command works only in PreInit state.<br>
+This command is valid only for multi-threaded mode.<br>
+The command is ignored if it is issued in sequential mode.<br>
+<p>Range : nThreads &gt;0
+<p>Available Geant4 state(s) : PreInit 
+<p>Parameters<table border=1>
+<tr><td>nThreads
+<td>type i
+<td>Omittable : default value = 2
+<td></table>
+<h3 id="c5">useMaximumLogicalCores</h3>
+<p>
+Set the number of threads to be the number of available logical cores.<br>
+This command works only in PreInit state.<br>
+This command is valid only for multi-threaded mode.<br>
+The command is ignored if it is issued in sequential mode.<br>
+<p>Available Geant4 state(s) : PreInit 
+<h3 id="c6">pinAffinity [<i>pinAffinity</i>]</h3>
+<p>
+Locks each thread to a specific logical core. Workers are locked in round robin to logical cores.<br>
+This command is valid only for multi-threaded mode.<br>
+This command works only in PreInit state.<br>
+This command is ignored if it is issued in sequential mode.<br>
+If a value n&gt;0 is provided it starts setting affinity from the n-th CPU (note: counting from 1).<br>
+E.g. /run/pinAffinity 3 locks first thread on third logical CPU (number 2).<br>
+If a value n&lt;0 is provided never locks on n-th CPU.<br>
+<p>Range : pinAffinity &gt; 0 || pinAffinity &lt; 0
+<p>Available Geant4 state(s) : PreInit 
+<p>Parameters<table border=1>
+<tr><td>pinAffinity
+<td>type i
+<td>Omittable : default value = 1
+<td></table>
+<h3 id="c7">eventModulo [<i>N</i>] [<i>seedOnce</i>]</h3>
+<p>
+Set the event modulo for dispatching events to worker threads<br>
+i.e. each worker thread is ordered to simulate N events and then<br>
+comes back to G4MTRunManager for next set.<br>
+If it is set to zero (default value), N is roughly given by this.<br>
+   N = int( sqrt( number_of_events / number_of_threads ) )<br>
+The value N may affect on the computing performance in particular<br>
+if N is too small compared to the total number of events.<br>
+The second parameter seedOnce specifies how frequently each worker<br>
+thread is seeded by the random number sequence centrally managed<br>
+by the master G4MTRunManager.<br>
+ - If seedOnce is set to 0 (default), seeds that are centrally managed<br>
+   by G4MTRunManager are set for every event of every worker thread.<br>
+   This option guarantees event reproducibility regardless of number<br>
+   of threads.<br>
+ - If seedOnce is set to 1, seeds are set only once for the first<br>
+   event of each run of each worker thread. Event reproducibility is<br>
+   guaranteed only if the same number of worker threads are used.<br>
+   On the other hand, this option offers better computing performance<br>
+   in particular for applications with relatively small primary<br>
+   particle energy and large number of events.<br>
+ - If seedOnce is set to 2, seeds are set only for the first event of<br>
+   group of N events. This option is reserved for the future use when<br>
+   Geant4 allows number of threads to be dynamically changed during an<br>
+   event loop.<br>
+This command is valid only for multi-threaded mode.<br>
+This command is ignored if it is issued in sequential mode.<br>
+<p>Available Geant4 state(s) : PreInit 
+Idle 
+<p>Parameters<table border=1>
+<tr><td>N
+<td>type i
+<td>Omittable : default value = 0
+<td>Parameter range : N &gt;= 0
+<tr><td>seedOnce
+<td>type i
+<td>Omittable : default value = 0
+<td>Parameter range : seedOnce &gt;= 0 &amp;&amp; seedOnce &lt;=2
+</table>
+<h3 id="c8">dumpRegion [<i>regionName</i>]</h3>
+<p>
+Dump region information.<br>
+In case name of a region is not given, all regions will be displayed.<br>
+<p>Available Geant4 state(s) : Idle 
+<p>Parameters<table border=1>
+<tr><td>regionName
+<td>type s
+<td>Omittable : default value = **ALL**
+<td></table>
+<h3 id="c9">dumpCouples</h3>
+<p>
+Dump material-cuts-couple information.<br>
+Note that material-cuts-couple information is updated<br>
+after BeamOn has started.<br>
+<p>Available Geant4 state(s) : Idle 
+<h3 id="c10">optimizeGeometry [<i>optimizeFlag</i>]</h3>
+<p>
+Set the optimization flag for geometry.<br>
+If it is set to TRUE, G4GeometryManager will optimize<br>
+the geometry definitions.<br>
+GEANT4 is initialized with this flag as TRUE.<br>
+<p>Available Geant4 state(s) : PreInit 
+Idle 
+<p>Parameters<table border=1>
+<tr><td>optimizeFlag
+<td>type b
+<td>Omittable : default value = 1
+<td></table>
+<h3 id="c11">breakAtBeginOfEvent [<i>flag</i>]</h3>
+<p>
+Set a break point at the beginning of every event.<br>
+<p>Available at all Geant4 states.
+<p>Parameters<table border=1>
+<tr><td>flag
+<td>type b
+<td>Omittable : default value = 1
+<td></table>
+<h3 id="c12">breakAtEndOfEvent [<i>flag</i>]</h3>
+<p>
+Set a break point at the end of every event.<br>
+<p>Available at all Geant4 states.
+<p>Parameters<table border=1>
+<tr><td>flag
+<td>type b
+<td>Omittable : default value = 1
+<td></table>
+<h3 id="c13">abort [<i>softAbort</i>]</h3>
+<p>
+Abort current run processing.<br>
+If softAbort is false (default), currently processing event will be immediately aborted,<br>
+while softAbort is true, abortion occurs after processing the current event.<br>
+<p>Available Geant4 state(s) : GeomClosed 
+EventProc 
+<p>Parameters<table border=1>
+<tr><td>softAbort
+<td>type b
+<td>Omittable : default value = 0
+<td></table>
+<h3 id="c14">abortCurrentEvent</h3>
+<p>
+Abort currently processing event.<br>
+<p>Available Geant4 state(s) : EventProc 
+<h3 id="c15">geometryModified</h3>
+<p>
+Force geometry to be closed (re-voxellized) again.<br>
+This command must be applied if geometry has been modified<br>
+ after the first initialization (or BeamOn).<br>
+<p>Available Geant4 state(s) : PreInit 
+Idle 
+<h3 id="c16">reinitializeGeometry [<i>destroyFirst</i>]</h3>
+<p>
+Force geometry to be rebuilt once again.<br>
+This command must be applied if the user needs his/her<br>
+ detector construction to be reinvoked.<br>
+/run/geometryModified is automatically issued with this command.<br>
+<p>Available Geant4 state(s) : PreInit 
+Idle 
+<p>Parameters<table border=1>
+<tr><td>destroyFirst
+<td>type b
+<td>Omittable : default value = 0
+<td></table>
+<h3 id="c17">physicsModified</h3>
+<p>
+Force all physics tables recalculated again.<br>
+This command must be applied<br>
+ if physics process has been modified after the<br>
+ first initialization (or BeamOn).<br>
+<p>Available Geant4 state(s) : PreInit 
+Idle 
+<h3 id="c18">constructScoringWorlds</h3>
+<p>
+Construct scoring parallel world(s) if defined.<br>
+This command is not mandatory, but automatically called when a run starts.<br>
+But the user may use this to visualize the scoring world(s) before a run to start.<br>
+<p>Available Geant4 state(s) : Idle 
+<h3 id="c19">storeRndmStatToEvent [<i>flag</i>]</h3>
+<p>
+Flag to store rndm status to G4Event object.<br>
+ flag = 0 : not store (default)<br>
+ flag = 1 : status before primary particle generation is stored<br>
+ flag = 2 : status before event processing (after primary particle generation) is stored<br>
+ flag = 3 : both are stored<br>
+Note: Some performance overhead may be seen by storing rndm status, in particular<br>
+for the case of simplest geometry and small number of tracks per event.<br>
+<p>Range : flag&gt;=0 &amp;&amp; flag&lt;=3
+<p>Available Geant4 state(s) : PreInit 
+Idle 
+<p>Parameters<table border=1>
+<tr><td>flag
+<td>type i
+<td>Omittable : default value = 0
+<td></table>
+<h3 id="c20">workersProcessCmds</h3>
+<p>
+Force workers to process current stack of UI commands.<br>
+This commands is meaningful only in MT mode.<br>
+<p>Available Geant4 state(s) : PreInit 
+Idle 
+GeomClosed 
+<h3 id="c21">setCut [<i>cut</i>] [<i>Unit</i>]</h3>
+<p>
+Set default cut value <br>
+<p>Range : cut &gt;=0.0
+<p>Available Geant4 state(s) : PreInit 
+Idle 
+<p>Parameters<table border=1>
+<tr><td>cut
+<td>type d
+<td><td><tr><td>Unit
+<td>type s
+<td>Omittable : default value = mm
+<td>Parameter candidates : pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
+</table>
+<h3 id="c22">setCutForAGivenParticle [<i>particleName</i>] [<i>cut</i>] [<i>unit</i>]</h3>
+<p>
+Set a cut value to a specific particle <br>
+Usage: /run/setCutForAGivenParticle  gamma  1. mm<br>
+<p>Available Geant4 state(s) : PreInit 
+Idle 
+<p>Parameters<table border=1>
+<tr><td>particleName
+<td>type s
+<td><td>Parameter candidates : e- e+ gamma proton
+<tr><td>cut
+<td>type d
+<td><td>Parameter range : cut&gt;=0.0
+<tr><td>unit
+<td>type s
+<td><td>Parameter candidates : pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
+</table>
+<h3 id="c23">getCutForAGivenParticle [<i>particleName</i>]</h3>
+<p>
+Get a cut value to a specific particle <br>
+Usage: /run/getCutForAGivenParticle  gamma <br>
+<p>Available Geant4 state(s) : PreInit 
+Idle 
+GeomClosed 
+EventProc 
+<p>Parameters<table border=1>
+<tr><td>particleName
+<td>type s
+<td><td>Parameter candidates : e- e+ gamma proton
+</table>
+<h3 id="c24">setCutForRegion [<i>Region</i>] [<i>cut</i>] [<i>Unit</i>]</h3>
+<p>
+Set cut value for a region<br>
+<p>Available Geant4 state(s) : Idle 
+<p>Parameters<table border=1>
+<tr><td>Region
+<td>type s
+<td><td><tr><td>cut
+<td>type d
+<td><td>Parameter range : cut &gt;=0.0
+<tr><td>Unit
+<td>type s
+<td>Omittable : default value = mm
+<td>Parameter candidates : pc km m cm mm um nm Ang fm parsec kilometer meter centimeter millimeter micrometer nanometer angstrom fermi
+</table>
+</div></body></html>
