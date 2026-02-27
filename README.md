@@ -16,7 +16,7 @@ information as a class.
 
 This documentation assumes that you have a passing familiarity with how to
 write GEANT4 macro control files, and edep-sim can be configured using the supported macro commands in [text](./doc/edepsim-command.list) or 
-[html](http::./doc/html/_.html). 
+[html](https://github.com/ClarkMcGrew/edep-sim/doc/html/_.html). 
 
 Where it's available (and in particular for argon), the simulation
 implements a fairly detailed model of the energy deposited as
