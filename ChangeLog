@@ -1,4 +1,8 @@
-Changes in 3.3.0
+Changes in X.X.X
+
+* The Doke-Birks model has been integrated with G4EmSaturation and
+  G4EmParameters so that it can be used everyplace.  It's added to the
+  G4EmParameters in the physics list.
 
 * Support G4 v11: The code is largely upgraded to primarily support the G4
   v11 coding practices.  Testing and development is done using G4.11.  The

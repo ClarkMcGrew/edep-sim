@@ -22,11 +22,11 @@ void EDepSim::SteppingAction::UserSteppingAction(const G4Step* theStep) {
     if (fSteps%fThrottle == 0 && fSteps>0) {
         EDepSimWarn("EDepSimUserSteppingAction:: Excessive Steps "
                   << " " << fSteps
-                  << " " << theParticleName
-                  << " " << theTrack->GetTrackLength()/m << " m"
-                  << " " << theTrack->GetGlobalTime()/ns << " ns"
-                  << " " << theTrack->GetTotalEnergy()/MeV << " MeV"
-                  << " " << theCurrentVolumeName);
+                  << " for " << theParticleName
+                  << " Length: " << theTrack->GetTrackLength()/m << " m"
+                  << " Time: " << theTrack->GetGlobalTime()/ns << " ns"
+                  << " Energy: " << theTrack->GetTotalEnergy()/MeV << " MeV"
+                  << " Volume: " << theCurrentVolumeName);
         fThrottle *= 2;
         fGovernor = 5;
     }
@@ -36,7 +36,7 @@ void EDepSim::SteppingAction::UserSteppingAction(const G4Step* theStep) {
         EDepSimDebug("    " << theCurrentVolumeName
                    << ": " << theParticleName
                    << " -- Step: " << theStep->GetStepLength()/mm << " mm"
-                   << " Energy Loss: "<< theStep->GetDeltaEnergy()/MeV
+                   << " Energy Loss: "<< theStep->GetTotalEnergyDeposit()/MeV
                    << " MeV");
     }
 

@@ -560,6 +560,13 @@ void EDepSim::UserDetectorConstruction::DefineMaterials() {
     geoMan->SetDrawAtt(argon,kMagenta-10,0.1);
 
     // Liquid Argon
+    const double LArDensity = 1.3954*g/cm3;
+    // Provide a default Birks constant for LAr in case Doke-Birks is off.
+    // This is loosely based off of a mentioned ICARUS value for testing
+    // G4EmSaturation, but not chased to the original reference (don't use it
+    // for physics).
+    const double LArBirks = 0.0486*g/cm2/MeV/LArDensity;
+
     G4Material* LAr =  new G4Material(name="Argon_Liquid",
                                       density = 1.3954*CLHEP::g/CLHEP::cm3,
                                       nel=1,
@@ -567,6 +574,7 @@ void EDepSim::UserDetectorConstruction::DefineMaterials() {
                                       temperature = 87.3*CLHEP::kelvin,
                                       pressure=1*CLHEP::atmosphere);
     LAr->AddElement(elAr, natoms=1);
+    LAr->GetIonisation()->SetBirksConstant(LArBirks);
 
     // Set up liquid argon for NEST.
     G4MaterialPropertiesTable *LArMatProps = new G4MaterialPropertiesTable();
