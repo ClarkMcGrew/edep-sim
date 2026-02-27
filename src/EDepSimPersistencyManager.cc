@@ -47,7 +47,8 @@ EDepSim::PersistencyManager::PersistencyManager()
       fLengthThreshold(10*mm),
       fGammaThreshold(5*MeV), fNeutronThreshold(50*MeV),
       fTrajectoryPointAccuracy(1.*mm), fTrajectoryPointDeposit(0*MeV),
-      fSaveAllPrimaryTrajectories(true) {
+      fSaveAllPrimaryTrajectories(true),
+      fSaveAllTrajectories(std::nan("not-set")) {
     fPersistencyMessenger = new EDepSim::PersistencyMessenger(this);
 }
 
@@ -365,6 +366,14 @@ void EDepSim::PersistencyManager::MarkTrajectories(const G4Event* event) {
             }
         }
 
+        // Check if everything should be saved.
+        if (std::isfinite(GetSaveAllTrajectories())) {
+            if (initialMomentum > GetSaveAllTrajectories()) {
+                ndTraj->MarkTrajectory();
+                continue;
+            }
+        }
+
         // Don't save the neutrinos
         if (particleName == "anti_nu_e") continue;
         if (particleName == "anti_nu_mu") continue;
@@ -373,11 +382,13 @@ void EDepSim::PersistencyManager::MarkTrajectories(const G4Event* event) {
         if (particleName == "nu_mu") continue;
         if (particleName == "nu_tau") continue;
 
-        // Save any decay product if it caused any energy deposit.
+        // Save any decay product if it caused any energy deposit at all, or
+        // all decay products if all primaries are suppose to be saved.
         if (processName == "Decay") {
             if (ndTraj->GetSDTotalEnergyDeposit()>1*eV
                 || GetSaveAllPrimaryTrajectories()) {
-                ndTraj->MarkTrajectory(false);
+                // Make sure the parent is also saved.
+                ndTraj->MarkTrajectory(1);
                 continue;
             }
         }
@@ -386,7 +397,7 @@ void EDepSim::PersistencyManager::MarkTrajectories(const G4Event* event) {
         // detector.  This doesn't automatically save, but the parents will be
         // automatically considered for saving by the next bit of code.
         if (ndTraj->GetSDLength() > GetLengthThreshold()) {
-            ndTraj->MarkTrajectory(false);
+            ndTraj->MarkTrajectory(0);
             continue;
         }
 
@@ -400,7 +411,7 @@ void EDepSim::PersistencyManager::MarkTrajectories(const G4Event* event) {
         // energy in a sensitive detector.  This only affects secondary
         // photons since primary photons are handled above.
         if (particleName == "gamma" && initialMomentum > GetGammaThreshold()) {
-            ndTraj->MarkTrajectory(false);
+            ndTraj->MarkTrajectory(0);
             continue;
         }
 
@@ -408,8 +419,9 @@ void EDepSim::PersistencyManager::MarkTrajectories(const G4Event* event) {
         // in a sensitive detector.  This only affects secondary neutrons
         // since primary neutrons are controlled above.
         if (particleName == "neutron"
-            && initialMomentum > GetNeutronThreshold()) {
-            ndTraj->MarkTrajectory(false);
+            && (initialMomentum > GetNeutronThreshold()
+                || ndTraj->GetSDTotalEnergyDeposit() > GetNeutronThreshold())) {
+            ndTraj->MarkTrajectory(0);
             continue;
         }
     }
@@ -417,8 +429,9 @@ void EDepSim::PersistencyManager::MarkTrajectories(const G4Event* event) {
     // Go through all of the event hit collections and make sure that all
     // primary trajectories and trajectories contributing to a hit are saved.
     // These are mostly a sub-set of the trajectories marked in the previous
-    // step, but there are a few corner cases where trajectories are not saved
-    // because of theshold issues.
+    // step, but there are a few corner cases, like short tracks, where
+    // trajectories are not saved because of thesholds.  Everything that makes
+    // a hit is saved.
     G4HCofThisEvent* hitCollections = event->GetHCofThisEvent();
     if (!hitCollections) return;
     for (int i=0; i < hitCollections->GetNumberOfCollections(); ++i) {
@@ -432,18 +445,26 @@ void EDepSim::PersistencyManager::MarkTrajectories(const G4Event* event) {
                 continue;
             }
 
-            // Explicitly save the primary.  It will probably be marked again
-            // with the contributors, but that's OK.  This catches some corner
-            // cases where the primary isn't what you would expect.
+            // Explicitly save the primaries.  It will probably be marked
+            // again with the contributors, but that's OK.  This catches some
+            // corner cases where the primary isn't what you would expect.
+            // This will mark decay products as primaries, and then the
+            // primary for the decay product too.
             int primaryId = g4Hit->GetPrimaryTrajectoryId();
-            EDepSim::Trajectory* ndTraj
-                = dynamic_cast<EDepSim::Trajectory*>(
-                    EDepSim::TrajectoryMap::Get(primaryId));
-            if (ndTraj) {
-                ndTraj->MarkTrajectory(false);
-            }
-            else {
-                EDepSimError("Primary trajectory not found");
+            while (primaryId != 0) {
+                EDepSim::Trajectory* ndTraj
+                    = dynamic_cast<EDepSim::Trajectory*>(
+                        EDepSim::TrajectoryMap::Get(primaryId));
+                if (ndTraj) {
+                    ndTraj->MarkTrajectory(0);
+                }
+                else {
+                    EDepSimError("Primary trajectory not found");
+                    break;
+                }
+                int parentId = ndTraj->GetParentID();
+                if (parentId == 0) break;
+                primaryId = EDepSim::TrajectoryMap::FindPrimaryId(parentId);
             }
 
             // Make sure that all the contributors associated with this hit
@@ -454,7 +475,7 @@ void EDepSim::PersistencyManager::MarkTrajectories(const G4Event* event) {
                     = dynamic_cast<EDepSim::Trajectory*>(
                         EDepSim::TrajectoryMap::Get(contribId));
                 if (contribTraj) {
-                    contribTraj->MarkTrajectory(false);
+                    contribTraj->MarkTrajectory(0);
                 }
                 else {
                     EDepSimError("Contributor trajectory not found");

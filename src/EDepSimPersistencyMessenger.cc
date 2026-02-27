@@ -59,6 +59,16 @@ EDepSim::PersistencyMessenger::PersistencyMessenger(
         "  True: Save all prim. part. trajectories.\n"
         "  False: Save prim. that ultimately deposit energy in SD.");
 
+    fSaveAllTrajectoriesCMD
+        = new G4UIcmdWithADoubleAndUnit("/edep/db/set/saveAllTraj", this);
+    fSaveAllTrajectoriesCMD->SetGuidance(
+        "If positive, then save all trajectories with more than this\n"
+        "much energy deposit. If negative, the save all trajectories.\n"
+        "Use with care since the file becomes large.");
+    fSaveAllTrajectoriesCMD->SetParameterName("energy", false, false);
+    fSaveAllTrajectoriesCMD->SetUnitCategory("Energy");
+    fSaveAllTrajectoriesCMD->SetDefaultValue(-1.0);
+
     fTrajectoryPointAccuracyCMD
         = new G4UIcmdWithADoubleAndUnit("/edep/db/set/trajectoryAccuracy", this);
     fTrajectoryPointAccuracyCMD->SetGuidance(
@@ -98,6 +108,7 @@ EDepSim::PersistencyMessenger::~PersistencyMessenger() {
     delete fNeutronThresholdCMD;
     delete fLengthThresholdCMD;
     delete fSaveAllPrimaryTrajectoriesCMD;
+    delete fSaveAllTrajectoriesCMD;
     delete fTrajectoryPointAccuracyCMD;
     delete fTrajectoryPointDepositCMD;
     delete fTrajectoryBoundaryCMD;
@@ -130,6 +141,10 @@ void EDepSim::PersistencyMessenger::SetNewValue(G4UIcommand* command,
     else if (command == fSaveAllPrimaryTrajectoriesCMD) {
         fPersistencyManager->SetSaveAllPrimaryTrajectories(
             fSaveAllPrimaryTrajectoriesCMD->GetNewBoolValue(newValue));
+    }
+    else if (command == fSaveAllTrajectoriesCMD) {
+        fPersistencyManager->SetSaveAllTrajectories(
+            fSaveAllTrajectoriesCMD->GetNewDoubleValue(newValue));
     }
     else if (command == fTrajectoryPointAccuracyCMD) {
         fPersistencyManager->SetTrajectoryPointAccuracy(
@@ -169,6 +184,10 @@ G4String EDepSim::PersistencyMessenger::GetCurrentValue(G4UIcommand * command) {
     else if (command==fSaveAllPrimaryTrajectoriesCMD) {
         currentValue = fSaveAllPrimaryTrajectoriesCMD->ConvertToString(
             fPersistencyManager->GetSaveAllPrimaryTrajectories());
+    }
+    else if (command==fSaveAllTrajectoriesCMD) {
+        currentValue = fSaveAllTrajectoriesCMD->ConvertToString(
+            fPersistencyManager->GetSaveAllTrajectories());
     }
     else if (command==fTrajectoryPointAccuracyCMD) {
         currentValue = fTrajectoryPointAccuracyCMD->ConvertToString(

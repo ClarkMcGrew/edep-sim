@@ -94,8 +94,12 @@ public:
     /// Get the range of the particle that created this trajectory.
     G4double GetRange() const;
 
-    /// Mark this trajectory as one that should be saved in the output.
-    void MarkTrajectory(bool save=true);
+    /// Mark this trajectory as one that should be saved in the output.  If
+    /// save is provided, it will control the generations of parents that are
+    /// also marked to be saved.  If it's zero, only the current trajectory is
+    /// save.  A value of one saves the immediate parent, and so on.  A
+    /// negative value will save all parents.
+    void MarkTrajectory(int save=-1);
 
     /// Check if this trajectory should be saved.
     bool SaveTrajectory() const { return fSaveTrajectory;}
