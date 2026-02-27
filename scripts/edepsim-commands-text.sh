@@ -11,7 +11,7 @@ edep-sim $MACRO > edepsim-command.temp
 
 LINE=`grep -n "^Command directory path : /$" edepsim-command.temp | grep -o '[0-9]*'`
 
-tail -n +${LINE} edepsim-command.temp > edepsim-command.list
+tail -n +${LINE} edepsim-command.temp | grep -v '^ERROR' > edepsim-command.list
 
 rm edepsim-command.temp
 rm $MACRO
