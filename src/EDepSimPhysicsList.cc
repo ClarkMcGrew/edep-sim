@@ -75,10 +75,12 @@ EDepSim::PhysicsList::PhysicsList(G4String physName)
         RegisterPhysics(elem);
     }
 
+    // Add the optical physics so photons can be created.
+    RegisterPhysics(new G4OpticalPhysics());
+
     // Add our specific lists.
     fExtra = new EDepSim::ExtraPhysics();
     RegisterPhysics(fExtra);
-    RegisterPhysics(new G4OpticalPhysics());
 
     // Setup the parameters (override if necesssary)
     G4EmParameters* params = G4EmParameters::Instance();
