@@ -1,17 +1,22 @@
-Changes in X.X.X
-
-* The Doke-Birks model has been integrated with G4EmSaturation and
-  G4EmParameters so that it can be used everyplace.  It's added to the
-  G4EmParameters in the physics list.
+Changes in 4.0.0
 
 * Support G4 v11: The code is largely upgraded to primarily support the G4
   v11 coding practices.  Testing and development is done using G4.11.  The
   G4 v10 interface is still supported via `ifdef` using G4Version, and will
-  be supported as long as it is not very incompatible with newer G4
-  versions.
+  be supported as long as it remains compatible with newer G4 versions.
+
+* The Doke-Birks model has been integrated with G4EmSaturation and
+  G4EmParameters so that it can be used everyplace.  It's added to the
+  G4EmParameters in the physics list. It will now be correctly applied to
+  optical processes like scintillation.
+
+* Trajectory point selection: Trajectory points can be selected based on
+  the process and sub-process which generated them with a minimum threshold
+  applied based on the interaction occurring at the point.
 
 * HepEVT Kinematics -- Add features ot the HEPEvt reader from Andrew Mogan.
-  The flexibility is extended, and allows for multi-vertex events.
+  The flexibility is extended, and allows for multi-vertex events.  The new
+  reader can handle mother/daughter relationships.
 
 * EDepSim::HitSegment -- Add a new parameter to control when very short
   tracks (e.g. delta rays) are combined with an existing hit segment.  This
@@ -20,13 +25,17 @@ Changes in X.X.X
   /edep/hitSagitta (previously existed) and /edep/hitSeparation (new) macro
   commands.
 
-* Use G4cout so that EDepSimLog (and friends) leverages the full
-  GEANT4 ios interface.
+* Change EDepSimLog to use G4cout so that the full GEANT4 ios interface is
+  leveraged.
 
 * Issue #47: Make sure that decay products and their parent trajectories
   are saved. A macro to force all trajectories to be saved has been added
   to aid in debugging.
-	
+
+* Updated geometry definitions: Several new geometry definitions have been
+  merged from the DUNE fork to allow more of the G4 volumes to be exported
+  to ROOT.
+
 Changes in 3.2.0
 
 * Add a new kinematics generator to accept HEPEVT format files.  The
