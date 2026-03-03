@@ -19,11 +19,15 @@
 #include <G4Gamma.hh>
 #include <G4Electron.hh>
 #include <G4Positron.hh>
+#include <G4PionPlus.hh>
 
 #include <G4ProcessTable.hh>
 
 #include <G4UnitsTable.hh>
 #include <G4SystemOfUnits.hh>
+
+#include "QGSP_BERT_Bias.hh"
+#include "G4HadronPhysicsQGSP_BERT_Bias.hh"
 
 #include <unistd.h>
 
@@ -47,6 +51,16 @@ EDepSim::PhysicsList::PhysicsList(G4String physName)
     char* list = getenv("PHYSLIST");
     if (list) {
         phys = factory.ReferencePhysList();
+    }
+    
+    if (!phys && physName.size() > 1 && physName == "QGSP_BERT_Bias") {
+      phys = new QGSP_BERT_Bias;
+      G4HadronPhysicsQGSP_BERT_Bias * bias
+          = (G4HadronPhysicsQGSP_BERT_Bias *)phys->GetPhysics(
+              "hInelastic_pion_bias QGSP_BERT_Bias");
+      char * bias_val = getenv("EDEPSIM_BIAS");
+      if (bias_val)
+        bias->SetPiPlusBias(std::atof(bias_val));
     }
 
     // Check if a list name was provided on the command line.  It usually is
