@@ -28,11 +28,14 @@
 #include <G4ParticleTable.hh>
 #include <G4SDManager.hh>
 #include <G4HCtable.hh>
+#include <G4AttDef.hh>
+#include <G4AttValue.hh>
 
 #include <G4SystemOfUnits.hh>
 #include <G4PhysicalConstants.hh>
 
 #include <memory>
+#include <typeinfo>
 
 // Handle foraging the edep-sim information into convenience classes that are
 // independent of geant4 and edep-sim internal dependencies.  The classes are
@@ -257,6 +260,10 @@ void EDepSim::PersistencyManager::SummarizeTrajectories(
          t != trajectories->GetVector()->end();
          ++t) {
         EDepSim::Trajectory* ndTraj = dynamic_cast<EDepSim::Trajectory*>(*t);
+        if (ndTraj == nullptr) {
+            EDepSimError("Trajectory MUST be an EDepSim::Trajectory");
+            throw;
+        }
 
         // Check if the trajectory should be saved.
         if (!ndTraj->SaveTrajectory()) continue;
@@ -292,7 +299,6 @@ void EDepSim::PersistencyManager::SummarizeTrajectories(
             if (!pTraj) {
                 EDepSimError("Trajectory " << traj.ParentId << " does not exist");
                 throw;
-                break;
             }
             if (pTraj->SaveTrajectory()) break;
             traj.ParentId = pTraj->GetParentID();
@@ -356,6 +362,10 @@ void EDepSim::PersistencyManager::MarkTrajectories(const G4Event* event) {
          t != trajectories->GetVector()->end();
          ++t) {
         EDepSim::Trajectory* ndTraj = dynamic_cast<EDepSim::Trajectory*>(*t);
+        if (ndTraj == nullptr) {
+            EDepSimError("Trajectory MUST be an EDepSim::Trajectory");
+            throw;
+        }
         std::string particleName = ndTraj->GetParticleName();
         std::string processName = ndTraj->GetProcessName();
         double initialMomentum = ndTraj->GetInitialMomentum().mag();
@@ -663,11 +673,22 @@ EDepSim::PersistencyManager::SelectTrajectoryPoints(std::vector<int>& selected,
                                                     G4VTrajectory* g4Traj) {
 
     selected.clear();
-    if (g4Traj->GetPointEntries() < 1) {
-        EDepSimError("Trajectory with no points"
+
+    // Only save points for EDepSim::Trajectory
+    EDepSim::Trajectory* ndTraj = dynamic_cast<EDepSim::Trajectory*>(g4Traj);
+    if (ndTraj == nullptr) {
+        EDepSimError("Trajectory not from EDepSim"
                      << " " << g4Traj->GetTrackID()
                      << " " << g4Traj->GetParentID()
                      << " " << g4Traj->GetParticleName());
+        return;
+    }
+
+    if (ndTraj->GetPointEntries() < 1) {
+        EDepSimError("Trajectory with no points"
+                     << " " << ndTraj->GetTrackID()
+                     << " " << ndTraj->GetParentID()
+                     << " " << ndTraj->GetParticleName());
         return;
     }
 
@@ -679,12 +700,12 @@ EDepSim::PersistencyManager::SelectTrajectoryPoints(std::vector<int>& selected,
     /////////////////////////////////////
     // Save the last point of the trajectory.
     /////////////////////////////////////
-    int lastIndex = g4Traj->GetPointEntries()-1;
+    int lastIndex = ndTraj->GetPointEntries()-1;
     if (lastIndex < 1) {
         EDepSimError("Trajectory with one point"
-                     << " " << g4Traj->GetTrackID()
-                     << " " << g4Traj->GetParentID()
-                     << " " << g4Traj->GetParticleName());
+                     << " " << ndTraj->GetTrackID()
+                     << " " << ndTraj->GetParentID()
+                     << " " << ndTraj->GetParticleName());
         return;
     }
     selected.push_back(lastIndex);
@@ -696,7 +717,6 @@ EDepSim::PersistencyManager::SelectTrajectoryPoints(std::vector<int>& selected,
     // starting and stopping point of the particle are recorded in the
     // trajectory.
     //////////////////////////////////////////////
-    EDepSim::Trajectory* ndTraj = dynamic_cast<EDepSim::Trajectory*>(g4Traj);
     if (ndTraj->GetSDTotalEnergyDeposit() < 1*eV) return; // ~1.2 um photon
 
     //////////////////////////////////////////////
@@ -704,15 +724,42 @@ EDepSim::PersistencyManager::SelectTrajectoryPoints(std::vector<int>& selected,
     // detectors.
     //////////////////////////////////////////////
     EDepSim::TrajectoryPoint* edepPoint
-        = dynamic_cast<EDepSim::TrajectoryPoint*>(g4Traj->GetPoint(0));
+        = dynamic_cast<EDepSim::TrajectoryPoint*>(ndTraj->GetPoint(0));
     G4String prevVolumeName = edepPoint->GetPhysVolName();
     for (int tp = 1; tp < lastIndex; ++tp) {
         edepPoint
-            = dynamic_cast<EDepSim::TrajectoryPoint*>(g4Traj->GetPoint(tp));
+            = dynamic_cast<EDepSim::TrajectoryPoint*>(ndTraj->GetPoint(tp));
+        if (edepPoint == nullptr) {
+            EDepSimError("ndTraj " << typeid(*ndTraj).name());
+            EDepSimError("g4Point " << typeid(*ndTraj->GetPoint(tp)).name());
+            EDepSimError("Trajectory with invalid point"
+                         << " " << ndTraj->GetTrackID()
+                         << " " << ndTraj->GetParentID()
+                         << " " << ndTraj->GetParticleName());
+            if (ndTraj->GetAttDefs()) {
+                for (auto& p : *ndTraj->GetAttDefs()) {
+                    EDepSimError("  Att Def " << p.first
+                                 << ";" << p.second.GetName()
+                                 << ";" << p.second.GetDesc()
+                                 << ";" << p.second.GetExtra()
+                                 << ";" << p.second.GetValueType());
+                }
+            }
+            if (ndTraj->GetAttValues()) {
+                for (auto& v : *ndTraj->GetAttValues()){
+                    EDepSimError("  Att Val "
+                                 << v.GetName()
+                                 << ";" << v.GetValue()
+                                 << ";" << v.GetShowLabel());
+                }
+            }
+
+            throw;
+        }
         G4String volumeName = edepPoint->GetPhysVolName();
         // Save the point on a boundary crossing for volumes where we are
         // saving the entry and exit points.
-        if (SaveTrajectoryBoundary(g4Traj,edepPoint->GetStepStatus(),
+        if (SaveTrajectoryBoundary(ndTraj,edepPoint->GetStepStatus(),
                                    volumeName,prevVolumeName)) {
             selected.push_back(tp);
         }
@@ -724,7 +771,7 @@ EDepSim::PersistencyManager::SelectTrajectoryPoints(std::vector<int>& selected,
     //////////////////////////////////////////////
     for (int tp = 1; tp < lastIndex; ++tp) {
         edepPoint
-            = dynamic_cast<EDepSim::TrajectoryPoint*>(g4Traj->GetPoint(tp));
+            = dynamic_cast<EDepSim::TrajectoryPoint*>(ndTraj->GetPoint(tp));
         // Apply the trajectory point rules first to see if the user has asked
         // for this specific point.  A point might be selected multiple times,
         // but that's OK because duplicates will be rejected later.
@@ -779,9 +826,9 @@ EDepSim::PersistencyManager::SelectTrajectoryPoints(std::vector<int>& selected,
              ++p1) {
             std::vector<int>::iterator p2 = p1+1;
             if (p2==selected.end()) break;
-            double trajectoryAccuracy = FindTrajectoryAccuracy(g4Traj,*p1,*p2);
+            double trajectoryAccuracy = FindTrajectoryAccuracy(ndTraj,*p1,*p2);
             if (trajectoryAccuracy <= desiredAccuracy) continue;
-            int split = SplitTrajectory(g4Traj,*p1,*p2);
+            int split = SplitTrajectory(ndTraj,*p1,*p2);
             if (split < 0) continue;
             selected.push_back(split);
             addPoint = true;
