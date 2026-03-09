@@ -13,6 +13,9 @@
 #include "EDepSimTrajectoryPoint.hh"
 #include "EDepSimTrajectoryMap.hh"
 
+#include "EDepSimLog.hh"
+#include "EDepSimBacktrace.hh"
+
 G4Allocator<EDepSim::Trajectory> aTrajAllocator;
 
 EDepSim::Trajectory::Trajectory()
@@ -199,13 +202,51 @@ G4ParticleDefinition* EDepSim::Trajectory::GetParticleDefinition() const {
 }
 
 void EDepSim::Trajectory::MergeTrajectory(G4VTrajectory* secondTrajectory) {
-    if(!secondTrajectory) return;
-    EDepSim::Trajectory* second = (EDepSim::Trajectory*)secondTrajectory;
-    G4int ent = second->GetPointEntries();
-    // initial point of the second trajectory should not be merged
-    for(G4int i=1; i<ent; ++i) {
-        fPositionRecord->push_back((*(second->fPositionRecord))[i]);
+    if(secondTrajectory == nullptr) return;
+    EDepSim::Trajectory* second
+        = dynamic_cast<EDepSim::Trajectory*>(secondTrajectory);
+
+    // Verify that the trajectory is the right class.
+    if (second == nullptr) {
+        EDepSimError("Merging a non-EDepSim trajectory");
+        EDepSimError("Backtrace" << std::endl
+                     << EDepSim::Backtrace << std::endl);
+        throw;
     }
+
+    // Verify that the two trajectories are the same track id
+    if (second->GetTrackID() != GetTrackID()) {
+        EDepSimError("Mergingt trajectories with different track IDs");
+        EDepSimError("Backtrace" << std::endl
+                     << EDepSim::Backtrace << std::endl);
+        throw;
+    }
+
+    // Verify that the trajectories are for the same particle type.
+    if (second->GetPDGEncoding() != GetPDGEncoding()) {
+        EDepSimError("Merging trajectories from different particle types");
+        EDepSimError("Backtrace" << std::endl
+                     << EDepSim::Backtrace << std::endl);
+        throw;
+    }
+
+    // Copy the trajectory points from the second trajectory.  The first one
+    // should not be merged since it just flags the trajectory being
+    // restarted.
+    G4int ent = second->GetPointEntries();
+    for(G4int i=1; i<ent; ++i) {
+        EDepSim::TrajectoryPoint* eDepPoint =
+            dynamic_cast<EDepSim::TrajectoryPoint*>(second->GetPoint(i));
+        if (eDepPoint == nullptr) {
+            EDepSimError("Merging a non-EDepSim trajectory point");
+            EDepSimError("Backtrace" << std::endl
+                         << EDepSim::Backtrace << std::endl);
+            throw;
+        }
+        fPositionRecord->push_back(eDepPoint);
+    }
+
+    // Cleanup the memory.
     delete (*second->fPositionRecord)[0];
     second->fPositionRecord->clear();
 }
