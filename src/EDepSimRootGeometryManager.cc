@@ -790,10 +790,6 @@ bool EDepSim::RootGeometryManager::CreateEnvelope(
         else {
             int i = 100.0*(1.0-opacity);
             if (i>100) i = 100;
-            EDepSimInfo("Set color of " << theShortName
-                       << " to " << color
-                       << " " << opacity
-                       << " " << i);
             theVolume->SetLineColor(color);
             theVolume->SetTransparency(i);
             theVolume->SetVisibility(true);
