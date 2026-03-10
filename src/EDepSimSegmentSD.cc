@@ -9,6 +9,7 @@
 #include <G4TouchableHistory.hh>
 #include <G4SDManager.hh>
 #include <G4UnitsTable.hh>
+#include <G4StepStatus.hh>
 
 #include <G4SystemOfUnits.hh>
 #include <G4PhysicalConstants.hh>
@@ -55,11 +56,33 @@ G4bool EDepSim::SegmentSD::ProcessHits(G4Step* theStep,
                                        G4TouchableHistory*) {
     // Get the hit information.
     G4double energyDeposit = theStep->GetTotalEnergyDeposit();
+    const G4Track* theTrack = theStep->GetTrack();
+    const G4ParticleDefinition* theParticle = theTrack->GetParticleDefinition();
+
+    EDepSimDebug("Track " << theTrack->GetTrackID()
+                 << " (" << (theParticle->GetParticleName())
+                 << ")"
+                 << " deposit " << energyDeposit
+                 << " (" << theStep->GetNonIonizingEnergyDeposit() << ") MeV");
+    EDepSimTrace("   Volume: " << theTrack->GetVolume()->GetName());
+
+    // Check we got some energy deposit.  Having energy isn't enough to say
+    // there should be a hit, but there needs to be energy if there is a hit.
     if (energyDeposit <= 0.) return true;
 
-    EDepSimTrace("Process hit with " << energyDeposit
-                 << " in " << theStep->GetTrack()->GetVolume()->GetName());
-
+    // Check if we are dealing with a neutral particle.
+    if (std::abs(theParticle->GetPDGCharge()) < 0.1) {
+        // It doesn't become a hit if it's not from a stopped neutral
+        // particle.  Stopped neutrals with energy deposition happen when
+        // the secondary is below threshold.
+        if (theStep->GetPostStepPoint()->GetStepStatus()
+            != G4StepStatus::fPostStepDoItProc) {
+            return true;
+        }
+        // Optical photons never make hit segments.  The magic number -22 is
+        // for an opticalphoton (22 is photon).
+        if (theParticle->GetPDGEncoding() == -22) return true;
+    }
 
     EDepSim::HitSegment* currentHit = NULL;
 
