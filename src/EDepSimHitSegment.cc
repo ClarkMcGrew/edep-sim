@@ -16,6 +16,7 @@
 #include <G4TrajectoryContainer.hh>
 #include <G4TouchableHandle.hh>
 #include <G4Step.hh>
+#include <G4ParticleDefinition.hh>
 
 #include <G4UnitsTable.hh>
 #include <G4VisAttributes.hh>
@@ -115,7 +116,8 @@ void EDepSim::HitSegment::AddStep(G4Step* theStep) {
     G4ThreeVector prePos = theStep->GetPreStepPoint()->GetPosition();
     G4ThreeVector postPos = theStep->GetPostStepPoint()->GetPosition();
     G4StepStatus stepStatus = theStep->GetPostStepPoint()->GetStepStatus();
-    G4ParticleDefinition* particle =  theStep->GetTrack()->GetDefinition();
+    const G4ParticleDefinition* particle
+        = theStep->GetTrack()->GetParticleDefinition();
     double energyDeposit = theStep->GetTotalEnergyDeposit();
     double stepLength = (prePos-postPos).mag();
     double trackLength = theStep->GetStepLength();
@@ -155,7 +157,7 @@ void EDepSim::HitSegment::AddStep(G4Step* theStep) {
         double origStep = stepLength;
         G4ThreeVector dir = (postPos - prePos).unit();
         stepLength = trackLength = std::min(0.5*mm,0.8*origStep);
-        prePos = postPos - stepLength*mm*dir;
+        prePos = postPos - stepLength*dir;
         EDepSimDebug("EDepSim::HitSegment:: " << particle->GetParticleName()
                      << " Deposited " << energyDeposit/MeV << " MeV");
         EDepSimDebug("    Original step: " << origStep/mm << " mm");
