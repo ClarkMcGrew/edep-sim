@@ -7,22 +7,28 @@
 #include "EDepSimLog.hh"
 #include "EDepSimBacktrace.hh"
 
-#include "globals.hh"
-#include "G4Track.hh"
-#include "G4TrackingManager.hh"
+#include <globals.hh>
+#include <G4Track.hh>
+#include <G4TrackingManager.hh>
+#include <G4OpBoundaryProcess.hh>
+#include <G4VSensitiveDetector.hh>
+#include <G4SystemOfUnits.hh>
 
-EDepSim::UserTrackingAction::UserTrackingAction() {}
+EDepSim::UserTrackingAction::UserTrackingAction()
+    : fOpticalPhotonOpBoundaryProcessCached(false),
+      fOpticalPhotonOpBoundaryProcess(nullptr) {}
 
 EDepSim::UserTrackingAction::~UserTrackingAction() {}
 
-void EDepSim::UserTrackingAction::PreUserTrackingAction(const G4Track* trk) {
-    EDepSimTrace("Pre-tracking action");
-    int trackId = trk->GetTrackID();
+void
+EDepSim::UserTrackingAction::PreUserTrackingAction(const G4Track* theTrack) {
+    int trackId = theTrack->GetTrackID();
+    EDepSimTrace("Pre-tracking action for " << trackId);
 
     // Make a new trajectory and give it to the tracking manager.  This might
     // be a continuation of an existing track, but that is OK since the
     // trajectories will be merged later on.
-    G4VTrajectory* traj = new EDepSim::Trajectory(trk);
+    G4VTrajectory* traj = new EDepSim::Trajectory(theTrack);
     fpTrackingManager->SetTrajectory(traj);
     fpTrackingManager->SetStoreTrajectory(true);
 
@@ -44,6 +50,110 @@ void EDepSim::UserTrackingAction::PreUserTrackingAction(const G4Track* trk) {
     EDepSim::TrajectoryMap::Add(traj);
 }
 
-void EDepSim::UserTrackingAction::PostUserTrackingAction(const G4Track*) {
-    EDepSimTrace("Post-tracking action");
+void
+EDepSim::UserTrackingAction::PostUserTrackingAction(const G4Track* theTrack) {
+    EDepSimTrace("Post-tracking action for " << theTrack->GetTrackID());
+
+    const G4Step* theStep = theTrack->GetStep();
+    if (theStep == nullptr) {
+        EDepSimDebug("Missing step information");
+        return;
+    }
+
+    const G4StepPoint* thePreStep = theStep->GetPreStepPoint();
+    const G4StepPoint* thePostStep = theStep->GetPostStepPoint();
+    if (thePreStep == nullptr or thePostStep == nullptr) {
+        EDepSimDebug("Missing step point information");
+        return;
+    }
+
+    const G4VPhysicalVolume* thePrePV = thePreStep->GetPhysicalVolume();
+    const G4VPhysicalVolume* thePostPV = thePostStep->GetPhysicalVolume();
+
+    G4String theCurrentVolumeName{"MissingVolume"};
+    if (thePrePV != nullptr) theCurrentVolumeName = thePrePV->GetName();
+
+    G4String theNextVolumeName{"MissingVolume"};
+    if (thePostPV != nullptr) theNextVolumeName = thePostPV->GetName();
+
+    const G4VProcess* theProcess = thePostStep->GetProcessDefinedStep();
+    if (theProcess == nullptr) {
+        EDepSimDebug("No process information");
+        return;
+    }
+
+    G4String theProcessName = theProcess->GetProcessName()
+        + "/" + theProcess->GetProcessTypeName(theProcess->GetProcessType());
+
+    EDepSimTrace("Process " << theProcessName
+                 << " deposit " << theStep->GetTotalEnergyDeposit()
+                 << " status " << thePostStep->GetStepStatus());
+    EDepSimTrace("    From " << theCurrentVolumeName);
+    EDepSimTrace("    To   " << theNextVolumeName);
+
+    const G4ParticleDefinition* theParticle = theTrack->GetParticleDefinition();
+
+    // If the particle is not an optical photon, everything is done. (-22 is
+    // the G4 convention for optical photons)
+    if (theParticle->GetPDGEncoding() != -22) return;
+
+    // Stop if the photon is out of this world.
+    if (thePostPV == nullptr) return;
+
+    // If not at a geometric boundary, everything is done.
+    if (thePostStep->GetStepStatus() != G4StepStatus::fGeomBoundary) return;
+    EDepSimTrace("Optical photon at boundary");
+
+    if (not fOpticalPhotonOpBoundaryProcessCached) {
+        EDepSimTrace("Cache boundary process");
+        fOpticalPhotonOpBoundaryProcessCached = true;
+        fOpticalPhotonOpBoundaryProcess
+            = dynamic_cast<G4OpBoundaryProcess*>(
+                theParticle->GetProcessManager()->GetProcess("OpBoundary"));
+    }
+
+    if (fOpticalPhotonOpBoundaryProcess == nullptr) {
+        EDepSimTrace("No boundary process");
+        return;
+    }
+
+    EDepSimTrace("Found boundary process -- status "
+                 << fOpticalPhotonOpBoundaryProcess->GetStatus());
+
+    // If the photon is not detected, everything is done
+    if (fOpticalPhotonOpBoundaryProcess->GetStatus()
+        != G4OpBoundaryProcessStatus::Detection) return;
+
+    EDepSimTrace("Photon is detected");
+
+#ifdef REGISTER_HIT_WITH_SENSITIVE_DETECTOR
+    // Get the sensitive detector that this photons is being added to.
+    G4LogicalVolume* theVolume = thePostPV->GetLogicalVolume();
+    G4VSensitiveDetector* theDetector = theVolume->GetSensitiveDetector();
+
+    if (theDetector == nullptr) {
+        EDepSimError("Detected photon, but no sensitive detector");
+        return;
+    }
+
+    // Register the hit for this step: It's not good that the const_cast is
+    // needed, but AFAICT sensitive detectors don't need a mutable step.
+    theDetector->Hit(const_cast<G4Step*>(theStep));
+#else
+    // Register the hit based on it's final position (and any other
+    // information).
+    G4ThreeVector hitPos = thePostStep->GetPosition();
+    G4double hitTime = thePostStep->GetGlobalTime();
+    G4ThreeVector hitPolar = thePostStep->GetPolarization();
+    G4double hitEnergy = thePostStep->GetTotalEnergy();
+
+    EDepSimDebug("Photon Hit"
+                 << " " << hitTime/ns << " ns"
+                 << " [" << hitPos.x()/cm << " cm"
+                 << "," << hitPos.y()/cm << " cm"
+                 << "," << hitPos.z()/cm << " cm]"
+                 << " " << hitEnergy);
+
+#endif
+
 }

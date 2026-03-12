@@ -2,8 +2,8 @@
 #include "CaptDriftRegionBuilder.hh"
 
 #include "EDepSimBuilder.hh"
-
-#include <EDepSimLog.hh>
+#include "EDepSimSDFactory.hh"
+#include "EDepSimLog.hh"
 
 #include <globals.hh>
 #include <G4Material.hh>
@@ -14,9 +14,11 @@
 #include <G4Tubs.hh>
 #include <G4Polyhedra.hh>
 
+#include <G4LogicalSkinSurface.hh>
+#include <G4OpticalSurface.hh>
+
 #include <G4SystemOfUnits.hh>
 #include <G4PhysicalConstants.hh>
-
 
 class CaptImmersedMessenger
     : public EDepSim::BuilderMessenger {
@@ -24,7 +26,7 @@ private:
     CaptImmersedBuilder* fBuilder;
 
 public:
-    CaptImmersedMessenger(CaptImmersedBuilder* c) 
+    CaptImmersedMessenger(CaptImmersedBuilder* c)
         : EDepSim::BuilderMessenger(c,"Control the immersed geometry."),
           fBuilder(c) {
 
@@ -67,9 +69,9 @@ double CaptImmersedBuilder::GetHeight() {
 
 G4LogicalVolume *CaptImmersedBuilder::GetPiece(void) {
 
-    G4LogicalVolume* logVolume 
+    G4LogicalVolume* logVolume
         = new G4LogicalVolume(new G4Tubs(GetName(),
-                                         0.0, GetRadius(), GetHeight()/2, 
+                                         0.0, GetRadius(), GetHeight()/2,
                                          0*CLHEP::degree, 360*CLHEP::degree),
                               FindMaterial("Argon_Liquid"),
                               GetName());
@@ -97,7 +99,7 @@ G4LogicalVolume *CaptImmersedBuilder::GetPiece(void) {
                       0,                       // Copy number (zero)
                       Check());                // Check overlaps.
 
-    
+
     // Put in the field cage.
     double fieldInner[] = {drift.GetApothem()+10*CLHEP::mm, drift.GetApothem()+10*CLHEP::mm};
     double fieldOuter[] = {drift.GetApothem()+13*CLHEP::mm, drift.GetApothem()+13*CLHEP::mm};
@@ -114,6 +116,21 @@ G4LogicalVolume *CaptImmersedBuilder::GetPiece(void) {
                               GetName()+"/FieldCage");
     logFieldCage->SetVisAttributes(GetColor(logFieldCage));
 
+    EDepSimError("Build optical surface");
+    // Make the surface of the field cage photo-sensitive
+    std::vector<G4double> photonEnergy{1*eV,10*eV};
+    std::vector<G4double> fieldCageEff{0.5, 0.5};
+    std::vector<G4double> fieldCageReflect{0.0,0.0};
+
+    G4MaterialPropertiesTable* fieldCageMPT{new G4MaterialPropertiesTable()};
+    fieldCageMPT->AddProperty("EFFICIENCY",photonEnergy,fieldCageEff);
+    fieldCageMPT->AddProperty("REFLECTIVITY",photonEnergy,fieldCageReflect);
+    G4OpticalSurface* fieldCageSurf
+        = new G4OpticalSurface("fieldCageOpticalSurf",
+                               unified, polished, dielectric_dielectric);
+    fieldCageSurf->SetMaterialPropertiesTable(fieldCageMPT);
+    new G4LogicalSkinSurface("fieldCageSkin",logFieldCage,fieldCageSurf);
+
     new G4PVPlacement(NULL,                    // rotation.
                       center,                  // position
                       logFieldCage,            // logical volume
@@ -122,6 +139,6 @@ G4LogicalVolume *CaptImmersedBuilder::GetPiece(void) {
                       false,                   // (not used)
                       0,                       // Copy number (zero)
                       Check());                // Check overlaps.
-    
+
     return logVolume;
 }

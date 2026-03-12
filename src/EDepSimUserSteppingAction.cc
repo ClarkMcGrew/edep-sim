@@ -7,6 +7,7 @@
 #include <G4StepPoint.hh>
 #include <G4Track.hh>
 #include <G4Step.hh>
+#include <G4VProcess.hh>
 
 EDepSim::SteppingAction::SteppingAction()
     : fStenchAndRot(0), fSteps(0), fThrottle(1000), fGovernor(0) {}
@@ -15,9 +16,45 @@ void EDepSim::SteppingAction::UserSteppingAction(const G4Step* theStep) {
 
     G4Track* theTrack = theStep->GetTrack();
 
+    const G4StepPoint* thePreStep = theStep->GetPreStepPoint();
+    const G4StepPoint* thePostStep = theStep->GetPostStepPoint();
+
+    const G4VPhysicalVolume* thePrePV = thePreStep->GetPhysicalVolume();
+    const G4VPhysicalVolume* thePostPV = thePostStep->GetPhysicalVolume();
+
     G4String theParticleName = theTrack->GetDefinition()->GetParticleName();
-    G4String theCurrentVolumeName = theStep->GetPreStepPoint()->
-                                             GetPhysicalVolume()->GetName();
+
+    G4String theCurrentVolumeName{"MissingVolume"};
+    if (thePrePV != nullptr) theCurrentVolumeName = thePrePV->GetName();
+
+    G4String theNextVolumeName{"MissingVolume"};
+    if (thePostPV != nullptr) theNextVolumeName = thePostPV->GetName();
+
+    const G4VProcess* theProcess = thePostStep->GetProcessDefinedStep();
+
+    G4String theProcessName{"UnknownProcess"};
+    if (theProcess != nullptr) {
+        theProcessName = theProcess->GetProcessName()
+            + "/"
+            + theProcess->GetProcessTypeName(theProcess->GetProcessType());
+    }
+
+    EDepSimTrace("Stepping " << theTrack->GetTrackID()
+                 << " (step " << theTrack->GetCurrentStepNumber() << ")"
+                 << " " << theProcessName
+                 << " deposit " << theStep->GetTotalEnergyDeposit());
+    EDepSimTrace("    From " << theCurrentVolumeName);
+    EDepSimTrace("    To   " << theNextVolumeName);
+
+    if (thePostPV == nullptr) {
+        // Out of this world!
+        theTrack->SetTrackStatus(fStopAndKill);
+        EDepSimSevere("Stop and kill track that leaves world volume");
+        fStenchAndRot = 0;
+        fSteps = 0;
+        fThrottle = 1000;
+        return;
+    }
 
     if (fSteps%fThrottle == 0 && fSteps>0) {
         EDepSimWarn("EDepSimUserSteppingAction:: Excessive Steps "
