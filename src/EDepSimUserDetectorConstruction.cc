@@ -508,6 +508,17 @@ void EDepSim::UserDetectorConstruction::DefineMaterials() {
     air->AddElement(elO, fractionmass = 30*CLHEP::perCent);
     geoMan->SetDrawAtt(air,kGray+3,0.01);
 
+    G4MaterialPropertiesTable *airMPT = new G4MaterialPropertiesTable();
+    air->SetMaterialPropertiesTable(argonMPT);
+
+    // Set up argon gas for optical photons (these are very bogus values
+    // for testing.  Chosen to test optical processses.)
+    std::vector<G4double> photEnergy{1*eV, 7*eV};
+    std::vector<G4double> airRIndex{1.0001, 1.0001};
+    airMPT->AddProperty("RINDEX",photEnergy,airRIndex);
+    std::vector<G4double> airAbsLength{3000*cm, 3000*cm};
+    airMPT->AddProperty("ABSLENGTH",photEnergy,airAbsLength);
+
     // This is the default material.
     fDefaultMaterial = air;
 
@@ -559,6 +570,17 @@ void EDepSim::UserDetectorConstruction::DefineMaterials() {
     argon->AddElement(elAr, natoms=1);
     geoMan->SetDrawAtt(argon,kMagenta-10,0.1);
 
+    G4MaterialPropertiesTable *argonMPT = new G4MaterialPropertiesTable();
+    argon->SetMaterialPropertiesTable(argonMPT);
+
+    // Set up argon gas for optical photons (these are very bogus values
+    // for testing.  Chosen to test optical processses.)
+    std::vector<G4double> photEnergy{1*eV, 7*eV};
+    std::vector<G4double> argonRIndex{1.0001, 1.0001};
+    argonMPT->AddProperty("RINDEX",photEnergy,argonRIndex);
+    std::vector<G4double> argonAbsLength{3000*cm, 3000*cm};
+    argonMPT->AddProperty("ABSLENGTH",photEnergy,argonAbsLength);
+
     // Liquid Argon
     const double LArDensity = 1.3954*g/cm3;
     // Provide a default Birks constant for LAr in case Doke-Birks is off.
@@ -576,16 +598,26 @@ void EDepSim::UserDetectorConstruction::DefineMaterials() {
     LAr->AddElement(elAr, natoms=1);
     LAr->GetIonisation()->SetBirksConstant(LArBirks);
 
+    // Set up liquid argon material properties
+    G4MaterialPropertiesTable *LArMPT = new G4MaterialPropertiesTable();
+    LAr->SetMaterialPropertiesTable(LArMPT);
+
+    // Set up liquid argon for optical photons (these are bogus values for
+    // testing.  Chosen to test optical processses, not necessarily match
+    // argon).
+    std::vector<G4double> LArRIndex{1.23, 1.23};
+    LArMPT->AddProperty("RINDEX",photEnergy,LArRIndex);
+    std::vector<G4double> LArAbsLength{300*cm, 300*cm};
+    LArMPT->AddProperty("ABSLENGTH",photEnergy,LArAbsLength);
+
     // Set up liquid argon for NEST.
-    G4MaterialPropertiesTable *LArMatProps = new G4MaterialPropertiesTable();
 #if G4VERSION_NUMBER < 1100
-    LArMatProps->AddConstProperty("ELECTRICFIELD",500*CLHEP::volt/CLHEP::cm);
-    LArMatProps->AddConstProperty("TOTALNUM_INT_SITES",-1);
+    LArMPT->AddConstProperty("ELECTRICFIELD",500*CLHEP::volt/CLHEP::cm);
+    LArMPT->AddConstProperty("TOTALNUM_INT_SITES",-1);
 #else
-    LArMatProps->AddConstProperty("ELECTRICFIELD",500*CLHEP::volt/CLHEP::cm,true);
-    LArMatProps->AddConstProperty("TOTALNUM_INT_SITES",-1,true);
+    LArMPT->AddConstProperty("ELECTRICFIELD",500*CLHEP::volt/CLHEP::cm,true);
+    LArMPT->AddConstProperty("TOTALNUM_INT_SITES",-1,true);
 #endif
-    LAr->SetMaterialPropertiesTable(LArMatProps);
 
     geoMan->SetDrawAtt(LAr,kCyan-9,0.1);
 
@@ -610,6 +642,17 @@ void EDepSim::UserDetectorConstruction::DefineMaterials() {
     glass->AddElement(elNa,3.8*CLHEP::perCent);
     geoMan->SetDrawAtt(glass,kBlue+1,0.3);
 
+    // Set up glass material properties
+    G4MaterialPropertiesTable *glassMPT = new G4MaterialPropertiesTable();
+    glass->SetMaterialPropertiesTable(glassMPT);
+
+    // Set up glass for optical photons (these are bogus values for
+    // testing.  Chosen to test optical processses)
+    std::vector<G4double> glassRIndex{1.6, 1.6};
+    glassMPT->AddProperty("RINDEX",photEnergy,glassRIndex);
+    std::vector<G4double> glassAbsLength{300*cm, 300*cm};
+    glassMPT->AddProperty("ABSLENGTH",photEnergy,glassAbsLength);
+
     // G10 - by volume 57% glass, 43% epoxy (CH2)
     G4Material* g10
         = new G4Material(name="G10",
@@ -622,6 +665,17 @@ void EDepSim::UserDetectorConstruction::DefineMaterials() {
     g10->AddElement(elB,2.2*CLHEP::perCent);
     g10->AddElement(elNa,2.2*CLHEP::perCent);
     geoMan->SetDrawAtt(g10,kGreen+1,0.75);
+
+    // Set up g10 material properties
+    G4MaterialPropertiesTable *g10MPT = new G4MaterialPropertiesTable();
+    g10->SetMaterialPropertiesTable(g10MPT);
+
+    // Set up g10 for optical photons (these are bogus values for
+    // testing.  Chosen to test optical processses)
+    std::vector<G4double> g10RIndex{1.5, 1.5};
+    g10MPT->AddProperty("RINDEX",photEnergy,g10RIndex);
+    std::vector<G4double> g10AbsLength{300*um, 300*um};
+    g10MPT->AddProperty("ABSLENGTH",photEnergy,g10AbsLength);
 
     // FR4 - Approximated by the composition of G10.  The density is from
     // Wikipedia.
@@ -636,6 +690,17 @@ void EDepSim::UserDetectorConstruction::DefineMaterials() {
     fr4->AddElement(elB,2.2*CLHEP::perCent);
     fr4->AddElement(elNa,2.2*CLHEP::perCent);
     geoMan->SetDrawAtt(fr4,kGreen+1,1.0);
+
+    // Set up fr4 material properties
+    G4MaterialPropertiesTable *fr4MPT = new G4MaterialPropertiesTable();
+    fr4->SetMaterialPropertiesTable(fr4MPT);
+
+    // Set up fr4 for optical photons (these are bogus values for
+    // testing.  Chosen to test optical processses)
+    std::vector<G4double> fr4RIndex{1.5, 1.5};
+    fr4MPT->AddProperty("RINDEX",photEnergy,fr4RIndex);
+    std::vector<G4double> fr4AbsLength{300*um, 300*um};
+    fr4MPT->AddProperty("ABSLENGTH",photEnergy,fr4AbsLength);
 
     // FR4_Copper - Approximated by the composition of G10 plus copper.  The
     // copper is from the cladding, but is approximated as spread through the
@@ -655,6 +720,17 @@ void EDepSim::UserDetectorConstruction::DefineMaterials() {
     fr4Copper->AddElement(elCu,cuFrac);
     geoMan->SetDrawAtt(fr4Copper,kYellow-6,1.0);
 
+    // Set up fr4Copper material properties
+    G4MaterialPropertiesTable *fr4CopperMPT = new G4MaterialPropertiesTable();
+    fr4Copper->SetMaterialPropertiesTable(fr4CopperMPT);
+
+    // Set up fr4Copper for optical photons (these are bogus values for
+    // testing.  Chosen to test optical processses)
+    std::vector<G4double> fr4CopperRIndex{1.5, 1.5};
+    fr4CopperMPT->AddProperty("RINDEX",photEnergy,fr4CopperRIndex);
+    std::vector<G4double> fr4CopperAbsLength{300*um, 300*um};
+    fr4CopperMPT->AddProperty("ABSLENGTH",photEnergy,fr4CopperAbsLength);
+
     // Acrylic - Approximated by the composition of the Acrylic used to hold
     // the TPB..  The density is from Wikipedia.
     G4Material* acrylic
@@ -665,6 +741,17 @@ void EDepSim::UserDetectorConstruction::DefineMaterials() {
     acrylic->AddElement(elO,13.3*CLHEP::perCent);
     acrylic->AddElement(elC,33.3*CLHEP::perCent);
     geoMan->SetDrawAtt(acrylic,kAzure+6,0.75);
+
+    // Set up acrylic material properties
+    G4MaterialPropertiesTable *acrylicMPT = new G4MaterialPropertiesTable();
+    acrylic->SetMaterialPropertiesTable(acrylicMPT);
+
+    // Set up acrylic for optical photons (these are bogus values for
+    // testing.  Chosen to test optical processses)
+    std::vector<G4double> acrylicRIndex{1.49, 1.49};
+    acrylicMPT->AddProperty("RINDEX",photEnergy,acrylicRIndex);
+    std::vector<G4double> acrylicAbsLength{300*cm, 300*cm};
+    acrylicMPT->AddProperty("ABSLENGTH",photEnergy,acrylicAbsLength);
 
     // Print all the materials defined.
     EDepSimLog(*(G4Material::GetMaterialTable()));
