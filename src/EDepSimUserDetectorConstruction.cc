@@ -509,7 +509,7 @@ void EDepSim::UserDetectorConstruction::DefineMaterials() {
     geoMan->SetDrawAtt(air,kGray+3,0.01);
 
     G4MaterialPropertiesTable *airMPT = new G4MaterialPropertiesTable();
-    air->SetMaterialPropertiesTable(argonMPT);
+    air->SetMaterialPropertiesTable(airMPT);
 
     // Set up argon gas for optical photons (these are very bogus values
     // for testing.  Chosen to test optical processses.)
@@ -575,7 +575,6 @@ void EDepSim::UserDetectorConstruction::DefineMaterials() {
 
     // Set up argon gas for optical photons (these are very bogus values
     // for testing.  Chosen to test optical processses.)
-    std::vector<G4double> photEnergy{1*eV, 7*eV};
     std::vector<G4double> argonRIndex{1.0001, 1.0001};
     argonMPT->AddProperty("RINDEX",photEnergy,argonRIndex);
     std::vector<G4double> argonAbsLength{3000*cm, 3000*cm};
