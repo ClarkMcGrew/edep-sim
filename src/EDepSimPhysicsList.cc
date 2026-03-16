@@ -83,8 +83,13 @@ EDepSim::PhysicsList::PhysicsList(G4String physName)
     RegisterPhysics(fExtra);
 
     // Setup the parameters (override if necesssary)
-    G4EmParameters* params = G4EmParameters::Instance();
-    params->SetEmSaturation(new EDepSim::DokeBirksSaturation(0));
+    G4EmParameters* emParams = G4EmParameters::Instance();
+    emParams->SetEmSaturation(new EDepSim::DokeBirksSaturation(0));
+
+    // Make sure that the SD will be invoked at surfaces so photons hits are
+    // registered.
+    G4OpticalParameters* opParams = G4OpticalParameters::Instance();
+    opParams->SetBoundaryInvokeSD(true);
 
 }
 
