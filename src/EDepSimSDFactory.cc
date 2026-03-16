@@ -1,10 +1,11 @@
 #include "EDepSimSDFactory.hh"
 #include "EDepSimSegmentSD.hh"
+#include "EDepSimSurfaceSD.hh"
 #include "EDepSimException.hh"
 
 #include <G4SDManager.hh>
 
-EDepSim::SDFactory::SDFactory(G4String type) 
+EDepSim::SDFactory::SDFactory(G4String type)
     : fType(type) {}
 
 
@@ -19,6 +20,9 @@ G4VSensitiveDetector* EDepSim::SDFactory::MakeSD(G4String name) {
     if (!sd) {
         if (fType == "segment") {
             sd = new EDepSim::SegmentSD(name);
+        }
+        else if (fType == "surface") {
+            sd = new EDepSim::SurfaceSD(name);
         }
         else {
             EDepSimError("No such sensitive detector " << name);

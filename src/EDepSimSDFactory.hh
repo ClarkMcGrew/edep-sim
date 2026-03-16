@@ -25,7 +25,7 @@ public:
     /// Get pointer to a sensitive detector built by this factory, and create
     /// a new sensitive detector if required.
     G4VSensitiveDetector* MakeSD(G4String name);
-    
+
 private:
     /// The type of sensitive detector that this will build.
     G4String fType;
