@@ -1,8 +1,8 @@
 ////////////////////////////////////////////////////////////
 // $Id: EDepSim::HitSegment.cc,v 1.14 2011/06/29 04:35:53 mcgrew Exp $
 //
-// Define an Off Axis Tracker Hit to hold information about particles that hit
-// the Tracker sensitive detectors.
+// Define a Hit to hold information about particles that hit the sensitive
+// detectors.
 
 #include "EDepSimRootGeometryManager.hh"
 #include "EDepSimHitSegment.hh"
