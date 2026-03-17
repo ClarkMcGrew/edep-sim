@@ -43,8 +43,11 @@ G4double EDepSim::DokeBirksSaturation::VisibleEnergyDeposition(
     // Check that we are in liquid.
     if (aMaterial->GetState() != kStateLiquid) {
         if (aMaterial->GetState() == kStateUndefined) {
-            EDepSimError("Undefined material state for "
-                         << aMaterial->GetName());
+            static int throttle = 5;
+            if (throttle > 0) {
+                EDepSimError("Undefined material state for "
+                             << aMaterial->GetName());
+            }
         }
         inLiquidArgon = false;
     }
@@ -96,7 +99,8 @@ G4double EDepSim::DokeBirksSaturation::VisibleEnergyDeposition(
         static int throttle = 5;
         if (throttle > 0) {
             --throttle;
-            EDepSimError("Something else is using non-ionizing energy");
+            EDepSimError("Something else is using non-ionizing energy: "
+                         << nonIonEDep/MeV << " MeV");
         }
     }
 
@@ -110,23 +114,33 @@ G4double EDepSim::DokeBirksSaturation::VisibleEnergyDeposition(
     // Figure out the electric field for the volume.
     double electricField = 0.0;
     do {
+        static int throttle = 5;
         G4StepPoint* pPostStepPoint = aStep->GetPostStepPoint();
         const G4VPhysicalVolume* aVolume = pPostStepPoint->GetPhysicalVolume();
         const G4LogicalVolume* aLogVolume = aVolume->GetLogicalVolume();
         const G4FieldManager* aFieldManager = aLogVolume->GetFieldManager();
         if (!aFieldManager) {
-            EDepSimDebug("No Field Manager");
+            if (throttle > 0) {
+                EDepSimError("No field manager for " << aLogVolume->GetName());
+                --throttle;
+            }
             break;
         }
         if (!aFieldManager->DoesFieldExist()) {
-            EDepSimDebug("Field doesn't exist");
+            if (throttle > 0) {
+                EDepSimError("Field does not exist for "
+                             << aLogVolume->GetName());
+                --throttle;
+            }
             break;
         }
         const G4Field* aField = aFieldManager->GetDetectorField();
         if (!aField) {
-            EDepSimDebug("LAr Volume "
-                         << aLogVolume->GetName()
-                         << " should have field!");
+            if (throttle > 0) {
+                EDepSimError("No field object for "
+                             << aLogVolume->GetName());
+                --throttle;
+            }
             break;
         }
 
