@@ -86,10 +86,11 @@ EDepSim::PhysicsList::PhysicsList(G4String physName)
     G4EmParameters* emParams = G4EmParameters::Instance();
     emParams->SetEmSaturation(new EDepSim::DokeBirksSaturation(0));
 
-    // Make sure that the SD will be invoked at surfaces so photons hits are
-    // registered.
+    // Force any necessary optical parameters.
     G4OpticalParameters* opParams = G4OpticalParameters::Instance();
-    opParams->SetBoundaryInvokeSD(true);
+
+    // Control with the macro file, not here!
+    // opParams->SetBoundaryInvokeSD(true);
 
 }
 
