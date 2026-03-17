@@ -25,6 +25,12 @@ EDepSim::UserTrackingAction::PreUserTrackingAction(const G4Track* theTrack) {
     int trackId = theTrack->GetTrackID();
     EDepSimTrace("Pre-tracking action for " << trackId);
 
+    if (theTrack->GetParticleDefinition()->GetParticleName()=="opticalphoton") {
+        // Don't save photon trajectories, for they are many, and not useful.
+        fpTrackingManager->SetStoreTrajectory(false);
+        return;
+    }
+
     // Make a new trajectory and give it to the tracking manager.  This might
     // be a continuation of an existing track, but that is OK since the
     // trajectories will be merged later on.
