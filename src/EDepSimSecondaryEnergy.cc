@@ -70,8 +70,12 @@ EDepSim::SecondaryEnergy::PostStepDoIt(
     }
 #endif
 
-    G4double nonIonizingEnergy
-        = G4EmParameters::Instance()->GetEmSaturation()
+    G4double nonIonizingEnergy = aStep.GetNonIonizingEnergyDeposit();
+    if (nonIonizingEnergy > 0.0) {
+        EDepSimError("NonIonizingEnergyDeposit is used by another process");
+    }
+
+    nonIonizingEnergy = G4EmParameters::Instance()->GetEmSaturation()
         ->VisibleEnergyDepositionAtAStep(&aStep);
     aParticleChange.ProposeNonIonizingEnergyDeposit(nonIonizingEnergy);
 
