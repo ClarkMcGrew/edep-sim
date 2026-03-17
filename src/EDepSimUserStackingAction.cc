@@ -11,7 +11,8 @@
 #include <G4SystemOfUnits.hh>
 #include <G4PhysicalConstants.hh>
 
-EDepSim::UserStackingAction::UserStackingAction() { }
+EDepSim::UserStackingAction::UserStackingAction()
+    : fKillOpticalPhotons(true) { }
 
 EDepSim::UserStackingAction::~UserStackingAction() { }
 
@@ -19,7 +20,7 @@ G4ClassificationOfNewTrack
 EDepSim::UserStackingAction::ClassifyNewTrack(const G4Track* aTrack) {
     // Get the particle type of the new track.
     const G4ParticleDefinition* particle = aTrack->GetDefinition();
-    
+
     // if (aTrack->GetCurrentStepNumber() > 0) return fUrgent;
 
     if (aTrack->GetParentID() <= 0) return fUrgent;
@@ -33,7 +34,15 @@ EDepSim::UserStackingAction::ClassifyNewTrack(const G4Track* aTrack) {
     }
 
     if (particle->GetParticleName() == "opticalphoton") {
-        return fKill;
+        if (GetKillOpticalPhotons()) {
+            static int throttle = 5;
+            if (throttle > 0) {
+                --throttle;
+                EDepSimError("OpticalPhoton killed:"
+                             << " Create SurfaceSD to track");
+            }
+            return fKill;
+        }
     }
 
     if (particle->GetParticleName() == "thermalelectron") {
