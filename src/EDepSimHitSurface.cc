@@ -33,22 +33,29 @@
 G4Allocator<EDepSim::HitSurface> edepHitSurfaceAllocator;
 
 EDepSim::HitSurface::HitSurface()
+    :  fPrimaryId(-1), fEnergyDeposit(0),
+       fPosition(0,0,0,0), fStart(0,0,0,0),
+       fPDGEncoding(0), fCreatorType(-1), fCreatorSubtype(-1) {}
+
+EDepSim::HitSurface::HitSurface(const G4Step* theStep)
     :  fPrimaryId(0), fEnergyDeposit(0),
-       fPosition(0,0,0,0), fStart(0,0,0,0) {
+       fPosition(0,0,0,0), fStart(0,0,0,0),
+       fPDGEncoding(0), fCreatorType(-1), fCreatorSubtype(-1) {
+    fPrimaryId = theStep->GetTrack()->GetParentID();
+    fEnergyDeposit = theStep->GetTotalEnergyDeposit();
+    fPosition = G4LorentzVector(theStep->GetPostStepPoint()->GetPosition(),
+                                theStep->GetPostStepPoint()->GetGlobalTime());
+    fStart = G4LorentzVector(theStep->GetTrack()->GetPosition(),
+                             theStep->GetTrack()->GetGlobalTime());
+    fPDGEncoding
+        = theStep->GetTrack()->GetParticleDefinition()->GetPDGEncoding();
+    fCreatorType
+        = theStep->GetTrack()->GetCreatorProcess()->GetProcessType();
+    fCreatorSubtype
+        = theStep->GetTrack()->GetCreatorProcess()->GetProcessSubType();
 }
-
-EDepSim::HitSurface::HitSurface(const EDepSim::HitSurface& rhs)
-    : G4VHit(rhs),
-      fContributors(rhs.fContributors), fPrimaryId(rhs.fPrimaryId),
-      fEnergyDeposit(rhs.fEnergyDeposit),
-      fPosition(rhs.fPosition), fStart(rhs.fStart) {}
-
 
 EDepSim::HitSurface::~HitSurface() { }
-
-int EDepSim::HitSurface::FindPrimaryId(G4Track *theTrack) {
-    return EDepSim::TrajectoryMap::FindPrimaryId(theTrack->GetTrackID());
-}
 
 void EDepSim::HitSurface::Draw(void) {
 }

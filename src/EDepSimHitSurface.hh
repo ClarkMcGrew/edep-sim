@@ -31,8 +31,7 @@ class EDepSim::HitSurface : public G4VHit {
 public:
     /// Create a new hit surface
     HitSurface();
-
-    HitSurface(const EDepSim::HitSurface& rhs);
+    explicit HitSurface(const G4Step* theStep);
     virtual ~HitSurface();
 
     typedef G4THitsCollection<EDepSim::HitSurface> HitSurfaceCollection;
@@ -46,23 +45,6 @@ public:
     virtual void Print();
     virtual void Draw(const char*) {}
     virtual void Print(const char*) const {}
-
-    /// Provide public access to the contributors for internal G4 classes.
-    std::vector<int>& GetContributors() {return fContributors;}
-
-    /// Return a list of track identifiers that contributed to this hit.
-    /// These track ids can be used as indicies to find trajectories in the
-    /// TG4TrajectoryContainer object associated with an MC event.
-    int GetContributor(int i) const {
-        return fContributors[i];
-    }
-
-    /// Return a list of track identifiers that contributed to this hit.
-    /// These track ids can be used as indicies to find trajectories in the
-    /// TG4TrajectoryContainer object associated with an MC event.
-    int GetContributorCount() const {
-        return fContributors.size();
-    }
 
     /// Get the TrackId of the "primary" particle that is associated with this
     /// hit.  For a photon, this will be the track that created the photon,
@@ -87,20 +69,19 @@ public:
     /// hit.
     const G4LorentzVector& GetStart() const {return fStart;}
 
+    /// Get the particle type for this hit (almost always an opticalphoton)
+    int GetPDGEncoding() const {return fPDGEncoding;}
+
+    /// Get the process type
+    int GetProcessType() const {return fCreatorType;}
+
+    /// Get the process subtype
+    int GetProcessSubtype() const {return fCreatorSubtype;}
+
     /// Print the hit information.
     void ls(std::string = "") const;
 
-protected:
-    /// Find the primary track ID for the current track.  This is the primary
-    /// that is the ultimate parent of the current track.
-    int FindPrimaryId(G4Track* theTrack);
-
 private:
-
-    /// The TrackID for each trajectory that contributed to this hit.  This
-    /// could contain the TrackID of the primary particle, but not
-    /// necessarily.
-    std::vector<int> fContributors;
 
     /// The track id of the primary particle.
     int fPrimaryId;
@@ -116,8 +97,14 @@ private:
     /// hit.
     G4LorentzVector fStart;
 
-    /// The G4 physical volume that contains the hit.
-    EDepSim::VolumeId fHitVolume;
+    /// The PDG Encoding for the particle (in case not everything is a photon)
+    int fPDGEncoding;
+
+    /// The creating process type
+    int fCreatorType;
+
+    /// The creating process subtype
+    int fCreatorSubtype;
 
 };
 
