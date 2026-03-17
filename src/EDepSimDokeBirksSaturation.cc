@@ -31,6 +31,10 @@ G4double EDepSim::DokeBirksSaturation::VisibleEnergyDeposition(
                  << totalEDep << " "
                  << length);
 
+    if (totalEDep <= 0.0) {
+        return 0.0;
+    }
+
     const G4Material* aMaterial = couple->GetMaterial();
 
     // Assume that this is argon.
@@ -89,7 +93,11 @@ G4double EDepSim::DokeBirksSaturation::VisibleEnergyDeposition(
     }
 
     if (nonIonEDep > 0.0) {
-        EDepSimWarn("Something else is using non-ionizing energy");
+        static int throttle = 5;
+        if (throttle > 0) {
+            --throttle;
+            EDepSimError("Something else is using non-ionizing energy");
+        }
     }
 
     // To go forward we need a little more information: The electric field,
@@ -138,14 +146,23 @@ G4double EDepSim::DokeBirksSaturation::VisibleEnergyDeposition(
             EDepSimError("Electric field must be valid");
             throw std::runtime_error("Electric field must be valid.");
         }
+
+        if (electricField <= 0) {
+            return G4EmSaturation::VisibleEnergyDeposition(
+                particle,couple,length,totalEDep,nonIonEDep);
+        }
+
     } while (false);
+
+    EDepSimTrace("Electric field " << electricField/(kilovolt/cm)
+                 << " kV/cm");
 
     // The code below is pulled from G4S1Light and is simplified to be
     // Doke-Birks only, in LAr only, and for an electric field only.  This is
     // for ARGON only.  The Doke-Birks constants are in kilovolt/cm
     G4double dokeBirks[3];
 
-    dokeBirks[0] = 0.07*pow((electricField),-0.85);
+    dokeBirks[0] = 0.07*pow((electricField/(kilovolt/cm)),-0.85);
     dokeBirks[2] = 0.00;
     dokeBirks[1] = dokeBirks[0]/(1-dokeBirks[2]); //B=A/(1-C) (see paper)
 
@@ -194,6 +211,9 @@ G4double EDepSim::DokeBirksSaturation::VisibleEnergyDeposition(
     G4double NumIons = NumQuanta - NumExcitons;
     G4double NumPhotons = NumExcitons + NumIons*recombProb;
 
+    // Not enough energy to ionize the argon.
+    if (NumQuanta < 1.0) return 0.0;
+
     // The number of photons and electrons for this step has been calculated
     // using the Doke/Birks law version of recombination.  For DETSIM we are
     // only looking at argon, and according the Matt both Doke-Birks and
@@ -202,9 +222,9 @@ G4double EDepSim::DokeBirksSaturation::VisibleEnergyDeposition(
     G4double nonIonizingEnergy = totalEnergyDeposit;
     nonIonizingEnergy *= NumPhotons/NumQuanta;
 
-    EDepSimTrace("DokeBirks: " << nonIonizingEnergy
-                 << " Total " << totalEnergyDeposit
-                 << " Ratio " << nonIonizingEnergy/totalEnergyDeposit);
+    EDepSimTrace("Visible: " << nonIonizingEnergy
+                 << " Total: " << totalEnergyDeposit
+                 << " Ratio: " << nonIonizingEnergy/totalEnergyDeposit);
 
     return nonIonizingEnergy;
 }
