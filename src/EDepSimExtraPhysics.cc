@@ -80,8 +80,9 @@ void EDepSim::ExtraPhysics::ConstructProcess() {
             EDepSim::SecondaryEnergy* secondaryProcess
                 = new EDepSim::SecondaryEnergy();
             if (secondaryProcess->IsApplicable(*particle)) {
-                pman->AddProcess(secondaryProcess,ordDefault,
-                                 ordInActive,ordDefault);
+                pman->AddProcess(secondaryProcess);
+                pman->SetProcessOrdering(secondaryProcess,idxAtRest,ordLast);
+                pman->SetProcessOrdering(secondaryProcess,idxPostStep,ordLast);
             }
             break;
         }
