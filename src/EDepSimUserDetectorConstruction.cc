@@ -601,13 +601,25 @@ void EDepSim::UserDetectorConstruction::DefineMaterials() {
     G4MaterialPropertiesTable *LArMPT = new G4MaterialPropertiesTable();
     LAr->SetMaterialPropertiesTable(LArMPT);
 
-    // Set up liquid argon for optical photons (these are bogus values for
-    // testing.  Chosen to test optical processses, not necessarily match
-    // argon).
+    // Set up liquid argon for optical photons (BOGUS!! Chosen to test optical
+    // processses, and do not match argon).
     std::vector<G4double> LArRIndex{1.23, 1.23};
     LArMPT->AddProperty("RINDEX",photEnergy,LArRIndex);
     std::vector<G4double> LArAbsLength{300*cm, 300*cm};
     LArMPT->AddProperty("ABSLENGTH",photEnergy,LArAbsLength);
+
+    // Set the LAr scintillator properties (BOGUS!! Chosen to test optical
+    // processes and do not match argon)
+    LArMPT->AddConstProperty("SCINTILLATIONYIELD",29000); // quanta/MeV
+    LArMPT->AddConstProperty("RESOLUTIONSCALE",1.0); // Required: should be 1.0
+    std::vector<G4double> scintillationEmision1{2.034 * eV, 4.136 * eV};
+    std::vector<G4double> scintillationComponent1{1.0, 1.0};
+    LArMPT->AddProperty("SCINTILLATIONCOMPONENT1",
+                        scintillationEmision1,
+                        scintillationComponent1);
+    LArMPT->AddConstProperty("SCINTILLATIONYIELD1",1.0); // comp1 fraction
+    LArMPT->AddConstProperty("SCINTILLATIONRISETIME1", 1. * ns);
+    LArMPT->AddConstProperty("SCINTILLATIONTIMECONSTANT1", 3. * ns);
 
     // Set up liquid argon for NEST.
 #if G4VERSION_NUMBER < 1100
