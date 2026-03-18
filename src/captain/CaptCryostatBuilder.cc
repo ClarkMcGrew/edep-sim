@@ -350,7 +350,9 @@ G4LogicalVolume *CaptCryostatBuilder::GetPiece(void) {
     }
 #endif
 
+#define BUILD_ULLAGE
 #ifdef BUILD_ULLAGE
+#warning The ullage creates geometry overlaps, run with "-C"
     ////////////////////////////////////////////////////////
     // Define the ullage volume.
     ////////////////////////////////////////////////////////

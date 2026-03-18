@@ -183,6 +183,27 @@ void EDepSim::CaptMaterialDefinitions::DefineMaterials() {
 
     // Setup a completely bogus WLS model for Argon_Gas.  This is ONLY there
     // to test the WLS process.
+    // argonMPT->AddConstProperty("WLSMEANNUMBERPHOTONS",1.0);
+    argonMPT->AddConstProperty("WLSTIMECONSTANT",10*ns);
+    std::vector<G4double> argonWLSAbsLength{
+        10000*cm, 10000*cm, // 750, 700
+        10000*cm, 10000*cm, // 650, 600
+        10000*cm, 10000*cm, // 550, 500
+        10000*cm, 10000*cm, // 450, 400
+        10000*cm, 10000*cm, // 350, 300
+        10*um, 10*um, // 250, 200
+    };
+    argonMPT->AddProperty("WLSABSLENGTH",photEnergy,argonWLSAbsLength);
+    std::vector<G4double> argonWLSEmission{
+        0.0, 0.0, // 750, 700
+        0.0, 0.0, // 650, 600
+        0.0, 0.0, // 550, 500
+        1.0, 1.0, // 450, 400
+        0.0, 0.0, // 350, 300
+        0.0, 0.0, // 250, 200
+    };
+    argonMPT->AddProperty("WLSCOMPONENT",photEnergy,argonWLSEmission);
+
 
     // Liquid Argon
     const double LArDensity = 1.3954*g/cm3;
@@ -221,8 +242,8 @@ void EDepSim::CaptMaterialDefinitions::DefineMaterials() {
         3000*cm, 3000*cm, // 650, 600
         3000*cm, 3000*cm, // 550, 500
         3000*cm, 3000*cm, // 450, 400
-        3000*cm, 3000*cm, // 350, 300
-        3000*cm, 3000*cm, // 250, 200
+        300*cm, 300*cm, // 350, 300
+        300*cm, 300*cm, // 250, 200
     };
     LArMPT->AddProperty("ABSLENGTH",photEnergy,LArAbsLength);
 
@@ -230,7 +251,8 @@ void EDepSim::CaptMaterialDefinitions::DefineMaterials() {
     // processes and do not match argon)
     LArMPT->AddConstProperty("SCINTILLATIONYIELD",29000); // quanta/MeV
     LArMPT->AddConstProperty("RESOLUTIONSCALE",1.0); // Required: should be 1.0
-    std::vector<G4double> scintillationEmision1{2.034 * eV, 4.136 * eV};
+    std::vector<G4double> scintillationEmision1{
+        twopi*hbarc/(250*nm), twopi*hbarc/(200*nm)};
     std::vector<G4double> scintillationComponent1{1.0, 1.0};
     LArMPT->AddProperty("SCINTILLATIONCOMPONENT1",
                         scintillationEmision1,
