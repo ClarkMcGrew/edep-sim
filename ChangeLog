@@ -1,7 +1,16 @@
 Changes in 4.x.x
 
-* Support tracking and saving of vanilla optical photons.  This is
-  leveraging the work of Xuying Ning <xning@bnl.gov>.
+* The old G4 v10 interfaces are not sufficiently compatible with G4
+  v11 to be easily supported, so support for V10 is dropped.  It's
+  possible that v10 support can be restored, but, for now, it is not a
+  priority. Note: The last G4 v10 release (10.7) was in 2020, and the
+  last fix was 2022 (10.7.4).
+
+* Leverage the work of Xuying Ning <xning@bnl.gov> to support tracking
+  and saving of vanilla optical photons.  This includes all of the
+  infrastructure in the main code to handle the optical physics, but
+  also adds PhotonDetectors to the edep-sim i/o package and the simple
+  included event display.
 
 Changes in 4.0.0
 
