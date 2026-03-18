@@ -87,6 +87,17 @@ void EDep::TGUIManager::MakeControlTab() {
     hf->AddFrame(checkButton, layoutHints);
     fShowG4HitsButton = checkButton;
 
+    checkButton = new TGCheckButton(hf,"Show Photon Hits");
+    checkButton->SetToolTipText(
+        "Show optical photon endpoints. Yellow = reached a sensor, "
+        "Blue = absorbed elsewhere (wall, bulk).");
+    checkButton->SetTextJustify(36);
+    checkButton->SetMargins(0,0,0,0);
+    checkButton->SetWrapLength(-1);
+    checkButton->SetOn();
+    hf->AddFrame(checkButton, layoutHints);
+    fShowPhotonHitsButton = checkButton;
+
     checkButton = new TGCheckButton(hf,"Recalculate view");
     checkButton->SetToolTipText(
         "Recalculate center of rotation based.");
