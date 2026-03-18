@@ -26,8 +26,8 @@ EDepSim::UserTrackingAction::PreUserTrackingAction(const G4Track* theTrack) {
     int trackId = theTrack->GetTrackID();
     EDepSimTrace("Pre-tracking action for " << trackId);
 
-    if (fSavePhotonTrajectories
-        and theTrack->GetParticleDefinition()->GetPDGEncoding() == -22) {
+    if (theTrack->GetParticleDefinition()->GetPDGEncoding() == -22
+        and not fSavePhotonTrajectories) {
         // Don't save optical photon trajectories, for they are many, and not
         // particularly useful.
         fpTrackingManager->SetStoreTrajectory(false);
