@@ -16,7 +16,8 @@
 
 EDepSim::UserTrackingAction::UserTrackingAction()
     : fOpticalPhotonOpBoundaryProcessCached(false),
-      fOpticalPhotonOpBoundaryProcess(nullptr) {}
+      fOpticalPhotonOpBoundaryProcess(nullptr),
+      fSavePhotonTrajectories(false) {}
 
 EDepSim::UserTrackingAction::~UserTrackingAction() {}
 
@@ -25,8 +26,10 @@ EDepSim::UserTrackingAction::PreUserTrackingAction(const G4Track* theTrack) {
     int trackId = theTrack->GetTrackID();
     EDepSimTrace("Pre-tracking action for " << trackId);
 
-    if (theTrack->GetParticleDefinition()->GetParticleName()=="opticalphoton") {
-        // Don't save photon trajectories, for they are many, and not useful.
+    if (fSavePhotonTrajectories
+        and theTrack->GetParticleDefinition()->GetPDGEncoding() == -22) {
+        // Don't save optical photon trajectories, for they are many, and not
+        // particularly useful.
         fpTrackingManager->SetStoreTrajectory(false);
         return;
     }

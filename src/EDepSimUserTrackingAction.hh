@@ -18,6 +18,12 @@ class EDepSim::UserTrackingAction : public G4UserTrackingAction
     virtual void PreUserTrackingAction(const G4Track*);
     virtual void PostUserTrackingAction(const G4Track*);
 
+    /// If this is true, then do not create trajectories for opticalphotons.
+    /// This makes the stacking and tracking a bit faster and uses less
+    /// memory.
+    void SetSavePhotonTrajectories(bool s) {fSavePhotonTrajectories = true;}
+    bool GetSavePhotonTrajectories() const {return fSavePhotonTrajectories;}
+
   private:
     // Optical photons are harvested by the UserTrackingAction, and there
     // doesn't seem to be any better way to check if the photon was detected
@@ -28,6 +34,9 @@ class EDepSim::UserTrackingAction : public G4UserTrackingAction
     // defined).
     bool fOpticalPhotonOpBoundaryProcessCached;  // True if looked for
     const G4OpBoundaryProcess* fOpticalPhotonOpBoundaryProcess;
+
+    // If true, then save the opticalphoton trajectories.
+    bool fSavePhotonTrajectories;
 
 };
 #endif

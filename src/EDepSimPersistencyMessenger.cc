@@ -3,6 +3,7 @@
 
 #include "EDepSimPersistencyMessenger.hh"
 #include "EDepSimPersistencyManager.hh"
+#include "EDepSimUserTrackingAction.hh"
 
 #include <G4UIdirectory.hh>
 #include <G4UIcmdWithAString.hh>
@@ -12,6 +13,7 @@
 #include <G4UIcmdWithADoubleAndUnit.hh>
 #include <G4UIcommand.hh>
 #include <G4ios.hh>
+#include <G4RunManager.hh>
 
 EDepSim::PersistencyMessenger::PersistencyMessenger(
     EDepSim::PersistencyManager* persistencyMgr)
@@ -137,6 +139,14 @@ EDepSim::PersistencyMessenger::PersistencyMessenger(
         "Clear all of the trajectory point"
         " save rules.");
 
+    fSavePhotonTrajectoriesCMD
+        = new G4UIcmdWithABool("/edep/db/set/savePhotonTraj", this);
+    fSaveAllPrimaryTrajectoriesCMD->SetGuidance(
+        "Control if photon trajectories are placed into the trajectory stack"
+        " so tracking is a little faster and uses less resources."
+        " True: Photon trajectories will be saved"
+        " for vanilla optical photon tracking."
+        " False: Photon trajectories are not created.");
 }
 
 EDepSim::PersistencyMessenger::~PersistencyMessenger() {
@@ -155,6 +165,7 @@ EDepSim::PersistencyMessenger::~PersistencyMessenger() {
     delete fClearTrajectoryPointRulesCMD;
     delete fPersistencyDIR;
     delete fPersistencySetDIR;
+    delete fSavePhotonTrajectoriesCMD;
 }
 
 
@@ -213,8 +224,16 @@ void EDepSim::PersistencyMessenger::SetNewValue(G4UIcommand* command,
     else if (command == fClearTrajectoryPointRulesCMD) {
         fPersistencyManager->ClearTrajectoryPointRules();
     }
-}
+    else if (command == fSavePhotonTrajectoriesCMD) {
+        bool save = fSavePhotonTrajectoriesCMD->GetNewBoolValue(newValue);
+        EDepSim::UserTrackingAction* theTrackingAction
+            = const_cast<EDepSim::UserTrackingAction*>(
+                dynamic_cast<const EDepSim::UserTrackingAction*>(
+                    G4RunManager::GetRunManager()->GetUserTrackingAction()));
+        theTrackingAction->SetSavePhotonTrajectories(save);
+    }
 
+}
 
 G4String EDepSim::PersistencyMessenger::GetCurrentValue(G4UIcommand * command) {
     G4String currentValue;
@@ -249,6 +268,14 @@ G4String EDepSim::PersistencyMessenger::GetCurrentValue(G4UIcommand * command) {
     else if (command==fTrajectoryPointDepositCMD) {
         currentValue = fTrajectoryPointDepositCMD->ConvertToString(
             fPersistencyManager->GetTrajectoryPointDeposit());
+    }
+    else if (command==fSavePhotonTrajectoriesCMD) {
+        EDepSim::UserTrackingAction* theTrackingAction
+            = const_cast<EDepSim::UserTrackingAction*>(
+                dynamic_cast<const EDepSim::UserTrackingAction*>(
+                    G4RunManager::GetRunManager()->GetUserTrackingAction()));
+        currentValue = fSavePhotonTrajectoriesCMD->ConvertToString(
+            theTrackingAction->GetSavePhotonTrajectories());
     }
 
     return currentValue;
