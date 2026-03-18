@@ -8,14 +8,15 @@
 
 # /control/verbose 2
 # /tracking/verbose 3
-# /run/verbose 3
+/run/verbose 3
+# /process/verbose 3
 # /process/optical/verbose 2
 
 # Create the first particle source.  This source will be used to
 # specify the position of the vertex.  The any of the GPS direction
 # and energy commands can be used.
 /gps/particle e-
-/gps/energy 600 MeV
+/gps/energy 1.0 MeV
 
 # This generates the position of the first particle gun.  It will be
 # used for the other particle guns.  The /gps/position command must
@@ -27,7 +28,7 @@
 /gps/pos/halfy 1 cm
 /gps/pos/halfz 1 cm
 
-# This generates the direction of the first particle gun. 
+# This generates the direction of the first particle gun.
 /gps/ang/type beam1d
 /gps/ang/sigma_r 15 deg
 /gps/ang/rot2 0 0 -1
