@@ -16,7 +16,7 @@ class EDepSim::SecondaryEnergy : public G4VRestDiscreteProcess
 {
 public:
 
-    SecondaryEnergy(const G4String& processName = "Secondary-Energy",
+    SecondaryEnergy(const G4String& processName = "SecondaryEnergy",
                     G4ProcessType type = fElectromagnetic);
     ~SecondaryEnergy();
 

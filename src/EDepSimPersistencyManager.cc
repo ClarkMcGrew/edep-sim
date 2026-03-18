@@ -11,6 +11,7 @@
 #include "EDepSimTrajectoryPoint.hh"
 #include "EDepSimTrajectoryMap.hh"
 #include "EDepSimHitSegment.hh"
+#include "EDepSimHitSurface.hh"
 #include "EDepSimException.hh"
 #include "EDepSimUserRunAction.hh"
 #include "EDepSimLog.hh"
@@ -161,6 +162,10 @@ void EDepSim::PersistencyManager::UpdateSummaries(const G4Event* event) {
     SummarizeTrajectories(fEventSummary.Trajectories,event);
     EDepSimLog("   Trajectories " << fEventSummary.Trajectories.size());
 
+    SummarizePhotonDetectors(fEventSummary.PhotonDetectors, event);
+    EDepSimLog("   Photon Detectors "
+               << fEventSummary.PhotonDetectors.size());
+
     SummarizeSegmentDetectors(fEventSummary.SegmentDetectors, event);
     EDepSimLog("   Segment Detectors "
                << fEventSummary.SegmentDetectors.size());
@@ -205,7 +210,7 @@ void EDepSim::PersistencyManager::SummarizePrimaries(
             vtx.Particles.push_back(prim);
         }
 
-        // Check to see if there is anyu user information associated with the
+        // Check to see if there is any user information associated with the
         // vertex.
         EDepSim::VertexInfo* srcInfo
             = dynamic_cast<EDepSim::VertexInfo*>(src->GetUserInformation());
@@ -239,7 +244,7 @@ void EDepSim::PersistencyManager::SummarizeTrajectories(
     MarkTrajectories(event);
 
     // Build a map of the original G4 TrackID to the new relocated TrackId
-    // (not capitalization).  This also uses the fact that maps are sorted as
+    // (note capitalization).  This also uses the fact that maps are sorted as
     // a hack to prevent writing a predicate to sort TG4Trajectories (because
     // I'm lazy).
     fTrackIdMap.clear();
@@ -266,7 +271,10 @@ void EDepSim::PersistencyManager::SummarizeTrajectories(
         }
 
         // Check if the trajectory should be saved.
-        if (!ndTraj->SaveTrajectory()) continue;
+        if (!ndTraj->SaveTrajectory()) {
+            EDepSimTrace("Skip " << ndTraj->GetTrackID());
+            continue;
+        }
 
         // Set the particle type information.
         G4ParticleDefinition* part
@@ -329,8 +337,12 @@ void EDepSim::PersistencyManager::SummarizeTrajectories(
     for (TG4TrajectoryContainer::iterator
              t = dest.begin();
          t != dest.end(); ++t) {
-        t->TrackId = fTrackIdMap[t->TrackId];
-        t->ParentId = fTrackIdMap[t->ParentId];
+        TrackIdMap::iterator id = fTrackIdMap.find(t->TrackId);
+        if (id == fTrackIdMap.end()) EDepSimThrow("Bad track id");
+        t->TrackId = id->second;
+        id = fTrackIdMap.find(t->ParentId);
+        if (id == fTrackIdMap.end()) EDepSimThrow("Bad track id");
+        t->ParentId = id->second;
     }
 
 }
@@ -455,20 +467,27 @@ void EDepSim::PersistencyManager::MarkTrajectories(const G4Event* event) {
         G4VHitsCollection* g4Hits = hitCollections->GetHC(i);
         if (g4Hits->GetSize()<1) continue;
         for (unsigned int h=0; h<g4Hits->GetSize(); ++h) {
-            EDepSim::HitSegment* g4Hit
-                = dynamic_cast<EDepSim::HitSegment*>(g4Hits->GetHit(h));
-            if (!g4Hit) {
-                EDepSimError("Not a hit segment");
-                continue;
-            }
 
             // Explicitly save the primaries.  It will probably be marked
             // again with the contributors, but that's OK.  This catches some
             // corner cases where the primary isn't what you would expect.
             // This will mark decay products as primaries, and then the
             // primary for the decay product too.
-            int primaryId = g4Hit->GetPrimaryTrajectoryId();
-            while (primaryId != 0) {
+            int primaryId = 0;
+
+            // Get the primary id if this is a HitSegment.
+            EDepSim::HitSegment* g4HitSeg
+                = dynamic_cast<EDepSim::HitSegment*>(g4Hits->GetHit(h));
+            if (g4HitSeg) primaryId = g4HitSeg->GetPrimaryTrajectoryId();
+
+            // Get the primary id if this is a HitSurface
+            EDepSim::HitSurface* g4HitSurf
+                = dynamic_cast<EDepSim::HitSurface*>(g4Hits->GetHit(h));
+            if (g4HitSurf) {
+                primaryId = g4HitSurf->GetPrimaryTrajectoryId();
+            }
+
+            while (primaryId > 0) {
                 EDepSim::Trajectory* ndTraj
                     = dynamic_cast<EDepSim::Trajectory*>(
                         EDepSim::TrajectoryMap::Get(primaryId));
@@ -480,14 +499,15 @@ void EDepSim::PersistencyManager::MarkTrajectories(const G4Event* event) {
                     break;
                 }
                 int parentId = ndTraj->GetParentID();
-                if (parentId == 0) break;
+                if (parentId <= 0) break;
                 primaryId = EDepSim::TrajectoryMap::FindPrimaryId(parentId);
             }
 
             // Make sure that all the contributors associated with this hit
             // are saved.
-            for (int j = 0; j < g4Hit->GetContributorCount(); ++j) {
-                int contribId = g4Hit->GetContributor(j);
+            if (g4HitSeg == nullptr) continue;
+            for (int j = 0; j < g4HitSeg->GetContributorCount(); ++j) {
+                int contribId = g4HitSeg->GetContributor(j);
                 EDepSim::Trajectory* contribTraj
                     = dynamic_cast<EDepSim::Trajectory*>(
                         EDepSim::TrajectoryMap::Get(contribId));
@@ -536,6 +556,66 @@ void EDepSim::PersistencyManager::CopyTrajectoryPoints(TG4Trajectory& traj,
 }
 
 void
+EDepSim::PersistencyManager::SummarizePhotonDetectors(
+    TG4PhotonHitDetectors& dest,
+    const G4Event* event) {
+    dest.clear();
+
+    G4HCofThisEvent* HCofEvent = event->GetHCofThisEvent();
+    if (!HCofEvent) return;
+    G4SDManager *sdM = G4SDManager::GetSDMpointer();
+    G4HCtable *hcT = sdM->GetHCtable();
+    // Copy each of the hit categories into the output event.
+    for (int i=0; i<hcT->entries(); ++i) {
+        G4String SDname = hcT->GetSDname(i);
+        G4String HCname = hcT->GetHCname(i);
+        int HCId = sdM->GetCollectionID(SDname+"/"+HCname);
+        G4VHitsCollection* g4Hits = HCofEvent->GetHC(HCId);
+        if (g4Hits->GetSize()<1) continue;
+        EDepSim::HitSurface* hitSurf
+            = dynamic_cast<EDepSim::HitSurface*>(g4Hits->GetHit(0));
+        if (!hitSurf) continue;
+        SummarizePhotonHits(dest[SDname],g4Hits);
+    }
+}
+
+void
+EDepSim::PersistencyManager::SummarizePhotonHits(TG4PhotonHitContainer& dest,
+                                                 G4VHitsCollection* g4Hits) {
+    dest.clear();
+
+    EDepSim::HitSurface* g4HitSurf
+        = dynamic_cast<EDepSim::HitSurface*>(g4Hits->GetHit(0));
+    if (!g4HitSurf) return;
+
+    int photonHits = 0;
+    for (std::size_t h=0; h<g4Hits->GetSize(); ++h) {
+        g4HitSurf = dynamic_cast<EDepSim::HitSurface*>(g4Hits->GetHit(h));
+        int primaryId = -1;
+        TrackIdMap::iterator t
+            = fTrackIdMap.find(g4HitSurf->GetPrimaryTrajectoryId());
+        if (t != fTrackIdMap.end()) {
+            primaryId = t->second;
+        }
+
+        ++photonHits;
+        TG4PhotonHit hit;
+        hit.PrimaryId = primaryId;
+        hit.Process = g4HitSurf->GetProcessSubtype();
+        hit.EnergyDeposit = g4HitSurf->GetEnergyDeposit();
+        hit.Start.SetXYZT(g4HitSurf->GetStart().x(),
+                          g4HitSurf->GetStart().y(),
+                          g4HitSurf->GetStart().z(),
+                          g4HitSurf->GetStart().t());
+        hit.Stop.SetXYZT(g4HitSurf->GetPosition().x(),
+                         g4HitSurf->GetPosition().y(),
+                         g4HitSurf->GetPosition().z(),
+                         g4HitSurf->GetPosition().t());
+        dest.push_back(hit);
+    }
+}
+
+void
 EDepSim::PersistencyManager::SummarizeSegmentDetectors(
     TG4HitSegmentDetectors& dest,
     const G4Event* event) {
@@ -561,28 +641,34 @@ EDepSim::PersistencyManager::SummarizeSegmentDetectors(
 
 void
 EDepSim::PersistencyManager::SummarizeHitSegments(TG4HitSegmentContainer& dest,
-                                             G4VHitsCollection* g4Hits) {
+                                                  G4VHitsCollection* g4Hits) {
     dest.clear();
 
-    EDepSim::HitSegment* g4Hit = dynamic_cast<EDepSim::HitSegment*>(g4Hits->GetHit(0));
-    if (!g4Hit) return;
+    EDepSim::HitSegment* g4HitSeg
+        = dynamic_cast<EDepSim::HitSegment*>(g4Hits->GetHit(0));
+    if (!g4HitSeg) return;
 
     for (std::size_t h=0; h<g4Hits->GetSize(); ++h) {
-        g4Hit = dynamic_cast<EDepSim::HitSegment*>(g4Hits->GetHit(h));
+        g4HitSeg = dynamic_cast<EDepSim::HitSegment*>(g4Hits->GetHit(h));
         TG4HitSegment hit;
-        hit.PrimaryId = fTrackIdMap[g4Hit->GetPrimaryTrajectoryId()];
-        hit.EnergyDeposit = g4Hit->GetEnergyDeposit();
-        hit.SecondaryDeposit = g4Hit->GetSecondaryDeposit();
-        hit.TrackLength = g4Hit->GetTrackLength();
-        CopyHitContributors(hit.Contrib,g4Hit->GetContributors());
-        hit.Start.SetXYZT(g4Hit->GetStart().x(),
-                          g4Hit->GetStart().y(),
-                          g4Hit->GetStart().z(),
-                          g4Hit->GetStart().t());
-        hit.Stop.SetXYZT(g4Hit->GetStop().x(),
-                          g4Hit->GetStop().y(),
-                          g4Hit->GetStop().z(),
-                          g4Hit->GetStop().t());
+        TrackIdMap::iterator t
+            = fTrackIdMap.find(g4HitSeg->GetPrimaryTrajectoryId());
+        if (t == fTrackIdMap.end()) {
+            EDepSimThrow("Invalid primary id");
+        }
+        hit.PrimaryId = t->second;
+        hit.EnergyDeposit = g4HitSeg->GetEnergyDeposit();
+        hit.SecondaryDeposit = g4HitSeg->GetSecondaryDeposit();
+        hit.TrackLength = g4HitSeg->GetTrackLength();
+        CopyHitContributors(hit.Contrib,g4HitSeg->GetContributors());
+        hit.Start.SetXYZT(g4HitSeg->GetStart().x(),
+                          g4HitSeg->GetStart().y(),
+                          g4HitSeg->GetStart().z(),
+                          g4HitSeg->GetStart().t());
+        hit.Stop.SetXYZT(g4HitSeg->GetStop().x(),
+                          g4HitSeg->GetStop().y(),
+                          g4HitSeg->GetStop().z(),
+                          g4HitSeg->GetStop().t());
         dest.push_back(hit);
     }
 }
@@ -608,14 +694,12 @@ void EDepSim::PersistencyManager::CopyHitContributors(std::vector<int>& dest,
             dest.push_back(-1);
             continue;
         }
-        if (fTrackIdMap.find(ndTraj->GetTrackID()) != fTrackIdMap.end()) {
-            dest.push_back(fTrackIdMap[ndTraj->GetTrackID()]);
-        }
-        else {
-            EDepSimError("Contributor with unknown trajectory: "
+        TrackIdMap::iterator t = fTrackIdMap.find(ndTraj->GetTrackID());
+        if (t == fTrackIdMap.end()) {
+            EDepSimThrow("Contributor with unknown trajectory: "
                       << ndTraj->GetTrackID());
-            dest.push_back(-2);
         }
+        dest.push_back(t->second);
     }
 
     // Remove the duplicate entries.

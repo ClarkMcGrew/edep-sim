@@ -96,8 +96,6 @@ void EDepSim::CaptMaterialDefinitions::DefineMaterials() {
         1.0001, 1.0001, // 350, 300
         1.0001, 1.0001, // 250, 200
     };
-    EDepSimError("Set RINDEX " << photEnergy.size()
-                 << " " << airRIndex.size());
     airMPT->AddProperty("RINDEX",photEnergy,airRIndex);
     std::vector<G4double> airAbsLength{
         10000*cm, 10000*cm, // 750, 700
