@@ -60,20 +60,24 @@ public:
 
 protected:
 
-    /// Define the materials used in the detector.
+    /// Define the materials used in the detector. This is only used when the
+    /// ConstructDetector method is used.
     void DefineMaterials(void);
 
-    /// Define the natural isotope abundance.
+    /// DEPRECATED: Define the natural isotope abundance. The NIST elements
+    /// should be used for most things.
     G4Element* DefineElement(G4String name, G4String symbol, G4double z);
 
-    /// This really constructs the detector, but doesn't define
-    /// materials before it's constructed.  This is called by Construct()
+    /// This really constructs the detector to build a hard-coded geometry.
+    /// It is mostly used during testing when there isn't a GDML input being
+    /// used.
     G4VPhysicalVolume* ConstructDetector();
 
     /// A messenger to for the DetectorConstruction object.
     EDepSim::DetectorMessenger* fDetectorMessenger;
 
-    /// A constructor to create the world.
+    /// A constructor to create the world.  This is mostly used for testing
+    /// when GDML is not being used.
     EDepSim::Builder* fWorldBuilder;
 
     /// A GDML Parser if one has been defined.
@@ -83,9 +87,6 @@ protected:
     G4VPhysicalVolume* fPhysicalWorld;
 
 private:
-
-    /// The default material.
-    G4Material* fDefaultMaterial;
 
     /// Apply Validation
     bool fValidateGeometry;

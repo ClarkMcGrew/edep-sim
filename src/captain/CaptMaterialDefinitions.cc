@@ -451,4 +451,7 @@ void EDepSim::CaptMaterialDefinitions::DefineMaterials() {
         3*cm, 3*cm, // 250, 200
     };
     acrylicMPT->AddProperty("ABSLENGTH",photEnergy,acrylicAbsLength);
+
+    // Print all the materials defined.
+    EDepSimLog(*(G4Material::GetMaterialTable()));
 }
