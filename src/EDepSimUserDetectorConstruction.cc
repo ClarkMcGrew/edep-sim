@@ -11,6 +11,7 @@
 #define BUILD_CAPTAIN
 #ifdef BUILD_CAPTAIN
 #include "captain/CaptWorldBuilder.hh"
+#include "captain/CaptMaterialDefinitions.hh"
 #endif
 
 #include "EDepSimLog.hh"
@@ -35,6 +36,7 @@
 #include <G4SolidStore.hh>
 #include <G4LogicalVolumeStore.hh>
 #include <G4PhysicalVolumeStore.hh>
+#include <G4MaterialPropertiesTable.hh>
 
 #include <G4FieldManager.hh>
 
@@ -45,8 +47,6 @@
 #include <G4RegionStore.hh>
 
 #include <queue>
-
-#include "captain/CaptMaterialDefinitions.hh"
 
 EDepSim::UserDetectorConstruction::UserDetectorConstruction() {
     fDetectorMessenger = new EDepSim::DetectorMessenger(this);
