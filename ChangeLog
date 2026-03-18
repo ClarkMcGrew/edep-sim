@@ -1,3 +1,8 @@
+Changes in 4.x.x
+
+* Support tracking and saving of vanilla optical photons.  This is
+  leveraging the work of Xuying Ning <xning@bnl.gov>.
+
 Changes in 4.0.0
 
 * Support G4 v11: The code is largely upgraded to primarily support the G4
