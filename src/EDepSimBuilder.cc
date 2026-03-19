@@ -200,8 +200,8 @@ G4VisAttributes EDepSim::Builder::GetColor(G4LogicalVolume* vol, double opacity)
 
 /// Set the sensitive detector for this component by name.
 void EDepSim::Builder::SetSensitiveDetector(G4String name, G4String type) {
-    EDepSim::SDFactory factory(type);
-    SetSensitiveDetector(factory.MakeSD(name));
+    EDepSim::SDFactory factory;
+    SetSensitiveDetector(factory.MakeSD(name,type));
 }
 
 void EDepSim::Builder::SetMaximumHitSagitta(double sagitta) {

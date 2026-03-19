@@ -83,8 +83,14 @@ EDepSim::PhysicsList::PhysicsList(G4String physName)
     RegisterPhysics(fExtra);
 
     // Setup the parameters (override if necesssary)
-    G4EmParameters* params = G4EmParameters::Instance();
-    params->SetEmSaturation(new EDepSim::DokeBirksSaturation(0));
+    G4EmParameters* emParams = G4EmParameters::Instance();
+    emParams->SetEmSaturation(new EDepSim::DokeBirksSaturation(0));
+
+    // Force any necessary optical parameters.
+    G4OpticalParameters* opParams = G4OpticalParameters::Instance();
+
+    // Control with the macro file, not here!
+    // opParams->SetBoundaryInvokeSD(true);
 
 }
 

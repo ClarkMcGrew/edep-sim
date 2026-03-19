@@ -15,12 +15,14 @@ set(source
   TG4PrimaryVertex.cxx
   TG4Trajectory.cxx
   TG4HitSegment.cxx
+  TG4PhotonHit.cxx
   TG4Event.cxx)
 
 set(includes
   TG4PrimaryVertex.h
   TG4Trajectory.h
   TG4HitSegment.h
+  TG4PhotonHit.h
   TG4Event.h)
 
 # Compile the base library with private I/O fields.
@@ -33,7 +35,7 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 
 # Build the dictionary for the i/o classes.
 ROOT_GENERATE_DICTIONARY(G__edepsim_io
-  TG4PrimaryVertex.h TG4Trajectory.h TG4HitSegment.h TG4Event.h
+  TG4PrimaryVertex.h TG4Trajectory.h TG4HitSegment.h TG4PhotonHit.h TG4Event.h
   OPTIONS -inlineInputHeader
   LINKDEF edepsim_io_LinkDef.h)
 

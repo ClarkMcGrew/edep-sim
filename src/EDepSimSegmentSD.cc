@@ -59,13 +59,6 @@ G4bool EDepSim::SegmentSD::ProcessHits(G4Step* theStep,
     const G4Track* theTrack = theStep->GetTrack();
     const G4ParticleDefinition* theParticle = theTrack->GetParticleDefinition();
 
-    EDepSimDebug("Track " << theTrack->GetTrackID()
-                 << " (" << (theParticle->GetParticleName())
-                 << ")"
-                 << " deposit " << energyDeposit
-                 << " (" << theStep->GetNonIonizingEnergyDeposit() << ") MeV");
-    EDepSimTrace("   Volume: " << theTrack->GetVolume()->GetName());
-
     // Check we got some energy deposit.  Having energy isn't enough to say
     // there should be a hit, but there needs to be energy if there is a hit.
     if (energyDeposit <= 0.) return true;
@@ -83,6 +76,13 @@ G4bool EDepSim::SegmentSD::ProcessHits(G4Step* theStep,
         // for an opticalphoton (22 is photon).
         if (theParticle->GetPDGEncoding() == -22) return true;
     }
+
+    EDepSimDebug("Track " << theTrack->GetTrackID()
+                 << " (" << (theParticle->GetParticleName())
+                 << ")"
+                 << " deposit " << energyDeposit
+                 << " (" << theStep->GetNonIonizingEnergyDeposit() << ") MeV");
+    EDepSimTrace("   Volume: " << theTrack->GetVolume()->GetName());
 
     EDepSim::HitSegment* currentHit = NULL;
 

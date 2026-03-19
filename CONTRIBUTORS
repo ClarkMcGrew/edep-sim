@@ -7,9 +7,12 @@ let me (clark.mcgrew@stonybrook.edu) know.
 C. Backhouse -- Compilation improvements
 A. Cudd      -- Arbitrary EM fields
 M. Kordosky  -- New geometry shapes
-C. McGrew    
+M. Kramer    -- New geometry shapes
+C. McGrew    -- Has been working on this far to long
 A. Mogan     -- The HEPEVT reader
+X. Ning      -- Optical photon I/O and inspiration for optical photon handling
 B. Viren     -- Better ROOT integration
+C. Wilkinson -- New geometry shapes
 
-The ideas here were developed within the T2K (ND280) and CAPTAIN
-collaborations.
+The main ideas here were developed within the T2K (ND280) and CAPTAIN
+collaborations based on experience from IMB, SK, K2K, and elsewhere.

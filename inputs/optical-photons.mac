@@ -3,31 +3,40 @@
 #
 # To generate 10 events, this can be run using edep-sim with the command
 #
-#  edep-sim -C -u -e 10 electron-600.mac
+#  edep-sim -C -u -e 10 optical-photons.mac
 #
 
-# /control/verbose 2
+/control/verbose 2
 # /tracking/verbose 3
 # /run/verbose 3
-# /process/optical/verbose 2
+/process/optical/verbose 2
 
 # Create the first particle source.  This source will be used to
 # specify the position of the vertex.  The any of the GPS direction
 # and energy commands can be used.
-/gps/particle e-
-/gps/energy 600 MeV
+/gps/particle opticalphoton
+/gps/polarization 1 1 1
+
+# Set the photon wavelength in energy.
+#   3.0 eV is ~415 nm
+#   2.9 eV is ~430 nm
+#   2.5 eV is ~500 nm
+#   2.3 eV is ~540 nm
+#   2.0 eV is ~620 nm
+#   1.9 eV is ~650 nm
+/gps/energy 2.5 eV
 
 # This generates the position of the first particle gun.  It will be
 # used for the other particle guns.  The /gps/position command must
 # come first.
-/gps/position 0.0 75.0 -10.0 cm
+/gps/position 0.0 75.0 -50.0 cm
 /gps/pos/type Volume
 /gps/pos/shape Para
 /gps/pos/halfx 1 cm
 /gps/pos/halfy 1 cm
 /gps/pos/halfz 1 cm
 
-# This generates the direction of the first particle gun. 
+# This generates the direction of the first particle gun.
 /gps/ang/type beam1d
 /gps/ang/sigma_r 15 deg
 /gps/ang/rot2 0 0 -1

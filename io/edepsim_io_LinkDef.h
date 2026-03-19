@@ -17,6 +17,10 @@
 #pragma link C++ class std::vector<TG4HitSegment>+;
 #pragma link C++ class std::map<std::string,std::vector<TG4Trajectory> >+;
 
+#pragma link C++ class TG4PhotonHit+;
+#pragma link C++ class std::vector<TG4PhotonHit>+;
+#pragma link C++ class std::map<std::string,std::vector<TG4PhotonHit> >+;
+
 #pragma link C++ class TG4Event+;
 
 #endif

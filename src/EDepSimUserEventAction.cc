@@ -153,6 +153,7 @@ void EDepSim::UserEventAction::EndOfEventAction(const G4Event* evt) {
         for (unsigned int h=0; h<g4Hits->GetSize(); ++h) {
             EDepSim::HitSegment* g4Hit
                 = dynamic_cast<EDepSim::HitSegment*>(g4Hits->GetHit(h));
+            if (g4Hit == nullptr) continue;
             double energy = g4Hit->GetEnergyDeposit();
             int trackId = g4Hit->GetContributors().front();
             G4VTrajectory* g4Traj = EDepSim::TrajectoryMap::Get(trackId);

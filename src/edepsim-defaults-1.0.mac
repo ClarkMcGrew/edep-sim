@@ -34,3 +34,10 @@
 # general, and accurate, 1) DokeBirks which is about 200 times faster
 # than NEST, but only applicable to LAr (code stolen from NEST).
 /edep/phys/ionizationModel 1
+
+# By default, invoke sensitive detectors at boundaries
+/process/optical/boundary/setInvokeSD true
+
+# By default, do not stack photons
+/process/optical/scintillation/setStackPhotons false
+/process/optical/cerenkov/setStackPhotons false

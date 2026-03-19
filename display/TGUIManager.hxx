@@ -71,6 +71,9 @@ public:
     /// Get the check button selecting if G4 hits should be shown.
     TGButton* GetShowG4HitsButton() {return fShowG4HitsButton;}
 
+    /// Get the check button selecting if optical photon endpoints should be shown.
+    TGButton* GetShowPhotonHitsButton() {return fShowPhotonHitsButton;}
+
     /// Get the check button selecting if view point should be recalculated.
     TGButton* GetRecalculateViewButton() {return fRecalculateViewButton;}
 
@@ -137,6 +140,7 @@ private:
     TGButton* fShowClusterUncertaintyButton;
     TGButton* fShowTrajectoriesButton;
     TGButton* fShowG4HitsButton;
+    TGButton* fShowPhotonHitsButton;
     TGButton* fRecalculateViewButton;
     TGButton* fDrawTimeChargeButton;
     TGButton* fFitTimeChargeButton;

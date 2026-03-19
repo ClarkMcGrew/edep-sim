@@ -16,7 +16,8 @@
 
 EDepSim::UserTrackingAction::UserTrackingAction()
     : fOpticalPhotonOpBoundaryProcessCached(false),
-      fOpticalPhotonOpBoundaryProcess(nullptr) {}
+      fOpticalPhotonOpBoundaryProcess(nullptr),
+      fSavePhotonTrajectories(false) {}
 
 EDepSim::UserTrackingAction::~UserTrackingAction() {}
 
@@ -24,6 +25,14 @@ void
 EDepSim::UserTrackingAction::PreUserTrackingAction(const G4Track* theTrack) {
     int trackId = theTrack->GetTrackID();
     EDepSimTrace("Pre-tracking action for " << trackId);
+
+    if (theTrack->GetParticleDefinition()->GetPDGEncoding() == -22
+        and not fSavePhotonTrajectories) {
+        // Don't save optical photon trajectories, for they are many, and not
+        // particularly useful.
+        fpTrackingManager->SetStoreTrajectory(false);
+        return;
+    }
 
     // Make a new trajectory and give it to the tracking manager.  This might
     // be a continuation of an existing track, but that is OK since the
@@ -124,24 +133,13 @@ EDepSim::UserTrackingAction::PostUserTrackingAction(const G4Track* theTrack) {
     if (fOpticalPhotonOpBoundaryProcess->GetStatus()
         != G4OpBoundaryProcessStatus::Detection) return;
 
-    EDepSimTrace("Photon is detected");
+    EDepSimTrace("Photon was detected");
 
-#ifdef REGISTER_HIT_WITH_SENSITIVE_DETECTOR
-    // Get the sensitive detector that this photons is being added to.
-    G4LogicalVolume* theVolume = thePostPV->GetLogicalVolume();
-    G4VSensitiveDetector* theDetector = theVolume->GetSensitiveDetector();
-
-    if (theDetector == nullptr) {
-        EDepSimError("Detected photon, but no sensitive detector");
-        return;
-    }
-
-    // Register the hit for this step: It's not good that the const_cast is
-    // needed, but AFAICT sensitive detectors don't need a mutable step.
-    theDetector->Hit(const_cast<G4Step*>(theStep));
-#else
+#ifdef EXPLICITLY_REGISTER_HIT_WITH_SENSITIVE_DETECTOR
     // Register the hit based on it's final position (and any other
-    // information).
+    // information).  This in case the SD cannot be invoked as normal for the
+    // logical surface (i.e. G4OpticalParameters::SetInvokeBoundarySD is
+    // false).
     G4ThreeVector hitPos = thePostStep->GetPosition();
     G4double hitTime = thePostStep->GetGlobalTime();
     G4ThreeVector hitPolar = thePostStep->GetPolarization();
@@ -153,7 +151,6 @@ EDepSim::UserTrackingAction::PostUserTrackingAction(const G4Track* theTrack) {
                  << "," << hitPos.y()/cm << " cm"
                  << "," << hitPos.z()/cm << " cm]"
                  << " " << hitEnergy);
-
 #endif
 
 }

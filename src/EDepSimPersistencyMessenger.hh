@@ -42,6 +42,7 @@ private:
     G4UIcmdWithoutParameter*   fClearBoundariesCMD;
     G4UIcommand*               fTrajectoryPointRuleCMD;
     G4UIcmdWithoutParameter*   fClearTrajectoryPointRulesCMD;
+    G4UIcmdWithABool*          fSavePhotonTrajectoriesCMD;
 
 };
 #endif

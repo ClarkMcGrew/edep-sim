@@ -1,0 +1,9 @@
+# Make sure that the surface SD is on
+/process/optical/boundary/setInvokeSD true
+
+# Make sure that the scintillation photons are stacked
+/process/optical/scintillation/setStackPhotons true
+
+# Track the photons as they are created, not required, but keeps the
+# stack from exploding
+/process/optical/scintillation/setTrackSecondariesFirst true

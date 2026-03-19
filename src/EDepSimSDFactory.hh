@@ -10,25 +10,30 @@ class G4VSensitiveDetector;
 /// Create an object to build a sensitive detector (SD) based on a name and
 /// type.  The name of the SD will be used by the G4 SD manager to see if the
 /// detector already exists.  If it doesn't then a new SD of "type" will be
-/// built.
+/// built.  The recognized SD types are "segment" and "surface".
+///
+///  segment -- A sensitive detector to record the energy deposition along a
+///             charged track.
+///
+///  surface -- A sensitive detector to record the energy deposition at a
+///             surface.  This is mostly for optical photons.
 namespace EDepSim {class SDFactory;}
 class EDepSim::SDFactory {
 public:
     /// Build a factory to build sensitive detectors specified by "type".
-    SDFactory(G4String type);
+    explicit SDFactory(G4String type = "undefined");
     virtual ~SDFactory();
 
-    /// Get pointer to a sensitive detector built by this factory, but return
+    /// Get a pointer to a sensitive detector built by this factory, but return
     /// null if the detector doesn't exist.
-    G4VSensitiveDetector* GetSD(G4String name);
+    G4VSensitiveDetector* GetSD(G4String name, G4String type = "undefined");
 
-    /// Get pointer to a sensitive detector built by this factory, and create
+    /// Get a pointer to a sensitive detector built by this factory, and create
     /// a new sensitive detector if required.
-    G4VSensitiveDetector* MakeSD(G4String name);
-    
+    G4VSensitiveDetector* MakeSD(G4String name, G4String type = "undefined");
+
 private:
     /// The type of sensitive detector that this will build.
     G4String fType;
-
 };
 #endif

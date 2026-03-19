@@ -253,6 +253,14 @@ private:
     void SummarizeSegmentDetectors(TG4HitSegmentDetectors& segmentDetectors,
                                    const G4Event* event);
 
+    /// sensitive detector.
+    void SummarizePhotonDetectors(TG4PhotonHitDetectors& photonDetectors,
+                                  const G4Event* event);
+
+    /// Fill a container of photon hit.
+    void SummarizePhotonHits(std::vector<TG4PhotonHit>& segments,
+                             G4VHitsCollection* hits);
+
     /// Fill a container of hit segments.
     void SummarizeHitSegments(std::vector<TG4HitSegment>& segments,
                               G4VHitsCollection* hits);

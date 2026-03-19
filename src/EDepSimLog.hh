@@ -655,7 +655,7 @@ private:
         if (EDEPSIM_ERROR_OUTPUT) {                             \
             if (EDepSim::LogManager::TraceLevel                 \
                 <= EDepSim::LogManager::GetDebugLevel())        \
-                _EDEPSIM_OUTPUT_ERROR("TRACE:",outStream);      \
+                _EDEPSIM_OUTPUT_ERROR("TRACE: ",outStream);      \
         }                                                       \
     } while (0)
 #else

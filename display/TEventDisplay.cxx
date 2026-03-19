@@ -3,6 +3,7 @@
 #include "TEventChangeManager.hxx"
 #include "TTrajectoryChangeHandler.hxx"
 #include "TG4HitChangeHandler.hxx"
+#include "TG4PhotonHitChangeHandler.hxx"
 
 
 #include <TEveManager.h>
@@ -41,6 +42,7 @@ void EDep::TEventDisplay::Init() {
     fEventChangeManager = new TEventChangeManager();
     fEventChangeManager->AddUpdateHandler(new TTrajectoryChangeHandler());
     fEventChangeManager->AddUpdateHandler(new TG4HitChangeHandler());
+    fEventChangeManager->AddUpdateHandler(new TG4PhotonHitChangeHandler());
 
     // Create the color palette.  This is split into two halves.  The first
     // half is from dark to white and is used for negative values on the
