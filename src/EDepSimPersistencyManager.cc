@@ -495,7 +495,7 @@ void EDepSim::PersistencyManager::MarkTrajectories(const G4Event* event) {
                     ndTraj->MarkTrajectory(0);
                 }
                 else {
-                    EDepSimError("Primary trajectory not found");
+                    EDepSimWarn("Primary trajectory not found");
                     break;
                 }
                 int parentId = ndTraj->GetParentID();
