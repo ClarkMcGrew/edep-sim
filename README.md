@@ -476,7 +476,7 @@ magnetic field.
         <positionref ref="LArD_el0_pos"/>
         <rotationref ref="identity"/>
       </physvol>
-      <auxiliary auxtype="SensDet" auxvalue="LArD"/>
+      <auxiliary auxtype="SegmentDetector" auxvalue="LArD"/>
       <auxiliary auxtype="EField"
 		  auxvalue="(500.0 V/cm, 1.0 V/m, 500.0 V/cm)"/>
       <auxiliary auxtype="BField
@@ -485,22 +485,28 @@ magnetic field.
     </volume>
 ```
 
-#### Auxiliary field to set a sensitive volume
+#### Auxiliary fields to set a sensitive volume
 
 Sensitive logical volumes recording energy deposition are specified using
-the "SensDet" type.  It takes a value which is the name of the sensitive
-detector that will record the deposition.
+the "SegmentDetector", or "SurfaceDetector" types.  These take a value
+which is the name of the sensitive detector that will record the
+deposition.
 
 ```
-<auxiliary auxtype="SensDet" auxvalue="MySensDetName"/>
+<auxiliary auxtype="SegmentDetector" auxvalue="MySegmentDetectorName"/>
 ```
 
 In the example above, the energy is recorded in a sensitive detector named
-`MySensDetName`.  After an event is simulated, the deposited energy is
-recorded in an internal map keyed by the sensitive detector name, and with
-a value that is a vector of TG4HitSegment objects.  See the example in the
-`./test` subdirectory for how to read this information from the output
+`MySegmentDetectorName`.  After an event is simulated, the deposited energy
+is recorded in a map keyed by the sensitive detector name, and
+with a value that is a vector of TG4HitSegment objects.  See the example in
+the `./test` subdirectory for how to read this information from the output
 tree.
+
+```
+<auxiliary auxtype="SurfaceDetector" auxvalue="MySurfaceDetectorName"/>
+```
+In the example above, the energy at surfaces (primarily optical photons) is recorded in `MySurfaceDetectorName`.  After an event is simulated the hits from opticalphotons are recorded in a map keyed by the sensitive detector name and a value that is a vector of TG4PhotonHit objects.
 
 #### Auxiliary field to define the electric and magnetic field.
 
