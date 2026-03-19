@@ -115,8 +115,8 @@ G4LogicalVolume *CaptImmersedBuilder::GetPiece(void) {
                               FindMaterial("FR4_Copper"),
                               GetName()+"/FieldCage");
     logFieldCage->SetVisAttributes(GetColor(logFieldCage));
-    EDepSim::SDFactory wallFactory("surface");
-    G4VSensitiveDetector* sensitiveWall = wallFactory.MakeSD("cage");
+    EDepSim::SDFactory wallFactory;
+    G4VSensitiveDetector* sensitiveWall = wallFactory.MakeSD("cage","surface");
     logFieldCage->SetSensitiveDetector(sensitiveWall);
 
     EDepSimError("Build optical surface");
