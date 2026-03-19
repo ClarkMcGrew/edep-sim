@@ -1,6 +1,7 @@
 #!/bin/sh
 #
-# Generate events using a non-trivial GDML geometry.
+# Export the default geometry. NOTE! The default geometry has known
+# overlaps, but they are accepted.
 #
 
 OUTPUT=050DefaultGeometry.root
@@ -14,6 +15,6 @@ cat > 050DefaultGeometry.mac <<EOF
 /edep/export $OUTPUT
 EOF
 
-edep-sim -o ${OUTPUT} 050DefaultGeometry.mac
+edep-sim -C -o ${OUTPUT} 050DefaultGeometry.mac
 
 
