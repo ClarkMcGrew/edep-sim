@@ -254,7 +254,19 @@ void EDepSim::UserDetectorConstruction::ConstructSDandField() {
         for (G4GDMLAuxListType::const_iterator auxItem = aux->second.begin();
              auxItem != aux->second.end();
              ++auxItem) {
-            if (auxItem->type != "SensDet") continue;
+            G4String type = "NotAnSD";
+            if (auxItem->type == "SensDet") {
+                EDepSimWarn("SensDet is deprecated."
+                            " Use SegmentDetector instead.");
+                type = "segment";
+            }
+            else if (auxItem->type == "SegmentDetector") {
+                type = "segment";
+            }
+            else if (auxItem->type == "SurfaceDetector") {
+                type = "surface";
+            }
+            if (type == "NotAnSD") continue;
             std::string logName(aux->first->GetName());
             bool exclude = false;
             for (std::vector<std::string>::iterator e
@@ -267,12 +279,14 @@ void EDepSim::UserDetectorConstruction::ConstructSDandField() {
             }
             if (exclude) {
                 EDepSimLog("Volume " << logName << "marked as sensitive, but"
-                           << " excluded");
+                           << " is excluded");
+                continue;
             }
-            EDepSimLog("Collect energy deposition for " << aux->first->GetName()
-                       << " in " << auxItem->value);
-            EDepSim::SDFactory factory("segment");
-            aux->first->SetSensitiveDetector(factory.MakeSD(auxItem->value));
+            EDepSimLog("Sensitive detector for " << aux->first->GetName()
+                       << " is " << type << "/" << auxItem->value);
+            EDepSim::SDFactory factory;
+            aux->first->SetSensitiveDetector(
+                factory.MakeSD(auxItem->value,type));
         }
     }
 
