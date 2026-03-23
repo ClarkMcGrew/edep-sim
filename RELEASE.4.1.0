@@ -1,0 +1,29 @@
+Release 4.1.0
+
+Add simulation of optical photons using the standard G4.11
+infrastructure.  The optical photons are saved into the output file
+using the TG4PhotonHit external.  Unfortunately, G4.10 doesn't support
+several G4.11 capabilities, so G4.10 isn't supported for this release.
+
+Notable Changes in 4.1.0
+
+* Leverage the work of Xuying Ning <xning@bnl.gov> to support tracking
+  and saving of vanilla optical photons.  This includes all of the
+  infrastructure in the main code to handle the optical physics, but
+  also adds PhotonDetectors to the edep-sim i/o package and the simple
+  included event display.
+
+* The old G4 v10 interfaces are not sufficiently compatible with G4
+  v11 to be easily supported, so support for V10 is dropped.  It's
+  possible that v10 support can be restored, but, for now, it is not a
+  priority. Note: The last G4 v10 release (10.7) was in 2020, and the
+  last fix was 2022 (10.7.4).
+
+* Update how sensitive detectors are parsed in GDML.  Deprecate
+  "SensDet", but still have it create a "SegmentSD".  Add
+  "SegmentDetector" as the best way to create a SegmentSD, and
+  "SurfaceDetector" as the (only) way to create a SurfaceSD.
+
+* Fix the installation location of EDepSim include files so external
+  packages can compile using CMAKE.
+
