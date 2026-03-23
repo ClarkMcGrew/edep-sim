@@ -1,4 +1,10 @@
-Changes in 4.x.x
+Changes in 4.1.0
+
+* Leverage the work of Xuying Ning <xning@bnl.gov> to support tracking
+  and saving of vanilla optical photons.  This includes all of the
+  infrastructure in the main code to handle the optical physics, but
+  also adds PhotonDetectors to the edep-sim i/o package and the simple
+  included event display.
 
 * The old G4 v10 interfaces are not sufficiently compatible with G4
   v11 to be easily supported, so support for V10 is dropped.  It's
@@ -11,11 +17,8 @@ Changes in 4.x.x
   "SegmentDetector" as the best way to create a SegmentSD, and
   "SurfaceDetector" as the (only) way to create a SurfaceSD.
 
-* Leverage the work of Xuying Ning <xning@bnl.gov> to support tracking
-  and saving of vanilla optical photons.  This includes all of the
-  infrastructure in the main code to handle the optical physics, but
-  also adds PhotonDetectors to the edep-sim i/o package and the simple
-  included event display.
+* Fix the installation location of EDepSim include files so external
+  packages can compile using CMAKE.
 
 Changes in 4.0.0
 
