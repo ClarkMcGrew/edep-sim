@@ -3,7 +3,7 @@
 
 EDepSim::HEPEVTKinematicsFactory::HEPEVTKinematicsFactory(
     EDepSim::UserPrimaryGeneratorMessenger* parent)
-    : EDepSim::VKinematicsFactory("hepevt",parent,false),
+    : EDepSim::VKinematicsFactory("hepevt",parent),
       fInputFile("not-open"),
       fFlavorName("pythia"),
       fVerbosity(0),
