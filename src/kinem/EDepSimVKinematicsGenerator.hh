@@ -49,6 +49,13 @@ public:
     /// weighting probabilities, or occurred on an illegal target).  The
     /// vertex will be constructed as normal for G4, and added using the
     /// G4Event::AddPrimaryVertex(G4PrimaryVertex*) method.
+    ///
+    /// The second `position` argument provides a "suggested" time and
+    /// position for the new vertex which can be ignored by the derived
+    /// kinematics generator.  But, if the user has specified that the
+    /// position should be forced, the generated kinematics will be modified
+    /// to start from the forced position.  The derived kinematics generator
+    /// can also use the provided position when generating the particles.
     virtual GeneratorStatus GeneratePrimaryVertex(
         G4Event* evt, const G4LorentzVector& position) = 0;
 
