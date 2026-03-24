@@ -18,7 +18,7 @@
 #include "EDepSimUserRunAction.hh"
 #include "EDepSimUserRunActionMessenger.hh"
 
-EDepSim::UserRunAction::UserRunAction() 
+EDepSim::UserRunAction::UserRunAction()
     : fStartTime("invalid"), fStopTime("invalid"), fSubrunId(-1) {
     fTimer = new G4Timer;
     fMessenger= new EDepSim::UserRunActionMessenger(this);
@@ -35,11 +35,17 @@ void EDepSim::UserRunAction::BeginOfRunAction(const G4Run* aRun) {
     fStartTime = ctime(&ltime);
     fTimer->Start();
 
+    // Run the external actions.  These must not change the state of G4 or
+    // EDepSim.
+    for (G4UserRunAction *action : fExternalActions) {
+        action->BeginOfRunAction(aRun);
+    }
+
 #ifdef UPDATE_VISUALIZATION
     if (G4VVisManager::GetConcreteInstance()) {
         G4UImanager* UI = G4UImanager::GetUIpointer();
         UI->ApplyCommand("/vis/scene/notifyHandlers");
-    } 
+    }
 #endif
 
     EDepSimLog("### Run " << aRun->GetRunID() << " starting.");
@@ -55,12 +61,17 @@ void EDepSim::UserRunAction::EndOfRunAction(const G4Run* aRun) {
     EDepSimLog("Number of events = " << aRun->GetNumberOfEvent());
     EDepSimLog(*fTimer);
 
+    // Run the external actions.  These must not change the state of G4 or
+    // EDepSim.
+    for (G4UserRunAction *action : fExternalActions) {
+        action->EndOfRunAction(aRun);
+    }
 
 #ifdef UPDATE_VISUALIZATION
     G4VVisManager* pVVisManager = G4VVisManager::GetConcreteInstance();
-  
+
     if( pVVisManager ) {
-        G4UImanager::GetUIpointer()->ApplyCommand("/vis/viewer/update"); 
+        G4UImanager::GetUIpointer()->ApplyCommand("/vis/viewer/update");
     }
 #endif
 }

@@ -236,6 +236,11 @@ G4VPhysicalVolume* EDepSim::UserDetectorConstruction::Construct() {
         = G4VPersistencyManager::GetPersistencyManager();
     if (pMan) pMan->Store(fPhysicalWorld);
 
+    /// Notify any external users that the geometry has changed.
+    for (UserUpdateGeometryAction* action : fExternalActions) {
+        action->UpdateGeometry(fPhysicalWorld);
+    }
+
     return fPhysicalWorld;
 }
 

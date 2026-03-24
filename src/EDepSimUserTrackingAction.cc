@@ -26,6 +26,12 @@ EDepSim::UserTrackingAction::PreUserTrackingAction(const G4Track* theTrack) {
     int trackId = theTrack->GetTrackID();
     EDepSimTrace("Pre-tracking action for " << trackId);
 
+    // Run the external actions first.  These must not change the state of G4,
+    // or EDepSim.
+    for (G4UserTrackingAction *action : fExternalActions) {
+        action->PreUserTrackingAction(theTrack);
+    }
+
     if (theTrack->GetParticleDefinition()->GetPDGEncoding() == -22
         and not fSavePhotonTrajectories) {
         // Don't save optical photon trajectories, for they are many, and not
@@ -41,27 +47,36 @@ EDepSim::UserTrackingAction::PreUserTrackingAction(const G4Track* theTrack) {
     fpTrackingManager->SetTrajectory(traj);
     fpTrackingManager->SetStoreTrajectory(true);
 
-    // Check if the trajectory is in the map already. Only add the first
-    // one. If the trackID is already in the map, then this is a continuation
-    // of an existing track.
+    // Check if the trajectory is in the map already. If it is in the map,
+    // then the track has already been started and this is a continuation of
+    // an existing track.
     G4VTrajectory* oldTraj = EDepSim::TrajectoryMap::Get(trackId);
-    if (oldTraj != nullptr) {
-        EDepSim::Trajectory * update
+
+    if (oldTraj == nullptr) {
+        // There isn't an old trajectory, so add the new one to the map.
+        EDepSim::TrajectoryMap::Add(traj);
+    }
+    else {
+        // Sanity check.  The old trajectory must be an EDepSim::Trajectory
+        EDepSim::Trajectory *update
             = dynamic_cast<EDepSim::Trajectory*>(oldTraj);
         if (update == nullptr) {
             EDepSimError("Not an EDepSim Trajectory " << std::endl
                          << EDepSim::Backtrace);
             throw;
         }
-        return;
     }
-
-    EDepSim::TrajectoryMap::Add(traj);
 }
 
 void
 EDepSim::UserTrackingAction::PostUserTrackingAction(const G4Track* theTrack) {
     EDepSimTrace("Post-tracking action for " << theTrack->GetTrackID());
+
+    // Run the external actions first.  These must not change the state of G4
+    // or EDepSim.
+    for (G4UserTrackingAction *action : fExternalActions) {
+        action->PostUserTrackingAction(theTrack);
+    }
 
     const G4Step* theStep = theTrack->GetStep();
     if (theStep == nullptr) {
