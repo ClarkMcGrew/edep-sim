@@ -24,6 +24,8 @@ void* EDepSim::GetExternalActionConstructor(std::string path,
     }
     wordfree(&expanded);
 
+    EDepSimLog("Full path:      " << libraryPath);
+
     // Get the library. This doesn't need to check if the library is already
     // loaded because dlopen takes care of that.
     void* handle = dlopen(libraryPath.c_str(),RTLD_LAZY);
