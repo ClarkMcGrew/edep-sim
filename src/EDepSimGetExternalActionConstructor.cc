@@ -9,9 +9,16 @@
 
 #include <dlfcn.h>
 #include <wordexp.h>
+#include <string>
+#include <algorithm>
 
 void* EDepSim::GetExternalActionConstructor(std::string path,
                                             std::string symbol) {
+    // Deal with GEANT parsing if "{.*}" in macro commands and replace "(" by
+    // "{" and ")" by "}".  Do it by brute force.
+    std::replace(path.begin(),path.end(),'(','{');
+    std::replace(path.begin(),path.end(),')','}');
+
     // Expand an environment variables in the path.
     std::string libraryPath;
     wordexp_t expanded;
