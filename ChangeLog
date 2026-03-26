@@ -1,3 +1,12 @@
+Changes in 4.x.x
+
+* Users can dynamically load run, event, tracking and stepping user
+  actions that will be called as part of the equivalent EDepSim user
+  actions.
+
+* Users can dynamically load a kinematics generator using the
+  /edep/generator/external/ macro commands.
+
 Changes in 4.1.0
 
 * Leverage the work of Xuying Ning <xning@bnl.gov> to support tracking
