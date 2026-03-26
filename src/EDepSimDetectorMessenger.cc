@@ -7,19 +7,26 @@
 #include "EDepSimException.hh"
 #include "EDepSimSDFactory.hh"
 #include "EDepSimSegmentSD.hh"
+#include "EDepSimGetExternalActionConstructor.hh"
+#include "EDepSimUserRunAction.hh"
+#include "EDepSimUserEventAction.hh"
+#include "EDepSimUserTrackingAction.hh"
+#include "EDepSimUserSteppingAction.hh"
 
 #include "EDepSimLog.hh"
 
 #include "globals.hh"
 
-#include "G4UImanager.hh"
-#include "G4UIdirectory.hh"
-#include "G4UIcmdWithAString.hh"
-#include "G4UIcmdWithAnInteger.hh"
-#include "G4UIcmdWithADoubleAndUnit.hh"
-#include "G4UIcmdWithoutParameter.hh"
-#include "G4GDMLParser.hh"
-#include "G4UnitsTable.hh"
+#include <G4UImanager.hh>
+#include <G4UIdirectory.hh>
+#include <G4UIcmdWithAString.hh>
+#include <G4UIcmdWithAnInteger.hh>
+#include <G4UIcmdWithADoubleAndUnit.hh>
+#include <G4UIcmdWithoutParameter.hh>
+#include <G4GDMLParser.hh>
+#include <G4UnitsTable.hh>
+#include <G4RunManager.hh>
+#include <G4UserRunAction.hh>
 
 #include <cstdlib>
 #include <sstream>
@@ -167,6 +174,145 @@ EDepSim::DetectorMessenger::DetectorMessenger(EDepSim::UserDetectorConstruction*
     par = new G4UIparameter("Unit", 's', false);
     fMaterialBirksCmd->SetParameter(par);
 
+    ///////////////////////////////////////////////////////////
+    // commands in the /edep/actions/ directory.
+    fEDepSimActionsDir = new G4UIdirectory("/edep/actions/");
+    fEDepSimActionsDir->SetGuidance("Control EDepSim user actions.");
+
+    fLoadUpdateGeometryCMD = new G4UIcommand("/edep/actions/loadUpdateGeometry"
+                                             ,this);
+    fLoadUpdateGeometryCMD->SetGuidance(
+        "Load an external function that will construct a user action");
+    fLoadUpdateGeometryCMD->SetGuidance(
+        "  called when the geometry changes.");
+    fLoadUpdateGeometryCMD->SetGuidance("");
+    fLoadUpdateGeometryCMD->SetGuidance(
+        "  ENVIRONMENT VARIABLE SUBSTITUTION: Environment variables in the");
+    fLoadUpdateGeometryCMD->SetGuidance(
+        "  path will be expanded, but to work around the G4 macro language");
+    fLoadUpdateGeometryCMD->SetGuidance(
+        "  they must have the syntax $ENV_VAR or $(ENV_VAR) and not use the");
+    fLoadUpdateGeometryCMD->SetGuidance(
+        "  they must have the syntax $ENV_VAR or $(ENV_VAR) and not use the");
+    fLoadUpdateGeometryCMD->SetGuidance(
+        "  more standard ${ENV_VAR} syntax.");
+
+    fLoadUpdateGeometryCMD->SetParameter(new G4UIparameter("loadPath",'s',false));
+    fLoadUpdateGeometryCMD->GetParameter(0)
+        ->SetGuidance("The path to the shared library."
+                      " Environment variables will be expanded.");
+    fLoadUpdateGeometryCMD->SetParameter(
+        new G4UIparameter("symbol",'s',true));
+    fLoadUpdateGeometryCMD->GetParameter(1)
+        ->SetDefaultValue("CreateUpdateGeometry");
+    fLoadUpdateGeometryCMD->GetParameter(1)
+        ->SetGuidance("Symbol called:"
+                      " signature"
+                      " EDepSim::EDepSimUserDetectorConstruction"
+                      "::UserUpdateGeometry* (*)(char* option)");
+    fLoadUpdateGeometryCMD->SetParameter(
+        new G4UIparameter("userOption",'s',true));
+    fLoadUpdateGeometryCMD->GetParameter(2)
+        ->SetDefaultValue("unspecified");
+    fLoadUpdateGeometryCMD->GetParameter(2)
+        ->SetGuidance("A user defined value.");
+
+    fLoadRunActionCMD = new G4UIcommand("/edep/actions/loadUserRunAction",this);
+    fLoadRunActionCMD->SetGuidance("Load function to construct a user action");
+    fLoadRunActionCMD->SetGuidance("");
+    fLoadRunActionCMD->SetGuidance(
+        "  ENVIRONMENT VARIABLE SUBSTITUTION: Environment variables in the");
+    fLoadRunActionCMD->SetGuidance(
+        "  path will be expanded, but to work around the G4 macro language");
+    fLoadRunActionCMD->SetGuidance(
+        "  they must have the syntax $ENV_VAR or $(ENV_VAR) and not use the");
+    fLoadRunActionCMD->SetGuidance(
+        "  they must have the syntax $ENV_VAR or $(ENV_VAR) and not use the");
+    fLoadRunActionCMD->SetGuidance(
+        "  more standard ${ENV_VAR} syntax.");
+
+    fLoadRunActionCMD->SetParameter(new G4UIparameter("path",'s',false));
+    fLoadRunActionCMD->GetParameter(0)->SetGuidance("The library path");
+    fLoadRunActionCMD->SetParameter(new G4UIparameter("symbol",'s',true));
+    fLoadRunActionCMD->GetParameter(1)->SetDefaultValue("CreateUserRunAction");
+    fLoadRunActionCMD->GetParameter(1)->SetGuidance("Symbol with signature"
+                      " G4UserRunAction* (*)(char* option)");
+    fLoadRunActionCMD->SetParameter(new G4UIparameter("option",'s',true));
+    fLoadRunActionCMD->GetParameter(2)->SetDefaultValue("unspecified");
+    fLoadRunActionCMD->GetParameter(2)->SetGuidance("A user defined value.");
+
+    fLoadEventActionCMD = new G4UIcommand("/edep/actions/loadUserEventAction",this);
+    fLoadEventActionCMD->SetGuidance("Load function to construct a user action");
+    fLoadEventActionCMD->SetGuidance("");
+    fLoadEventActionCMD->SetGuidance(
+        "  ENVIRONMENT VARIABLE SUBSTITUTION: Environment variables in the");
+    fLoadEventActionCMD->SetGuidance(
+        "  path will be expanded, but to work around the G4 macro language");
+    fLoadEventActionCMD->SetGuidance(
+        "  they must have the syntax $ENV_VAR or $(ENV_VAR) and not use the");
+    fLoadEventActionCMD->SetGuidance(
+        "  they must have the syntax $ENV_VAR or $(ENV_VAR) and not use the");
+    fLoadEventActionCMD->SetGuidance(
+        "  more standard ${ENV_VAR} syntax.");
+
+    fLoadEventActionCMD->SetParameter(new G4UIparameter("path",'s',false));
+    fLoadEventActionCMD->GetParameter(0)->SetGuidance("The library path");
+    fLoadEventActionCMD->SetParameter(new G4UIparameter("symbol",'s',true));
+    fLoadEventActionCMD->GetParameter(1)->SetDefaultValue("CreateUserEventAction");
+    fLoadEventActionCMD->GetParameter(1)->SetGuidance("Symbol with signature"
+                      " G4UserEventAction* (*)(char* option)");
+    fLoadEventActionCMD->SetParameter(new G4UIparameter("option",'s',true));
+    fLoadEventActionCMD->GetParameter(2)->SetDefaultValue("unspecified");
+    fLoadEventActionCMD->GetParameter(2)->SetGuidance("A user defined value.");
+
+    fLoadTrackActionCMD = new G4UIcommand("/edep/actions/loadUserTrackAction",this);
+    fLoadTrackActionCMD->SetGuidance("Load function to construct a user action");
+    fLoadTrackActionCMD->SetGuidance("");
+    fLoadTrackActionCMD->SetGuidance(
+        "  ENVIRONMENT VARIABLE SUBSTITUTION: Environment variables in the");
+    fLoadTrackActionCMD->SetGuidance(
+        "  path will be expanded, but to work around the G4 macro language");
+    fLoadTrackActionCMD->SetGuidance(
+        "  they must have the syntax $ENV_VAR or $(ENV_VAR) and not use the");
+    fLoadTrackActionCMD->SetGuidance(
+        "  they must have the syntax $ENV_VAR or $(ENV_VAR) and not use the");
+    fLoadTrackActionCMD->SetGuidance(
+        "  more standard ${ENV_VAR} syntax.");
+
+    fLoadTrackActionCMD->SetParameter(new G4UIparameter("path",'s',false));
+    fLoadTrackActionCMD->GetParameter(0)->SetGuidance("The library path");
+    fLoadTrackActionCMD->SetParameter(new G4UIparameter("symbol",'s',true));
+    fLoadTrackActionCMD->GetParameter(1)->SetDefaultValue("CreateUserTrackAction");
+    fLoadTrackActionCMD->GetParameter(1)->SetGuidance("Symbol with signature"
+                      " G4UserTrackAction* (*)(char* option)");
+    fLoadTrackActionCMD->SetParameter(new G4UIparameter("option",'s',true));
+    fLoadTrackActionCMD->GetParameter(2)->SetDefaultValue("unspecified");
+    fLoadTrackActionCMD->GetParameter(2)->SetGuidance("A user defined value.");
+
+    fLoadStepActionCMD = new G4UIcommand("/edep/actions/loadUserStepAction",this);
+    fLoadStepActionCMD->SetGuidance("Load function to construct a user action");
+    fLoadStepActionCMD->SetGuidance("");
+    fLoadStepActionCMD->SetGuidance(
+        "  ENVIRONMENT VARIABLE SUBSTITUTION: Environment variables in the");
+    fLoadStepActionCMD->SetGuidance(
+        "  path will be expanded, but to work around the G4 macro language");
+    fLoadStepActionCMD->SetGuidance(
+        "  they must have the syntax $ENV_VAR or $(ENV_VAR) and not use the");
+    fLoadStepActionCMD->SetGuidance(
+        "  they must have the syntax $ENV_VAR or $(ENV_VAR) and not use the");
+    fLoadStepActionCMD->SetGuidance(
+        "  more standard ${ENV_VAR} syntax.");
+
+    fLoadStepActionCMD->SetParameter(new G4UIparameter("path",'s',false));
+    fLoadStepActionCMD->GetParameter(0)->SetGuidance("The library path");
+    fLoadStepActionCMD->SetParameter(new G4UIparameter("symbol",'s',true));
+    fLoadStepActionCMD->GetParameter(1)->SetDefaultValue("CreateUserStepAction");
+    fLoadStepActionCMD->GetParameter(1)->SetGuidance("Symbol with signature"
+                      " G4UserStepAction* (*)(char* option)");
+    fLoadStepActionCMD->SetParameter(new G4UIparameter("option",'s',true));
+    fLoadStepActionCMD->GetParameter(2)->SetDefaultValue("unspecified");
+    fLoadStepActionCMD->GetParameter(2)->SetGuidance("A user defined value.");
+
 }
 
 
@@ -186,6 +332,14 @@ EDepSim::DetectorMessenger::~DetectorMessenger()
     delete fMaterialBirksCmd;
     delete fMaterialDir;
     delete fEDepSimDir;
+
+    delete fEDepSimActionsDir;
+    delete fLoadUpdateGeometryCMD;
+    delete fLoadRunActionCMD;
+    delete fLoadEventActionCMD;
+    delete fLoadTrackActionCMD;
+    delete fLoadStepActionCMD;
+
 }
 
 
@@ -334,5 +488,101 @@ void EDepSim::DetectorMessenger::SetNewValue(G4UIcommand * cmd,
         EDepSimLog("Set Birks constant for"
                    << " " << matName
                    << " to " << birksConstant/(mm/MeV) << " mm/MeV");
+    }
+    else if (cmd == fLoadUpdateGeometryCMD) {
+        std::string library;
+        std::string symbol;
+        std::string option;
+        std::istringstream is(newValue);
+        is >> library >> symbol >> option;
+        UserDetectorConstruction::UserUpdateGeometryAction* externalAction
+            = CallExternalConstructor<
+                UserDetectorConstruction::UserUpdateGeometryAction>(
+                    library,symbol,option);
+        if (externalAction != nullptr) {
+            fConstruction->AddExternalAction(externalAction);
+        }
+        else {
+            EDepSimThrow("External UpdateGeometry not found");
+        }
+    }
+    else if (cmd == fLoadRunActionCMD) {
+        std::string library;
+        std::string symbol;
+        std::string option;
+        std::istringstream is(newValue);
+        is >> library >> symbol >> option ;
+        G4UserRunAction* externalAction
+            = CallExternalConstructor<G4UserRunAction>(
+                library,symbol,option);
+        if (externalAction != nullptr) {
+            const EDepSim::UserRunAction* edepAction
+                = dynamic_cast<const EDepSim::UserRunAction*>(
+                    G4RunManager::GetRunManager()->GetUserRunAction());
+            edepAction->AddExternalAction(externalAction);
+        }
+        else {
+            EDepSimThrow("External G4UserRunAction not found");
+        }
+    }
+    else if (cmd == fLoadEventActionCMD) {
+        std::string library;
+        std::string symbol;
+        std::string option;
+        std::istringstream is(newValue);
+        is >> library >> symbol >> option ;
+        G4UserEventAction* externalAction
+            = CallExternalConstructor<G4UserEventAction>(
+                library,symbol,option);
+        if (externalAction != nullptr) {
+            const EDepSim::UserEventAction* edepAction
+                = dynamic_cast<const EDepSim::UserEventAction*>(
+                    G4RunManager::GetRunManager()->GetUserEventAction());
+            edepAction->AddExternalAction(externalAction);
+        }
+        else {
+            EDepSimThrow("External G4UserEventAction not found");
+        }
+    }
+    else if (cmd == fLoadTrackActionCMD) {
+        std::string library;
+        std::string symbol;
+        std::string option;
+        std::istringstream is(newValue);
+        is >> library >> symbol >> option ;
+        G4UserTrackingAction* externalAction
+            = CallExternalConstructor<G4UserTrackingAction>(
+                library,symbol,option);
+        if (externalAction != nullptr) {
+            const EDepSim::UserTrackingAction* edepAction
+                = dynamic_cast<const EDepSim::UserTrackingAction*>(
+                    G4RunManager::GetRunManager()->GetUserTrackingAction());
+            edepAction->AddExternalAction(externalAction);
+        }
+        else {
+            EDepSimThrow("External G4UserTrackAction not found");
+        }
+    }
+    else if (cmd == fLoadStepActionCMD) {
+        std::string library;
+        std::string symbol;
+        std::string option;
+        std::istringstream is(newValue);
+        is >> library >> symbol >> option ;
+        G4UserSteppingAction* externalAction
+            = CallExternalConstructor<G4UserSteppingAction>(
+                library,symbol,option);
+        if (externalAction != nullptr) {
+            const EDepSim::SteppingAction* edepAction
+                = dynamic_cast<const EDepSim::SteppingAction*>(
+                    G4RunManager::GetRunManager()->GetUserSteppingAction());
+            edepAction->AddExternalAction(externalAction);
+        }
+        else {
+            EDepSimThrow("External G4UserStepAction not found");
+        }
+    }
+    else {
+        EDepSimThrow("Missing detector messenger command handler");
     }
 }

@@ -9,8 +9,9 @@ Cerenkov process commands<br>
 <tr><td><a href="#c0">setMaxPhotons</a></td></tr>
 <tr><td><a href="#c1">setMaxBetaChange</a></td></tr>
 <tr><td><a href="#c2">setStackPhotons</a></td></tr>
-<tr><td><a href="#c3">setTrackSecondariesFirst</a></td></tr>
-<tr><td><a href="#c4">verbose</a></td></tr>
+<tr><td><a href="#c3">setOffloadPhotons</a></td></tr>
+<tr><td><a href="#c4">setTrackSecondariesFirst</a></td></tr>
+<tr><td><a href="#c5">verbose</a></td></tr>
 </table>
 <h3 id="c0">setMaxPhotons [<i>CerenkovMaxPhotons</i>]</h3>
 <p>
@@ -41,7 +42,16 @@ Idle
 <tr><td>
 <td>type b
 <td><td></table>
-<h3 id="c3">setTrackSecondariesFirst [<i></i>]</h3>
+<h3 id="c3">setOffloadPhotons [<i>CerenkovOffloadPhotons</i>]</h3>
+<p>
+Set whether or not to offload secondary Cerenkov photons<br>
+<p>Available Geant4 state(s) : PreInit 
+Idle 
+<p>Parameters<table border=1>
+<tr><td>CerenkovOffloadPhotons
+<td>type b
+<td><td></table>
+<h3 id="c4">setTrackSecondariesFirst [<i></i>]</h3>
 <p>
 Whether to track secondary Cerenkov photons before the primary.<br>
 <p>Available Geant4 state(s) : PreInit 
@@ -50,7 +60,7 @@ Idle
 <tr><td>
 <td>type b
 <td><td></table>
-<h3 id="c4">verbose [<i>verbose</i>]</h3>
+<h3 id="c5">verbose [<i>verbose</i>]</h3>
 <p>
 Verbose level for Cerenkov process.<br>
 <p>Range : verbose &gt;= 0 &amp;&amp; verbose &lt;= 2

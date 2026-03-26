@@ -7,6 +7,8 @@
 
 #include <G4UserSteppingAction.hh>
 
+#include <vector>
+
 /// An action called for each step to make sure the MC isn't caught in some
 /// loop, the particle is still near to the detector, and the stepping has not
 /// gone generally wacko.  GEANT can have geometry glitchs where a
@@ -22,7 +24,15 @@ public:
     SteppingAction();
     virtual ~SteppingAction() {};
 
+    /// The required method for geant.
     void UserSteppingAction(const G4Step*);
+
+    /// Add an external user stepping action to be called before the EDepSim
+    /// pre and post actions.  The external action can collect information
+    /// about the step, but must not modify the state of G4, or EDepSim.
+    void AddExternalAction(G4UserSteppingAction* action) const {
+        fExternalActions.push_back(action);
+    }
 
 private:
     /// A count of the number of bad steps.
@@ -36,6 +46,10 @@ private:
 
     /// Control a summary of steps for the user.
     int fGovernor;
+
+    // A list of external stepping actions that will be called.
+    mutable std::vector<G4UserSteppingAction*> fExternalActions;
+
 };
 
 #endif

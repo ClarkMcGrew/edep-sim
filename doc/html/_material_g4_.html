@@ -11,6 +11,7 @@ Commands for G4MaterialTable<br>
 <tr><td><a href="#c2">printDensityEffParam</a></td></tr>
 <tr><td><a href="#c3">enableDensityEffOnFly</a></td></tr>
 <tr><td><a href="#c4">disableDensityEffOnFly</a></td></tr>
+<tr><td><a href="#c5">ortoPositroniumFraction</a></td></tr>
 </table>
 <h3 id="c0">printElement [<i>elm</i>]</h3>
 <p>
@@ -26,7 +27,8 @@ all - all elements.<br>
 <p>
 print Material from G4MaterialTable.<br>
 all - all materials<br>
-<p>Available at all Geant4 states.
+<p>Available Geant4 state(s) : PreInit 
+Idle 
 <p>Parameters<table border=1>
 <tr><td>pmat
 <td>type s
@@ -36,7 +38,8 @@ all - all materials<br>
 <p>
 print Material from G4DensityEffectData.<br>
 all - all materials<br>
-<p>Available at all Geant4 states.
+<p>Available Geant4 state(s) : PreInit 
+Idle 
 <p>Parameters<table border=1>
 <tr><td>dmat
 <td>type s
@@ -46,7 +49,7 @@ all - all materials<br>
 <p>
 enable accurate computation of density effect.<br>
 all - all materials.<br>
-<p>Available at all Geant4 states.
+<p>Available Geant4 state(s) : PreInit 
 <p>Parameters<table border=1>
 <tr><td>dens
 <td>type s
@@ -56,10 +59,22 @@ all - all materials.<br>
 <p>
 disable accurate computation of density effect.<br>
 all - all materials.<br>
-<p>Available at all Geant4 states.
+<p>Available Geant4 state(s) : PreInit 
 <p>Parameters<table border=1>
 <tr><td>dens
 <td>type s
 <td>Omittable : default value = all
 <td></table>
+<h3 id="c5">ortoPositroniumFraction [<i>matname</i>] [<i>fraction</i>]</h3>
+<p>
+defined orto-positronium fraction for positron annihilation AtRest.<br>
+via material name, all - all materials.<br>
+<p>Available Geant4 state(s) : PreInit 
+<p>Parameters<table border=1>
+<tr><td>matname
+<td>type s
+<td><td><tr><td>fraction
+<td>type d
+<td><td>Parameter range : fraction&gt;=0. &amp;&amp; fraction &lt;=1.
+</table>
 </div></body></html>

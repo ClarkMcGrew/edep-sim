@@ -8,6 +8,8 @@
 #include "globals.hh"
 #include "G4UserRunAction.hh"
 
+#include <vector>
+
 class G4Run;
 class G4Timer;
 namespace EDepSim {class UserRunActionMessenger;}
@@ -17,11 +19,18 @@ class EDepSim::UserRunAction : public G4UserRunAction {
 public:
     UserRunAction();
     virtual ~UserRunAction();
-    
+
 public:
     void BeginOfRunAction(const G4Run*);
     void EndOfRunAction(const G4Run*);
     const G4Timer* GetRunTimer(void) const {return fTimer;};
+
+    /// Add an external user action to be called after the EDepSim
+    /// pre and post actions.  The external action can collect information
+    /// about the run, but must not modify the state of G4, or EDepSim.
+    void AddExternalAction(G4UserRunAction* action) const {
+        fExternalActions.push_back(action);
+    }
 
     /// Set the seed to a new value.  This takes a long since the low-level
     /// random generate expects a long seed.
@@ -52,14 +61,18 @@ private:
 
     /// The time that the run was started.
     G4String fStartTime;
-    
+
     /// The time that the run was stopped.
     G4String fStopTime;
 
     /// The running time for the run.
     G4Timer* fTimer;
-    
+
     /// The cached value of the subrun id.
     int fSubrunId;
+
+    // A list of external run actions that will be called.
+    mutable std::vector<G4UserRunAction*> fExternalActions;
+
 };
 #endif

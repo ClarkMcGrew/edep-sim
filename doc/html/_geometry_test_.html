@@ -94,7 +94,7 @@ By default, overlaps are only checked in the mass world (FALSE).<br>
 <td>type b
 <td>Omittable : default value = 1
 <td></table>
-<h3 id="c7">run</h3>
+<h3 id="c7">run [<i>check_mode</i>]</h3>
 <p>
 Start running the recursive overlap check.<br>
 Volumes are recursively asked to verify for overlaps<br>
@@ -104,5 +104,16 @@ level, performing for all daughters and daughters of<br>
 daughters, etc.<br>
 NOTE: it may take a very long time,<br>
       depending on the geometry complexity !<br>
+Specify the overlap check mode.<br>
+  placed: Check overlaps in all placed volumes (default)<br>
+          This includes every instance of repeated placements<br>
+  logical: Check overlaps only among daughters of each logical volume.<br>
+           This avoids duplicate reports and improves performance.<br>
 <p>Available Geant4 state(s) : Idle 
+<p>Parameters<table border=1>
+<tr><td>check_mode
+<td>type s
+<td>Omittable : default value = placed
+<td>Parameter candidates : placed logical
+</table>
 </div></body></html>

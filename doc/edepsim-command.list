@@ -2,7 +2,6 @@ Command directory path : /
  Sub-directories : 
    /control/   UI control commands.
    /units/   Available units.
-   /profiler/   Profiler controls.
    /particle/   Particle control commands.
    /tracking/   TrackingManager and SteppingManager control commands.
    /geometry/   Geometry control commands.
@@ -27,6 +26,7 @@ UI control commands.
 
  Sub-directories : 
    /control/cout/   Control cout/cerr for local thread.
+   /control/exception/   Managing number of G4Exception warning messages
  Commands : 
    macroPath * Set macro search path with colon-separated list.
    execute * Execute a macro file.
@@ -60,6 +60,8 @@ UI control commands.
    ifInteractive * Execute a macro file if program is running in interactive mode.
    doifBatch * Execute a UI command if program is running in batch mode.
    doifInteractive * Execute a UI command if program is running in interactive mode.
+   recordToMacro * Record the following UI command(s) into a macro file instead of executing it/them.
+   endRecord * Stop recording to a macro
 
 
 Command /control/macroPath
@@ -554,6 +556,29 @@ Parameter : UIcommand
  Parameter type  : s
  Omittable       : False
 
+
+
+Command /control/recordToMacro
+Guidance :
+Record the following UI command(s) into a macro file instead of executing it/them.
+Recording lasts until a command "/control/endRecord" comes.
+if <ifAppend> is set to true (default false), commands are appended to the existing file.
+
+Parameter : fileName
+ Parameter type  : s
+ Omittable       : False
+
+Parameter : ifAppend
+ Parameter type  : b
+ Omittable       : True
+ Default value   : 0
+
+
+
+Command /control/endRecord
+Guidance :
+Stop recording to a macro
+
 Command directory path : /control/cout/
 
 
@@ -659,6 +684,56 @@ Parameter : IgnoreInit
  Omittable       : True
  Default value   : 1
 
+Command directory path : /control/exception/
+
+
+Guidance :
+Managing number of G4Exception warning messages
+
+ Sub-directories : 
+ Commands : 
+   maxExceptionWarning * Set maximum number of G4Exception warning messages to be displayed
+   maxTotalExceptionWarning * Set total maximum number of G4Exception warning messages to be displayed.
+
+
+Command /control/exception/maxExceptionWarning
+Guidance :
+Set maximum number of G4Exception warning messages to be displayed
+for the specified error code.
+Number of warnings is counted for each thread individually.
+Once the number reaches to the maximum, the warning message of specified
+error code won't be printed out any more.
+Number is counted through the program execution if more than one run
+are executed. Count can be reset with the same command.
+If number is set to zero, warning message of the specified error code
+won't be displayed at all.
+
+Parameter : errorCode
+ Parameter type  : s
+ Omittable       : False
+
+Parameter : maxNumber
+ Parameter type  : i
+ Omittable       : False
+ Parameter range : maxNumber >= 0
+
+
+
+Command /control/exception/maxTotalExceptionWarning
+Guidance :
+Set total maximum number of G4Exception warning messages to be displayed.
+Number of warnings is counted for each thread individually.
+Once the number reaches to the maximum, warning messages won't be
+printed out any more.
+Number is counted through the program execution if more than one run
+are executed. Count can be reset with the same command.
+If number is set to zero, warning message won't be displayed at all.
+ Range of parameters : maxNumber >= 0
+
+Parameter : maxNumber
+ Parameter type  : i
+ Omittable       : False
+
 Command directory path : /units/
 
 
@@ -673,308 +748,6 @@ Available units.
 Command /units/list
 Guidance :
 full list of available units.
-
-Command directory path : /profiler/
-
-
-Guidance :
-Profiler controls.
-
- Sub-directories : 
-   /profiler/output/   Control the output modes of the profiler.
-   /profiler/run/   Profiler controls at the G4Run level
-   /profiler/event/   Profiler controls at the G4Event level
-   /profiler/track/   Profiler controls at the G4Track level
-   /profiler/step/   Profiler controls at the G4Step level
-   /profiler/user/   Profiler controls within user code
- Commands : 
-   tree * Display the results as a call-stack hierarchy.
-   flat * Display the results as a flat call-stack
-   timeline * Do not merge duplicate entries at the same call-stack position. May be combined with tree or flat profiles.
-   per_thread * Display the results for each individual thread (default: aggregation)
-   per_event * Display the results for each individual G4event (default: aggregation)
-
-
-Command /profiler/tree
-Guidance :
-Display the results as a call-stack hierarchy.
-
-Parameter : 
- Parameter type  : b
- Omittable       : False
- Default value   : 1
-
-
-
-Command /profiler/flat
-Guidance :
-Display the results as a flat call-stack
-
-Parameter : 
- Parameter type  : b
- Omittable       : False
- Default value   : 0
-
-
-
-Command /profiler/timeline
-Guidance :
-Do not merge duplicate entries at the same call-stack position. May be combined with tree or flat profiles.
-
-Parameter : 
- Parameter type  : b
- Omittable       : False
- Default value   : 0
-
-
-
-Command /profiler/per_thread
-Guidance :
-Display the results for each individual thread (default: aggregation)
-
-Parameter : 
- Parameter type  : b
- Omittable       : False
- Default value   : 0
-
-
-
-Command /profiler/per_event
-Guidance :
-Display the results for each individual G4event (default: aggregation)
-
-Parameter : 
- Parameter type  : b
- Omittable       : False
- Default value   : 0
-
-Command directory path : /profiler/output/
-
-
-Guidance :
-Control the output modes of the profiler.
-
- Sub-directories : 
- Commands : 
-   dart * Enabled Dart output (CTest/CDash data tracking)
-   json * Enabled JSON output
-   text * Enabled text output
-   cout * Enabled output to console
-   plot * Enabled plotting JSON output
-
-
-Command /profiler/output/dart
-Guidance :
-Enabled Dart output (CTest/CDash data tracking)
-
-Parameter : 
- Parameter type  : b
- Omittable       : False
- Default value   : 0
-
-
-
-Command /profiler/output/json
-Guidance :
-Enabled JSON output
-
-Parameter : 
- Parameter type  : b
- Omittable       : False
- Default value   : 1
-
-
-
-Command /profiler/output/text
-Guidance :
-Enabled text output
-
-Parameter : 
- Parameter type  : b
- Omittable       : False
- Default value   : 1
-
-
-
-Command /profiler/output/cout
-Guidance :
-Enabled output to console
-
-Parameter : 
- Parameter type  : b
- Omittable       : False
- Default value   : 0
-
-
-
-Command /profiler/output/plot
-Guidance :
-Enabled plotting JSON output
-
-Parameter : 
- Parameter type  : b
- Omittable       : False
- Default value   : 0
-
-Command directory path : /profiler/run/
-
-
-Guidance :
-Profiler controls at the G4Run level
-
- Sub-directories : 
- Commands : 
-   enable * Record metrics for each G4Run
-   components * Measurment types to record for each G4Run (see `timemory-avail -s`)
-
-
-Command /profiler/run/enable
-Guidance :
-Record metrics for each G4Run
-
-Parameter : 
- Parameter type  : b
- Omittable       : False
- Default value   : 1
-
-
-
-Command /profiler/run/components
-Guidance :
-Measurment types to record for each G4Run (see `timemory-avail -s`)
-
-Parameter : 
- Parameter type  : s
- Omittable       : False
- Default value   : wall_clock, cpu_clock, cpu_util, peak_rss
-
-Command directory path : /profiler/event/
-
-
-Guidance :
-Profiler controls at the G4Event level
-
- Sub-directories : 
- Commands : 
-   enable * Record metrics for each G4Event
-   components * Measurment types to record for each G4Event (see `timemory-avail -s`)
-
-
-Command /profiler/event/enable
-Guidance :
-Record metrics for each G4Event
-
-Parameter : 
- Parameter type  : b
- Omittable       : False
- Default value   : 1
-
-
-
-Command /profiler/event/components
-Guidance :
-Measurment types to record for each G4Event (see `timemory-avail -s`)
-
-Parameter : 
- Parameter type  : s
- Omittable       : False
- Default value   : wall_clock, cpu_clock, cpu_util, peak_rss
-
-Command directory path : /profiler/track/
-
-
-Guidance :
-Profiler controls at the G4Track level
-
- Sub-directories : 
- Commands : 
-   enable * Record metrics for each G4Track
-   components * Measurment types to record for each G4Track (see `timemory-avail -s`)
-
-
-Command /profiler/track/enable
-Guidance :
-Record metrics for each G4Track
-
-Parameter : 
- Parameter type  : b
- Omittable       : False
- Default value   : 0
-
-
-
-Command /profiler/track/components
-Guidance :
-Measurment types to record for each G4Track (see `timemory-avail -s`)
-
-Parameter : 
- Parameter type  : s
- Omittable       : False
- Default value   : wall_clock, cpu_clock, cpu_util, peak_rss
-
-Command directory path : /profiler/step/
-
-
-Guidance :
-Profiler controls at the G4Step level
-
- Sub-directories : 
- Commands : 
-   enable * Record metrics for each G4Step
-   components * Measurment types to record for each G4Step (see `timemory-avail -s`)
-
-
-Command /profiler/step/enable
-Guidance :
-Record metrics for each G4Step
-
-Parameter : 
- Parameter type  : b
- Omittable       : False
- Default value   : 0
-
-
-
-Command /profiler/step/components
-Guidance :
-Measurment types to record for each G4Step (see `timemory-avail -s`)
-
-Parameter : 
- Parameter type  : s
- Omittable       : False
- Default value   : wall_clock, cpu_clock, cpu_util, peak_rss
-
-Command directory path : /profiler/user/
-
-
-Guidance :
-Profiler controls within user code
-
- Sub-directories : 
- Commands : 
-   enable * Record metrics for user specified profiling instances
-   components * Measurment types to record for user specified profiling instances (see `timemory-avail -s`)
-
-
-Command /profiler/user/enable
-Guidance :
-Record metrics for user specified profiling instances
-
-Parameter : 
- Parameter type  : b
- Omittable       : False
- Default value   : 1
-
-
-
-Command /profiler/user/components
-Guidance :
-Measurment types to record for user specified profiling instances (see `timemory-avail -s`)
-
-Parameter : 
- Parameter type  : s
- Omittable       : False
- Default value   : wall_clock, cpu_clock, cpu_util, peak_rss
 
 Command directory path : /particle/
 
@@ -1500,6 +1273,17 @@ level, performing for all daughters and daughters of
 daughters, etc.
 NOTE: it may take a very long time,
       depending on the geometry complexity !
+Specify the overlap check mode.
+  placed: Check overlaps in all placed volumes (default)
+          This includes every instance of repeated placements
+  logical: Check overlaps only among daughters of each logical volume.
+           This avoids duplicate reports and improves performance.
+
+Parameter : check_mode
+ Parameter type  : s
+ Omittable       : True
+ Default value   : placed
+ Candidates      : placed logical
 
 Command directory path : /process/
 
@@ -1513,6 +1297,7 @@ Process Table control commands.
    /process/msc/   Commands for EM scattering processes.
    /process/gconv/   Commands for EM gamma conversion BH5D model.
    /process/dna/   Commands for DNA processes.
+   /process/chem/   ...Title not available...
    /process/had/   Control of general hadronic physics parameters and choices.
    /process/optical/   Commands related to the optical physics simulation engine.
  Commands : 
@@ -1641,6 +1426,9 @@ General commands for EM processes.
    enableSamplingTable * Enable usage of sampling table for secondary generation
    MuDataFromFile * Enable usage of muon data from file
    PhotoeffectBelowKShell * Enable sampling of photoeffect below K-shell
+   UseEPICS2017XS * Use EPICS2017 data for gamma x-ections
+   3GammaAnnihilationOnFly * Enable/disable 3 gamma annihilation on fly
+   PairProd5D * Enable/disable 5D model for e+e- pair production by muons
    max5DMuPairEnergy * Set the max kinetic energy for 5D muon pair production
    lowestElectronEnergy * Set the lowest kinetic energy for e+-
    lowestMuHadEnergy * Set the lowest kinetic energy for muons and hadrons
@@ -1654,6 +1442,7 @@ General commands for EM processes.
    printParameters * Print all EM parameters.
    setNuclearFormFactor * Define type of nuclear form-factor
    setSingleScattering * Define type of e+- single scattering model
+   setPositronAtRestModel * Define model of positron annihilation at rest
    AddPAIRegion * Activate PAI in the G4Region.
    AddEmRegion * Add optional EM configuration for a G4Region.
    setBiasingFactor * Set factor for the process cross section.
@@ -1763,6 +1552,39 @@ Parameter : peK
  Parameter type  : b
  Omittable       : True
  Default value   : 1
+
+
+
+Command /process/em/UseEPICS2017XS
+Guidance :
+Use EPICS2017 data for gamma x-ections
+
+Parameter : pepics
+ Parameter type  : b
+ Omittable       : True
+ Default value   : 0
+
+
+
+Command /process/em/3GammaAnnihilationOnFly
+Guidance :
+Enable/disable 3 gamma annihilation on fly
+
+Parameter : f3gamma
+ Parameter type  : b
+ Omittable       : True
+ Default value   : 0
+
+
+
+Command /process/em/PairProd5D
+Guidance :
+Enable/disable 5D model for e+e- pair production by muons
+
+Parameter : ee5D
+ Parameter type  : b
+ Omittable       : True
+ Default value   : 0
 
 
 
@@ -1921,6 +1743,17 @@ Parameter : SS
  Parameter type  : s
  Omittable       : True
  Candidates      : WVI Mott DPWA
+
+
+
+Command /process/em/setPositronAtRestModel
+Guidance :
+Define model of positron annihilation at rest
+
+Parameter : Posi
+ Parameter type  : s
+ Omittable       : True
+ Candidates      : Simple Allison OrePawell OrePowellPolar
 
 
 
@@ -2303,6 +2136,8 @@ Commands for energy loss processes.
    LambdaFactor * Set lambdaFactor parameter for integral option
    verbose * Set verbose level for EM physics
    setFluctModel * Define type of energy loss fluctuation model
+   enableFluctForRegion * Enable dEdx fluctuations for G4Region
+   disableFluctForRegion * Disable dEdx fluctuations for G4Region
    subsecRegion * Enable subcut generation per region.
    StepFunction * Set the energy loss step limitation parameters for e+-.
    StepFunctionMuHad * Set the energy loss step limitation parameters for muon/hadron.
@@ -2490,6 +2325,26 @@ Parameter : Fluc1
  Parameter type  : s
  Omittable       : True
  Candidates      : Dummy Universal Urban
+
+
+
+Command /process/eLoss/enableFluctForRegion
+Guidance :
+Enable dEdx fluctuations for G4Region
+
+Parameter : Fluc2
+ Parameter type  : s
+ Omittable       : True
+
+
+
+Command /process/eLoss/disableFluctForRegion
+Guidance :
+Disable dEdx fluctuations for G4Region
+
+Parameter : Fluc3
+ Parameter type  : s
+ Omittable       : True
 
 
 
@@ -2915,6 +2770,21 @@ Parameter : dnaSol
  Omittable       : True
  Candidates      : Ritchie1994 Terrisol1990 Meesungnoen2002 Kreipl2009 Meesungnoen2002_amorphous
 
+Command directory path : /process/chem/
+ Sub-directories : 
+ Commands : 
+   TimeStepModel * The name of DNA chemistry time step model
+
+
+Command /process/chem/TimeStepModel
+Guidance :
+The name of DNA chemistry time step model
+
+Parameter : TimeStepModel
+ Parameter type  : s
+ Omittable       : True
+ Candidates      : SBS IRT IRT_syn
+
 Command directory path : /process/had/
 
 
@@ -2928,6 +2798,7 @@ Control of general hadronic physics parameters and choices.
    verbose * Set verbose level: 0 (minimum), 1 (default), 2 (higher), ... (even higher)
    maxEnergy * Max energy for hadronics (default: 100 TeV)
    enableCRCoalescence * Enable Cosmic Ray (CR) coalescence.
+   printParameters * Print all Hadronic parameters.
 
 
 Command /process/had/verbose
@@ -2967,6 +2838,12 @@ Parameter : EnableCRCoalescence
  Omittable       : False
  Default value   : 0
 
+
+
+Command /process/had/printParameters
+Guidance :
+Print all Hadronic parameters.
+
 Command directory path : /process/had/deex/
 
 
@@ -2981,6 +2858,7 @@ Commands for nuclear de-excitation module.
    isomerProduction * Enable/disable simulation of long lived isomers.
    maxTwoJ * Set max value for 2J for simulation of correlated gamma emission.
    verbose * Set verbosity level.
+   TypeXS * Defined type of inverse x-section
 
 
 Command /process/had/deex/readICdata
@@ -3020,7 +2898,7 @@ Command /process/had/deex/isomerProduction
 Guidance :
 Enable/disable simulation of long lived isomers.
 
-Parameter : corrG
+Parameter : isoProd
  Parameter type  : b
  Omittable       : True
  Default value   : 0
@@ -3046,6 +2924,24 @@ Parameter : verb
  Parameter type  : i
  Omittable       : True
  Default value   : 1
+
+
+
+Command /process/had/deex/TypeXS
+Guidance :
+Defined type of inverse x-section
+  model      : PRECO or DEEX
+  type of XS : Dostrovski, PARTICLEXS, Chatterjee, Kalbach
+
+Parameter : modName
+ Parameter type  : s
+ Omittable       : False
+ Candidates      : PRECO DEEX
+
+Parameter : TypeXS
+ Parameter type  : s
+ Omittable       : False
+ Candidates      : Dostrovski, PARTICLEXS, Chatterjee, Kalbach
 
 Command directory path : /process/had/models/
  Sub-directories : 
@@ -3099,6 +2995,7 @@ Commands related to the optical physics simulation engine.
    processActivation * Activate/deactivate the specified optical process
    verbose * Set default verbose level for optical processes
    printParameters * Print all optical parameters.
+   XRayModel * Add XRay model per G4LogicalVolume.
 
 
 Command /process/optical/processActivation
@@ -3135,6 +3032,22 @@ Command /process/optical/printParameters
 Guidance :
 Print all optical parameters.
 
+
+
+Command /process/optical/XRayModel
+Guidance :
+Add XRay model per G4LogicalVolume.
+  lvName   : G4LogicalVolume name
+  xrayType : X-Ray model type
+
+Parameter : lvName
+ Parameter type  : s
+ Omittable       : False
+
+Parameter : xrayT
+ Parameter type  : s
+ Omittable       : False
+
 Command directory path : /process/optical/cerenkov/
 
 
@@ -3146,6 +3059,7 @@ Cerenkov process commands
    setMaxPhotons * Set maximum number of photons per step
    setMaxBetaChange * Set maximum change of beta of parent particle per step (in percent)
    setStackPhotons * Set whether or not to stack secondary Cerenkov photons
+   setOffloadPhotons * Set whether or not to offload secondary Cerenkov photons
    setTrackSecondariesFirst * Whether to track secondary Cerenkov photons before the primary.
    verbose * Verbose level for Cerenkov process.
 
@@ -3182,6 +3096,17 @@ Parameter :
 
 
 
+Command /process/optical/cerenkov/setOffloadPhotons
+Guidance :
+Set whether or not to offload secondary Cerenkov photons
+
+Parameter : CerenkovOffloadPhotons
+ Parameter type  : b
+ Omittable       : False
+ Default value   : 0
+
+
+
 Command /process/optical/cerenkov/setTrackSecondariesFirst
 Guidance :
 Whether to track secondary Cerenkov photons before the primary.
@@ -3214,6 +3139,7 @@ Scintillation process commands
    setTrackInfo * Activate/Inactivate scintillation TrackInformation
    setFiniteRiseTime * Set option of a finite rise-time for G4Scintillation
    setStackPhotons * Set whether or not to stack secondary Scintillation photons
+   setOffloadPhotons * Set whether or not to offload secondary scintillation photons
    setTrackSecondariesFirst * Whether to track scintillation secondaries before primary.
    verbose * Verbose level for scintillation process.
 
@@ -3258,6 +3184,17 @@ Parameter : ScintillationStackPhotons
  Parameter type  : b
  Omittable       : True
  Default value   : 1
+
+
+
+Command /process/optical/scintillation/setOffloadPhotons
+Guidance :
+Set whether or not to offload secondary scintillation photons
+
+Parameter : ScintillationOffloadPhotons
+ Parameter type  : b
+ Omittable       : False
+ Default value   : 0
 
 
 
@@ -3649,6 +3586,7 @@ Run control commands.
    constructScoringWorlds * Construct scoring parallel world(s) if defined.
    storeRndmStatToEvent * Flag to store rndm status to G4Event object.
    workersProcessCmds * Force workers to process current stack of UI commands.
+   trajectoriesToBeMerged * Merge trajectories created in sub-event parallel mode.
    setCut * Set default cut value 
    setCutForAGivenParticle * Set a cut value to a specific particle 
    getCutForAGivenParticle * Get a cut value to a specific particle 
@@ -3701,7 +3639,10 @@ Set the Verbose level of G4RunManager.
  0 : Silent (default)
  1 : Display main topics
  2 : Display main topics and run summary
- Range of parameters : level >=0 && level <=2
+ 3 : Display some additional information
+ 4 : Display detailed information
+ N.B. 3 or 4 may cause significant performance degradation
+ Range of parameters : level >=0 && level <=4
 
 Parameter : level
  Parameter type  : i
@@ -3792,8 +3733,9 @@ by the master G4MTRunManager.
    group of N events. This option is reserved for the future use when
    Geant4 allows number of threads to be dynamically changed during an
    event loop.
-This command is valid only for multi-threaded mode.
-This command is ignored if it is issued in sequential mode.
+This command is valid only for multi-threaded event-level parallel mode.
+This command is ignored if it is issued in sequential mode or in
+sub-event parallel mode.
 
 Parameter : N
  Parameter type  : i
@@ -3945,6 +3887,23 @@ Command /run/workersProcessCmds
 Guidance :
 Force workers to process current stack of UI commands.
 This commands is meaningful only in MT mode.
+
+
+
+Command /run/trajectoriesToBeMerged
+Guidance :
+Merge trajectories created in sub-event parallel mode.
+In sub-event parallel mode, trajectories created in worker 
+threads are not merged to the event in the master thread by default 
+due to the performance overhead caused by copying them.
+This command enables the merging.
+/tracking/storeTrajectory command must be set to create trajectories.
+This command is valid only for sub-event parallel mode.
+
+Parameter : flag
+ Parameter type  : b
+ Omittable       : True
+ Default value   : 1
 
 
 
@@ -4288,6 +4247,7 @@ EDepSim detector control.
  Sub-directories : 
    /edep/gdml/   Control over the gdml file.
    /edep/material/   Extra control over the material definitions.
+   /edep/actions/   Control EDepSim user actions.
    /edep/phys/   Control the physics lists
    /edep/random/   Control of the random seed number.
    /edep/db/   Output file control commands.
@@ -4487,6 +4447,165 @@ Parameter : Unit
  Parameter type  : s
  Omittable       : False
 
+Command directory path : /edep/actions/
+
+
+Guidance :
+Control EDepSim user actions.
+
+ Sub-directories : 
+ Commands : 
+   loadUpdateGeometry * Load an external function that will construct a user action
+   loadUserRunAction * Load function to construct a user action
+   loadUserEventAction * Load function to construct a user action
+   loadUserTrackAction * Load function to construct a user action
+   loadUserStepAction * Load function to construct a user action
+
+
+Command /edep/actions/loadUpdateGeometry
+Guidance :
+Load an external function that will construct a user action
+  called when the geometry changes.
+
+  ENVIRONMENT VARIABLE SUBSTITUTION: Environment variables in the
+  path will be expanded, but to work around the G4 macro language
+  they must have the syntax $ENV_VAR or $(ENV_VAR) and not use the
+  they must have the syntax $ENV_VAR or $(ENV_VAR) and not use the
+  more standard ${ENV_VAR} syntax.
+
+Parameter : loadPath
+The path to the shared library. Environment variables will be expanded.
+ Parameter type  : s
+ Omittable       : False
+
+Parameter : symbol
+Symbol called: signature EDepSim::EDepSimUserDetectorConstruction::UserUpdateGeometry* (*)(char* option)
+ Parameter type  : s
+ Omittable       : True
+ Default value   : CreateUpdateGeometry
+
+Parameter : userOption
+A user defined value.
+ Parameter type  : s
+ Omittable       : True
+ Default value   : unspecified
+
+
+
+Command /edep/actions/loadUserRunAction
+Guidance :
+Load function to construct a user action
+
+  ENVIRONMENT VARIABLE SUBSTITUTION: Environment variables in the
+  path will be expanded, but to work around the G4 macro language
+  they must have the syntax $ENV_VAR or $(ENV_VAR) and not use the
+  they must have the syntax $ENV_VAR or $(ENV_VAR) and not use the
+  more standard ${ENV_VAR} syntax.
+
+Parameter : path
+The library path
+ Parameter type  : s
+ Omittable       : False
+
+Parameter : symbol
+Symbol with signature G4UserRunAction* (*)(char* option)
+ Parameter type  : s
+ Omittable       : True
+ Default value   : CreateUserRunAction
+
+Parameter : option
+A user defined value.
+ Parameter type  : s
+ Omittable       : True
+ Default value   : unspecified
+
+
+
+Command /edep/actions/loadUserEventAction
+Guidance :
+Load function to construct a user action
+
+  ENVIRONMENT VARIABLE SUBSTITUTION: Environment variables in the
+  path will be expanded, but to work around the G4 macro language
+  they must have the syntax $ENV_VAR or $(ENV_VAR) and not use the
+  they must have the syntax $ENV_VAR or $(ENV_VAR) and not use the
+  more standard ${ENV_VAR} syntax.
+
+Parameter : path
+The library path
+ Parameter type  : s
+ Omittable       : False
+
+Parameter : symbol
+Symbol with signature G4UserEventAction* (*)(char* option)
+ Parameter type  : s
+ Omittable       : True
+ Default value   : CreateUserEventAction
+
+Parameter : option
+A user defined value.
+ Parameter type  : s
+ Omittable       : True
+ Default value   : unspecified
+
+
+
+Command /edep/actions/loadUserTrackAction
+Guidance :
+Load function to construct a user action
+
+  ENVIRONMENT VARIABLE SUBSTITUTION: Environment variables in the
+  path will be expanded, but to work around the G4 macro language
+  they must have the syntax $ENV_VAR or $(ENV_VAR) and not use the
+  they must have the syntax $ENV_VAR or $(ENV_VAR) and not use the
+  more standard ${ENV_VAR} syntax.
+
+Parameter : path
+The library path
+ Parameter type  : s
+ Omittable       : False
+
+Parameter : symbol
+Symbol with signature G4UserTrackAction* (*)(char* option)
+ Parameter type  : s
+ Omittable       : True
+ Default value   : CreateUserTrackAction
+
+Parameter : option
+A user defined value.
+ Parameter type  : s
+ Omittable       : True
+ Default value   : unspecified
+
+
+
+Command /edep/actions/loadUserStepAction
+Guidance :
+Load function to construct a user action
+
+  ENVIRONMENT VARIABLE SUBSTITUTION: Environment variables in the
+  path will be expanded, but to work around the G4 macro language
+  they must have the syntax $ENV_VAR or $(ENV_VAR) and not use the
+  they must have the syntax $ENV_VAR or $(ENV_VAR) and not use the
+  more standard ${ENV_VAR} syntax.
+
+Parameter : path
+The library path
+ Parameter type  : s
+ Omittable       : False
+
+Parameter : symbol
+Symbol with signature G4UserStepAction* (*)(char* option)
+ Parameter type  : s
+ Omittable       : True
+ Default value   : CreateUserStepAction
+
+Parameter : option
+A user defined value.
+ Parameter type  : s
+ Omittable       : True
+ Default value   : unspecified
+
 Command directory path : /edep/phys/
 
 
@@ -4658,6 +4777,7 @@ Set various parameters
    clearBoundaries * Remove all of the boundaries for trajectory points.
    trajectoryRule * Add a rule to save a trajectory point.
    clearTrajectoryRules * Clear all of the trajectory point save rules.
+   savePhotonTraj * ...Title not available...
 
 
 Command /edep/db/set/gammaThreshold
@@ -4708,6 +4828,7 @@ Parameter : Unit
 Command /edep/db/set/saveAllPrimTraj
 Guidance :
 Control which primaries have saved trajectories -- True: Save all prim. part. trajectories. False: Save prim. that ultimately deposit energy in SD.
+Control if photon trajectories are placed into the trajectory stack so tracking is a little faster and uses less resources. True: Photon trajectories will be saved for vanilla optical photon tracking. False: Photon trajectories are not created.
 
 Parameter : 
  Parameter type  : b
@@ -4808,6 +4929,15 @@ Parameter : energy unit
 Command /edep/db/set/clearTrajectoryRules
 Guidance :
 Clear all of the trajectory point save rules.
+
+
+
+Command /edep/db/set/savePhotonTraj
+Guidance :
+
+Parameter : 
+ Parameter type  : b
+ Omittable       : False
 
 Command directory path : /Captain/
 
@@ -7453,6 +7583,7 @@ Commands for G4MaterialTable
    printDensityEffParam * print Material from G4DensityEffectData.
    enableDensityEffOnFly * enable accurate computation of density effect.
    disableDensityEffOnFly * disable accurate computation of density effect.
+   ortoPositroniumFraction * defined orto-positronium fraction for positron annihilation AtRest.
 
 
 Command /material/g4/printElement
@@ -7512,6 +7643,22 @@ Parameter : dens
  Parameter type  : s
  Omittable       : True
  Default value   : all
+
+
+
+Command /material/g4/ortoPositroniumFraction
+Guidance :
+defined orto-positronium fraction for positron annihilation AtRest.
+via material name, all - all materials.
+
+Parameter : matname
+ Parameter type  : s
+ Omittable       : False
+
+Parameter : fraction
+ Parameter type  : d
+ Omittable       : False
+ Parameter range : fraction>=0. && fraction <=1.
 
 Command directory path : /physics_lists/
 
@@ -7868,8 +8015,9 @@ Guidance :
 Control kinematics generators.
 
  Sub-directories : 
-   /generator/kinematics/hepevt/   ...Title not available...
+   /generator/kinematics/hepevt/   Control of the hepevt kinematics factory.
    /generator/kinematics/rooTracker/   Control of the rooTracker kinematics factory.
+   /generator/kinematics/external/   Control of the external kinematics factory.
  Commands : 
    set * Set the current kinematics factory.
 
@@ -7881,9 +8029,14 @@ Set the current kinematics factory.
 Parameter : Factory
  Parameter type  : s
  Omittable       : False
- Candidates      : gps hepevt rock rooTracker 
+ Candidates      : external gps hepevt rock rooTracker 
 
 Command directory path : /generator/kinematics/hepevt/
+
+
+Guidance :
+Control of the hepevt kinematics factory.
+
  Sub-directories : 
  Commands : 
    input * Set the input file.
@@ -7982,6 +8135,86 @@ Set the first event to generate.
 
 Parameter : number
  Parameter type  : i
+ Omittable       : False
+
+Command directory path : /generator/kinematics/external/
+
+
+Guidance :
+Control of the external kinematics factory.
+
+ Sub-directories : 
+ Commands : 
+   loadGenerator * Load a kinematics generator overriding the library, symbol and option commands.
+   library * Set the shared library path with environ expansion.
+   symbol * Set the symbol name called to create the generator.
+   option * Set the user option for the external generator.
+
+
+Command /generator/kinematics/external/loadGenerator
+Guidance :
+Load a kinematics generator overriding the library, symbol and option commands.
+
+  ENVIRONMENT VARIABLE SUBSTITUTION: Environment variables in the
+  path will be expanded, but to work around the G4 macro language
+  they must have the syntax $ENV_VAR or $(ENV_VAR) and not use the
+  they must have the syntax $ENV_VAR or $(ENV_VAR) and not use the
+  more standard ${ENV_VAR} syntax.
+
+Parameter : library
+The path to the shared library. Environment variables will be expanded.
+ Parameter type  : s
+ Omittable       : False
+
+Parameter : symbol
+Symbol name to call. [EDepSim::VKinemGenerator* (*)(char* option)]
+ Parameter type  : s
+ Omittable       : True
+ Default value   : CreateKinematicsGenerator
+
+Parameter : option
+A user defined option for the generator.
+ Parameter type  : s
+ Omittable       : False
+
+
+
+Command /generator/kinematics/external/library
+Guidance :
+Set the shared library path with environ expansion.
+
+  ENVIRONMENT VARIABLE SUBSTITUTION: Environment variables in the
+  path will be expanded, but to work around the G4 macro language
+  they must have the syntax $ENV_VAR or $(ENV_VAR) and not use the
+  they must have the syntax $ENV_VAR or $(ENV_VAR) and not use the
+  more standard ${ENV_VAR} syntax.
+
+Parameter : path
+ Parameter type  : s
+ Omittable       : False
+
+
+
+Command /generator/kinematics/external/symbol
+Guidance :
+Set the symbol name called to create the generator.
+    The creation routine must be defined with the signature:
+    [EDepSim::VKinemGenerator* ()(char* option)]
+
+Parameter : symbol-name
+ Parameter type  : s
+ Omittable       : False
+
+
+
+Command /generator/kinematics/external/option
+Guidance :
+Set the user option for the external generator.
+   The option is passed directly to the creation routine
+   and can be used there for any purpose.
+
+Parameter : user-option
+ Parameter type  : s
  Omittable       : False
 
 Command directory path : /generator/position/
@@ -8596,6 +8829,7 @@ General Particle Source control commands.
    polarization * Set polarization.
    number * Set number of particles to be generated per vertex.
    verbose * Set Verbose level for GPS
+   checkVolume * Switch on/off the check if the vertex position is inside the world volume.
 
 
 Command /gps/List
@@ -8615,7 +8849,7 @@ Parameter : particleName
  Parameter type  : s
  Omittable       : True
  Default value   : geantino
- Candidates      : B+ B- B0 Bc+ Bc- Bs0 D+ D- D0 Ds+ Ds- GenericIon He3 J/psi N(1440)+ N(1440)0 N(1520)+ N(1520)0 N(1535)+ N(1535)0 N(1650)+ N(1650)0 N(1675)+ N(1675)0 N(1680)+ N(1680)0 N(1700)+ N(1700)0 N(1710)+ N(1710)0 N(1720)+ N(1720)0 N(1900)+ N(1900)0 N(1990)+ N(1990)0 N(2090)+ N(2090)0 N(2190)+ N(2190)0 N(2220)+ N(2220)0 N(2250)+ N(2250)0 Upsilon a0(1450)+ a0(1450)- a0(1450)0 a0(980)+ a0(980)- a0(980)0 a1(1260)+ a1(1260)- a1(1260)0 a2(1320)+ a2(1320)- a2(1320)0 alpha anti_B0 anti_Bs0 anti_D0 anti_He3 anti_N(1440)+ anti_N(1440)0 anti_N(1520)+ anti_N(1520)0 anti_N(1535)+ anti_N(1535)0 anti_N(1650)+ anti_N(1650)0 anti_N(1675)+ anti_N(1675)0 anti_N(1680)+ anti_N(1680)0 anti_N(1700)+ anti_N(1700)0 anti_N(1710)+ anti_N(1710)0 anti_N(1720)+ anti_N(1720)0 anti_N(1900)+ anti_N(1900)0 anti_N(1990)+ anti_N(1990)0 anti_N(2090)+ anti_N(2090)0 anti_N(2190)+ anti_N(2190)0 anti_N(2220)+ anti_N(2220)0 anti_N(2250)+ anti_N(2250)0 anti_alpha anti_b_quark anti_bb1_diquark anti_bc0_diquark anti_bc1_diquark anti_bd0_diquark anti_bd1_diquark anti_bs0_diquark anti_bs1_diquark anti_bu0_diquark anti_bu1_diquark anti_c_quark anti_cc1_diquark anti_cd0_diquark anti_cd1_diquark anti_cs0_diquark anti_cs1_diquark anti_cu0_diquark anti_cu1_diquark anti_d_quark anti_dd1_diquark anti_delta(1600)+ anti_delta(1600)++ anti_delta(1600)- anti_delta(1600)0 anti_delta(1620)+ anti_delta(1620)++ anti_delta(1620)- anti_delta(1620)0 anti_delta(1700)+ anti_delta(1700)++ anti_delta(1700)- anti_delta(1700)0 anti_delta(1900)+ anti_delta(1900)++ anti_delta(1900)- anti_delta(1900)0 anti_delta(1905)+ anti_delta(1905)++ anti_delta(1905)- anti_delta(1905)0 anti_delta(1910)+ anti_delta(1910)++ anti_delta(1910)- anti_delta(1910)0 anti_delta(1920)+ anti_delta(1920)++ anti_delta(1920)- anti_delta(1920)0 anti_delta(1930)+ anti_delta(1930)++ anti_delta(1930)- anti_delta(1930)0 anti_delta(1950)+ anti_delta(1950)++ anti_delta(1950)- anti_delta(1950)0 anti_delta+ anti_delta++ anti_delta- anti_delta0 anti_deuteron anti_doublehyperH4 anti_doublehyperdoubleneutron anti_hyperH4 anti_hyperHe5 anti_hyperalpha anti_hypertriton anti_k(1460)0 anti_k0_star(1430)0 anti_k1(1270)0 anti_k1(1400)0 anti_k2(1770)0 anti_k2_star(1430)0 anti_k2_star(1980)0 anti_k3_star(1780)0 anti_k_star(1410)0 anti_k_star(1680)0 anti_k_star0 anti_kaon0 anti_lambda anti_lambda(1405) anti_lambda(1520) anti_lambda(1600) anti_lambda(1670) anti_lambda(1690) anti_lambda(1800) anti_lambda(1810) anti_lambda(1820) anti_lambda(1830) anti_lambda(1890) anti_lambda(2100) anti_lambda(2110) anti_lambda_b anti_lambda_c+ anti_neutron anti_nu_e anti_nu_mu anti_nu_tau anti_omega- anti_omega_b- anti_omega_c0 anti_proton anti_s_quark anti_sd0_diquark anti_sd1_diquark anti_sigma(1385)+ anti_sigma(1385)- anti_sigma(1385)0 anti_sigma(1660)+ anti_sigma(1660)- anti_sigma(1660)0 anti_sigma(1670)+ anti_sigma(1670)- anti_sigma(1670)0 anti_sigma(1750)+ anti_sigma(1750)- anti_sigma(1750)0 anti_sigma(1775)+ anti_sigma(1775)- anti_sigma(1775)0 anti_sigma(1915)+ anti_sigma(1915)- anti_sigma(1915)0 anti_sigma(1940)+ anti_sigma(1940)- anti_sigma(1940)0 anti_sigma(2030)+ anti_sigma(2030)- anti_sigma(2030)0 anti_sigma+ anti_sigma- anti_sigma0 anti_sigma_b+ anti_sigma_b- anti_sigma_b0 anti_sigma_c+ anti_sigma_c++ anti_sigma_c0 anti_ss1_diquark anti_su0_diquark anti_su1_diquark anti_t_quark anti_triton anti_u_quark anti_ud0_diquark anti_ud1_diquark anti_uu1_diquark anti_xi(1530)- anti_xi(1530)0 anti_xi(1690)- anti_xi(1690)0 anti_xi(1820)- anti_xi(1820)0 anti_xi(1950)- anti_xi(1950)0 anti_xi(2030)- anti_xi(2030)0 anti_xi- anti_xi0 anti_xi_b- anti_xi_b0 anti_xi_c+ anti_xi_c0 b1(1235)+ b1(1235)- b1(1235)0 b_quark bb1_diquark bc0_diquark bc1_diquark bd0_diquark bd1_diquark bs0_diquark bs1_diquark bu0_diquark bu1_diquark c_quark cc1_diquark cd0_diquark cd1_diquark chargedgeantino cs0_diquark cs1_diquark cu0_diquark cu1_diquark d_quark dd1_diquark delta(1600)+ delta(1600)++ delta(1600)- delta(1600)0 delta(1620)+ delta(1620)++ delta(1620)- delta(1620)0 delta(1700)+ delta(1700)++ delta(1700)- delta(1700)0 delta(1900)+ delta(1900)++ delta(1900)- delta(1900)0 delta(1905)+ delta(1905)++ delta(1905)- delta(1905)0 delta(1910)+ delta(1910)++ delta(1910)- delta(1910)0 delta(1920)+ delta(1920)++ delta(1920)- delta(1920)0 delta(1930)+ delta(1930)++ delta(1930)- delta(1930)0 delta(1950)+ delta(1950)++ delta(1950)- delta(1950)0 delta+ delta++ delta- delta0 deuteron doublehyperH4 doublehyperdoubleneutron e+ e- eta eta(1295) eta(1405) eta(1475) eta2(1645) eta2(1870) eta_prime etac f0(1370) f0(1500) f0(1710) f0(500) f0(980) f1(1285) f1(1420) f2(1270) f2(1810) f2(2010) f2_prime(1525) gamma geantino gluon h1(1170) h1(1380) hyperH4 hyperHe5 hyperalpha hypertriton k(1460)+ k(1460)- k(1460)0 k0_star(1430)+ k0_star(1430)- k0_star(1430)0 k1(1270)+ k1(1270)- k1(1270)0 k1(1400)+ k1(1400)- k1(1400)0 k2(1770)+ k2(1770)- k2(1770)0 k2_star(1430)+ k2_star(1430)- k2_star(1430)0 k2_star(1980)+ k2_star(1980)- k2_star(1980)0 k3_star(1780)+ k3_star(1780)- k3_star(1780)0 k_star(1410)+ k_star(1410)- k_star(1410)0 k_star(1680)+ k_star(1680)- k_star(1680)0 k_star+ k_star- k_star0 kaon+ kaon- kaon0 kaon0L kaon0S lambda lambda(1405) lambda(1520) lambda(1600) lambda(1670) lambda(1690) lambda(1800) lambda(1810) lambda(1820) lambda(1830) lambda(1890) lambda(2100) lambda(2110) lambda_b lambda_c+ mu+ mu- neutron nu_e nu_mu nu_tau omega omega(1420) omega(1650) omega- omega3(1670) omega_b- omega_c0 opticalphoton phi phi(1680) phi3(1850) pi(1300)+ pi(1300)- pi(1300)0 pi+ pi- pi0 pi2(1670)+ pi2(1670)- pi2(1670)0 proton rho(1450)+ rho(1450)- rho(1450)0 rho(1700)+ rho(1700)- rho(1700)0 rho+ rho- rho0 rho3(1690)+ rho3(1690)- rho3(1690)0 s_quark sd0_diquark sd1_diquark sigma(1385)+ sigma(1385)- sigma(1385)0 sigma(1660)+ sigma(1660)- sigma(1660)0 sigma(1670)+ sigma(1670)- sigma(1670)0 sigma(1750)+ sigma(1750)- sigma(1750)0 sigma(1775)+ sigma(1775)- sigma(1775)0 sigma(1915)+ sigma(1915)- sigma(1915)0 sigma(1940)+ sigma(1940)- sigma(1940)0 sigma(2030)+ sigma(2030)- sigma(2030)0 sigma+ sigma- sigma0 sigma_b+ sigma_b- sigma_b0 sigma_c+ sigma_c++ sigma_c0 ss1_diquark su0_diquark su1_diquark t_quark tau+ tau- thermalelectron triton u_quark ud0_diquark ud1_diquark uu1_diquark xi(1530)- xi(1530)0 xi(1690)- xi(1690)0 xi(1820)- xi(1820)0 xi(1950)- xi(1950)0 xi(2030)- xi(2030)0 xi- xi0 xi_b- xi_b0 xi_c+ xi_c0 ion 
+ Candidates      : B+ B- B0 Bc+ Bc- Bs0 D+ D- D0 Ds+ Ds- GenericIon He3 J/psi N(1440)+ N(1440)0 N(1520)+ N(1520)0 N(1535)+ N(1535)0 N(1650)+ N(1650)0 N(1675)+ N(1675)0 N(1680)+ N(1680)0 N(1700)+ N(1700)0 N(1710)+ N(1710)0 N(1720)+ N(1720)0 N(1900)+ N(1900)0 N(1990)+ N(1990)0 N(2090)+ N(2090)0 N(2190)+ N(2190)0 N(2220)+ N(2220)0 N(2250)+ N(2250)0 Upsilon a0(1450)+ a0(1450)- a0(1450)0 a0(980)+ a0(980)- a0(980)0 a1(1260)+ a1(1260)- a1(1260)0 a2(1320)+ a2(1320)- a2(1320)0 alpha anti_B0 anti_Bs0 anti_D0 anti_He3 anti_N(1440)+ anti_N(1440)0 anti_N(1520)+ anti_N(1520)0 anti_N(1535)+ anti_N(1535)0 anti_N(1650)+ anti_N(1650)0 anti_N(1675)+ anti_N(1675)0 anti_N(1680)+ anti_N(1680)0 anti_N(1700)+ anti_N(1700)0 anti_N(1710)+ anti_N(1710)0 anti_N(1720)+ anti_N(1720)0 anti_N(1900)+ anti_N(1900)0 anti_N(1990)+ anti_N(1990)0 anti_N(2090)+ anti_N(2090)0 anti_N(2190)+ anti_N(2190)0 anti_N(2220)+ anti_N(2220)0 anti_N(2250)+ anti_N(2250)0 anti_alpha anti_b_quark anti_bb1_diquark anti_bc0_diquark anti_bc1_diquark anti_bd0_diquark anti_bd1_diquark anti_bs0_diquark anti_bs1_diquark anti_bu0_diquark anti_bu1_diquark anti_c_quark anti_cc1_diquark anti_cd0_diquark anti_cd1_diquark anti_cs0_diquark anti_cs1_diquark anti_cu0_diquark anti_cu1_diquark anti_d_quark anti_dd1_diquark anti_delta(1600)+ anti_delta(1600)++ anti_delta(1600)- anti_delta(1600)0 anti_delta(1620)+ anti_delta(1620)++ anti_delta(1620)- anti_delta(1620)0 anti_delta(1700)+ anti_delta(1700)++ anti_delta(1700)- anti_delta(1700)0 anti_delta(1900)+ anti_delta(1900)++ anti_delta(1900)- anti_delta(1900)0 anti_delta(1905)+ anti_delta(1905)++ anti_delta(1905)- anti_delta(1905)0 anti_delta(1910)+ anti_delta(1910)++ anti_delta(1910)- anti_delta(1910)0 anti_delta(1920)+ anti_delta(1920)++ anti_delta(1920)- anti_delta(1920)0 anti_delta(1930)+ anti_delta(1930)++ anti_delta(1930)- anti_delta(1930)0 anti_delta(1950)+ anti_delta(1950)++ anti_delta(1950)- anti_delta(1950)0 anti_delta+ anti_delta++ anti_delta- anti_delta0 anti_deuteron anti_doublehyperH4 anti_doublehyperdoubleneutron anti_hyperH4 anti_hyperHe5 anti_hyperalpha anti_hypertriton anti_k(1460)0 anti_k0_star(1430)0 anti_k1(1270)0 anti_k1(1400)0 anti_k2(1770)0 anti_k2_star(1430)0 anti_k2_star(1980)0 anti_k3_star(1780)0 anti_k_star(1410)0 anti_k_star(1680)0 anti_k_star0 anti_kaon0 anti_lambda anti_lambda(1405) anti_lambda(1520) anti_lambda(1600) anti_lambda(1670) anti_lambda(1690) anti_lambda(1800) anti_lambda(1810) anti_lambda(1820) anti_lambda(1830) anti_lambda(1890) anti_lambda(2100) anti_lambda(2110) anti_lambda_b anti_lambda_c+ anti_neutron anti_nu_e anti_nu_mu anti_nu_tau anti_omega- anti_omega_b- anti_omega_c0 anti_proton anti_s_quark anti_sd0_diquark anti_sd1_diquark anti_sigma(1385)+ anti_sigma(1385)- anti_sigma(1385)0 anti_sigma(1660)+ anti_sigma(1660)- anti_sigma(1660)0 anti_sigma(1670)+ anti_sigma(1670)- anti_sigma(1670)0 anti_sigma(1750)+ anti_sigma(1750)- anti_sigma(1750)0 anti_sigma(1775)+ anti_sigma(1775)- anti_sigma(1775)0 anti_sigma(1915)+ anti_sigma(1915)- anti_sigma(1915)0 anti_sigma(1940)+ anti_sigma(1940)- anti_sigma(1940)0 anti_sigma(2030)+ anti_sigma(2030)- anti_sigma(2030)0 anti_sigma+ anti_sigma- anti_sigma0 anti_sigma_b+ anti_sigma_b- anti_sigma_b0 anti_sigma_c+ anti_sigma_c++ anti_sigma_c0 anti_ss1_diquark anti_su0_diquark anti_su1_diquark anti_t_quark anti_triton anti_u_quark anti_ud0_diquark anti_ud1_diquark anti_uu1_diquark anti_xi(1530)- anti_xi(1530)0 anti_xi(1690)- anti_xi(1690)0 anti_xi(1820)- anti_xi(1820)0 anti_xi(1950)- anti_xi(1950)0 anti_xi(2030)- anti_xi(2030)0 anti_xi- anti_xi0 anti_xi_b- anti_xi_b0 anti_xi_c+ anti_xi_c0 b1(1235)+ b1(1235)- b1(1235)0 b_quark bb1_diquark bc0_diquark bc1_diquark bd0_diquark bd1_diquark bs0_diquark bs1_diquark bu0_diquark bu1_diquark c_quark cc1_diquark cd0_diquark cd1_diquark chargedgeantino cs0_diquark cs1_diquark cu0_diquark cu1_diquark d_quark dd1_diquark delta(1600)+ delta(1600)++ delta(1600)- delta(1600)0 delta(1620)+ delta(1620)++ delta(1620)- delta(1620)0 delta(1700)+ delta(1700)++ delta(1700)- delta(1700)0 delta(1900)+ delta(1900)++ delta(1900)- delta(1900)0 delta(1905)+ delta(1905)++ delta(1905)- delta(1905)0 delta(1910)+ delta(1910)++ delta(1910)- delta(1910)0 delta(1920)+ delta(1920)++ delta(1920)- delta(1920)0 delta(1930)+ delta(1930)++ delta(1930)- delta(1930)0 delta(1950)+ delta(1950)++ delta(1950)- delta(1950)0 delta+ delta++ delta- delta0 deuteron doublehyperH4 doublehyperdoubleneutron e+ e- eta eta(1295) eta(1405) eta(1475) eta2(1645) eta2(1870) eta_prime etac f0(1370) f0(1500) f0(1710) f0(500) f0(980) f1(1285) f1(1420) f2(1270) f2(1810) f2(2010) f2_prime(1525) gamma geantino gluon h1(1170) h1(1380) hyperH4 hyperHe5 hyperalpha hypertriton k(1460)+ k(1460)- k(1460)0 k0_star(1430)+ k0_star(1430)- k0_star(1430)0 k1(1270)+ k1(1270)- k1(1270)0 k1(1400)+ k1(1400)- k1(1400)0 k2(1770)+ k2(1770)- k2(1770)0 k2_star(1430)+ k2_star(1430)- k2_star(1430)0 k2_star(1980)+ k2_star(1980)- k2_star(1980)0 k3_star(1780)+ k3_star(1780)- k3_star(1780)0 k_star(1410)+ k_star(1410)- k_star(1410)0 k_star(1680)+ k_star(1680)- k_star(1680)0 k_star+ k_star- k_star0 kaon+ kaon- kaon0 kaon0L kaon0S lambda lambda(1405) lambda(1520) lambda(1600) lambda(1670) lambda(1690) lambda(1800) lambda(1810) lambda(1820) lambda(1830) lambda(1890) lambda(2100) lambda(2110) lambda_b lambda_c+ mu+ mu- neutron nu_e nu_mu nu_tau omega omega(1420) omega(1650) omega- omega3(1670) omega_b- omega_c0 opticalphoton phi phi(1680) phi3(1850) pi(1300)+ pi(1300)- pi(1300)0 pi+ pi- pi0 pi2(1670)+ pi2(1670)- pi2(1670)0 proton quasi_opticalphoton rho(1450)+ rho(1450)- rho(1450)0 rho(1700)+ rho(1700)- rho(1700)0 rho+ rho- rho0 rho3(1690)+ rho3(1690)- rho3(1690)0 s_quark sd0_diquark sd1_diquark sigma(1385)+ sigma(1385)- sigma(1385)0 sigma(1660)+ sigma(1660)- sigma(1660)0 sigma(1670)+ sigma(1670)- sigma(1670)0 sigma(1750)+ sigma(1750)- sigma(1750)0 sigma(1775)+ sigma(1775)- sigma(1775)0 sigma(1915)+ sigma(1915)- sigma(1915)0 sigma(1940)+ sigma(1940)- sigma(1940)0 sigma(2030)+ sigma(2030)- sigma(2030)0 sigma+ sigma- sigma0 sigma_b+ sigma_b- sigma_b0 sigma_c+ sigma_c++ sigma_c0 ss1_diquark su0_diquark su1_diquark t_quark tau+ tau- thermalelectron triton u_quark ud0_diquark ud1_diquark uu1_diquark xi(1530)- xi(1530)0 xi(1690)- xi(1690)0 xi(1820)- xi(1820)0 xi(1950)- xi(1950)0 xi(2030)- xi(2030)0 xi- xi0 xi_b- xi_b0 xi_c+ xi_c0 ion 
 
 
 
@@ -8800,6 +9034,19 @@ Set Verbose level for GPS
 Parameter : level
  Parameter type  : i
  Omittable       : False
+
+
+
+Command /gps/checkVolume
+Guidance :
+Switch on/off the check if the vertex position is inside the world volume.
+By default the check is on. There is a small performance gain if this check is off,
+but the user has to make sure setting the vertex position inside the world.
+
+Parameter : switch
+ Parameter type  : b
+ Omittable       : True
+ Default value   : taken from the current value
 
 Command directory path : /gps/source/
 

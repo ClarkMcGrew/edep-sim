@@ -12,6 +12,7 @@ Commands for nuclear de-excitation module.<br>
 <tr><td><a href="#c3">isomerProduction</a></td></tr>
 <tr><td><a href="#c4">maxTwoJ</a></td></tr>
 <tr><td><a href="#c5">verbose</a></td></tr>
+<tr><td><a href="#c6">TypeXS</a></td></tr>
 </table>
 <h3 id="c0">readICdata [<i>readIC</i>]</h3>
 <p>
@@ -40,12 +41,12 @@ Enable/disable simulation of correlated gamma emission.<br>
 <td>type b
 <td>Omittable : default value = 0
 <td></table>
-<h3 id="c3">isomerProduction [<i>corrG</i>]</h3>
+<h3 id="c3">isomerProduction [<i>isoProd</i>]</h3>
 <p>
 Enable/disable simulation of long lived isomers.<br>
 <p>Available Geant4 state(s) : PreInit 
 <p>Parameters<table border=1>
-<tr><td>corrG
+<tr><td>isoProd
 <td>type b
 <td>Omittable : default value = 0
 <td></table>
@@ -67,4 +68,18 @@ Set verbosity level.<br>
 <td>type i
 <td>Omittable : default value = 1
 <td></table>
+<h3 id="c6">TypeXS [<i>modName</i>] [<i>TypeXS</i>]</h3>
+<p>
+Defined type of inverse x-section<br>
+  model      : PRECO or DEEX<br>
+  type of XS : Dostrovski, PARTICLEXS, Chatterjee, Kalbach<br>
+<p>Available Geant4 state(s) : PreInit 
+<p>Parameters<table border=1>
+<tr><td>modName
+<td>type s
+<td><td>Parameter candidates : PRECO DEEX
+<tr><td>TypeXS
+<td>type s
+<td><td>Parameter candidates : Dostrovski, PARTICLEXS, Chatterjee, Kalbach
+</table>
 </div></body></html>

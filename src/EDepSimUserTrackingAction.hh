@@ -5,6 +5,9 @@
 #define EDepSim_UserTrackingAction_h 1
 
 #include <G4UserTrackingAction.hh>
+
+#include <vector>
+
 class G4Track;
 class G4OpBoundaryProcess;
 
@@ -15,8 +18,18 @@ class EDepSim::UserTrackingAction : public G4UserTrackingAction
     UserTrackingAction();
     virtual ~UserTrackingAction();
 
+    /// The action called by G4 to notify the user before a track is started.
     virtual void PreUserTrackingAction(const G4Track*);
+
+    /// The action called by G4 to notify the user after a track is finished.
     virtual void PostUserTrackingAction(const G4Track*);
+
+    /// Add an external user tracking action to be called before the EDepSim
+    /// pre and post actions.  The external action can collect information
+    /// about the track, but must not modify the state of G4, or EDepSim.
+    void AddExternalAction(G4UserTrackingAction* action) const {
+        fExternalActions.push_back(action);
+    }
 
     /// If this is true, then do not create trajectories for opticalphotons.
     /// This makes the stacking and tracking a bit faster and uses less
@@ -38,5 +51,7 @@ class EDepSim::UserTrackingAction : public G4UserTrackingAction
     // If true, then save the opticalphoton trajectories.
     bool fSavePhotonTrajectories;
 
+    // A list of external tracking actions that will be called.
+    mutable std::vector<G4UserTrackingAction*> fExternalActions;
 };
 #endif

@@ -58,6 +58,27 @@ public:
         fExcludeAsSensitiveDetector.push_back(exclude);
     }
 
+    class UserUpdateGeometryAction {
+    public:
+        UserUpdateGeometryAction() {};
+        virtual ~UserUpdateGeometryAction() {}
+
+        /// Notify the class that the geometry has changed.  This must not
+        /// change the state of Geant4 or EDepSim.
+        virtual void UpdateGeometry(const G4VPhysicalVolume* world) {};
+
+    };
+
+    /// Add a external user action to be called when the geometry has been
+    /// updated.  pre and post actions.  The external action can collect
+    /// information about the geometry, but must not modify the state of G4,
+    /// or EDepSim.
+    void AddExternalAction (
+        EDepSim::UserDetectorConstruction::UserUpdateGeometryAction* action)
+        const {
+        fExternalActions.push_back(action);
+    }
+
 protected:
 
     /// Define the materials used in the detector. This is only used when the
@@ -93,6 +114,11 @@ private:
 
     /// Vector of logical volumes to exclude being sensitive detectors.
     std::vector<std::string> fExcludeAsSensitiveDetector;
+
+    /// Vector of update actions that need to be called.
+    mutable
+    std::vector<EDepSim::UserDetectorConstruction::UserUpdateGeometryAction*>
+    fExternalActions;
 };
 
 #endif

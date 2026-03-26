@@ -1,7 +1,7 @@
 <html><head><title>Commands in /process/em/</title></head>
 <style>     table,table td,table th {        border:1px solid #eee     }     table td,table th {       padding:5px 20px;       line-height:1.3;       text-align:inherit     }     a {       color:#17a81a;       text-decoration:none;       transition-duration:0.3s     }       a:hover {       color:#17a81a     }     table {       border-collapse:collapse;       border-spacing:0;       margin-bottom:5px;     }     h1 {       font-size:2.25em;       font-weight:300;       letter-spacing:-1px;       line-height:1.15em;       margin-bottom:0.5em;       word-wrap:break-word     }     h2 {       font-size:1.5em;       font-weight:300;       letter-spacing:-1px;       line-height:1.15em;       margin-bottom:0.5em;       word-wrap:break-word     }     h3 {       color:#26282a;       font-weight:300;       font-size:1.3em;       padding:15px 0 15px 0;       border-bottom:2px #eee solid;       word-wrap:break-word     }     .sidebar {       display:block;       position:relative;       position:sticky;       float:left;       -webkit-box-sizing:border-box;       -moz-box-sizing:border-box;       -ms-box-sizing:border-box;       box-sizing:border-box;       width:20%;       padding-right:20px     }     .context {     width:80%;     display:inline-block;     background-color:#fff;     padding: 25px 35px 20px 30px;     -webkit-box-sizing:border-box;     -moz-box-sizing:border-box;     -ms-box-sizing:border-box;     box-sizing:border-box   }     </style>
 <body bgcolor="#ffffff">
-<div class="sidebar"><h2><a href="_process_.html">Top level </a></h2><table><tr><td><a href="_process_em_.html">/process/em/</a><tr><td><a href="_process_eLoss_.html">/process/eLoss/</a><tr><td><a href="_process_msc_.html">/process/msc/</a><tr><td><a href="_process_gconv_.html">/process/gconv/</a><tr><td><a href="_process_dna_.html">/process/dna/</a><tr><td><a href="_process_had_.html">/process/had/</a><tr><td><a href="_process_optical_.html">/process/optical/</a></table></div>
+<div class="sidebar"><h2><a href="_process_.html">Top level </a></h2><table><tr><td><a href="_process_em_.html">/process/em/</a><tr><td><a href="_process_eLoss_.html">/process/eLoss/</a><tr><td><a href="_process_msc_.html">/process/msc/</a><tr><td><a href="_process_gconv_.html">/process/gconv/</a><tr><td><a href="_process_dna_.html">/process/dna/</a><tr><td><a href="_process_chem_.html">/process/chem/</a><tr><td><a href="_process_had_.html">/process/had/</a><tr><td><a href="_process_optical_.html">/process/optical/</a></table></div>
 <div class="context"><h1>/process/em/</h1>
 General commands for EM processes.<br>
 <h2>Commands </h2>
@@ -14,42 +14,46 @@ General commands for EM processes.<br>
 <tr><td><a href="#c5">enableSamplingTable</a></td></tr>
 <tr><td><a href="#c6">MuDataFromFile</a></td></tr>
 <tr><td><a href="#c7">PhotoeffectBelowKShell</a></td></tr>
-<tr><td><a href="#c8">max5DMuPairEnergy</a></td></tr>
-<tr><td><a href="#c9">lowestElectronEnergy</a></td></tr>
-<tr><td><a href="#c10">lowestMuHadEnergy</a></td></tr>
-<tr><td><a href="#c11">lowestTripletEnergy</a></td></tr>
-<tr><td><a href="#c12">MaxEnergyNIEL</a></td></tr>
-<tr><td><a href="#c13">binsPerDecade</a></td></tr>
-<tr><td><a href="#c14">verbose</a></td></tr>
-<tr><td><a href="#c15">workerVerbose</a></td></tr>
-<tr><td><a href="#c16">nForFreeVector</a></td></tr>
-<tr><td><a href="#c17">transportationWithMsc</a></td></tr>
-<tr><td><a href="#c18">printParameters</a></td></tr>
-<tr><td><a href="#c19">setNuclearFormFactor</a></td></tr>
-<tr><td><a href="#c20">setSingleScattering</a></td></tr>
-<tr><td><a href="#c21">AddPAIRegion</a></td></tr>
-<tr><td><a href="#c22">AddEmRegion</a></td></tr>
-<tr><td><a href="#c23">setBiasingFactor</a></td></tr>
-<tr><td><a href="#c24">setForcedInteraction</a></td></tr>
-<tr><td><a href="#c25">setSecBiasing</a></td></tr>
-<tr><td><a href="#c26">setDirectionalSplitting</a></td></tr>
-<tr><td><a href="#c27">QuantumEntanglement</a></td></tr>
-<tr><td><a href="#c28">setDirectionalSplittingTarget</a></td></tr>
-<tr><td><a href="#c29">setDirectionalSplittingRadius</a></td></tr>
-<tr><td><a href="#c30">fluo</a></td></tr>
-<tr><td><a href="#c31">fluoBearden</a></td></tr>
-<tr><td><a href="#c32">fluoANSTO</a></td></tr>
-<tr><td><a href="#c33">auger</a></td></tr>
-<tr><td><a href="#c34">augerCascade</a></td></tr>
-<tr><td><a href="#c35">pixe</a></td></tr>
-<tr><td><a href="#c36">deexcitationIgnoreCut</a></td></tr>
-<tr><td><a href="#c37">fluoDirectory</a></td></tr>
-<tr><td><a href="#c38">pixeXSmodel</a></td></tr>
-<tr><td><a href="#c39">pixeElecXSmodel</a></td></tr>
-<tr><td><a href="#c40">LivermoreData</a></td></tr>
-<tr><td><a href="#c41">AddMicroElecRegion</a></td></tr>
-<tr><td><a href="#c42">AddDNARegion</a></td></tr>
-<tr><td><a href="#c43">deexcitation</a></td></tr>
+<tr><td><a href="#c8">UseEPICS2017XS</a></td></tr>
+<tr><td><a href="#c9">3GammaAnnihilationOnFly</a></td></tr>
+<tr><td><a href="#c10">PairProd5D</a></td></tr>
+<tr><td><a href="#c11">max5DMuPairEnergy</a></td></tr>
+<tr><td><a href="#c12">lowestElectronEnergy</a></td></tr>
+<tr><td><a href="#c13">lowestMuHadEnergy</a></td></tr>
+<tr><td><a href="#c14">lowestTripletEnergy</a></td></tr>
+<tr><td><a href="#c15">MaxEnergyNIEL</a></td></tr>
+<tr><td><a href="#c16">binsPerDecade</a></td></tr>
+<tr><td><a href="#c17">verbose</a></td></tr>
+<tr><td><a href="#c18">workerVerbose</a></td></tr>
+<tr><td><a href="#c19">nForFreeVector</a></td></tr>
+<tr><td><a href="#c20">transportationWithMsc</a></td></tr>
+<tr><td><a href="#c21">printParameters</a></td></tr>
+<tr><td><a href="#c22">setNuclearFormFactor</a></td></tr>
+<tr><td><a href="#c23">setSingleScattering</a></td></tr>
+<tr><td><a href="#c24">setPositronAtRestModel</a></td></tr>
+<tr><td><a href="#c25">AddPAIRegion</a></td></tr>
+<tr><td><a href="#c26">AddEmRegion</a></td></tr>
+<tr><td><a href="#c27">setBiasingFactor</a></td></tr>
+<tr><td><a href="#c28">setForcedInteraction</a></td></tr>
+<tr><td><a href="#c29">setSecBiasing</a></td></tr>
+<tr><td><a href="#c30">setDirectionalSplitting</a></td></tr>
+<tr><td><a href="#c31">QuantumEntanglement</a></td></tr>
+<tr><td><a href="#c32">setDirectionalSplittingTarget</a></td></tr>
+<tr><td><a href="#c33">setDirectionalSplittingRadius</a></td></tr>
+<tr><td><a href="#c34">fluo</a></td></tr>
+<tr><td><a href="#c35">fluoBearden</a></td></tr>
+<tr><td><a href="#c36">fluoANSTO</a></td></tr>
+<tr><td><a href="#c37">auger</a></td></tr>
+<tr><td><a href="#c38">augerCascade</a></td></tr>
+<tr><td><a href="#c39">pixe</a></td></tr>
+<tr><td><a href="#c40">deexcitationIgnoreCut</a></td></tr>
+<tr><td><a href="#c41">fluoDirectory</a></td></tr>
+<tr><td><a href="#c42">pixeXSmodel</a></td></tr>
+<tr><td><a href="#c43">pixeElecXSmodel</a></td></tr>
+<tr><td><a href="#c44">LivermoreData</a></td></tr>
+<tr><td><a href="#c45">AddMicroElecRegion</a></td></tr>
+<tr><td><a href="#c46">AddDNARegion</a></td></tr>
+<tr><td><a href="#c47">deexcitation</a></td></tr>
 </table>
 <h3 id="c0">applyCuts [<i>apl</i>]</h3>
 <p>
@@ -124,7 +128,34 @@ Enable sampling of photoeffect below K-shell<br>
 <td>type b
 <td>Omittable : default value = 1
 <td></table>
-<h3 id="c8">max5DMuPairEnergy [<i>emax5D</i>] [<i>Unit</i>]</h3>
+<h3 id="c8">UseEPICS2017XS [<i>pepics</i>]</h3>
+<p>
+Use EPICS2017 data for gamma x-ections<br>
+<p>Available Geant4 state(s) : PreInit 
+<p>Parameters<table border=1>
+<tr><td>pepics
+<td>type b
+<td>Omittable : default value = 0
+<td></table>
+<h3 id="c9">3GammaAnnihilationOnFly [<i>f3gamma</i>]</h3>
+<p>
+Enable/disable 3 gamma annihilation on fly<br>
+<p>Available Geant4 state(s) : PreInit 
+<p>Parameters<table border=1>
+<tr><td>f3gamma
+<td>type b
+<td>Omittable : default value = 0
+<td></table>
+<h3 id="c10">PairProd5D [<i>ee5D</i>]</h3>
+<p>
+Enable/disable 5D model for e+e- pair production by muons<br>
+<p>Available Geant4 state(s) : PreInit 
+<p>Parameters<table border=1>
+<tr><td>ee5D
+<td>type b
+<td>Omittable : default value = 0
+<td></table>
+<h3 id="c11">max5DMuPairEnergy [<i>emax5D</i>] [<i>Unit</i>]</h3>
 <p>
 Set the max kinetic energy for 5D muon pair production<br>
 <p>Available Geant4 state(s) : PreInit 
@@ -136,7 +167,7 @@ Set the max kinetic energy for 5D muon pair production<br>
 <td>type s
 <td><td>Parameter candidates : eV keV MeV GeV TeV PeV meV J electronvolt kiloelectronvolt megaelectronvolt gigaelectronvolt teraelectronvolt petaelectronvolt millielectronVolt joule
 </table>
-<h3 id="c9">lowestElectronEnergy [<i>elow</i>] [<i>Unit</i>]</h3>
+<h3 id="c12">lowestElectronEnergy [<i>elow</i>] [<i>Unit</i>]</h3>
 <p>
 Set the lowest kinetic energy for e+-<br>
 <p>Available Geant4 state(s) : PreInit 
@@ -149,7 +180,7 @@ Idle
 <td>type s
 <td><td>Parameter candidates : eV keV MeV GeV TeV PeV meV J electronvolt kiloelectronvolt megaelectronvolt gigaelectronvolt teraelectronvolt petaelectronvolt millielectronVolt joule
 </table>
-<h3 id="c10">lowestMuHadEnergy [<i>elowh</i>] [<i>Unit</i>]</h3>
+<h3 id="c13">lowestMuHadEnergy [<i>elowh</i>] [<i>Unit</i>]</h3>
 <p>
 Set the lowest kinetic energy for muons and hadrons<br>
 <p>Available Geant4 state(s) : PreInit 
@@ -162,7 +193,7 @@ Idle
 <td>type s
 <td><td>Parameter candidates : eV keV MeV GeV TeV PeV meV J electronvolt kiloelectronvolt megaelectronvolt gigaelectronvolt teraelectronvolt petaelectronvolt millielectronVolt joule
 </table>
-<h3 id="c11">lowestTripletEnergy [<i>elow3</i>] [<i>Unit</i>]</h3>
+<h3 id="c14">lowestTripletEnergy [<i>elow3</i>] [<i>Unit</i>]</h3>
 <p>
 Set the lowest kinetic energy for triplet production<br>
 <p>Available Geant4 state(s) : PreInit 
@@ -175,7 +206,7 @@ Idle
 <td>type s
 <td><td>Parameter candidates : eV keV MeV GeV TeV PeV meV J electronvolt kiloelectronvolt megaelectronvolt gigaelectronvolt teraelectronvolt petaelectronvolt millielectronVolt joule
 </table>
-<h3 id="c12">MaxEnergyNIEL [<i>niel</i>] [<i>Unit</i>]</h3>
+<h3 id="c15">MaxEnergyNIEL [<i>niel</i>] [<i>Unit</i>]</h3>
 <p>
 Set the upper energy limit for NIEL<br>
 <p>Available Geant4 state(s) : PreInit 
@@ -187,7 +218,7 @@ Set the upper energy limit for NIEL<br>
 <td>type s
 <td><td>Parameter candidates : eV keV MeV GeV TeV PeV meV J electronvolt kiloelectronvolt megaelectronvolt gigaelectronvolt teraelectronvolt petaelectronvolt millielectronVolt joule
 </table>
-<h3 id="c13">binsPerDecade [<i>bins</i>]</h3>
+<h3 id="c16">binsPerDecade [<i>bins</i>]</h3>
 <p>
 Set number of bins per decade for EM tables<br>
 <p>Available Geant4 state(s) : PreInit 
@@ -196,7 +227,7 @@ Set number of bins per decade for EM tables<br>
 <td>type i
 <td>Omittable : default value = 7
 <td></table>
-<h3 id="c14">verbose [<i>verb1</i>]</h3>
+<h3 id="c17">verbose [<i>verb1</i>]</h3>
 <p>
 Set verbose level for EM physics<br>
 <p>Available Geant4 state(s) : PreInit 
@@ -206,7 +237,7 @@ Idle
 <td>type i
 <td>Omittable : default value = 1
 <td></table>
-<h3 id="c15">workerVerbose [<i>verb2</i>]</h3>
+<h3 id="c18">workerVerbose [<i>verb2</i>]</h3>
 <p>
 Set worker verbose level for EM physics<br>
 <p>Available Geant4 state(s) : PreInit 
@@ -216,7 +247,7 @@ Idle
 <td>type i
 <td>Omittable : default value = 0
 <td></table>
-<h3 id="c16">nForFreeVector [<i>nFree</i>]</h3>
+<h3 id="c19">nForFreeVector [<i>nFree</i>]</h3>
 <p>
 Set number for logarithmic bin search algorithm<br>
 <p>Available Geant4 state(s) : PreInit 
@@ -225,7 +256,7 @@ Set number for logarithmic bin search algorithm<br>
 <td>type i
 <td>Omittable : default value = 2
 <td></table>
-<h3 id="c17">transportationWithMsc [<i>trans</i>]</h3>
+<h3 id="c20">transportationWithMsc [<i>trans</i>]</h3>
 <p>
 Enable/disable the G4TransportationWithMsc process<br>
 <p>Available Geant4 state(s) : PreInit 
@@ -235,12 +266,12 @@ Enable/disable the G4TransportationWithMsc process<br>
 <td>Omittable : default value = 
 <td>Parameter candidates : Disabled Enabled MultipleSteps
 </table>
-<h3 id="c18">printParameters</h3>
+<h3 id="c21">printParameters</h3>
 <p>
 Print all EM parameters.<br>
 <p>Available Geant4 state(s) : PreInit 
 Idle 
-<h3 id="c19">setNuclearFormFactor [<i>NucFF</i>]</h3>
+<h3 id="c22">setNuclearFormFactor [<i>NucFF</i>]</h3>
 <p>
 Define type of nuclear form-factor<br>
 <p>Available Geant4 state(s) : PreInit 
@@ -250,7 +281,7 @@ Define type of nuclear form-factor<br>
 <td>Omittable : default value = 
 <td>Parameter candidates : None Exponential Gaussian Flat
 </table>
-<h3 id="c20">setSingleScattering [<i>SS</i>]</h3>
+<h3 id="c23">setSingleScattering [<i>SS</i>]</h3>
 <p>
 Define type of e+- single scattering model<br>
 <p>Available Geant4 state(s) : PreInit 
@@ -260,7 +291,17 @@ Define type of e+- single scattering model<br>
 <td>Omittable : default value = 
 <td>Parameter candidates : WVI Mott DPWA
 </table>
-<h3 id="c21">AddPAIRegion [<i>partName</i>] [<i>regName</i>] [<i>type</i>]</h3>
+<h3 id="c24">setPositronAtRestModel [<i>Posi</i>]</h3>
+<p>
+Define model of positron annihilation at rest<br>
+<p>Available Geant4 state(s) : PreInit 
+<p>Parameters<table border=1>
+<tr><td>Posi
+<td>type s
+<td>Omittable : default value = 
+<td>Parameter candidates : Simple Allison OrePawell OrePowellPolar
+</table>
+<h3 id="c25">AddPAIRegion [<i>partName</i>] [<i>regName</i>] [<i>type</i>]</h3>
 <p>
 Activate PAI in the G4Region.<br>
   partName  : particle name (default - all)<br>
@@ -276,7 +317,7 @@ Activate PAI in the G4Region.<br>
 <td>type s
 <td><td>Parameter candidates : pai PAI PAIphoton
 </table>
-<h3 id="c22">AddEmRegion [<i>regName</i>] [<i>mscType</i>]</h3>
+<h3 id="c26">AddEmRegion [<i>regName</i>] [<i>mscType</i>]</h3>
 <p>
 Add optional EM configuration for a G4Region.<br>
   regName  : G4Region name<br>
@@ -289,7 +330,7 @@ Add optional EM configuration for a G4Region.<br>
 <td>type s
 <td><td>Parameter candidates : G4EmStandard G4EmStandard_opt1 G4EmStandard_opt2 G4EmStandard_opt3 G4EmStandard_opt4 G4EmStandardGS G4EmStandardSS G4EmLivermore G4EmPenelope G4RadioactiveDecay
 </table>
-<h3 id="c23">setBiasingFactor [<i>procName</i>] [<i>procFact</i>] [<i>flagFact</i>]</h3>
+<h3 id="c27">setBiasingFactor [<i>procName</i>] [<i>procFact</i>] [<i>flagFact</i>]</h3>
 <p>
 Set factor for the process cross section.<br>
   procName   : process name<br>
@@ -305,7 +346,7 @@ Idle
 <td><td><tr><td>flagFact
 <td>type s
 <td><td></table>
-<h3 id="c24">setForcedInteraction [<i>procNam</i>] [<i>regNam</i>] [<i>tlength</i>] [<i>unitT</i>] [<i>tflag</i>]</h3>
+<h3 id="c28">setForcedInteraction [<i>procNam</i>] [<i>regNam</i>] [<i>tlength</i>] [<i>unitT</i>] [<i>tflag</i>]</h3>
 <p>
 Set factor for the process cross section.<br>
   procNam    : process name<br>
@@ -331,7 +372,7 @@ Idle
 <td>type b
 <td>Omittable : default value = 1
 <td></table>
-<h3 id="c25">setSecBiasing [<i>bProcNam</i>] [<i>bRegNam</i>] [<i>bFactor</i>] [<i>bEnergy</i>] [<i>bUnit</i>]</h3>
+<h3 id="c29">setSecBiasing [<i>bProcNam</i>] [<i>bRegNam</i>] [<i>bFactor</i>] [<i>bEnergy</i>] [<i>bUnit</i>]</h3>
 <p>
 Set bremsstrahlung or delta-e- splitting/Russian roulette per region.<br>
   bProcNam : process name<br>
@@ -355,7 +396,7 @@ Idle
 <td>Omittable : default value = MeV
 <td>Parameter candidates : eV keV MeV GeV TeV PeV meV J electronvolt kiloelectronvolt megaelectronvolt gigaelectronvolt teraelectronvolt petaelectronvolt millielectronVolt joule
 </table>
-<h3 id="c26">setDirectionalSplitting [<i></i>]</h3>
+<h3 id="c30">setDirectionalSplitting [<i></i>]</h3>
 <p>
 Enable directional brem splitting<br>
 <p>Available Geant4 state(s) : PreInit 
@@ -364,7 +405,7 @@ Idle
 <tr><td>
 <td>type b
 <td><td></table>
-<h3 id="c27">QuantumEntanglement [<i></i>]</h3>
+<h3 id="c31">QuantumEntanglement [<i></i>]</h3>
 <p>
 Enable quantum entanglement<br>
 <p>Available Geant4 state(s) : PreInit 
@@ -373,7 +414,7 @@ Idle
 <tr><td>
 <td>type b
 <td><td></table>
-<h3 id="c28">setDirectionalSplittingTarget [<i></i>] [<i></i>] [<i></i>] [<i>Unit</i>]</h3>
+<h3 id="c32">setDirectionalSplittingTarget [<i></i>] [<i></i>] [<i></i>] [<i>Unit</i>]</h3>
 <p>
 Position of arget for directional splitting<br>
 <p>Available Geant4 state(s) : PreInit 
@@ -388,7 +429,7 @@ Idle
 <td><td><tr><td>Unit
 <td>type s
 <td><td></table>
-<h3 id="c29">setDirectionalSplittingRadius [<i></i>] [<i>Unit</i>]</h3>
+<h3 id="c33">setDirectionalSplittingRadius [<i></i>] [<i>Unit</i>]</h3>
 <p>
 Radius of target for directional splitting<br>
 <p>Available Geant4 state(s) : PreInit 
@@ -399,7 +440,7 @@ Idle
 <td><td><tr><td>Unit
 <td>type s
 <td><td></table>
-<h3 id="c30">fluo [<i>fluoFlag</i>]</h3>
+<h3 id="c34">fluo [<i>fluoFlag</i>]</h3>
 <p>
 Enable/disable atomic deexcitation<br>
 <p>Available Geant4 state(s) : PreInit 
@@ -410,7 +451,7 @@ Idle
 <td>type b
 <td>Omittable : default value = 0
 <td></table>
-<h3 id="c31">fluoBearden [<i>fluoBeardenFlag</i>]</h3>
+<h3 id="c35">fluoBearden [<i>fluoBeardenFlag</i>]</h3>
 <p>
 Enable/disable usage of Bearden fluorescence files<br>
 <p>Available Geant4 state(s) : PreInit 
@@ -420,7 +461,7 @@ Init
 <td>type b
 <td>Omittable : default value = 0
 <td></table>
-<h3 id="c32">fluoANSTO [<i>fluoANSTOFlag</i>]</h3>
+<h3 id="c36">fluoANSTO [<i>fluoANSTOFlag</i>]</h3>
 <p>
 Enable/disable usage of ANSTO fluorescence files<br>
 <p>Available Geant4 state(s) : PreInit 
@@ -430,7 +471,7 @@ Init
 <td>type b
 <td>Omittable : default value = 0
 <td></table>
-<h3 id="c33">auger [<i>augerFlag</i>]</h3>
+<h3 id="c37">auger [<i>augerFlag</i>]</h3>
 <p>
 Enable/disable Auger electrons production<br>
 <p>Available Geant4 state(s) : PreInit 
@@ -441,7 +482,7 @@ Idle
 <td>type b
 <td>Omittable : default value = 0
 <td></table>
-<h3 id="c34">augerCascade [<i>augerCascadeFlag</i>]</h3>
+<h3 id="c38">augerCascade [<i>augerCascadeFlag</i>]</h3>
 <p>
 Enable/disable simulation of cascade of Auger electrons<br>
 <p>Available Geant4 state(s) : PreInit 
@@ -452,7 +493,7 @@ Idle
 <td>type b
 <td>Omittable : default value = 0
 <td></table>
-<h3 id="c35">pixe [<i>pixeFlag</i>]</h3>
+<h3 id="c39">pixe [<i>pixeFlag</i>]</h3>
 <p>
 Enable/disable PIXE simulation<br>
 <p>Available Geant4 state(s) : PreInit 
@@ -463,7 +504,7 @@ Idle
 <td>type b
 <td>Omittable : default value = 0
 <td></table>
-<h3 id="c36">deexcitationIgnoreCut [<i>deexcut</i>]</h3>
+<h3 id="c40">deexcitationIgnoreCut [<i>deexcut</i>]</h3>
 <p>
 Enable/Disable usage of cuts in de-excitation module<br>
 <p>Available Geant4 state(s) : PreInit 
@@ -474,7 +515,7 @@ Idle
 <td>type b
 <td>Omittable : default value = 0
 <td></table>
-<h3 id="c37">fluoDirectory [<i>fluoDirectory</i>]</h3>
+<h3 id="c41">fluoDirectory [<i>fluoDirectory</i>]</h3>
 <p>
 The name of PIXE cross section<br>
 <p>Available Geant4 state(s) : PreInit 
@@ -485,7 +526,7 @@ Idle
 <td>Omittable : default value = 
 <td>Parameter candidates : Default Bearden ANSTO XDB_EADL
 </table>
-<h3 id="c38">pixeXSmodel [<i>pixeXS</i>]</h3>
+<h3 id="c42">pixeXSmodel [<i>pixeXS</i>]</h3>
 <p>
 The name of PIXE cross section<br>
 <p>Available Geant4 state(s) : PreInit 
@@ -496,7 +537,7 @@ Idle
 <td>Omittable : default value = 
 <td>Parameter candidates : ECPSSR_Analytical Empirical ECPSSR_FormFactor ECPSSR_ANSTO
 </table>
-<h3 id="c39">pixeElecXSmodel [<i>pixeEXS</i>]</h3>
+<h3 id="c43">pixeElecXSmodel [<i>pixeEXS</i>]</h3>
 <p>
 The name of PIXE cross section for electron<br>
 <p>Available Geant4 state(s) : PreInit 
@@ -507,7 +548,7 @@ Idle
 <td>Omittable : default value = 
 <td>Parameter candidates : ECPSSR_Analytical Empirical Livermore Penelope
 </table>
-<h3 id="c40">LivermoreData [<i>livDir</i>]</h3>
+<h3 id="c44">LivermoreData [<i>livDir</i>]</h3>
 <p>
 The name of Livermore data directory<br>
 <p>Available Geant4 state(s) : PreInit 
@@ -517,7 +558,7 @@ The name of Livermore data directory<br>
 <td>Omittable : default value = 
 <td>Parameter candidates : livermore epics_2017
 </table>
-<h3 id="c41">AddMicroElecRegion [<i>MicroElec</i>]</h3>
+<h3 id="c45">AddMicroElecRegion [<i>MicroElec</i>]</h3>
 <p>
 Activate MicroElec model in the G4Region<br>
 <p>Available Geant4 state(s) : PreInit 
@@ -526,7 +567,7 @@ Activate MicroElec model in the G4Region<br>
 <td>type s
 <td>Omittable : default value = 
 <td></table>
-<h3 id="c42">AddDNARegion [<i>regName</i>] [<i>dnaType</i>]</h3>
+<h3 id="c46">AddDNARegion [<i>regName</i>] [<i>dnaType</i>]</h3>
 <p>
 Activate DNA in a G4Region.<br>
   regName   : G4Region name<br>
@@ -539,7 +580,7 @@ Activate DNA in a G4Region.<br>
 <td>type s
 <td><td>Parameter candidates : DNA_Opt0 DNA_Opt2 DNA_Opt4 DNA_Opt4a DNA_Opt6 DNA_Opt6a DNA_Opt7
 </table>
-<h3 id="c43">deexcitation [<i>regName</i>] [<i>flagFluo</i>] [<i>flagAuger</i>] [<i>flagPIXE</i>]</h3>
+<h3 id="c47">deexcitation [<i>regName</i>] [<i>flagFluo</i>] [<i>flagAuger</i>] [<i>flagPIXE</i>]</h3>
 <p>
 Set deexcitation flags per G4Region.<br>
   regName   : G4Region name<br>

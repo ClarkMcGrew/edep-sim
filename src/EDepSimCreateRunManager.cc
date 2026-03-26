@@ -6,8 +6,6 @@
 #include "EDepSimUserTrackingAction.hh"
 #include "EDepSimUserSteppingAction.hh"
 
-#include "EDepSimDetectorMessenger.hh"
-
 #include "EDepSimCreateRunManager.hh"
 
 // The default physics list.

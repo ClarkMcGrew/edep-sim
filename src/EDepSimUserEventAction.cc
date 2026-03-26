@@ -27,14 +27,14 @@ EDepSim::UserEventAction::UserEventAction() {}
 
 EDepSim::UserEventAction::~UserEventAction() {}
 
-void EDepSim::UserEventAction::BeginOfEventAction(const G4Event* evt) {
-    EDepSimNamedLog("Event", "Begin Event: " << evt->GetEventID()
-                 << " w/ " << evt->GetNumberOfPrimaryVertex()
+void EDepSim::UserEventAction::BeginOfEventAction(const G4Event* theEvent) {
+    EDepSimNamedLog("Event", "Begin Event: " << theEvent->GetEventID()
+                 << " w/ " << theEvent->GetNumberOfPrimaryVertex()
                  << " vertices");
 
     // The last chance to create the user information object.  This should be
     // created in the primary particle generater
-    if (!evt->GetUserInformation()) {
+    if (!theEvent->GetUserInformation()) {
         G4EventManager::GetEventManager()->
             SetUserInformation(new EDepSim::UserEventInformation);
     }
@@ -45,7 +45,7 @@ void EDepSim::UserEventAction::BeginOfEventAction(const G4Event* evt) {
     }
 
     int vtxNumber=0;
-    for (G4PrimaryVertex* vtx = evt->GetPrimaryVertex();
+    for (G4PrimaryVertex* vtx = theEvent->GetPrimaryVertex();
          vtx;
          vtx = vtx->GetNext()) {
         ++vtxNumber;
@@ -129,14 +129,21 @@ void EDepSim::UserEventAction::BeginOfEventAction(const G4Event* evt) {
     }
 
     EDepSim::TrajectoryMap::Clear();
+
+    // Run the external actions.  These must not change the state of G4
+    // or EDepSim.
+    for (G4UserEventAction *action : fExternalActions) {
+        action->BeginOfEventAction(theEvent);
+    }
+
 }
 
-void EDepSim::UserEventAction::EndOfEventAction(const G4Event* evt) {
-    EDepSimInfo("Event " << evt->GetEventID() << " completed.");
+void EDepSim::UserEventAction::EndOfEventAction(const G4Event* theEvent) {
+    EDepSimInfo("Event " << theEvent->GetEventID() << " completed.");
 
     // Fill the trajectories with the amount of energy deposited into
     // sensitive detectors.
-    G4HCofThisEvent* HCofEvent = evt->GetHCofThisEvent();
+    G4HCofThisEvent* HCofEvent = theEvent->GetHCofThisEvent();
     if (!HCofEvent) return;
     G4SDManager *sdM = G4SDManager::GetSDMpointer();
     G4HCtable *hcT = sdM->GetHCtable();
@@ -189,5 +196,11 @@ void EDepSim::UserEventAction::EndOfEventAction(const G4Event* evt) {
                 }
             }
         }
+    }
+
+    // Run the external actions.  These must not change the state of G4
+    // or EDepSim.
+    for (G4UserEventAction *action : fExternalActions) {
+        action->EndOfEventAction(theEvent);
     }
 }

@@ -14,6 +14,12 @@ EDepSim::SteppingAction::SteppingAction()
 
 void EDepSim::SteppingAction::UserSteppingAction(const G4Step* theStep) {
 
+    // Run the external actions first.  These must not change the state of G4,
+    // or EDepSim.
+    for (G4UserSteppingAction *action : fExternalActions) {
+        action->UserSteppingAction(theStep);
+    }
+
     G4Track* theTrack = theStep->GetTrack();
 
     const G4StepPoint* thePreStep = theStep->GetPreStepPoint();
