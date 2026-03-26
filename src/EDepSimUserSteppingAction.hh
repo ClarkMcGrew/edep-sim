@@ -24,12 +24,13 @@ public:
     SteppingAction();
     virtual ~SteppingAction() {};
 
+    /// The required method for geant.
     void UserSteppingAction(const G4Step*);
 
     /// Add an external user stepping action to be called before the EDepSim
     /// pre and post actions.  The external action can collect information
     /// about the step, but must not modify the state of G4, or EDepSim.
-    void AddExternalAction(G4UserSteppingAction* action) {
+    void AddExternalAction(G4UserSteppingAction* action) const {
         fExternalActions.push_back(action);
     }
 
@@ -47,7 +48,7 @@ private:
     int fGovernor;
 
     // A list of external stepping actions that will be called.
-    std::vector<G4UserSteppingAction*> fExternalActions;
+    mutable std::vector<G4UserSteppingAction*> fExternalActions;
 
 };
 

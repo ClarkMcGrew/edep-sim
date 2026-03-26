@@ -27,7 +27,7 @@ class EDepSim::UserTrackingAction : public G4UserTrackingAction
     /// Add an external user tracking action to be called before the EDepSim
     /// pre and post actions.  The external action can collect information
     /// about the track, but must not modify the state of G4, or EDepSim.
-    void AddExternalAction(G4UserTrackingAction* action) {
+    void AddExternalAction(G4UserTrackingAction* action) const {
         fExternalActions.push_back(action);
     }
 
@@ -52,6 +52,6 @@ class EDepSim::UserTrackingAction : public G4UserTrackingAction
     bool fSavePhotonTrajectories;
 
     // A list of external tracking actions that will be called.
-    std::vector<G4UserTrackingAction*> fExternalActions;
+    mutable std::vector<G4UserTrackingAction*> fExternalActions;
 };
 #endif

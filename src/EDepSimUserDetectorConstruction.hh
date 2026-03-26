@@ -73,8 +73,9 @@ public:
     /// updated.  pre and post actions.  The external action can collect
     /// information about the geometry, but must not modify the state of G4,
     /// or EDepSim.
-    void AddExternalAction(
-        EDepSim::UserDetectorConstruction::UserUpdateGeometryAction* action) {
+    void AddExternalAction (
+        EDepSim::UserDetectorConstruction::UserUpdateGeometryAction* action)
+        const {
         fExternalActions.push_back(action);
     }
 
@@ -115,6 +116,7 @@ private:
     std::vector<std::string> fExcludeAsSensitiveDetector;
 
     /// Vector of update actions that need to be called.
+    mutable
     std::vector<EDepSim::UserDetectorConstruction::UserUpdateGeometryAction*>
     fExternalActions;
 };

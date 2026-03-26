@@ -28,7 +28,7 @@ public:
     /// Add an external user action to be called after the EDepSim
     /// pre and post actions.  The external action can collect information
     /// about the run, but must not modify the state of G4, or EDepSim.
-    void AddExternalAction(G4UserRunAction* action) {
+    void AddExternalAction(G4UserRunAction* action) const {
         fExternalActions.push_back(action);
     }
 
@@ -72,7 +72,7 @@ private:
     int fSubrunId;
 
     // A list of external run actions that will be called.
-    std::vector<G4UserRunAction*> fExternalActions;
+    mutable std::vector<G4UserRunAction*> fExternalActions;
 
 };
 #endif
