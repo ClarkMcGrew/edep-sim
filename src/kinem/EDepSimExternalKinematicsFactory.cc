@@ -10,13 +10,25 @@
 EDepSim::ExternalKinematicsFactory::ExternalKinematicsFactory(
     EDepSim::UserPrimaryGeneratorMessenger* parent)
     : EDepSim::VKinematicsFactory("external",parent),
-      fUserName("unspecified"), fLibraryPath("/dev/null"),
+      fUserOption("unspecified"), fLibraryPath("/dev/null"),
       fSymbolName("CreateKinematicsGenerator") {
 
-    fExternalKinemCMD = new G4UIcommand(CommandName("kinemConstructor"),this);
-    fExternalKinemCMD->SetGuidance("Declare shared library with the external"
-                                   " kinematics generator.");
-    fExternalKinemCMD->SetParameter(new G4UIparameter("path",'s',false));
+    fExternalKinemCMD = new G4UIcommand(CommandName("loadGenerator"),this);
+    fExternalKinemCMD->SetGuidance("Load a kinematics generator overriding"
+                                   " the library, symbol and option commands.");
+    fExternalKinemCMD->SetGuidance("");
+    fExternalKinemCMD->SetGuidance(
+        "  ENVIRONMENT VARIABLE SUBSTITUTION: Environment variables in the");
+    fExternalKinemCMD->SetGuidance(
+        "  path will be expanded, but to work around the G4 macro language");
+    fExternalKinemCMD->SetGuidance(
+        "  they must have the syntax $ENV_VAR or $(ENV_VAR) and not use the");
+    fExternalKinemCMD->SetGuidance(
+        "  they must have the syntax $ENV_VAR or $(ENV_VAR) and not use the");
+    fExternalKinemCMD->SetGuidance(
+        "  more standard ${ENV_VAR} syntax.");
+
+    fExternalKinemCMD->SetParameter(new G4UIparameter("library",'s',false));
     fExternalKinemCMD->GetParameter(0)
         ->SetGuidance("The path to the shared library."
                       " Environment variables will be expanded.");
@@ -24,22 +36,26 @@ EDepSim::ExternalKinematicsFactory::ExternalKinematicsFactory(
     fExternalKinemCMD->GetParameter(1)->SetDefaultValue(fSymbolName);
     fExternalKinemCMD->GetParameter(1)
         ->SetGuidance("Symbol name to call."
-                      " [signature EDepSim::VKinemGenerator* (*)(char* name)]");
-    fExternalKinemCMD->SetParameter(new G4UIparameter("name",'s',false));
+                      " [EDepSim::VKinemGenerator* (*)(char* option)]");
+    fExternalKinemCMD->SetParameter(new G4UIparameter("option",'s',false));
     fExternalKinemCMD->GetParameter(2)
-        ->SetGuidance("A user defined name for the generator.");
+        ->SetGuidance("A user defined option for the generator.");
 
-    fUserNameCMD = new G4UIcmdWithAString(CommandName("name"),this);
-    fUserNameCMD->SetGuidance("Set the user name for the external generator.");
-    fUserNameCMD->SetGuidance(
-        "   The name is passed directly to the creation routine");
-    fUserNameCMD->SetGuidance(
-        "   and can be used there for any purpose.");
-    fUserNameCMD->SetParameterName("user-name",false);
-
-    fLibraryPathCMD = new G4UIcmdWithAString(CommandName("path"),this);
+    fLibraryPathCMD = new G4UIcmdWithAString(CommandName("library"),this);
     fLibraryPathCMD->SetGuidance(
         "Set the shared library path with environ expansion.");
+    fLibraryPathCMD->SetGuidance("");
+    fLibraryPathCMD->SetGuidance(
+        "  ENVIRONMENT VARIABLE SUBSTITUTION: Environment variables in the");
+    fLibraryPathCMD->SetGuidance(
+        "  path will be expanded, but to work around the G4 macro language");
+    fLibraryPathCMD->SetGuidance(
+        "  they must have the syntax $ENV_VAR or $(ENV_VAR) and not use the");
+    fLibraryPathCMD->SetGuidance(
+        "  they must have the syntax $ENV_VAR or $(ENV_VAR) and not use the");
+    fLibraryPathCMD->SetGuidance(
+        "  more standard ${ENV_VAR} syntax.");
+
     fLibraryPathCMD->SetParameterName("path",false);
 
     fSymbolNameCMD = new G4UIcmdWithAString(CommandName("symbol"),this);
@@ -48,57 +64,59 @@ EDepSim::ExternalKinematicsFactory::ExternalKinematicsFactory(
     fSymbolNameCMD->SetGuidance(
         "    The creation routine must be defined with the signature:");
     fSymbolNameCMD->SetGuidance(
-        "    [signature EDepSim::VKinemGenerator* ()(char* name)]");
+        "    [EDepSim::VKinemGenerator* ()(char* option)]");
     fSymbolNameCMD->SetParameterName("symbol-name",false);
+
+    fUserOptionCMD = new G4UIcmdWithAString(CommandName("option"),this);
+    fUserOptionCMD->SetGuidance("Set the user option for the external generator.");
+    fUserOptionCMD->SetGuidance(
+        "   The option is passed directly to the creation routine");
+    fUserOptionCMD->SetGuidance(
+        "   and can be used there for any purpose.");
+    fUserOptionCMD->SetParameterName("user-option",false);
+
 }
 
 EDepSim::ExternalKinematicsFactory::~ExternalKinematicsFactory() {
     if (fExternalKinemCMD) delete fExternalKinemCMD;
-    if (fUserNameCMD) delete fUserNameCMD;
     if (fLibraryPathCMD) delete fLibraryPathCMD;
     if (fSymbolNameCMD) delete fSymbolNameCMD;
+    if (fUserOptionCMD) delete fUserOptionCMD;
 }
 
 EDepSim::VKinematicsGenerator*
 EDepSim::ExternalKinematicsFactory::GetGenerator() {
     EDepSimLog("Creating an external generator");
-    EDepSim::LogManager::IncreaseIndentation();
-    EDepSimLog("User name:      " << fUserName);
-    EDepSimLog("Shared Library: " << fLibraryPath);
-    EDepSimLog("Symbol:         " << fSymbolName);
-    EDepSim::LogManager::DecreaseIndentation();
-
-    void* fc = EDepSim::GetExternalActionConstructor(fLibraryPath,fSymbolName);
-    VKinematicsGenerator* (*constructor)(const char*)
-        = reinterpret_cast<VKinematicsGenerator*(*)(const char*)>(fc);
-    if (constructor == nullptr) {
-        EDepSimError("External generator not found");
-        return nullptr;
+    EDepSim::VKinematicsGenerator* generator
+        = CallExternalConstructor<VKinematicsGenerator>(
+            fLibraryPath, fSymbolName, fUserOption);
+    if (generator == nullptr) {
+            EDepSimThrow("External generator not loaded");
     }
 
-    return constructor(fUserName.c_str());
+    return generator;
 }
 
 void EDepSim::ExternalKinematicsFactory::SetNewValue(G4UIcommand* command,
                                                      G4String newValue) {
-    if (command == fUserNameCMD) {
-        SetName(newValue);
-    }
-    else if (command == fLibraryPathCMD) {
+    if (command == fLibraryPathCMD) {
         SetLibraryPath(newValue);
     }
     else if (command == fSymbolNameCMD) {
         SetSymbolName(newValue);
     }
+    else if (command == fUserOptionCMD) {
+        SetOption(newValue);
+    }
     else if (command == fExternalKinemCMD) {
-        std::string name;
         std::string library;
         std::string symbol;
+        std::string option;
         std::istringstream is(newValue);
-        is >> name >> library >> symbol;
-        SetName(name);
+        is >> library >> symbol >> option;
         SetLibraryPath(library);
         SetSymbolName(symbol);
+        SetOption(option);
     }
     else{
         EDepSimError("Nothing to set the value.");
