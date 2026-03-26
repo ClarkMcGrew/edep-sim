@@ -42,6 +42,13 @@ private:
     G4UIdirectory*             fMaterialDir;
     G4UIcommand*               fMaterialBirksCmd;
 
+    G4UIdirectory*             fEDepSimActionsDir;
+    G4UIcommand*               fLoadUpdateGeometryCMD;
+    G4UIcommand*               fLoadRunActionCMD;
+    G4UIcommand*               fLoadEventActionCMD;
+    G4UIcommand*               fLoadTrackActionCMD;
+    G4UIcommand*               fLoadStepActionCMD;
+
 };
 
 #endif
