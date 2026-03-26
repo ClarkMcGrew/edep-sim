@@ -10,8 +10,9 @@ Scintillation process commands<br>
 <tr><td><a href="#c1">setTrackInfo</a></td></tr>
 <tr><td><a href="#c2">setFiniteRiseTime</a></td></tr>
 <tr><td><a href="#c3">setStackPhotons</a></td></tr>
-<tr><td><a href="#c4">setTrackSecondariesFirst</a></td></tr>
-<tr><td><a href="#c5">verbose</a></td></tr>
+<tr><td><a href="#c4">setOffloadPhotons</a></td></tr>
+<tr><td><a href="#c5">setTrackSecondariesFirst</a></td></tr>
+<tr><td><a href="#c6">verbose</a></td></tr>
 </table>
 <h3 id="c0">setByParticleType [<i>ScintillationByParticleTypeActivation</i>]</h3>
 <p>
@@ -52,7 +53,16 @@ Idle
 <td>type b
 <td>Omittable : default value = 1
 <td></table>
-<h3 id="c4">setTrackSecondariesFirst [<i></i>]</h3>
+<h3 id="c4">setOffloadPhotons [<i>ScintillationOffloadPhotons</i>]</h3>
+<p>
+Set whether or not to offload secondary scintillation photons<br>
+<p>Available Geant4 state(s) : PreInit 
+Idle 
+<p>Parameters<table border=1>
+<tr><td>ScintillationOffloadPhotons
+<td>type b
+<td><td></table>
+<h3 id="c5">setTrackSecondariesFirst [<i></i>]</h3>
 <p>
 Whether to track scintillation secondaries before primary.<br>
 <p>Available Geant4 state(s) : PreInit 
@@ -61,7 +71,7 @@ Idle
 <tr><td>
 <td>type b
 <td><td></table>
-<h3 id="c5">verbose [<i>verbose</i>]</h3>
+<h3 id="c6">verbose [<i>verbose</i>]</h3>
 <p>
 Verbose level for scintillation process.<br>
 <p>Range : verbose &gt;= 0 &amp;&amp; verbose &lt;= 2

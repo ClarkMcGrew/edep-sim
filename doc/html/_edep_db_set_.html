@@ -17,6 +17,7 @@ Set various parameters<br>
 <tr><td><a href="#c8">clearBoundaries</a></td></tr>
 <tr><td><a href="#c9">trajectoryRule</a></td></tr>
 <tr><td><a href="#c10">clearTrajectoryRules</a></td></tr>
+<tr><td><a href="#c11">savePhotonTraj</a></td></tr>
 </table>
 <h3 id="c0">gammaThreshold [<i>momentum</i>] [<i>Unit</i>]</h3>
 <p>
@@ -54,6 +55,7 @@ Set length of track in an SD for writing out particle trajectories<br>
 <h3 id="c3">saveAllPrimTraj [<i></i>]</h3>
 <p>
 Control which primaries have saved trajectories -- True: Save all prim. part. trajectories. False: Save prim. that ultimately deposit energy in SD.<br>
+Control if photon trajectories are placed into the trajectory stack so tracking is a little faster and uses less resources. True: Photon trajectories will be saved for vanilla optical photon tracking. False: Photon trajectories are not created.<br>
 <p>Available at all Geant4 states.
 <p>Parameters<table border=1>
 <tr><td>
@@ -128,4 +130,11 @@ Idle
 <p>
 Clear all of the trajectory point save rules.<br>
 <p>Available at all Geant4 states.
+<h3 id="c11">savePhotonTraj [<i></i>]</h3>
+<p>
+<p>Available at all Geant4 states.
+<p>Parameters<table border=1>
+<tr><td>
+<td>type b
+<td><td></table>
 </div></body></html>
