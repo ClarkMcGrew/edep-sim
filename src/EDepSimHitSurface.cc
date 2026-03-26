@@ -49,10 +49,11 @@ EDepSim::HitSurface::HitSurface(const G4Step* theStep)
                              theStep->GetTrack()->GetGlobalTime());
     fPDGEncoding
         = theStep->GetTrack()->GetParticleDefinition()->GetPDGEncoding();
-    fCreatorType
-        = theStep->GetTrack()->GetCreatorProcess()->GetProcessType();
-    fCreatorSubtype
-        = theStep->GetTrack()->GetCreatorProcess()->GetProcessSubType();
+    const G4VProcess* theProcess = theStep->GetTrack()->GetCreatorProcess();
+    if (theProcess != nullptr) {
+        fCreatorType = theProcess->GetProcessType();
+        fCreatorSubtype = theProcess->GetProcessSubType();
+    }
 }
 
 EDepSim::HitSurface::~HitSurface() { }
