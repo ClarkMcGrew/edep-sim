@@ -77,7 +77,9 @@ G4bool EDepSim::SurfaceSD::ProcessHits(G4Step* theStep,
     if (energyDeposit <= 0.) return true;
 
     const G4Track* theTrack = theStep->GetTrack();
+    const G4VProcess* theProcess = theTrack->GetCreatorProcess();
     const G4ParticleDefinition* theParticle = theTrack->GetParticleDefinition();
+    const G4StepPoint* thePreStep = theStep->GetPreStepPoint();
     const G4StepPoint* thePostStep = theStep->GetPostStepPoint();
     const G4VPhysicalVolume* thePostPV = thePostStep->GetPhysicalVolume();
     const G4ThreeVector& hitPosition = thePostStep->GetPosition();
@@ -85,18 +87,39 @@ G4bool EDepSim::SurfaceSD::ProcessHits(G4Step* theStep,
     G4ThreeVector hitPolarization = thePostStep->GetPolarization();
     G4double hitEnergy = thePostStep->GetTotalEnergy();
 
+    std::string processName{"non-set"};
+    if (theProcess != nullptr) {
+        processName = theProcess->GetProcessName();
+    }
+    else {
+        EDepSimDebug("Missing process for Track"
+                     << " " << theTrack->GetTrackID()
+                     << " (" << (theParticle->GetParticleName()) << ")"
+                     << " Pre-status " << ((thePreStep != nullptr) ?
+                                           thePreStep->GetStepStatus()
+                                           : -1)
+                     << " Post-status " << ((thePostStep != nullptr) ?
+                                           thePostStep->GetStepStatus()
+                                           : -1));
+    }
+
     EDepSimDebug("Track " << theTrack->GetTrackID()
                  << " (" << (theParticle->GetParticleName())
                  << ")"
                  << " deposit " << energyDeposit
                  << " (" << theStep->GetNonIonizingEnergyDeposit() << ") MeV"
-                 << " creation " << theTrack->GetCreatorProcess()->GetProcessName());
+                 << " creation " << processName);
 
     if (thePostPV != nullptr) {
         EDepSimTrace("   Volume: " << thePostPV->GetName());
     }
     else {
         EDepSimTrace("   Volume: NONE");
+    }
+
+    if (theProcess == nullptr) {
+        // No process here, so don't create this step.
+        return true;
     }
 
     EDepSimDebug("Create Hit:"
