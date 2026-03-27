@@ -216,7 +216,7 @@ to make to work correctly.
 
 #### External kinematics generators
 
-There is an [example](./examples/ExampleKinematics/) kinematics generator located in the examples directory.  An external generator is loaded using
+There is an [example](./examples/ExternalKinematics/) kinematics generator located in the examples directory.  An external generator is loaded using
 
 ```
 /generator/kinematics/external/loadGenerator [library] [symbol] [option]
