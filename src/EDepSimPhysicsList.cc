@@ -30,7 +30,7 @@
 EDepSim::PhysicsList::PhysicsList(G4String physName)
     : G4VModularPhysicsList() {
     G4LossTableManager::Instance();
-    defaultCutValue  = 1.*mm;
+    defaultCutValue  = 0.5*mm;
     fCutForGamma     = defaultCutValue;
     fCutForElectron  = defaultCutValue;
     fCutForPositron  = defaultCutValue;
@@ -42,24 +42,33 @@ EDepSim::PhysicsList::PhysicsList(G4String physName)
     G4PhysListFactory factory;
     G4VModularPhysicsList* phys = NULL;
 
-    // Check to see if the physics list has been over ridden from the
-    // environment variable PHYSLIST
-    char* list = getenv("PHYSLIST");
-    if (list) {
-        phys = factory.ReferencePhysList();
+    // Check to see if the physics list has set the environment variable
+    // PHYSLIST
+    if (!phys) {
+        char* list = getenv("PHYSLIST");
+        if (list) {
+            EDepSimLog("Set the physics list from the PHYSLIST environment: "
+                       << list);
+            phys = factory.ReferencePhysList();
+        }
     }
 
     // Check if a list name was provided on the command line.  It usually is
     // not provided.
-    if (!phys && physName.size() > 1
-        && factory.IsReferencePhysList(physName)) {
-        EDepSimLog("Set the default physics list");
+    if (!phys && physName.size() > 1) {
+        EDepSimLog("Set the physics list from the command line: " << physName);
+        if (!factory.IsReferencePhysList(physName)) {
+            EDepSimError("Not a supported physics list");
+            EDepSimThrow("Unsupported physics list");
+        }
         phys =factory.GetReferencePhysList(physName);
     }
 
     // Use the default physics list.
     if (!phys) {
-        phys =factory.GetReferencePhysList("QGSP_BERT");
+        physName = "QGSP_BERT";
+        EDepSimLog("Use the default physics list: " << physName);
+        phys =factory.GetReferencePhysList(physName);
     }
 
     if (!phys) {
