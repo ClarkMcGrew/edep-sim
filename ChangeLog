@@ -1,11 +1,29 @@
 Changes in 4.x.x
 
+* Users can dynamically load a G4VPhysicsConstructor to add extra
+  physics to the geant physics list.  This constructor will be
+  registered after G4OpticalPhysics, and before EDepSim::ExtraPhysics.
+  The constructor is specified in the EXTRAPHYSICS environment
+  variable as "EXTRA:library-path:symbol-name".  The symbol name
+  should specify a C function with the signature
+  `G4VModularPhysicsList* (*)(char*)`.  The "EXTRA" prefix is
+  required.
+
+* Users can dynamically load a G4VModularPhysics to override the GEANT
+  reference physics lists by setting the PHYSLIST environment variable
+  to "EXTERN:library-path:symbol-name".  The symbol name should
+  specify a C function with the signature `G4VModularPhysicsList*
+  (*)(char*)`.
+
 * Users can dynamically load run, event, tracking and stepping user
   actions that will be called as part of the equivalent EDepSim user
   actions.
 
 * Users can dynamically load a kinematics generator using the
   /edep/generator/external/ macro commands.
+
+* Fix: Add protection to the SurfaceSD for when the process pointer is
+  not available.
 
 Changes in 4.1.0
 
