@@ -47,6 +47,15 @@ public:
 
 private:
 
+    /// Load a modular physics list from an external library.  The externName
+    /// parameter needs to be of the form "EXTERN:library-name:symbol-name"
+    G4VModularPhysicsList* ExternalPhysicsList(std::string externName);
+
+    /// Load an extra physics constructor from an external library.  The
+    /// externName parameter needs to be of the form
+    /// "EXTERN:library-name:symbol-name"
+    G4VPhysicsConstructor* ExternalExtraPhysics(std::string externName);
+
     /// The gamma-ray range cut.
     G4double fCutForGamma;
 
