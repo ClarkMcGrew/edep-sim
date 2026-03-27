@@ -246,7 +246,7 @@ function
 ```C++
 extern "C"
 G4UserTrackingAction* CreateMyTrackingAction(char* option) {
-   /// Return the a pointer to the constructed class (not nullptr!).
+   /// Return the pointer to the constructed class (not nullptr!).
    return nullptr
 }
 ```
@@ -256,7 +256,7 @@ Other user actions return the related user action class, with the exception of t
 ```C++
 extern "C"
 EDepSim::UserDetectorConstruction::UserUpdateGeometryAction* CreateMyUpdateGeometryAction(char* option) {
-   /// Return the a pointer to the constructed class (not nullptr!).
+   /// Return the pointer to the constructed class (not nullptr!).
    return nullptr
 }
 ```
@@ -509,20 +509,22 @@ includes the final position of the photon (this is how the optical sensor
 is specified), the energy (or wavelength) of the photon, and when
 available, the track Id of the particle creating the photon, the starting
 position of the photon, and the process which created the photon.  The
-field as accessed using:
+fields are accessed using the methods:
 
-  * TLorentzVector GetPosition(): The final position of the photon.
+  * TLorentzVector GetPosition() const: The final position of the photon.
    
-  * TLorentzVector GetStart(): The starting position of the photon. This
-    may not be filled if the starting position is not available from GEANT.
+  * TLorentzVector GetStart() const: The starting position of the
+    photon. This may not be filled if the starting position is not
+    available from GEANT.
       
-  * double GetEnergyDeposit(): The energy of the photon in HEPUnits (ev).
+  * double GetEnergyDeposit() const: The energy of the photon in HEPUnits
+    (ev).
     
-  * double GetWavelength(): The wavelength in HEPUnits (mm) derived from
-    the energy of the photon.
+  * double GetWavelength() const: The wavelength in HEPUnits (mm) derived
+    from the energy of the photon.
    
-  * int GetPrimaryId(): The track id of the parent particle. This may not
-    be filled if the information is not available from GEANT.
+  * int GetPrimaryId() const: The track id of the parent particle. This may
+    not be filled if the information is not available from GEANT.
 
 ### Simple Debugging Display
 
