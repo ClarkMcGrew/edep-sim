@@ -74,8 +74,7 @@ GEANT4 and ROOT, but a few non-default options are needed:
 
 These options are already turned on in most GEANT4 and ROOT installations.
 
-If you are compiling ROOT and GEANT4 by hand, following will generally
-work (changed for your versions):
+If you are compiling ROOT and GEANT4 by hand, following is a general sketch of how to install them (changed for your versions):
 
 ```bash
 tar xvzf root_v6.22.00.source.tar.gz
@@ -87,12 +86,13 @@ make install
 ```
 
 ```bash
-tar xzvf geant4.10.06.p02.tar.gz
-mkdir geant4.10.06.p02-install geant4.10.06.p02-build
-cd geant4.10.06.p02-build
-cmake -DCMAKE_INSTALL_PREFIX=../geant4.10.06.p02-install \
+tar xzvf geant4.11.4.0.tar.gz
+mkdir geant4-11.4.0-install geant4-11.4.0-build
+cd geant4-11.4.0-build
+cmake -DCMAKE_INSTALL_PREFIX=../geant4-11.4.0-install \
       -DGEANT4_INSTALL_DATA=ON \
-      -DGEANT4_USE_GDML=ON ../geant4.10.06.p02
+      -DGEANT4_USE_GDML=ON \
+      ../geant4-11.4.0
 make
 make install
 ```
@@ -199,6 +199,68 @@ The muon-10000.mac might contain:
 /gps/ang/rot1 1 0 0
 /gps/ang/rot2 0 -1 0
 ```
+
+### Adding external user actions, kinematics generators and physics lists
+
+External user actions and physics lists can be dynamically loaded at
+runtime to allow overriding the default behavior.  The external user
+actions will be called by the EDepSim user actions and are specified in the
+macro file. The kinematics generator will be added to the primary vertex
+gnerator. The external physics must be specified using environment
+variables.
+
+External actions, kinematics generators and physics lists are not required,
+and should be considered "expert" usage.  When using external libraries,
+you'll need to be careful not to break the assumptions that EDepSim needs
+to make to work correctly.
+
+#### External kinematics generators
+
+There is an [example](./examples/ExternalKinematics/) kinematics generator located in the examples directory.  An external generator is loaded using
+
+```
+/generator/kinematics/external/loadGenerator [library] [symbol] [option]
+/generator/kinematics/set external
+```
+
+#### External user actions
+
+The EDepSim user actions can be augmented by external user run actions,
+event actions, tracking actions, stepping actions, and on the geometry
+update.  These are specified in the macro file before the /edep/update
+command using the
+
+```
+/edep/actions/loadUpdateGeometry [library] [symbol] [option]
+/edep/actions/loadUserRunAction [library] [symbol] [option]
+/edep/actions/loadUserEventAction [library] [symbol] [option]
+/edep/actions/loadUserTrackAction [library] [symbol] [option]
+/edep/actions/loadUserStepAction [library] [symbol] [option]
+```
+
+The external library will need to have a C function that returns
+a point to the appropriate type.  The C function has the signature `action*
+YourName(char*)`.  For example, a tracking action could be created using a
+function
+
+```C++
+extern "C"
+G4UserTrackingAction* CreateMyTrackingAction(char* option) {
+   /// Return the pointer to the constructed class (not nullptr!).
+   return nullptr
+}
+```
+
+Other user actions return the related user action class, with the exception of the geometry update generator which needs to return a pointer to the `EDepSim::UserDetectorConstruction::UserUpdateGeometryAction`.  The external constructor must be declared as 
+
+```C++
+extern "C"
+EDepSim::UserDetectorConstruction::UserUpdateGeometryAction* CreateMyUpdateGeometryAction(char* option) {
+   /// Return the pointer to the constructed class (not nullptr!).
+   return nullptr
+}
+```
+
 
 ## Reading the output
 
@@ -353,7 +415,7 @@ trajectories to be filtered before they are saved to an output file.
 Check the edep-sim-command-list.txt file and search for the
 "/edep/db/set/" directory for details.
 
-#### The Energy Deposition Class (and Friends).
+#### The Energy Deposition Hit Class (and Friends).
 
 The energy deposition in each sensitive detector is recorded using the
 TG4HitSegment class.  This class records the starting and stopping position
@@ -436,6 +498,33 @@ line between the starting and stopping points.  The hitSagitta and physics
 stepping parameters should be set so that that the maximum displacement of
 the track from a straight line is small compared to the detector
 resolution.
+
+#### The Optical Photon Hit Class
+
+Optical photons are recorded in the TG4PhotonHit class. This class record
+information about photons that were tracked and which were sensed by a
+G4OpBoundaryProcess attached to a G4LogicalSurface.  Only photons with a
+`Detection` status will generate a TG4PhotonHit.  The information contained
+includes the final position of the photon (this is how the optical sensor
+is specified), the energy (or wavelength) of the photon, and when
+available, the track Id of the particle creating the photon, the starting
+position of the photon, and the process which created the photon.  The
+fields are accessed using the methods:
+
+  * TLorentzVector GetPosition() const: The final position of the photon.
+   
+  * TLorentzVector GetStart() const: The starting position of the
+    photon. This may not be filled if the starting position is not
+    available from GEANT.
+      
+  * double GetEnergyDeposit() const: The energy of the photon in HEPUnits
+    (ev).
+    
+  * double GetWavelength() const: The wavelength in HEPUnits (mm) derived
+    from the energy of the photon.
+   
+  * int GetPrimaryId() const: The track id of the parent particle. This may
+    not be filled if the information is not available from GEANT.
 
 ### Simple Debugging Display
 
