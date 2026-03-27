@@ -70,13 +70,29 @@ EDepSim::SecondaryEnergy::PostStepDoIt(
     }
 #endif
 
-    G4double nonIonizingEnergy = aStep.GetNonIonizingEnergyDeposit();
-    if (nonIonizingEnergy > 0.0) {
-        EDepSimError("NonIonizingEnergyDeposit is used by another process");
+    G4double origNonIonizingEnergy = aStep.GetNonIonizingEnergyDeposit();
+    G4double nonIonizingEnergy = G4EmParameters::Instance()->GetEmSaturation()
+        ->VisibleEnergyDepositionAtAStep(&aStep);
+
+    if (origNonIonizingEnergy > 0.0) {
+        const G4Material* aMaterial = aTrack.GetMaterial();
+        const G4ParticleDefinition *pDef = aParticle->GetDefinition();
+        const G4String particleName = pDef->GetParticleName();
+        const G4VProcess *pProc
+            = aStep.GetPostStepPoint()->GetProcessDefinedStep();
+        std::string processName = "unknown";
+        if (pProc) processName = pProc->GetProcessName();
+        EDepSimError("NonIonizingEnergyDeposit is used by another process: ");
+        EDepSim::LogManager::IncreaseIndentation();
+        EDepSimLog("Total Energy Loss: " << totalEnergyDeposit << " MeV");
+        EDepSimLog("Proposed Nonionizing: " << nonIonizingEnergy << " MeV");
+        EDepSimLog("Original Nonionizing: " << origNonIonizingEnergy << " MeV");
+        EDepSimLog("Particle: " << particleName
+                   << " in " << aMaterial->GetName()
+                   << " for step process " << processName);
+        EDepSim::LogManager::DecreaseIndentation();
     }
 
-    nonIonizingEnergy = G4EmParameters::Instance()->GetEmSaturation()
-        ->VisibleEnergyDepositionAtAStep(&aStep);
     aParticleChange.ProposeNonIonizingEnergyDeposit(nonIonizingEnergy);
 
     const G4Material* aMaterial = aTrack.GetMaterial();
