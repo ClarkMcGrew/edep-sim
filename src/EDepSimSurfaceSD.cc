@@ -117,11 +117,6 @@ G4bool EDepSim::SurfaceSD::ProcessHits(G4Step* theStep,
         EDepSimTrace("   Volume: NONE");
     }
 
-    if (theProcess == nullptr) {
-        // No process here, so don't create this step.
-        return true;
-    }
-
     EDepSimDebug("Create Hit:"
                  << " [" << hitPosition.x()/mm
                  << ", " << hitPosition.y()/mm
