@@ -829,8 +829,8 @@ EDepSim::PersistencyManager::SelectTrajectoryPoints(std::vector<int>& selected,
                                  << ";" << p.second.GetValueType());
                 }
             }
-            if (ndTraj->GetAttValues()) {
-                for (auto& v : *ndTraj->GetAttValues()){
+            if (ndTraj->CreateAttValues()) {
+                for (auto& v : *ndTraj->CreateAttValues()){
                     EDepSimError("  Att Val "
                                  << v.GetName()
                                  << ";" << v.GetValue()

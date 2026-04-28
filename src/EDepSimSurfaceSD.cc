@@ -40,7 +40,9 @@ EDepSim::SurfaceSD::SurfaceSD(G4String name)
             dynamic_cast<const EDepSim::UserStackingAction*>(
                 theRunManager->GetUserStackingAction()));
 
-    theStackingAction->SetKillOpticalPhotons(false);
+    if (theStackingAction) {
+        theStackingAction->SetKillOpticalPhotons(false);
+    }
 
     G4OpticalParameters* opParams = G4OpticalParameters::Instance();
     if (not opParams->GetBoundaryInvokeSD()) {

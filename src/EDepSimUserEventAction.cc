@@ -141,6 +141,13 @@ void EDepSim::UserEventAction::BeginOfEventAction(const G4Event* theEvent) {
 void EDepSim::UserEventAction::EndOfEventAction(const G4Event* theEvent) {
     EDepSimInfo("Event " << theEvent->GetEventID() << " completed.");
 
+    // Run external actions unconditionally first, before the early-return
+    // below. External plugins (e.g. GPU optical simulation) may need to run
+    // even when there are no ionization hits in any sensitive detector.
+    for (G4UserEventAction *action : fExternalActions) {
+        action->EndOfEventAction(theEvent);
+    }
+
     // Fill the trajectories with the amount of energy deposited into
     // sensitive detectors.
     G4HCofThisEvent* HCofEvent = theEvent->GetHCofThisEvent();
@@ -198,9 +205,4 @@ void EDepSim::UserEventAction::EndOfEventAction(const G4Event* theEvent) {
         }
     }
 
-    // Run the external actions.  These must not change the state of G4
-    // or EDepSim.
-    for (G4UserEventAction *action : fExternalActions) {
-        action->EndOfEventAction(theEvent);
-    }
 }
