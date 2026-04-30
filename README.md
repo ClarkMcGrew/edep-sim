@@ -1,21 +1,22 @@
 # edep-sim : An Energy Deposition Simulation
 
-The energy deposition simulation is a wrapper around the GEANT4
-particle propagation simulation and is intended as a tool to simulate
-all of the particle propagation and geometry related issues.  GEANT4
-is an excellent toolkit, but it requires you to provide the main
-programs, as well as the input, and output tools.  This has proven to
-be a very good design choice; unfortunately, it means that there is no
-standard wrapper code.  I've found myself using (and writing) almost
-identical input/output wrappers several times, so edep-sim is intended
-to provide a general starting point and allow users to concentrate on
-the physics. As a standalone program, edep-sim provides a simple ROOT
-based file format which will record the output of GEANT4.  It can also
-be linked as a library into another application, and makes the same
-information as a class.
+The energy deposition simulation is a wrapper around the GEANT4 particle
+propagation simulation that simulates all of the particle propagation and
+geometry related issues.  GEANT4 is an excellent toolkit, but it requires
+you to provide the main programs, as well as the input, and output tools.
+This has proven to be a very good design choice; unfortunately, it means
+that there is no standard wrapper code.  I've found myself using (and
+writing) almost identical input/output wrappers several times, so edep-sim
+is intended to provide a general starting point and allow users to
+concentrate on the physics. As a standalone program, edep-sim provides a
+simple ROOT based file format which will record the output of GEANT4.  It
+can also be linked as a library into another application, and makes the
+same information as a class.
 
 This documentation assumes that you have a passing familiarity with how to
-write GEANT4 macro control files, and edep-sim can be configured using the supported [macro commands](./doc/edepsim-command.list) and [particles](./doc/edepsim-particles.list).
+write GEANT4 macro control files, and edep-sim can be configured using the
+supported [macro commands](./doc/edepsim-command.list) and
+[particles](./doc/edepsim-particles.list).
 
 Where it's available (and in particular for argon), the simulation
 implements a fairly detailed model of the energy deposited as
@@ -74,7 +75,8 @@ GEANT4 and ROOT, but a few non-default options are needed:
 
 These options are already turned on in most GEANT4 and ROOT installations.
 
-If you are compiling ROOT and GEANT4 by hand, following is a general sketch of how to install them (changed for your versions):
+If you are compiling ROOT and GEANT4 by hand, following is a general sketch
+of how to install them (changed for your versions):
 
 ```bash
 tar xvzf root_v6.22.00.source.tar.gz
@@ -216,7 +218,8 @@ to make to work correctly.
 
 #### External kinematics generators
 
-There is an [example](./examples/ExternalKinematics/) kinematics generator located in the examples directory.  An external generator is loaded using
+There is an [example](./examples/ExternalKinematics/) kinematics generator
+located in the examples directory.  An external generator is loaded using
 
 ```
 /generator/kinematics/external/loadGenerator [library] [symbol] [option]
@@ -251,7 +254,10 @@ G4UserTrackingAction* CreateMyTrackingAction(char* option) {
 }
 ```
 
-Other user actions return the related user action class, with the exception of the geometry update generator which needs to return a pointer to the `EDepSim::UserDetectorConstruction::UserUpdateGeometryAction`.  The external constructor must be declared as 
+Other user actions return the related user action class, with the exception
+of the geometry update generator which needs to return a pointer to the
+`EDepSim::UserDetectorConstruction::UserUpdateGeometryAction`.  The
+external constructor must be declared as
 
 ```C++
 extern "C"
@@ -360,6 +366,8 @@ access using the matching accessor:
 
    * RunId: The run number
 
+   * SubrunId: The subrun number
+
    * Primaries: The GEANT4 primary particles (A vector of
      TG4PrimaryVertex)
 
@@ -368,6 +376,10 @@ access using the matching accessor:
 
    * SegmentDetectors: The energy deposition information (A map keyed by
      sensitive detector name, containing a vector of TG4HitSegments).
+
+   * PhotonDetectors: The photons collected by HitSurface sensitive
+     detectors.  This is a map keyed by the sensitive detector name and
+     containing a vector of TG4PhotonHit objects.
 
 #### The Trajectory Class (and Friends)
 
@@ -512,17 +524,17 @@ position of the photon, and the process which created the photon.  The
 fields are accessed using the methods:
 
   * TLorentzVector GetPosition() const: The final position of the photon.
-   
+
   * TLorentzVector GetStart() const: The starting position of the
     photon. This may not be filled if the starting position is not
     available from GEANT.
-      
+
   * double GetEnergyDeposit() const: The energy of the photon in HEPUnits
     (ev).
-    
+
   * double GetWavelength() const: The wavelength in HEPUnits (mm) derived
     from the energy of the photon.
-   
+
   * int GetPrimaryId() const: The track id of the parent particle. This may
     not be filled if the information is not available from GEANT.
 
@@ -595,7 +607,11 @@ tree.
 ```
 <auxiliary auxtype="SurfaceDetector" auxvalue="MySurfaceDetectorName"/>
 ```
-In the example above, the energy at surfaces (primarily optical photons) is recorded in `MySurfaceDetectorName`.  After an event is simulated the hits from opticalphotons are recorded in a map keyed by the sensitive detector name and a value that is a vector of TG4PhotonHit objects.
+
+In the example above, the energy at surfaces (primarily optical photons) is
+recorded in `MySurfaceDetectorName`.  After an event is simulated the hits
+from opticalphotons are recorded in a map keyed by the sensitive detector
+name and a value that is a vector of TG4PhotonHit objects.
 
 #### Auxiliary field to define the electric and magnetic field.
 
