@@ -1,18 +1,18 @@
 #include "EDepSimTrajectoryMap.hh"
 #include "EDepSimTrajectory.hh"
 #include "EDepSimException.hh"
+#include "EDepSimUserEventInformation.hh"
 
 #include <G4VTrajectory.hh>
 #include <G4VTrajectoryPoint.hh>
 #include <G4ThreeVector.hh>
+#include <G4EventManager.hh>
 
 #include "EDepSimLog.hh"
 #include "EDepSimBacktrace.hh"
 
-std::map<int, G4VTrajectory*> EDepSim::TrajectoryMap::fMap;
-
 void EDepSim::TrajectoryMap::Clear() {
-    fMap.clear();
+    GetMap().clear();
 }
 
 void EDepSim::TrajectoryMap::Add(G4VTrajectory* traj) {
@@ -27,7 +27,7 @@ void EDepSim::TrajectoryMap::Add(G4VTrajectory* traj) {
     G4VTrajectory* oldTraj = EDepSim::TrajectoryMap::Get(trackId);
     if (oldTraj == nullptr) {
         // The trajectory doesn't exist, so add it
-        fMap[trackId] = update;
+        GetMap()[trackId] = update;
         return;
     }
     // Check that the new trajectory matches the old trajectory.  Shouldn't
@@ -74,9 +74,17 @@ int EDepSim::TrajectoryMap::FindPrimaryId(int trackId) {
 }
 
 G4VTrajectory* EDepSim::TrajectoryMap::Get(int trackId) {
-    std::map<int,G4VTrajectory*>::iterator t = fMap.find(trackId);
-    if (t == fMap.end()) {
+    std::map<int,G4VTrajectory*>::iterator t = GetMap().find(trackId);
+    if (t == GetMap().end()) {
         return NULL;
     }
     return t->second;
+}
+
+std::map<int,G4VTrajectory*>& EDepSim::TrajectoryMap::GetMap() {
+    EDepSim::UserEventInformation* userEventInfo
+        = dynamic_cast<EDepSim::UserEventInformation*>(
+            G4EventManager::GetEventManager()->GetUserInformation());
+    if (!userEventInfo) throw std::runtime_error("No user event info");
+    return userEventInfo->fMap;
 }
