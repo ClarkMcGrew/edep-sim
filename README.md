@@ -51,7 +51,7 @@ sure that they can be located (using `thisroot.sh` and `geant4.sh`).
 
 The simulation is built using cmake.  CMake can be run by hand, but there
 is a script in the build directory that can be run using the `edep-build`
-alias.  The build has been tested with GEANT4 10.2 and ROOT 6.08, but it
+alias.  The build has been tested with GEANT4 11.4 and ROOT 6.36, but it
 will probably build with any recent version of GEANT4 and ROOT.
 
 If you have doxygen installed in a place where `cmake` can find it, then
@@ -73,10 +73,13 @@ GEANT4 and ROOT, but a few non-default options are needed:
 
  * Recommended GEANT4 Datafiles: "-DGEANT4_INSTALL_DATA=ON"
 
+ * If the display is being built, ROOT needs to be compiled with the
+   geometry library and opengl.
+ 
 These options are already turned on in most GEANT4 and ROOT installations.
 
 If you are compiling ROOT and GEANT4 by hand, following is a general sketch
-of how to install them (changed for your versions):
+of how to install them (change for your versions):
 
 ```bash
 tar xvzf root_v6.22.00.source.tar.gz
@@ -1228,3 +1231,13 @@ the second particle is adjusted to be relative to the position of the first
 example, if the optional third argument is true, the first vertex position
 is [1,1,1], and the second vertex position is [0,1,0], then the simulated
 vertex positions will be [1,1,1] and [1,2,1].
+
+## Dark History
+
+EDep-Sim started as a simulation, named `csim`, of a proposed
+water Cherenkov detector called the Underground Neutrino
+Observatory (UNO) in around 2000 using Geant4.3 (as best as can
+be deciphered from old CVS repositories).  The core routines
+later evolved to be used by the T2K near detector, were further
+changed to handle the CAPTAIN experiment, and finally separated
+from any particular experiment to become EDepSim.
