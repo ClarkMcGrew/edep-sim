@@ -1,0 +1,17 @@
+# Release 4.2.0
+
+Allow dynamically linked user libraries to define physics lists, and
+to be called by the user actions.
+
+## Notable Changes in 4.2.0
+
+* Provide an API to allow the use of external physics lists.  The
+  external physics list is defined from the G4 macro file.
+
+* Provide an API to allow the use of dynamically loaded user actions.
+  External actions can be defined for the run, event, tracking, and
+  geometry update actions.  The actions are defined from the G4 macro
+  file.
+
+* Update how the trajectory mapping is done so that it can be thread
+  safe.
