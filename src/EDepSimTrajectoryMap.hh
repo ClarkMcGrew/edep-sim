@@ -8,9 +8,11 @@
 
 class G4VTrajectory;
 
-/// Maintain a singleton map of track Id to the trajectory in the trajectory
-/// container.  THIS IS NOT THREAD SAFE AND CAN NOT BE USED WITH MULTITHREAD
-/// GEANT4.
+/// Maintain a the track Id to the trajectory in the trajectory container for
+/// this event. This could be implemented directly using find and the
+/// G4TrajectoryContainer vector, but that seems like it's depending on an
+/// internal implementation detail.  Instead, this maintains a std::map
+/// between the integer trajectory id and the trajectory pointer.
 namespace EDepSim {class TrajectoryMap;}
 class EDepSim::TrajectoryMap {
 public:
@@ -31,11 +33,9 @@ public:
     static int FindPrimaryId(int trackId);
 
 private:
-    /// A map to the trajectories information indexed the the track id. Be
-    /// careful since the trajectory information is owned by the event, so if
-    /// you try to use this after a trajectory has been deleted... bad things
-    /// will happen.
-    static std::map<int,G4VTrajectory*> fMap;
+    /// Provide a getter for the map.  This could be setup to return a
+    /// lock_guard for RAII.  The returned object needs to act like the map.
+    static std::map<int,G4VTrajectory*>& GetMap();
 
     /// The constructor is private so that it can only be created using the
     /// static get method.
