@@ -43,6 +43,15 @@ fi
 # Find the root of the building area.
 ___edep_root() {
     COUNT=50
+    # We're in git, we're always in git... Ask for the top level.
+    TRY_ROOT=$(git rev-parse --show-toplevel 2>/dev/null || invalid-directory)
+    if [ -e ${TRY_ROOT}/build \
+            -a -d ${TRY_ROOT}/build \
+            -a -e ${TRY_ROOT}/build/edep-build.sh ]; then
+        echo ${TRY_ROOT}
+        return
+    fi
+    # Not in git? Do a brute climb up the directories.
     while true; do
 	if [ -e ./build -a -d ./build -a -e ./build/edep-build.sh ]; then
 	    echo ${PWD}
@@ -62,7 +71,7 @@ EDEP_ROOT=$(___edep_root)
 unset -f ___edep_root
 
 if [ ${EDEP_ROOT} = "invalid-directory" ]; then
-    echo EDEP-SIM setup.sh must be sourced in edep-sim directory.
+    echo EDEP-SIM setup.sh must be sourced in an edep-sim directory.
     return
 fi
 
@@ -101,6 +110,7 @@ alias edep-setup=". ${EDEP_ROOT}/setup.sh"
 
 alias edep-build="${EDEP_ROOT}/build/edep-build.sh"
 
+echo Found edep-sim at ${EDEP_ROOT}
 echo Declare edep-sim to cmake using
 echo "  $" export CMAKE_PREFIX_PATH='${EDEP_ROOT}/${EDEP_TARGET}'
 echo Defined edep-setup to re-setup the edep-sim package.
