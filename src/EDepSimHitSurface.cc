@@ -4,7 +4,6 @@
 
 #include "EDepSimRootGeometryManager.hh"
 #include "EDepSimHitSurface.hh"
-#include "EDepSimTrajectoryMap.hh"
 #include "EDepSimLog.hh"
 
 #include <G4EventManager.hh>

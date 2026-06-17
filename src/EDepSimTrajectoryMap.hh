@@ -7,6 +7,7 @@
 #include <map>
 
 class G4VTrajectory;
+class G4Event;
 
 /// Maintain a the track Id to the trajectory in the trajectory container for
 /// this event. This could be implemented directly using find and the
@@ -19,26 +20,17 @@ public:
     ~TrajectoryMap() {}
 
     /// Provide a map between the track id and the trajectory object.
-    static G4VTrajectory* Get(int trackId);
+    static G4VTrajectory* Get(int trackId, const G4Event* event = nullptr);
 
     /// Add a trajectory to the map.
-    static void Add(G4VTrajectory* traj);
-
-    /// Clear the trajectory map.  This must be done in the
-    /// EDepSim::UserEventAction::BeginOfEventAction() method.
-    static void Clear();
+    static void Add(G4VTrajectory* traj, G4Event* event = nullptr);
 
     /// Find the primary track ID for the current track.  This is the primary
     /// that is the ultimate parent of the current track.
-    static int FindPrimaryId(int trackId);
+    static int FindPrimaryId(int trackId, const G4Event* event = nullptr);
 
 private:
-    /// Provide a getter for the map.  This could be setup to return a
-    /// lock_guard for RAII.  The returned object needs to act like the map.
-    static std::map<int,G4VTrajectory*>& GetMap();
-
-    /// The constructor is private so that it can only be created using the
-    /// static get method.
+    /// The constructor is private so that it cannot be instantiated
     TrajectoryMap() {}
 };
 #endif
