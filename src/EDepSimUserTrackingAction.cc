@@ -8,6 +8,7 @@
 #include "EDepSimBacktrace.hh"
 
 #include <globals.hh>
+#include <G4EventManager.hh>
 #include <G4Track.hh>
 #include <G4TrackingManager.hh>
 #include <G4OpBoundaryProcess.hh>
@@ -43,7 +44,8 @@ EDepSim::UserTrackingAction::PreUserTrackingAction(const G4Track* theTrack) {
     // Make a new trajectory and give it to the tracking manager.  This might
     // be a continuation of an existing track, but that is OK since the
     // trajectories will be merged later on.
-    G4VTrajectory* traj = new EDepSim::Trajectory(theTrack);
+    G4VTrajectory* traj = new EDepSim::Trajectory(
+        G4EventManager::GetEventManager()->GetConstCurrentEvent(), theTrack);
     fpTrackingManager->SetTrajectory(traj);
     fpTrackingManager->SetStoreTrajectory(true);
 

@@ -303,9 +303,10 @@ void EDepSim::PersistencyManager::SummarizeTrajectories(
             if (traj.ParentId == 0) break;
             EDepSim::Trajectory* pTraj
                 = dynamic_cast<EDepSim::Trajectory*>(
-                    EDepSim::TrajectoryMap::Get(traj.ParentId));
+                    EDepSim::TrajectoryMap::Get(traj.ParentId,event));
             if (!pTraj) {
-                EDepSimError("Trajectory " << traj.ParentId << " does not exist");
+                EDepSimError("Trajectory " << traj.ParentId
+                             << " does not exist");
                 throw;
             }
             if (pTraj->SaveTrajectory()) break;
@@ -490,7 +491,7 @@ void EDepSim::PersistencyManager::MarkTrajectories(const G4Event* event) {
             while (primaryId > 0) {
                 EDepSim::Trajectory* ndTraj
                     = dynamic_cast<EDepSim::Trajectory*>(
-                        EDepSim::TrajectoryMap::Get(primaryId));
+                        EDepSim::TrajectoryMap::Get(primaryId,event));
                 if (ndTraj) {
                     ndTraj->MarkTrajectory(0);
                 }
@@ -500,7 +501,8 @@ void EDepSim::PersistencyManager::MarkTrajectories(const G4Event* event) {
                 }
                 int parentId = ndTraj->GetParentID();
                 if (parentId <= 0) break;
-                primaryId = EDepSim::TrajectoryMap::FindPrimaryId(parentId);
+                primaryId
+                    = EDepSim::TrajectoryMap::FindPrimaryId(parentId,event);
             }
 
             // Make sure that all the contributors associated with this hit
@@ -510,7 +512,7 @@ void EDepSim::PersistencyManager::MarkTrajectories(const G4Event* event) {
                 int contribId = g4HitSeg->GetContributor(j);
                 EDepSim::Trajectory* contribTraj
                     = dynamic_cast<EDepSim::Trajectory*>(
-                        EDepSim::TrajectoryMap::Get(contribId));
+                        EDepSim::TrajectoryMap::Get(contribId,event));
                 if (contribTraj) {
                     contribTraj->MarkTrajectory(0);
                 }
@@ -635,12 +637,13 @@ EDepSim::PersistencyManager::SummarizeSegmentDetectors(
         EDepSim::HitSegment* hitSeg
             = dynamic_cast<EDepSim::HitSegment*>(g4Hits->GetHit(0));
         if (!hitSeg) continue;
-        SummarizeHitSegments(dest[SDname],g4Hits);
+        SummarizeHitSegments(event, dest[SDname],g4Hits);
     }
 }
 
 void
-EDepSim::PersistencyManager::SummarizeHitSegments(TG4HitSegmentContainer& dest,
+EDepSim::PersistencyManager::SummarizeHitSegments(const G4Event* event,
+                                                  TG4HitSegmentContainer& dest,
                                                   G4VHitsCollection* g4Hits) {
     dest.clear();
 
@@ -660,7 +663,7 @@ EDepSim::PersistencyManager::SummarizeHitSegments(TG4HitSegmentContainer& dest,
         hit.EnergyDeposit = g4HitSeg->GetEnergyDeposit();
         hit.SecondaryDeposit = g4HitSeg->GetSecondaryDeposit();
         hit.TrackLength = g4HitSeg->GetTrackLength();
-        CopyHitContributors(hit.Contrib,g4HitSeg->GetContributors());
+        CopyHitContributors(event,hit.Contrib,g4HitSeg->GetContributors());
         hit.Start.SetXYZT(g4HitSeg->GetStart().x(),
                           g4HitSeg->GetStart().y(),
                           g4HitSeg->GetStart().z(),
@@ -673,8 +676,10 @@ EDepSim::PersistencyManager::SummarizeHitSegments(TG4HitSegmentContainer& dest,
     }
 }
 
-void EDepSim::PersistencyManager::CopyHitContributors(std::vector<int>& dest,
-                                                 const std::vector<int>& src) {
+void EDepSim::PersistencyManager::CopyHitContributors(
+    const G4Event* event,
+    std::vector<int>& dest,
+    const std::vector<int>& src) {
 
     dest.clear();
 
@@ -685,10 +690,10 @@ void EDepSim::PersistencyManager::CopyHitContributors(std::vector<int>& dest,
         // to a parent that is.
         EDepSim::Trajectory* ndTraj
             = dynamic_cast<EDepSim::Trajectory*>(
-                EDepSim::TrajectoryMap::Get(*c));
+                EDepSim::TrajectoryMap::Get(*c,event));
         while (ndTraj && !ndTraj->SaveTrajectory()) {
             ndTraj = dynamic_cast<EDepSim::Trajectory*>(
-                EDepSim::TrajectoryMap::Get(ndTraj->GetParentID()));
+                EDepSim::TrajectoryMap::Get(ndTraj->GetParentID(),event));
         }
         if (!ndTraj) {
             dest.push_back(-1);

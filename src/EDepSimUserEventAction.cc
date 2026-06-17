@@ -32,8 +32,6 @@ void EDepSim::UserEventAction::BeginOfEventAction(const G4Event* theEvent) {
                  << " w/ " << theEvent->GetNumberOfPrimaryVertex()
                  << " vertices");
 
-    // The last chance to create the user information object.  This should be
-    // created in the primary particle generater
     if (!theEvent->GetUserInformation()) {
         G4EventManager::GetEventManager()->
             SetUserInformation(new EDepSim::UserEventInformation);
@@ -127,8 +125,6 @@ void EDepSim::UserEventAction::BeginOfEventAction(const G4Event* theEvent) {
             }
         }
     }
-
-    EDepSim::TrajectoryMap::Clear();
 
     // Run the external actions.  These must not change the state of G4
     // or EDepSim.

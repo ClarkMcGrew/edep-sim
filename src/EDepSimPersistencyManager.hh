@@ -262,14 +262,16 @@ private:
                              G4VHitsCollection* hits);
 
     /// Fill a container of hit segments.
-    void SummarizeHitSegments(std::vector<TG4HitSegment>& segments,
+    void SummarizeHitSegments(const G4Event* event,
+                              std::vector<TG4HitSegment>& segments,
                               G4VHitsCollection* hits);
 
     /// Fill the map of sensitive detectors which use hit segments as the
     /// Copy and map the contributing trajectories from the vector of
     /// contributors for the EDepSim::HitSegment into the vector of contributors
     /// for the TG4HitSegment.
-    void CopyHitContributors(std::vector<int>& dest,
+    void CopyHitContributors(const G4Event* event,
+                             std::vector<int>& dest,
                              const std::vector<int>& src);
 
     /// Copy the trajectory points into the trajectory summary.  This uses

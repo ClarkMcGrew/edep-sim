@@ -19,13 +19,21 @@
 G4Allocator<EDepSim::Trajectory> aTrajAllocator;
 
 EDepSim::Trajectory::Trajectory()
-    : fPositionRecord(0), fTrackID(0), fParentID(0),
+    : fEvent(nullptr), fPositionRecord(0), fTrackID(0), fParentID(0),
       fPDGEncoding(0), fPDGCharge(0.0), fParticleName(""),
       fProcessName(""), fInitialMomentum(G4ThreeVector()),
       fSDEnergyDeposit(0), fSDTotalEnergyDeposit(0), fSDLength(0),
-      fSaveTrajectory(false) {;}
+      fSaveTrajectory(false) {}
 
-EDepSim::Trajectory::Trajectory(const G4Track* aTrack) {
+EDepSim::Trajectory::Trajectory(const G4Event* theEvent,
+                                const G4Track* aTrack) {
+    fEvent = theEvent;
+    if (!fEvent) {
+        EDepSimError("Backtrace " << std::endl
+                     << EDepSim::Backtrace);
+        EDepSimError("Invalid Event Pointer");
+        throw std::runtime_error("Bad trajectory event pointer");
+    }
     fPositionRecord = new TrajectoryPointContainer();
     // Following is for the first trajectory point
     fPositionRecord->push_back(new EDepSim::TrajectoryPoint(aTrack));
@@ -46,6 +54,7 @@ EDepSim::Trajectory::Trajectory(const G4Track* aTrack) {
 }
 
 EDepSim::Trajectory::Trajectory(EDepSim::Trajectory & right) : G4VTrajectory() {
+    fEvent = right.fEvent;
     fTrackID = right.fTrackID;
     fParentID = right.fParentID;
     fPDGEncoding = right.fPDGEncoding;
@@ -99,7 +108,7 @@ void EDepSim::Trajectory::MarkTrajectory(int save) {
     fSaveTrajectory = true;
     if (save == 0) return;
     // Get the parent.
-    G4VTrajectory* g4Traj = EDepSim::TrajectoryMap::Get(fParentID);
+    G4VTrajectory* g4Traj = EDepSim::TrajectoryMap::Get(fParentID,fEvent);
     if (!g4Traj) return;
     // Don't save if it's not a EDepSim trajectory.
     EDepSim::Trajectory* traj = dynamic_cast<EDepSim::Trajectory*>(g4Traj);

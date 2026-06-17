@@ -9,6 +9,7 @@
 #include <G4Allocator.hh>
 #include <G4ios.hh>
 #include <G4ParticleDefinition.hh>
+#include <G4Event.hh>
 #include <G4Track.hh>
 #include <G4Step.hh>
 
@@ -29,7 +30,7 @@ class EDepSim::Trajectory : public G4VTrajectory {
 public:
     Trajectory();
 
-    Trajectory(const G4Track* aTrack);
+    Trajectory(const G4Event* theEvent, const G4Track* aTrack);
     Trajectory(EDepSim::Trajectory &);
     virtual ~Trajectory();
 
@@ -125,6 +126,7 @@ public:
 
 private:
 
+    const G4Event*            fEvent;
     TrajectoryPointContainer* fPositionRecord;
     G4int                     fTrackID;
     G4int                     fParentID;

@@ -11,11 +11,25 @@
 #include "EDepSimLog.hh"
 #include "EDepSimBacktrace.hh"
 
-void EDepSim::TrajectoryMap::Clear() {
-    GetMap().clear();
-}
-
-void EDepSim::TrajectoryMap::Add(G4VTrajectory* traj) {
+void EDepSim::TrajectoryMap::Add(G4VTrajectory* traj, G4Event* event) {
+    if (!event) {
+        event = G4EventManager::GetEventManager()->GetNonconstCurrentEvent();
+    }
+    if (!event) {
+        EDepSimError("Backtrace " << std::endl
+                     << EDepSim::Backtrace);
+        EDepSimError("Invalid Event Pointer");
+        throw std::runtime_error("Bad event pointer");
+    }
+    EDepSim::UserEventInformation* info
+        = dynamic_cast<EDepSim::UserEventInformation*>(
+            event->GetUserInformation());
+    if (!info) {
+        EDepSimError("Backtrace " << std::endl
+                     << EDepSim::Backtrace);
+        EDepSimError("Invalid Event Information Pointer");
+        throw std::runtime_error("Bad event information pointer");
+    }
     EDepSim::Trajectory * update = dynamic_cast<EDepSim::Trajectory*>(traj);
     if (update == nullptr) {
         EDepSimError("Trajectory must be an EDepSim::Trajectory");
@@ -24,10 +38,10 @@ void EDepSim::TrajectoryMap::Add(G4VTrajectory* traj) {
         std::abort();
     }
     int trackId = update->GetTrackID();
-    G4VTrajectory* oldTraj = EDepSim::TrajectoryMap::Get(trackId);
+    G4VTrajectory* oldTraj = EDepSim::TrajectoryMap::Get(trackId,event);
     if (oldTraj == nullptr) {
         // The trajectory doesn't exist, so add it
-        GetMap()[trackId] = update;
+        info->fMap[trackId] = update;
         return;
     }
     // Check that the new trajectory matches the old trajectory.  Shouldn't
@@ -43,16 +57,26 @@ void EDepSim::TrajectoryMap::Add(G4VTrajectory* traj) {
     std::abort();
 }
 
-int EDepSim::TrajectoryMap::FindPrimaryId(int trackId) {
+int EDepSim::TrajectoryMap::FindPrimaryId(int trackId,
+                                          const G4Event* event) {
+    if (!event) {
+        event = G4EventManager::GetEventManager()->GetConstCurrentEvent();
+    }
+    if (!event) {
+        EDepSimError("Backtrace " << std::endl
+                     << EDepSim::Backtrace);
+        EDepSimError("Invalid Event Pointer");
+        throw std::runtime_error("Bad event pointer");
+    }
     int currentId = trackId;
     int parentId = trackId;
     int loopCount=0;
     for (loopCount=0;loopCount<10000;++loopCount) {
-        G4VTrajectory* t = Get(currentId);
+        G4VTrajectory* t = Get(currentId,event);
         if (!t) break;
         parentId = t->GetParentID();
         // Check to see the search loop should terminate.
-        G4VTrajectory* p = Get(parentId);
+        G4VTrajectory* p = Get(parentId,event);
         // There is no parent so break so this is a primary trajectory.
         if (!p) break;
         // Decay products are primary trajectories since they should be
@@ -73,18 +97,29 @@ int EDepSim::TrajectoryMap::FindPrimaryId(int trackId) {
     return currentId;
 }
 
-G4VTrajectory* EDepSim::TrajectoryMap::Get(int trackId) {
-    std::map<int,G4VTrajectory*>::iterator t = GetMap().find(trackId);
-    if (t == GetMap().end()) {
+G4VTrajectory* EDepSim::TrajectoryMap::Get(int trackId,
+                                           const G4Event* event) {
+    if (!event) {
+        event = G4EventManager::GetEventManager()->GetConstCurrentEvent();
+    }
+    if (!event) {
+        EDepSimError("Backtrace " << std::endl
+                     << EDepSim::Backtrace);
+        EDepSimError("Invalid Event Pointer");
+        throw std::runtime_error("Bad event pointer");
+    }
+    EDepSim::UserEventInformation* info
+        = dynamic_cast<EDepSim::UserEventInformation*>(
+            event->GetUserInformation());
+    if (!info) {
+        EDepSimError("Backtrace " << std::endl
+                     << EDepSim::Backtrace);
+        EDepSimError("Invalid Event Information Pointer");
+        throw std::runtime_error("Bad event information pointer");
+    }
+    std::map<int,G4VTrajectory*>::iterator t = info->fMap.find(trackId);
+    if (t == info->fMap.end()) {
         return NULL;
     }
     return t->second;
-}
-
-std::map<int,G4VTrajectory*>& EDepSim::TrajectoryMap::GetMap() {
-    EDepSim::UserEventInformation* userEventInfo
-        = dynamic_cast<EDepSim::UserEventInformation*>(
-            G4EventManager::GetEventManager()->GetUserInformation());
-    if (!userEventInfo) throw std::runtime_error("No user event info");
-    return userEventInfo->fMap;
 }
