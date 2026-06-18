@@ -8,9 +8,9 @@ class G4VPhysicsConstructor;
 namespace EDepSim {class PhysicsListMessenger;}
 namespace EDepSim {class ExtraPhysics;}
 
+namespace EDepSim {class PhysicsList;}
 /// Use the G4PhysListFactory to select a physics list for this run.  The
 /// physics list can be set from the PHYSLIST environment variable.
-namespace EDepSim {class PhysicsList;}
 class EDepSim::PhysicsList: public G4VModularPhysicsList {
 public:
 

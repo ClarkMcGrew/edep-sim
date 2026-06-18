@@ -12,9 +12,9 @@ class G4LogicalVolume;
 
 class G4VSensitiveDetector;
 
+namespace EDepSim {class ComponentBuilder;}
 /// Construct a component to be used by a EDepSim::ModuleBuilder to build a
 /// component.
-namespace EDepSim {class ComponentBuilder;}
 class EDepSim::ComponentBuilder : public EDepSim::Builder {
 public:
     ComponentBuilder(G4String n, EDepSim::UserDetectorConstruction* c)

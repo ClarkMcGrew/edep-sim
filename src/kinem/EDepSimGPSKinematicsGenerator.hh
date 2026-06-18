@@ -9,8 +9,8 @@
 class G4Event;
 class G4VPrimaryGenerator;
 
-/// This is an interface to use the General Particle Source (GPS).
 namespace EDepSim {class GPSKinematicsGenerator;}
+/// This is an interface to use the General Particle Source (GPS).
 class EDepSim::GPSKinematicsGenerator : public EDepSim::VKinematicsGenerator {
 public:
     GPSKinematicsGenerator(const G4String& name,

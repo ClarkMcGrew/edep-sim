@@ -9,12 +9,12 @@
 class G4VTrajectory;
 class G4Event;
 
+namespace EDepSim {class TrajectoryMap;}
 /// Maintain a the track Id to the trajectory in the trajectory container for
 /// this event. This could be implemented directly using find and the
 /// G4TrajectoryContainer vector, but that seems like it's depending on an
 /// internal implementation detail.  Instead, this maintains a std::map
 /// between the integer trajectory id and the trajectory pointer.
-namespace EDepSim {class TrajectoryMap;}
 class EDepSim::TrajectoryMap {
 public:
     ~TrajectoryMap() {}

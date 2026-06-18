@@ -5,8 +5,8 @@
 #include "G4UserStackingAction.hh"
 #include "G4ClassificationOfNewTrack.hh"
 
-/// Control which particles are actually tracked by G4.
 namespace EDepSim {class UserStackingAction;}
+/// Control which particles are actually tracked by G4.
 class EDepSim::UserStackingAction : public G4UserStackingAction {
 public:
     UserStackingAction();

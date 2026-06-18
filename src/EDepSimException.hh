@@ -3,9 +3,9 @@
 #include <EDepSimLog.hh>
 #include <exception>
 
+namespace EDepSim {class Exception;}
 /// The standard exception from detsim.  This is usually thrown by the
 /// EDepSimThrow macro.
-namespace EDepSim {class Exception;}
 class EDepSim::Exception : public std::exception {
 public:
     Exception() {}

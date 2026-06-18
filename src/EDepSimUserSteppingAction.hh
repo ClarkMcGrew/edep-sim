@@ -9,6 +9,7 @@
 
 #include <vector>
 
+namespace EDepSim {class SteppingAction;}
 /// An action called for each step to make sure the MC isn't caught in some
 /// loop, the particle is still near to the detector, and the stepping has not
 /// gone generally wacko.  GEANT can have geometry glitchs where a
@@ -18,7 +19,6 @@
 /// microscopic steps and the round off causes the particle to be stuck in one
 /// place.  It can also forget to apply energy loss to silly low energy
 /// particles.  This keeps things from getting caught.
-namespace EDepSim {class SteppingAction;}
 class EDepSim::SteppingAction : public G4UserSteppingAction {
 public:
     SteppingAction();

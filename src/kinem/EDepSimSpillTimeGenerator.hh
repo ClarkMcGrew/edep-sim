@@ -5,11 +5,11 @@
 
 #include "kinem/EDepSimVTimeGenerator.hh"
 
+namespace EDepSim {class SpillTimeGenerator;}
 /// Generate an interaction time according to the spill parameters.  This
 /// object is created using the EDepSim::SpillTimeFactory where the spill
 /// parameters can be set (there is more documentation there).  The time of
 /// the interaction is adjusted for the neutrino travel time.
-namespace EDepSim {class SpillTimeGenerator;}
 class EDepSim::SpillTimeGenerator : public EDepSim::VTimeGenerator {
 public:
     /// Create the generatory.  The name is for documentation, the spillTime

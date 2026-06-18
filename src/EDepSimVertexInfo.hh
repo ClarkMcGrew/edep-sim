@@ -6,11 +6,11 @@
 
 class G4PrimaryVertex;
 
+namespace EDepSim {class VertexInfo;}
 /// Hold information that is associated with each primary vertex.  This holds
 /// the particle reaction code that generated the vertex, the name of the
 /// generator that created the vertex, and internal information from the
 /// kinematics generator about the physics that generated the vertex.
-namespace EDepSim {class VertexInfo;}
 class EDepSim::VertexInfo : public G4VUserPrimaryVertexInformation {
 public:
     explicit VertexInfo();

@@ -7,9 +7,9 @@
 
 #include "kinem/EDepSimVPositionGenerator.hh"
 
+namespace EDepSim {class VConstrainedPositionGenerator;}
 /// Select a position and time to be used as the vertex of a primary particle,
 /// but which is constrained by various standard tests.
-namespace EDepSim {class VConstrainedPositionGenerator;}
 class EDepSim::VConstrainedPositionGenerator : public EDepSim::VPositionGenerator {
 public:
     VConstrainedPositionGenerator(const G4String& name);

@@ -12,8 +12,8 @@ class G4UIcmdWithABool;
 class G4UIcmdWithAString;
 class G4UIcmdWithoutParameter;
 
-/// Provide control of the physics list and cut parameters
 namespace EDepSim {class PhysicsListMessenger;}
+/// Provide control of the physics list and cut parameters
 class EDepSim::PhysicsListMessenger
     : public G4UImessenger {
 public:

@@ -25,6 +25,7 @@ namespace EDepSim {class UserDetectorConstruction;}
 #include <iostream>
 #include <map>
 
+namespace EDepSim {class Builder;}
 /// A Base for class to build elements of the detector.  The method get
 /// GetPiece() should construct a new unplaced element that is facing up along
 /// the Z axis.  The caller will then then rotate the object into position and
@@ -42,7 +43,6 @@ namespace EDepSim {class UserDetectorConstruction;}
 /// Most builders (all should) will define a messenger.  The command names are
 /// build with the CommandName() method.  All command names should begin with
 /// a lower case letter.
-namespace EDepSim {class Builder;}
 class EDepSim::Builder {
 public:
     Builder(G4String n, EDepSim::UserDetectorConstruction* c);

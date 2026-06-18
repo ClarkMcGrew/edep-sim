@@ -20,6 +20,7 @@ class G4Track;
 
 #include "EDepSimVolumeId.hh"
 
+namespace EDepSim {class HitSegment;}
 /// This is a base class used to save G4Hit objects into a root output file.
 /// It contains the global position of the starting point and stopping point
 /// of the track segment that created the hit, plus the any fields provided by
@@ -27,7 +28,6 @@ class G4Track;
 /// (library) which will construct the digitized hits.  This class is used
 /// with the EDepSim::SegmentSD sensitive detector class, and can be requested
 /// using the "segment" name from EDepSim::SensitiveDetectorFactor::MakeSD().
-namespace EDepSim {class HitSegment;}
 class EDepSim::HitSegment : public G4VHit {
 public:
     /// Create a new hit segment with a maximum allowed sagitta and length.

@@ -10,9 +10,9 @@ class G4LogicalVolume;
 #include "EDepSimBuilder.hh"
 #include "EDepSimComponentBuilder.hh"
 
+namespace EDepSim {class ModuleBuilder;}
 /// Construct a module from components.
 
-namespace EDepSim {class ModuleBuilder;}
 class EDepSim::ModuleBuilder : public EDepSim::Builder {
 
 public:

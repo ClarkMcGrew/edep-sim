@@ -4,6 +4,7 @@
 class G4Event;
 #include <G4VPrimaryGenerator.hh>
 
+namespace EDepSim {class CombinationGenerator;}
 /// Copy the vertex position from the source to the destination
 /// G4PrimaryVertex object.  This has the effect of making the particles in
 /// the vertices come from the same location (or vertex).  This also has an
@@ -12,7 +13,6 @@ class G4Event;
 /// added to the destination vertex (i.e. if the source vertex is [10,10,10]
 /// and the destination vertex is originally [1,1,1] the destination vertex
 /// becomes [11,11,11].
-namespace EDepSim {class CombinationGenerator;}
 class EDepSim::CombinationGenerator: public G4VPrimaryGenerator {
 public:
     CombinationGenerator(int src, int dest, bool relative);

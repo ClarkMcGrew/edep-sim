@@ -23,6 +23,7 @@ class TPRegexp;
 
 namespace EDepSim {class PersistencyMessenger;}
 
+namespace EDepSim {class PersistencyManager;}
 /// The class is `singleton', with access via
 /// G4VPersistencyManager::GetPersistencyManager().  You need to create a
 /// single persistency manager for GEANT4 to work right.  It must derive from
@@ -40,7 +41,6 @@ namespace EDepSim {class PersistencyMessenger;}
 /// summarize the information would be in the
 /// G4UserEventAction::EndOfEventAction method and then keep the summary data
 /// in the EventUserInformation which is thread local.
-namespace EDepSim {class PersistencyManager;}
 class EDepSim::PersistencyManager : public G4VPersistencyManager {
 public:
     /// Creates a root persistency manager.  Through the "magic" of

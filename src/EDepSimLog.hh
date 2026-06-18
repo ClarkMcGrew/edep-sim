@@ -6,6 +6,7 @@
 #include <string>
 #include <map>
 
+namespace EDepSim {class LogManager;}
 /// Provide control over log and error output.  The EDepSim::LogManager class
 /// provides a set of static methods which control the amount of output from
 /// the logging macros.  These macros come in two varieties (logging macros,
@@ -376,7 +377,6 @@
 /// significant build requirements.  By comparison, EDepSim::LogManager is
 /// less than 700 lines of code (1200 with comments).
 ///
-namespace EDepSim {class LogManager;}
 class EDepSim::LogManager {
 public:
     ~LogManager();
