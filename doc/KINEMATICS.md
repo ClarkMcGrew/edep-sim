@@ -36,7 +36,7 @@ An external generator is loaded using
 /generator/kinematics/external/loadGenerator [library] [symbol] [option]
 /generator/kinematics/set external
 ```
-There is an [example](./examples/ExternalKinematics/) kinematics generator
+There is an [example](../examples/ExternalKinematics/) kinematics generator
 located in the examples directory.
 
 ### Controlling the primary vertex timing
