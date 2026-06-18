@@ -14,4 +14,5 @@ to be called by the user actions.
   file.
 
 * Update how the trajectory mapping is done so that it can be thread
-  safe.
+  safe. This release is not thread safe (this is the first step in
+  updating architecture).
