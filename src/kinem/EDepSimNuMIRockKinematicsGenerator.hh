@@ -7,8 +7,8 @@
 
 class G4Event;
 
-/// This is an interface approximate the rock muons entering CAPTAIN.
 namespace EDepSim {class NuMIRockKinematicsGenerator;}
+/// This is an interface approximate the rock muons entering CAPTAIN.
 class EDepSim::NuMIRockKinematicsGenerator : public EDepSim::VKinematicsGenerator {
 public:
     ///  Construct a new generator.  The name is the name of the generator

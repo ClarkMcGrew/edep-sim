@@ -6,8 +6,8 @@
 
 #include "kinem/EDepSimVPositionGenerator.hh"
 
-/// Select a position and time to be used as the vertex of a primary particle.
 namespace EDepSim {class FixedPositionGenerator;}
+/// Select a position and time to be used as the vertex of a primary particle.
 class EDepSim::FixedPositionGenerator : public EDepSim::VPositionGenerator {
 public:
     FixedPositionGenerator(const G4String& name, 

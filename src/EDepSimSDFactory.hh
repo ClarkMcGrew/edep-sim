@@ -7,6 +7,7 @@
 #include <G4String.hh>
 class G4VSensitiveDetector;
 
+namespace EDepSim {class SDFactory;}
 /// Create an object to build a sensitive detector (SD) based on a name and
 /// type.  The name of the SD will be used by the G4 SD manager to see if the
 /// detector already exists.  If it doesn't then a new SD of "type" will be
@@ -17,7 +18,6 @@ class G4VSensitiveDetector;
 ///
 ///  surface -- A sensitive detector to record the energy deposition at a
 ///             surface.  This is mostly for optical photons.
-namespace EDepSim {class SDFactory;}
 class EDepSim::SDFactory {
 public:
     /// Build a factory to build sensitive detectors specified by "type".

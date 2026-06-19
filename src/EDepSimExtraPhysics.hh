@@ -8,6 +8,7 @@
 
 #include "G4VPhysicsConstructor.hh"
 
+namespace EDepSim {class ExtraPhysics;}
 /// A G4VPhysicsConstructor to provide extra physics processes required by
 /// detSim such as step length limiters.  The extra physics processes must be
 /// explicitly added to every physics list (as an EM list) that is created in
@@ -16,7 +17,6 @@
 /// EDepSim::PhysicsList.  Once this is defined, the step length can be limited in
 /// logical volumes as they are created by calling
 /// G4LogicalVolume::SetUsersLimits(new G4UserLimits(stepLength)).
-namespace EDepSim {class ExtraPhysics;}
 class EDepSim::ExtraPhysics: public G4VPhysicsConstructor {
 public:
 

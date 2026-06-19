@@ -9,6 +9,7 @@ namespace EDepSim {class VCountGenerator;}
 namespace EDepSim {class VPositionGenerator;}
 namespace EDepSim {class VTimeGenerator;}
 
+namespace EDepSim {class PrimaryGenerator;}
 /// Generate one (or more) G4PrimaryVertex objects and add them to the
 /// G4Event.  This is used by the EDepSim::UserPrimaryGeneratorAction to generate
 /// particles which will be tracked by the G4 simulation.  This uses the
@@ -16,7 +17,6 @@ namespace EDepSim {class VTimeGenerator;}
 /// and EDepSim::VTimeGenerator classes to create the G4PrimaryVertexObjects.  The
 /// control of the EDepSim::PrimaryGenerator object is through the
 /// EDepSim::UserPrimaryGeneratorMessenger class.
-namespace EDepSim {class PrimaryGenerator;}
 class EDepSim::PrimaryGenerator: public G4VPrimaryGenerator {
 public:
     PrimaryGenerator(EDepSim::VKinematicsGenerator* kine,

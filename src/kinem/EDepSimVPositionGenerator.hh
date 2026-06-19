@@ -4,6 +4,7 @@
 #include <G4String.hh>
 #include <G4LorentzVector.hh>
 
+namespace EDepSim {class VPositionGenerator;}
 /// A base class used by ND20PrimaryGenerator to select candiate vertex
 /// positions.  Classes derived from EDepSim::VPositionGenerator are responsible
 /// for returning new candidate positions that are passed to
@@ -19,7 +20,6 @@
 /// EDepSim::VKinematicsGenerator with the one returned by
 /// EDepSim::VPositionGenerator::GetPosition().  The ForcePosition methods should
 /// generally return true.
-namespace EDepSim {class VPositionGenerator;}
 class EDepSim::VPositionGenerator {
 public:
     VPositionGenerator(const G4String& name) : fName(name) {}

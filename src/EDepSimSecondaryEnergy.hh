@@ -7,11 +7,11 @@
 #include <G4DynamicParticle.hh>
 #include <G4VRestDiscreteProcess.hh>
 
+namespace EDepSim {class SecondaryEnergy;}
 /// Collect the secondary energy deposition part of the energy loss for the
 /// EDepSim::HitSegment.  For EDepSim, secondary loss is the energy that
 /// generally goes into scintillation.  The ionization energy loss is then the
 /// total energy minus the secondary.
-namespace EDepSim {class SecondaryEnergy;}
 class EDepSim::SecondaryEnergy : public G4VRestDiscreteProcess
 {
 public:

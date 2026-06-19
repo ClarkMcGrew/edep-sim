@@ -3,8 +3,8 @@
 
 #include "kinem/EDepSimVConstrainedPositionGenerator.hh"
 
-/// Select a position and time to be used as the vertex of a primary particle.
 namespace EDepSim {class DensityPositionGenerator;}
+/// Select a position and time to be used as the vertex of a primary particle.
 class EDepSim::DensityPositionGenerator : public EDepSim::VConstrainedPositionGenerator {
 public:
     DensityPositionGenerator(const G4String& name);

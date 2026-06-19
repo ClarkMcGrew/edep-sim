@@ -12,8 +12,8 @@
 class G4HCofThisEvent;
 class G4Step;
 
-/// A sensitive detector to create EDepSim::HitSegment based hits.
 namespace EDepSim {class SegmentSD;}
+/// A sensitive detector to create EDepSim::HitSegment based hits.
 class EDepSim::SegmentSD : public G4VSensitiveDetector {
     
 public:

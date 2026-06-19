@@ -14,9 +14,9 @@ class TGeoManager;
 
 #include "EDepSimPersistencyManager.hh"
 
+namespace EDepSim {class RootPersistencyManager;}
 /// Provide a root output for the geant 4 events.  This just takes the summary
 /// from EDepSim::PersistencyManager and dumps it as a tree.
-namespace EDepSim {class RootPersistencyManager;}
 class EDepSim::RootPersistencyManager : public EDepSim::PersistencyManager {
 public:
     /// Creates a root persistency manager.  Through the "magic" of

@@ -11,8 +11,8 @@
 class G4HCofThisEvent;
 class G4Step;
 
-/// A sensitive detector to create hits at a surface (mostly optical surfaces).
 namespace EDepSim {class SurfaceSD;}
+/// A sensitive detector to create hits at a surface (mostly optical surfaces).
 class EDepSim::SurfaceSD : public G4VSensitiveDetector {
 
 public:
