@@ -117,6 +117,28 @@ void EDepSim::PersistencyManager::AddTrajectoryPointRule(int process,
         TrajectoryPointRule(process,subprocess,threshold));
 }
 
+bool EDepSim::PersistencyManager::MatchesTrajectoryRule(int process,
+                                                        int subprocess,
+                                                        double enr,
+                                                        int category) {
+    for (const TrajectoryPointRule& rule : fTrajectoryPointRules) {
+        if (enr < rule.fThreshold) {
+            continue;
+        }
+        if (rule.fProcess >= 0 and process != rule.fProcess) {
+            continue;
+        }
+        if (rule.fSubprocess >= 0 and subprocess != rule.fSubprocess) {
+            continue;
+        }
+        if (rule.fCategory >= 0 and (category & rule.fCategory) == 0) {
+            continue;
+        }
+        return true;
+    }
+    return false;
+}
+
 bool EDepSim::PersistencyManager::SaveTrajectoryBoundary(G4VTrajectory* g4Traj,
                                                     G4StepStatus status,
                                                     G4String currentVolume,
