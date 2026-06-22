@@ -208,14 +208,14 @@ public:
     /// several include files (particularly G4HadronicProcessType.hh, and
     /// G4EmProcessSubType.hh).  A value of -1 for either process or
     /// subprocess will match everything.
-    virtual void AddTrajectoryPointRule(int process,
-                                        int subprocess,
-                                        double threshold,
-                                        int category);
+    virtual void AddTrajectoryRule(int process,
+                                   int subprocess,
+                                   double threshold,
+                                   int category);
 
     /// Clear the rulees for trajectory points.
-    virtual void ClearTrajectoryPointRules() {
-        fTrajectoryPointRules.clear();
+    virtual void ClearTrajectoryRules() {
+        fTrajectoryRules.clear();
     }
 
     /// Check to see if a particular process, subprocess, energy deposition
@@ -361,9 +361,9 @@ private:
     std::vector<TPRegexp*> fTrajectoryBoundaries;
 
     /// An internal class to keep the rules used to save trajectory points.
-    class TrajectoryPointRule {
+    class TrajectoryRule {
     public:
-        TrajectoryPointRule(int p, int s, double t, int c)
+        TrajectoryRule(int p, int s, double t, int c)
             : fProcess(p), fSubprocess(s), fThreshold(t), fCategory(c) {}
         /// A process to be saved, or negative if all processes should be
         /// saved.
@@ -379,7 +379,7 @@ private:
         /// and trajectory points.
         int fCategory;
     };
-    std::vector<TrajectoryPointRule> fTrajectoryPointRules;
+    std::vector<TrajectoryRule> fTrajectoryRules;
 
     /// The detector partition
     int fDetectorPartition;

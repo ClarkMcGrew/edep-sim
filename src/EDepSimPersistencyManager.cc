@@ -46,13 +46,13 @@
 // then it will create a simple tree that can be analyzed using root.  The
 // best way to access the tree is with the root interface to python (no
 // headers needed), or by using ROOT TFile::MakeProject.
-EDepSim::PersistencyManager::PersistencyManager()
-    : G4VPersistencyManager(), fFilename("/dev/null"),
-      fLengthThreshold(10*mm),
-      fGammaThreshold(5*MeV), fNeutronThreshold(50*MeV),
-      fTrajectoryPointAccuracy(1.*mm), fTrajectoryPointDeposit(0*MeV),
-      fSaveAllPrimaryTrajectories(true),
-      fSaveAllTrajectories(std::nan("not-set")) {
+EDepSim::PersistencyManager::PersistencyManager():
+    G4VPersistencyManager(), fFilename("/dev/null"),
+    fLengthThreshold(10*mm),
+    fGammaThreshold(5*MeV), fNeutronThreshold(50*MeV),
+    fTrajectoryPointAccuracy(1.*mm), fTrajectoryPointDeposit(0*MeV),
+    fSaveAllPrimaryTrajectories(true),
+    fSaveAllTrajectories(std::nan("not-set")) {
     fPersistencyMessenger = new EDepSim::PersistencyMessenger(this);
 }
 
@@ -84,7 +84,7 @@ G4bool EDepSim::PersistencyManager::Store(const G4Event* anEvent) {
 G4bool EDepSim::PersistencyManager::Store(const G4Run* aRun) {
     if (!aRun) return false;
     EDepSimSevere(" -- Run store called without a save method for "
-               << "GEANT4 run " << aRun->GetRunID());
+                  << "GEANT4 run " << aRun->GetRunID());
     return false;
 }
 
@@ -92,7 +92,7 @@ G4bool EDepSim::PersistencyManager::Store(const G4Run* aRun) {
 G4bool EDepSim::PersistencyManager::Store(const G4VPhysicalVolume* aWorld) {
     if (!aWorld) return false;
     EDepSimSevere(" -- Geometry store called without a save method for "
-               << aWorld->GetName());
+                  << aWorld->GetName());
     return false;
 }
 
@@ -110,23 +110,23 @@ void EDepSim::PersistencyManager::ClearTrajectoryBoundaries() {
     fTrajectoryBoundaries.clear();
 }
 
-void EDepSim::PersistencyManager::AddTrajectoryPointRule(int process,
-                                                         int subprocess,
-                                                         double threshold,
-                                                         int category) {
+void EDepSim::PersistencyManager::AddTrajectoryRule(int process,
+                                                    int subprocess,
+                                                    double threshold,
+                                                    int category) {
     if (category == 0) {
         EDepSimError("Trajectory rule applies to nothing... skipped");
         return;
     }
-    fTrajectoryPointRules.emplace_back(
-        TrajectoryPointRule(process,subprocess,threshold,category));
+    fTrajectoryRules.emplace_back(
+        TrajectoryRule(process,subprocess,threshold,category));
 }
 
 bool EDepSim::PersistencyManager::MatchesTrajectoryRule(int process,
                                                         int subprocess,
                                                         double enr,
                                                         int category) {
-    for (const TrajectoryPointRule& rule : fTrajectoryPointRules) {
+    for (const TrajectoryRule& rule : fTrajectoryRules) {
         if (enr < rule.fThreshold) {
             continue;
         }
@@ -145,9 +145,9 @@ bool EDepSim::PersistencyManager::MatchesTrajectoryRule(int process,
 }
 
 bool EDepSim::PersistencyManager::SaveTrajectoryBoundary(G4VTrajectory* g4Traj,
-                                                    G4StepStatus status,
-                                                    G4String currentVolume,
-                                                    G4String prevVolume) {
+                                                         G4StepStatus status,
+                                                         G4String currentVolume,
+                                                         G4String prevVolume) {
     if (status != fGeomBoundary) return false;
     std::string particleInfo = ":" + g4Traj->GetParticleName();
     if (std::abs(g4Traj->GetCharge())<0.1) particleInfo += ":neutral";
@@ -313,8 +313,8 @@ void EDepSim::PersistencyManager::SummarizeTrajectories(
                 ndTraj->GetParticleName());
         if (!part) {
             EDepSimError(std::string("EDepSim::RootPersistencyManager::")
-                      + "No particle information for "
-                      + ndTraj->GetParticleName());
+                         + "No particle information for "
+                         + ndTraj->GetParticleName());
         }
 
         fTrackIdMap[ndTraj->GetTrackID()] = index++;
@@ -573,7 +573,7 @@ void EDepSim::PersistencyManager::MarkTrajectories(const G4Event* event) {
 }
 
 void EDepSim::PersistencyManager::CopyTrajectoryPoints(TG4Trajectory& traj,
-                                                  G4VTrajectory* g4Traj) {
+                                                       G4VTrajectory* g4Traj) {
     std::vector<int> selected;
 
     // Choose the trajectory points that are going to be saved.
@@ -717,9 +717,9 @@ EDepSim::PersistencyManager::SummarizeHitSegments(const G4Event* event,
                           g4HitSeg->GetStart().z(),
                           g4HitSeg->GetStart().t());
         hit.Stop.SetXYZT(g4HitSeg->GetStop().x(),
-                          g4HitSeg->GetStop().y(),
-                          g4HitSeg->GetStop().z(),
-                          g4HitSeg->GetStop().t());
+                         g4HitSeg->GetStop().y(),
+                         g4HitSeg->GetStop().z(),
+                         g4HitSeg->GetStop().t());
         dest.push_back(hit);
     }
 }
@@ -750,7 +750,7 @@ void EDepSim::PersistencyManager::CopyHitContributors(
         TrackIdMap::iterator t = fTrackIdMap.find(ndTraj->GetTrackID());
         if (t == fTrackIdMap.end()) {
             EDepSimThrow("Contributor with unknown trajectory: "
-                      << ndTraj->GetTrackID());
+                         << ndTraj->GetTrackID());
         }
         dest.push_back(t->second);
     }
@@ -783,7 +783,7 @@ double EDepSim::PersistencyManager::FindTrajectoryAccuracy(
 }
 
 int EDepSim::PersistencyManager::SplitTrajectory(G4VTrajectory* g4Traj,
-                                            int point1, int point2) {
+                                                 int point1, int point2) {
 
     int point3 = 0.5*(point1 + point2);
     if (point3 <= point1) EDepSimThrow("Points too close to split");
