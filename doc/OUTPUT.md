@@ -1,6 +1,54 @@
+## Controlling the output saved by EDepSim::PersistencyManager
+
+The EDepSim::PersistencyManager class summarizes the output of
+GEANT4 based on settings provided in the macro file with the
+`/edep/db/set` commands. All of the deposited energy, and photons
+will be saved, so most of the settings control how much trajectory
+information is available in the output file.
+
+Control over saving a trajectory is provided by the `saveAllTraj`,
+`saveAllPrimTraj`, `savePhotonTraj`, `lengthThreshold`,
+`neutronThreshold`, and `gammaThreshold` commands.  These commands
+set a momentum threshold for when each category of trajectory
+should be saved. Additional control for saving trajectories is
+provided by the `trajectoryRule` command (see below).
+
+Control over which trajectory points are saved is provided by the
+`trajectoryAccuracy`, `trajectoryDeposit`, and
+`trajectoryBoundary` commands. The `trajectoryAccuracy` command
+makes sure that the straight line between two saved trajectory
+points stays within the requested distance to the true trajectory.
+The `trajectoryDeposit` command will force trajectory points with
+more than the requested deposit to be saved. The
+`trajectoryBoundary` command controls if a point will be saved as
+a particle enters or leaves a volume.  It takes a Perl RegExp that
+is compared against a string formated as
+`:particle-name:charge:volume-name:` where the particle name is
+one of the standard GEANT4 particle names, the charge is either
+`charged` or `neutral`, and the volume is the physical volume name
+as known to GEANT4.
+
+Trajectories and trajectory points associated with particular
+interactions can be saved using the `trajectoryRule` command which
+accepts a process type and sub-type, and minimum deposit (or
+momentum), and a category.  The process types are integer values
+defined in the `G4ProcessType.h` file distributed with GEANT4 (a
+value of -1 will accept all process types). The subtypes are
+integer values defined by the particular interaction models, the
+notable values can be found in `G4EmProcessSubType.hh`,
+`G4OpProcessSubType.hh`, and `G4HadronicProcessType.hh` (a value
+of -1 will accept all process sub-types).  The `category` controls
+whether the rule applies to just trajectories, just trajectory
+points, or both.
+
 ## Accessing the output with EDepSim::PersistencyManager
 
-After an GEANT4 event is processed, the event is summarized using the EDepSim::PersistencyManager class which is a base class that users can specialize for their specific purposes.  The PersistencyManager class will marshal summaries of the event into local classes and provides the main access to the event.  By default, the output is written to a ROOT file with classes described by the `edepsim_io` library (see below).
+After an GEANT4 event is processed, the event is summarized using the
+EDepSim::PersistencyManager class which is a base class that users can
+specialize for their specific purposes.  The PersistencyManager class will
+marshal summaries of the event into local classes and provides the main
+access to the event.  By default, the output is written to a ROOT file with
+classes described by the `edepsim_io` library (see below).
 
 ### Reading the output produced by EDepSim::RootPersistencyManager.
 

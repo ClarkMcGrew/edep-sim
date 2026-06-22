@@ -44,8 +44,16 @@ EDepSim::Trajectory::Trajectory(const G4Event* theEvent,
     fPDGCharge = fpParticleDefinition->GetPDGCharge();
     fParticleName = fpParticleDefinition->GetParticleName();
     const G4VProcess* proc = aTrack->GetCreatorProcess();
-    if (proc) fProcessName = proc->GetProcessName();
-    else fProcessName = "primary";
+    if (proc) {
+        fProcessName = proc->GetProcessName();
+        fProcessType = proc->GetProcessType();
+        fProcessSubType = proc->GetProcessSubType();
+    }
+    else {
+        fProcessName = "primary";
+        fProcessType = -1;
+        fProcessSubType = -1;
+    }
     fInitialMomentum = aTrack->GetMomentum();
     fSDEnergyDeposit = 0.0;
     fSDTotalEnergyDeposit = 0.0;

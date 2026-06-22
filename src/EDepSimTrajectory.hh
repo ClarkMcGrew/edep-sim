@@ -59,6 +59,12 @@ public:
     /// Get the interaction process that created the trajectory.
     inline G4String GetProcessName() const {return fProcessName;}
 
+    /// Get the interaction process type that created the trajectory.
+    inline G4int GetProcessType() const {return fProcessType;}
+
+    /// Get the interaction process sub-type that created the trajectory.
+    inline G4int GetProcessSubType() const {return fProcessSubType;}
+
     /// Get the initial momentum of the particle that created this trajectory.
     inline G4ThreeVector GetInitialMomentum() const {return fInitialMomentum;}
 
@@ -134,6 +140,8 @@ private:
     G4double                  fPDGCharge;
     G4String                  fParticleName;
     G4String                  fProcessName;
+    G4int                     fProcessType;
+    G4int                     fProcessSubType;
     G4ThreeVector             fInitialMomentum;
     G4double                  fSDEnergyDeposit;
     G4double                  fSDTotalEnergyDeposit;
