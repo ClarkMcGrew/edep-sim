@@ -4,6 +4,7 @@
 #include "EDepSimPersistencyMessenger.hh"
 #include "EDepSimPersistencyManager.hh"
 #include "EDepSimUserTrackingAction.hh"
+#include "EDepSimLog.hh"
 
 #include <G4UIdirectory.hh>
 #include <G4UIcmdWithAString.hh>
@@ -104,7 +105,7 @@ EDepSim::PersistencyMessenger::PersistencyMessenger(
     fTrajectoryPointRuleCMD
         = new G4UIcommand("/edep/db/set/trajectoryRule",this);
     fTrajectoryPointRuleCMD->SetGuidance(
-        "Add a rule to save a trajectory point.");
+        "Add a rule to save a trajectory or trajectory point.");
     fTrajectoryPointRuleCMD->AvailableForStates(
         G4State_PreInit,G4State_Idle);
     G4UIparameter* param = new G4UIparameter("process",'i',false);
@@ -132,6 +133,13 @@ EDepSim::PersistencyMessenger::PersistencyMessenger(
     param = new G4UIparameter("energy unit",'s',true);
     param->SetDefaultValue("MeV");
     fTrajectoryPointRuleCMD->SetParameter(param);
+    param = new G4UIparameter("category",'s',true);
+    param->SetGuidance("What to apply the rule to (trajectories, or points)."
+                       " If the rule applies to trajectories, it will also be"
+                       " applied to trajectory points.");
+    param->SetParameterCandidates("all point trajectory");
+    param->SetDefaultValue("point");
+    fTrajectoryPointRuleCMD->SetParameter(param);
 
     fClearTrajectoryPointRulesCMD
         = new G4UIcmdWithoutParameter("/edep/db/set/clearTrajectoryRules",this);
@@ -141,7 +149,7 @@ EDepSim::PersistencyMessenger::PersistencyMessenger(
 
     fSavePhotonTrajectoriesCMD
         = new G4UIcmdWithABool("/edep/db/set/savePhotonTraj", this);
-    fSaveAllPrimaryTrajectoriesCMD->SetGuidance(
+    fSavePhotonTrajectoriesCMD->SetGuidance(
         "Control if photon trajectories are placed into the trajectory stack"
         " so tracking is a little faster and uses less resources."
         " True: Photon trajectories will be saved"
@@ -216,10 +224,21 @@ void EDepSim::PersistencyMessenger::SetNewValue(G4UIcommand* command,
         int subprocess;
         double threshold;
         std::string unit;
+        std::string categoryName;
+        int category = 0;
         std::istringstream val(newValue);
-        val >> process >> subprocess >> threshold >> unit;
+        val >> process >> subprocess >> threshold >> unit >> categoryName;
+        EDepSimLog("Trajectory Rule: "
+                   << " Process: " << process << "/" << subprocess
+                   << " Energy: " << threshold << " " << unit
+                   << " Category: " << categoryName);
+        if (categoryName == "all") category = -1;
+        else if (categoryName == "trajectory") category = 1;
+        else if (categoryName == "point") category = 2;
         fPersistencyManager->AddTrajectoryPointRule(
-            process,subprocess,threshold*G4UIcommand::ValueOf(unit.c_str()));
+            process,subprocess,
+            threshold*G4UIcommand::ValueOf(unit.c_str()),
+            category);
     }
     else if (command == fClearTrajectoryPointRulesCMD) {
         fPersistencyManager->ClearTrajectoryPointRules();

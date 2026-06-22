@@ -112,9 +112,14 @@ void EDepSim::PersistencyManager::ClearTrajectoryBoundaries() {
 
 void EDepSim::PersistencyManager::AddTrajectoryPointRule(int process,
                                                          int subprocess,
-                                                         double threshold) {
+                                                         double threshold,
+                                                         int category) {
+    if (category == 0) {
+        EDepSimError("Trajectory rule applies to nothing... skipped");
+        return;
+    }
     fTrajectoryPointRules.emplace_back(
-        TrajectoryPointRule(process,subprocess,threshold));
+        TrajectoryPointRule(process,subprocess,threshold,category));
 }
 
 bool EDepSim::PersistencyManager::MatchesTrajectoryRule(int process,

@@ -210,7 +210,8 @@ public:
     /// subprocess will match everything.
     virtual void AddTrajectoryPointRule(int process,
                                         int subprocess,
-                                        double threshold);
+                                        double threshold,
+                                        int category);
 
     /// Clear the rulees for trajectory points.
     virtual void ClearTrajectoryPointRules() {
@@ -362,8 +363,8 @@ private:
     /// An internal class to keep the rules used to save trajectory points.
     class TrajectoryPointRule {
     public:
-        TrajectoryPointRule(int p, int s, double t)
-            : fProcess(p), fSubprocess(s), fThreshold(t), fCategory(-1) {}
+        TrajectoryPointRule(int p, int s, double t, int c)
+            : fProcess(p), fSubprocess(s), fThreshold(t), fCategory(c) {}
         /// A process to be saved, or negative if all processes should be
         /// saved.
         int fProcess;
