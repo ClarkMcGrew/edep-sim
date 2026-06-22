@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.30)
 
 # Set the project name and version.  The project name will be used to
 # import this into other CMAKE files.
-project(EDepSim VERSION 3.2.0)
+project(EDepSim VERSION 4.2.0)
 
 message(STATUS "Energy Deposition Simulation -- ${VERSION}")
 
