@@ -886,18 +886,10 @@ EDepSim::PersistencyManager::SelectTrajectoryPoints(std::vector<int>& selected,
         // Apply the trajectory point rules first to see if the user has asked
         // for this specific point.  A point might be selected multiple times,
         // but that's OK because duplicates will be rejected later.
-        for (const TrajectoryPointRule& rule : fTrajectoryPointRules) {
-            if (edepPoint->GetProcessDeposit() < rule.fThreshold) {
-                continue;
-            }
-            if (rule.fProcess >= 0
-                and edepPoint->GetProcessType() != rule.fProcess) {
-                continue;
-            }
-            if (rule.fSubprocess >= 0
-                and edepPoint->GetProcessSubType() != rule.fSubprocess) {
-                continue;
-            }
+        if (MatchesTrajectoryRule(edepPoint->GetProcessType(),
+                                  edepPoint->GetProcessSubType(),
+                                  edepPoint->GetProcessDeposit(),
+                                  2)) {
             selected.push_back(tp);
         }
         // Don't save pure navigation....
