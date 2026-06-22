@@ -363,7 +363,7 @@ private:
     class TrajectoryPointRule {
     public:
         TrajectoryPointRule(int p, int s, double t)
-            : fProcess(p), fSubprocess(s), fThreshold(t) {}
+            : fProcess(p), fSubprocess(s), fThreshold(t), fCategory(-1) {}
         /// A process to be saved, or negative if all processes should be
         /// saved.
         int fProcess;
