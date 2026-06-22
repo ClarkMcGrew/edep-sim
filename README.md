@@ -49,11 +49,13 @@ geometry).
 
 The [GEANT4 output](./doc/OUTPUT.md) is made available by registering a
 user class derived from EDepSim::PersistencyManager (which will fully
-marshal the information). A default EDepSim::RootPersistencyManager is
-provided to save the event information to a ROOT tree, and provides the
-_usual_ method of accessing the results from the simulation. The classes in
-the ROOT tree are accessible through python, and in C++ using the
-edepsim_io library that is part of this distribution.
+marshal the information). Control over the type and amount of information
+saved is provided through the input macro file (see the `/edep/db/set/`
+commands). A default EDepSim::RootPersistencyManager is provided to save the
+event information to a ROOT tree, and provides the _usual_ method of
+accessing the results from the simulation. The classes in the ROOT tree are
+accessible through python, and in C++ using the edepsim_io library that is
+part of this distribution.
 
 Where it is available (and in particular for argon), the simulation
 implements a fairly detailed model of the energy deposited as ionization
