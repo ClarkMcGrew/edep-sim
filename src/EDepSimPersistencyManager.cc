@@ -180,7 +180,9 @@ void EDepSim::PersistencyManager::UpdateSummaries(const G4Event* event) {
     EDepSimLog("Event Summary for run " << fEventSummary.RunId
                << " event " << fEventSummary.EventId);
 
-    // Summarize the trajectories first so that fTrackIdMap is filled.
+    // Summarize the trajectories first. This goes through the
+    // EDepSim::TrajectoryContainer and marks the trajectory objects that
+    // should be saved.
     MarkTrajectories(event);
 
     SummarizePrimaries(fEventSummary.Primaries,event->GetPrimaryVertex());
@@ -268,7 +270,9 @@ void EDepSim::PersistencyManager::SummarizeTrajectories(
     TG4TrajectoryContainer& dest,
     const G4Event* event) {
     dest.clear();
-    MarkTrajectories(event);
+
+    // The trajectories that should be saved must have already been marked
+    // using MarkTrajectories()
 
     // Build a map of the original G4 TrackID to the new relocated TrackId
     // (note capitalization).  This also uses the fact that maps are sorted as
@@ -388,6 +392,9 @@ void EDepSim::PersistencyManager::MarkTrajectories(const G4Event* event) {
     //       1) a daughter deposited energy in a sensitive detector
     //       2) or, SaveAllPrimaryTrajectories() is true
     //
+    //   ** Trajectories that the user has explicitly requested by
+    //         setting a /edep/db/set/trajectoryRule
+    //
     //   ** Trajectories created by a particle decay if
     //       1) a daughter deposited energy in a sensitve detector
     //       2) or, SaveAllPrimaryTrajectories() is true.
@@ -408,6 +415,8 @@ void EDepSim::PersistencyManager::MarkTrajectories(const G4Event* event) {
         }
         std::string particleName = ndTraj->GetParticleName();
         std::string processName = ndTraj->GetProcessName();
+        int processType = ndTraj->GetProcessType();
+        int processSubtype = ndTraj->GetProcessSubType();
         double initialMomentum = ndTraj->GetInitialMomentum().mag();
 
         // Check if all primary particle trajectories should be saved.  The
@@ -421,6 +430,17 @@ void EDepSim::PersistencyManager::MarkTrajectories(const G4Event* event) {
                 ndTraj->MarkTrajectory();
                 continue;
             }
+        }
+
+        // Check if the user as explicitly asked for this trajectory by
+        // setting a value for the /edep/db/set/trajectoryRule macro command.
+        // The argument "1" flags that this is checking for a trajectory, and
+        // not a trajectory point.
+        if (MatchesTrajectoryRule(processType, processSubtype,
+                                  initialMomentum, 1)) {
+            // Save this trajectory, and it's immediate parent.
+            ndTraj->MarkTrajectory(1);
+            continue;
         }
 
         // Check if everything should be saved.
@@ -451,8 +471,9 @@ void EDepSim::PersistencyManager::MarkTrajectories(const G4Event* event) {
         }
 
         // Save particles that produce charged track inside a sensitive
-        // detector.  This doesn't automatically save, but the parents will be
-        // automatically considered for saving by the next bit of code.
+        // detector.  This doesn't automatically save the parents, but the
+        // parents will be automatically considered for saving by the next bit
+        // of code.
         if (ndTraj->GetSDLength() > GetLengthThreshold()) {
             ndTraj->MarkTrajectory(0);
             continue;
