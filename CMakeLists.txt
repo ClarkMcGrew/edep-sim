@@ -61,38 +61,52 @@ if(NOT EDEPSIM_READONLY)
   endif (Geant4_FOUND)
 endif(NOT EDEPSIM_READONLY)
 
-set(IS_ROOT_CXX_STANDARD_SET OFF)
-get_target_property(root_features ROOT::Core INTERFACE_COMPILE_FEATURES)
-foreach(cxxstd IN ITEMS 23 20 17 14 11)
-  if("cxx_std_${cxxstd}" IN_LIST root_features)
-    message(STATUS "ROOT compiled with C++${cxxstd}")
-    set(IS_ROOT_CXX_STANDARD_SET ON)
-    set(CMAKE_CXX_STANDARD ${cxxstd})
-    set(CMAKE_CXX_STANDARD_REQUIRED ON)
-    break()
-  endif()
-endforeach()
+# Get the compiler version from ROOT.
+set(RootCxxStandardChecked OFF)
+if(NOT RootCxxStandardChecked)
+  get_target_property(root_features ROOT::Core INTERFACE_COMPILE_FEATURES)
+  foreach(cxxstd IN ITEMS 26 23 20 17 14 11)
+    if("cxx_std_${cxxstd}" IN_LIST root_features)
+      message(STATUS "ROOT compiled with C++${cxxstd}")
+      set(RootCxxStandardChecked ${cxxstd})
+      break()
+    endif()
+  endforeach()
+endif()
 
-if(!IS_ROOT_CXX_STANDARD_SET)
-  # !! This is an old routine that use to work in 2025 !!
-  # Explicitly set the compiler version so that it will match the
-  # compiler that was used to compile ROOT.  Recent ROOT documentation
-  # explicitly notes that the appliation needs to use the same C++
-  # standard as ROOT.
+# A second chance to get the compiler version from ROOT.
+if(NOT RootCxxStandardChecked)
+  # !! This is an way to check the ROOT C++ version that worked in 2025 !!
   if ( ROOT_cxx14_FOUND )
     message(STATUS "ROOT compiled with C++14")
-    set(CMAKE_CXX_STANDARD 14)
+    set(RootCxxStandardChecked 14)
   elseif ( ROOT_cxx17_FOUND )
     message(STATUS "ROOT compiled with C++17")
-    set(CMAKE_CXX_STANDARD 17)
+    set(RootCxxStandardChecked 17)
   elseif ( ROOT_cxx20_FOUND )
     message(STATUS "ROOT compiled with C++20")
-    set(CMAKE_CXX_STANDARD 20)
+    set(RootCxxStandardChecked 20)
   else ( ROOT_cxx14_FOUND )
     message(ALERT "ROOT C++ standard not set, use ROOT minimum (C++14)")
-    set(CMAKE_CXX_STANDARD 14)
+    set(RootCxxStandardChecked 14)
   endif ( ROOT_cxx14_FOUND)
 endif()
+
+# Check that the current compiler standard matches the one that was
+# used for ROOT.  Recent ROOT documentation explicitly notes that the
+# application needs to use the same C++ standard as ROOT.
+if(CMAKE_CXX_STANDARD)
+  if(NOT CMAKE_CXX_STANDARD EQUAL RootCxxStandardChecked)
+    message(WARNING "ROOT requires C++${RootCxxStandardChecked}")
+    message(WARNING "BUILD is using C++${CMAKE_CXX_STANDARD}")
+  endif()
+else()
+  # No compiler standard was set, so use the one found for ROOT.
+  message(WARNING "Set C++${CMAKE_CXX_STANDARD} to match ROOT")
+  set(CMAKE_CXX_STANDARD ${RootCxxStandardChecked})
+endif()
+
+message(STATUS "Building edep-sim with C++${CMAKE_CXX_STANDARD}")
 
 # Compile the input/output classes needed to read edep-sim output.
 # This does not depend on geant4.
