@@ -52,7 +52,7 @@ endif(ROOT_FOUND)
 # Look for GEANT4.  If it's found, then build the simulation.
 # Otherwise, this can be skipped, but only the i/o library is built.
 if(NOT EDEPSIM_READONLY)
-  find_package(Geant4 10.0)
+  find_package(Geant4 11.0)
   if (Geant4_FOUND)
     include(${Geant4_USE_FILE})
   else (Geant4_FOUND)
