@@ -37,9 +37,14 @@ else(DOXYGEN_FOUND)
     COMMENT "Not generating API documentation with Doxygen" VERBATIM)
 endif(DOXYGEN_FOUND)
 
+# Collect which ROOT components are going to be needed
+set(EDEPSIM_ROOT_COMPONENTS Physics Matrix MathCore Tree RIO)
+if(EDEPSIM_DISPLAY)
+  set(EDEPSIM_ROOT_COMPONENTS Geom ${EDEPSIM_ROOT_COMPONENTS})
+endif(EDEPSIM_DISPLAY)
+
 # Make sure that ROOT is available.  ROOT is absolutely required.
-find_package(ROOT REQUIRED
-  COMPONENTS Geom Physics Matrix MathCore Tree RIO)
+find_package(ROOT REQUIRED COMPONENTS ${EDEPSIM_ROOT_COMPONENTS})
 if(ROOT_FOUND)
   include(${ROOT_USE_FILE})
 endif(ROOT_FOUND)
