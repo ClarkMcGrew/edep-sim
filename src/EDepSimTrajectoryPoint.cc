@@ -11,8 +11,6 @@
 #include <G4AttValue.hh>
 #include <G4UnitsTable.hh>
 
-#include <TGeoManager.h>
-
 #include <EDepSimLog.hh>
 
 G4Allocator<EDepSim::TrajectoryPoint> aTrajPointAllocator;
