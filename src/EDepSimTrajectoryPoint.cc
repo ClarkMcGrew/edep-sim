@@ -1,4 +1,3 @@
-#include "EDepSimRootGeometryManager.hh"
 #include "EDepSimTrajectoryPoint.hh"
 
 #include <G4Track.hh>
@@ -172,13 +171,4 @@ std::vector<G4AttValue>* EDepSim::TrajectoryPoint::CreateAttValues() const {
 #endif
 
     return values;
-}
-
-int EDepSim::TrajectoryPoint::GetVolumeNode() const {
-    gGeoManager->PushPath();
-    int node
-        = EDepSim::RootGeometryManager::Get()->GetNodeId(0.5*(GetPosition()
-                                                          +fPrevPosition));
-    gGeoManager->PopPath();
-    return node;
 }

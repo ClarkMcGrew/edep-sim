@@ -65,11 +65,6 @@ public:
     /// referenced by GetVolumeNode().
     G4String GetPhysVolName() const { return fPhysVolName; }
 
-    /// Get the node for the volume containing the stopping point.  If the
-    /// stopping point is on a geometric boundary, this is the volume that the
-    /// track is just exiting.
-    int GetVolumeNode() const;
-
     /// Translate the step status into a printable name.
     G4String GetStepStatusName() const;
 
