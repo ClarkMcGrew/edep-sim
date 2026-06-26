@@ -2,7 +2,6 @@
 // Define a to hold information about particles that hit a sensitive surface
 // (e.g. a photo cathode)
 
-#include "EDepSimRootGeometryManager.hh"
 #include "EDepSimHitSurface.hh"
 #include "EDepSimLog.hh"
 
