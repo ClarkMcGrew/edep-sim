@@ -1,6 +1,3 @@
-#include <TGeoManager.h>
-#include <TGeoNode.h>
-
 #include "EDepSimUserEventAction.hh"
 #include "EDepSimException.hh"
 #include "EDepSimUserEventInformation.hh"
@@ -8,7 +5,6 @@
 #include "EDepSimTrajectoryMap.hh"
 #include "EDepSimTrajectory.hh"
 #include "EDepSimHitSegment.hh"
-#include "EDepSimRootGeometryManager.hh"
 
 #include "EDepSimLog.hh"
 
@@ -37,25 +33,15 @@ void EDepSim::UserEventAction::BeginOfEventAction(const G4Event* theEvent) {
             SetUserInformation(new EDepSim::UserEventInformation);
     }
 
-    if (!gGeoManager) {
-        EDepSimError("The geometry manager is not defined.");
-        EDepSimThrow("Missing Geometry Manager");
-    }
-
     int vtxNumber=0;
     for (G4PrimaryVertex* vtx = theEvent->GetPrimaryVertex();
          vtx;
          vtx = vtx->GetNext()) {
         ++vtxNumber;
-        gGeoManager->PushPath();
-        EDepSim::RootGeometryManager::Get()->GetNodeId(
-            G4ThreeVector(vtx->GetX0(), vtx->GetY0(), vtx->GetZ0()));
         EDepSimNamedInfo(
             "Event",
             "Vertex: " << vtxNumber
-            << " w/ " << vtx->GetNumberOfParticle() << " primaries"
-            " in " << gGeoManager->GetPath());
-        gGeoManager->PopPath();
+            << " w/ " << vtx->GetNumberOfParticle() << " primaries");
         EDepSimNamedVerbose(
             "Event",
             "Position: "

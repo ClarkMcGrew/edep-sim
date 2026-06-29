@@ -37,14 +37,12 @@ else(DOXYGEN_FOUND)
     COMMENT "Not generating API documentation with Doxygen" VERBATIM)
 endif(DOXYGEN_FOUND)
 
-# Collect which ROOT components are going to be needed
-set(EDEPSIM_ROOT_COMPONENTS Physics Matrix MathCore Tree RIO)
-if(EDEPSIM_DISPLAY)
-  set(EDEPSIM_ROOT_COMPONENTS Geom ${EDEPSIM_ROOT_COMPONENTS})
-endif(EDEPSIM_DISPLAY)
-
 # Make sure that ROOT is available.  ROOT is absolutely required.
-find_package(ROOT REQUIRED COMPONENTS ${EDEPSIM_ROOT_COMPONENTS})
+# This will check for each of the components, and set
+# ROOT_<component>_FOUND if it is available.  Note that Physics,
+# Matrix, MathCore, Tree and RIO are required.  Geom must be found if
+# the event display will be built.
+find_package(ROOT REQUIRED COMPONENTS Geom Physics Matrix MathCore Tree RIO)
 if(ROOT_FOUND)
   include(${ROOT_USE_FILE})
 endif(ROOT_FOUND)
@@ -115,10 +113,12 @@ add_subdirectory(io)
 # Compile the really simple debugging display.  There are better
 # displays out there, but this is what I use to debug the code.  This
 # does not depend on geant4.
-if(EDEPSIM_DISPLAY)
+if(EDEPSIM_DISPLAY AND ROOT_geom_FOUND)
   message(STATUS "Building edep-disp event display")
   add_subdirectory(display)
-endif(EDEPSIM_DISPLAY)
+else()
+  message(WARNING "Event display will not be built")
+endif()
 
 # Only build the simulation if this is not being built in "READONLY" mode.
 if(NOT EDEPSIM_READONLY)
