@@ -1,5 +1,34 @@
 Changes in 4.x.x
 
+* Expose the EDepSim::PersistencyManager::fEventSummary and members with
+  `const& const` getters.  This augments the preferred way to access the
+  event summary which is to derive from PersistencyManager and directly
+  access the fEventSummary field.
+
+Changes in 4.3.0
+
+* Add the capability to save both trajectories and trajectory points
+  based on the process that created the trajectory. The process is
+  specified using the integer valued `process type` and `process
+  subtype` that are defined by GEANT4.
+
+* Improve the CMake build to improve interaction between ROOT and the
+  user application.  ROOT expects the project compiled with a specific
+  standard for CXX. The EDepSim CMakeLists.txt has been changed to
+  check if MAKE_CXX_STANDARD has been set, and then compares against
+  the standard that ROOT expects. If there is a mismatch, a warning is
+  produced. EDepSim no longer assumes that the ROOT Geom component is
+  present, and will not try to build the display if it has not been
+  found.
+
+* Reorganize and expand the README documentation so that it is not in
+  a single file.  The README.md file was getting to long to be
+  managable, so now topics are broken out into their own files.  The
+  main README.md has pointers to the files to check for specific
+  topics.
+
+Changes in 4.2.0
+
 * Users can dynamically load a G4VPhysicsConstructor to add extra
   physics to the geant physics list.  This constructor will be
   registered after G4OpticalPhysics, and before EDepSim::ExtraPhysics.
@@ -25,6 +54,10 @@ Changes in 4.x.x
 * Fix: Add protection to the SurfaceSD for when the process pointer is
   not available.
 
+* Update how the trajectory mapping is done so that it can be thread
+  safe. This release is not thread safe (this is the first step in
+  updating architecture).
+  
 Changes in 4.1.0
 
 * Leverage the work of Xuying Ning <xning@bnl.gov> to support tracking
