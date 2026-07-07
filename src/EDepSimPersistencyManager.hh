@@ -60,30 +60,34 @@ public:
     virtual G4bool Retrieve(G4Run* &r) {r=NULL; return false;}
     virtual G4bool Retrieve(G4VPhysicalVolume* &w) {w=NULL; return false;}
 
-    /// A public accessor to the summarized event.  The primaries are
-    /// summarized during by a call to UpdateSummaries.  The
+    /// A public accessor to the summarized event.  The event is ///
+    /// summarized during by a call to UpdateSummaries, and if the
     /// EDepSim::PersistencyManager::Store(event) method is called from
-    /// G4RunManager::AnalyzeEvent and will call the UpdateSummaries() method.
-    /// Alternatively, the UpdateSummarize method can be called by a method of
-    /// a derived class (e.g. in its Store method).  The fEventSummary field
-    /// is protected so derived classes can directly access it.
-    const TG4Event& GetEventSummary();
+    /// G4RunManager::AnalyzeEvent, it will call the UpdateSummaries() method.
+    /// Alternatively, the UpdateSummaries method should be called by the
+    /// derived class (i.e. in its Store method).  The fEventSummary field is
+    /// protected so derived classes can directly access it.
+    const TG4Event& GetEventSummary() const {return fEventSummary;}
 
-    /// A public accessor to the summarized primaries.  The primaries are
-    /// summarized during by a call to UpdateSummaries.  The
-    /// EDepSim::PersistencyManager::Store(event) method is called from
-    /// G4RunManager::AnalyzeEvent and will call the UpdateSummaries() method.
-    /// Alternatively, the UpdateSummarize method can be called by a method of
-    /// a derived class (e.g. in its Store method).
-    const std::vector<TG4PrimaryVertex>& GetPrimaries() const;
+    /// A public accessor to the summarized primaries.  See the documentation
+    /// for GetEventSummary() for details.
+    const TG4PrimaryVertexContainer&
+    GetPrimaries() const {return fEventSummary.Primaries;}
 
     /// A public accessor to the summarized trajectories.  See the
-    /// documentation for the GetPrimaries() method.
-    const std::vector<TG4Trajectory>& GetTrajectories() const;
+    /// documentation for the GetEventSummary() method.
+    const TG4TrajectoryContainer&
+    GetTrajectories() const { return fEventSummary.Trajectories;}
 
     /// A public accessor to the summarized hit segment detectors.  See the
-    /// documentation for the GetPrimaries() method.
-    const TG4HitSegmentDetectors& GetSegmentDetectors() const;
+    /// documentation for the GetEventSummary() method.
+    const TG4HitSegmentDetectors&
+    GetSegmentDetectors() const {return fEventSummary.SegmentDetectors;}
+
+    /// A public accessor to the summarized photon hit detectors.  See the
+    /// documentation for the GetEventSummary() method.
+    const TG4PhotonHitDetectors&
+    GetPhotonDetectors() const {return fEventSummary.PhotonDetectors;}
 
     /// Open the output (ie database) file.  This is used by the persistency
     /// messenger to open files using the G4 macro language.  It can be an
