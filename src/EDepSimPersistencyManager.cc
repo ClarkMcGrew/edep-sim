@@ -571,7 +571,7 @@ EDepSim::PersistencyManager::SummarizePhotonDetectors(
         G4String HCname = hcT->GetHCname(i);
         int HCId = sdM->GetCollectionID(SDname+"/"+HCname);
         G4VHitsCollection* g4Hits = HCofEvent->GetHC(HCId);
-        if (g4Hits->GetSize()<1) continue;
+        if (!g4Hits || g4Hits->GetSize()<1) continue;
         EDepSim::HitSurface* hitSurf
             = dynamic_cast<EDepSim::HitSurface*>(g4Hits->GetHit(0));
         if (!hitSurf) continue;
@@ -631,7 +631,7 @@ EDepSim::PersistencyManager::SummarizeSegmentDetectors(
         G4String HCname = hcT->GetHCname(i);
         int HCId = sdM->GetCollectionID(SDname+"/"+HCname);
         G4VHitsCollection* g4Hits = HCofEvent->GetHC(HCId);
-        if (g4Hits->GetSize()<1) continue;
+        if (!g4Hits || g4Hits->GetSize()<1) continue;
         EDepSim::HitSegment* hitSeg
             = dynamic_cast<EDepSim::HitSegment*>(g4Hits->GetHit(0));
         if (!hitSeg) continue;
