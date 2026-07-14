@@ -4,7 +4,6 @@
 // Define a Hit to hold information about particles that hit the sensitive
 // detectors.
 
-#include "EDepSimRootGeometryManager.hh"
 #include "EDepSimHitSegment.hh"
 #include "EDepSimTrajectoryMap.hh"
 #include "EDepSimLog.hh"

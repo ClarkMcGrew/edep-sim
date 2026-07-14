@@ -1,0 +1,25 @@
+##############################################################
+# A macro that uses G4 particle gun to create a single particle
+#
+# To generate events using an external kinematics generator.
+#
+#  edep-sim -C -u -e 10 external-kinem.mac
+#
+# This expects the KINEM_TEST environment variable to be set to the
+# directory containing the shared library that needs to be loaded.  This is
+# intended as a sketch of using the external generator, not a demonstration
+# of the best practices.
+#
+
+# /control/verbose 2
+# /tracking/verbose 3
+# /run/verbose 3
+# /process/optical/verbose 2
+
+## Use the external kinematics generator
+/generator/kinematics/external/library $(KINEM_TEST)/libEDepExampleKinem.so
+/generator/kinematics/external/symbol CreateKinematicsGenerator
+/generator/kinematics/external/option KinemTest
+/generator/kinematics/set external
+
+# Don't include the beamOn here.

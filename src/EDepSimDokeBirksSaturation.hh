@@ -7,6 +7,7 @@
 class G4ParticleDefinition;
 class G4MaterialCutsCouple;
 
+namespace EDepSim {class DokeBirksSaturation;}
 /// Implement the Doke-Birk recombination probability found in NEST in an
 /// optimized form for a LAr.  The Doke-Birk parameterization is quite
 /// accurate for LAr over the important energy ranges for a LArTPC (E more
@@ -22,7 +23,6 @@ class G4MaterialCutsCouple;
 /// used, the NEST authors should be cited.  They did all of the physics.
 /// This is just an adaptation of their work to LAr so it's faster, but with
 /// much less capability.
-namespace EDepSim {class DokeBirksSaturation;}
 class EDepSim::DokeBirksSaturation: public G4EmSaturation
 {
 public:

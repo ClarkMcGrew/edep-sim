@@ -1,6 +1,3 @@
-#include <TGeoManager.h>
-#include <TGeoNode.h>
-
 #include "EDepSimUserEventAction.hh"
 #include "EDepSimException.hh"
 #include "EDepSimUserEventInformation.hh"
@@ -8,7 +5,6 @@
 #include "EDepSimTrajectoryMap.hh"
 #include "EDepSimTrajectory.hh"
 #include "EDepSimHitSegment.hh"
-#include "EDepSimRootGeometryManager.hh"
 
 #include "EDepSimLog.hh"
 
@@ -32,16 +28,9 @@ void EDepSim::UserEventAction::BeginOfEventAction(const G4Event* theEvent) {
                  << " w/ " << theEvent->GetNumberOfPrimaryVertex()
                  << " vertices");
 
-    // The last chance to create the user information object.  This should be
-    // created in the primary particle generater
     if (!theEvent->GetUserInformation()) {
         G4EventManager::GetEventManager()->
             SetUserInformation(new EDepSim::UserEventInformation);
-    }
-
-    if (!gGeoManager) {
-        EDepSimError("The geometry manager is not defined.");
-        EDepSimThrow("Missing Geometry Manager");
     }
 
     int vtxNumber=0;
@@ -49,15 +38,10 @@ void EDepSim::UserEventAction::BeginOfEventAction(const G4Event* theEvent) {
          vtx;
          vtx = vtx->GetNext()) {
         ++vtxNumber;
-        gGeoManager->PushPath();
-        EDepSim::RootGeometryManager::Get()->GetNodeId(
-            G4ThreeVector(vtx->GetX0(), vtx->GetY0(), vtx->GetZ0()));
         EDepSimNamedInfo(
             "Event",
             "Vertex: " << vtxNumber
-            << " w/ " << vtx->GetNumberOfParticle() << " primaries"
-            " in " << gGeoManager->GetPath());
-        gGeoManager->PopPath();
+            << " w/ " << vtx->GetNumberOfParticle() << " primaries");
         EDepSimNamedVerbose(
             "Event",
             "Position: "
@@ -127,8 +111,6 @@ void EDepSim::UserEventAction::BeginOfEventAction(const G4Event* theEvent) {
             }
         }
     }
-
-    EDepSim::TrajectoryMap::Clear();
 
     // Run the external actions.  These must not change the state of G4
     // or EDepSim.

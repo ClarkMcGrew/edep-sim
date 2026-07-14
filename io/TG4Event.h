@@ -16,6 +16,9 @@ public:
     /// The run number
     int RunId;
 
+    /// The subrun number
+    int SubrunId;
+
     /// The event number
     int EventId;
 
@@ -43,6 +46,6 @@ public:
     /// Keyed by the sensitive-detector name (e.g. "PhotonDetector").
     TG4PhotonHitDetectors PhotonDetectors;
 
-    ClassDef(TG4Event,2)
+    ClassDef(TG4Event,3)
 };
 #endif

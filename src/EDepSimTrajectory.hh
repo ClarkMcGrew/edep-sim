@@ -9,6 +9,7 @@
 #include <G4Allocator.hh>
 #include <G4ios.hh>
 #include <G4ParticleDefinition.hh>
+#include <G4Event.hh>
 #include <G4Track.hh>
 #include <G4Step.hh>
 
@@ -29,7 +30,7 @@ class EDepSim::Trajectory : public G4VTrajectory {
 public:
     Trajectory();
 
-    Trajectory(const G4Track* aTrack);
+    Trajectory(const G4Event* theEvent, const G4Track* aTrack);
     Trajectory(EDepSim::Trajectory &);
     virtual ~Trajectory();
 
@@ -57,6 +58,12 @@ public:
 
     /// Get the interaction process that created the trajectory.
     inline G4String GetProcessName() const {return fProcessName;}
+
+    /// Get the interaction process type that created the trajectory.
+    inline G4int GetProcessType() const {return fProcessType;}
+
+    /// Get the interaction process sub-type that created the trajectory.
+    inline G4int GetProcessSubType() const {return fProcessSubType;}
 
     /// Get the initial momentum of the particle that created this trajectory.
     inline G4ThreeVector GetInitialMomentum() const {return fInitialMomentum;}
@@ -125,6 +132,7 @@ public:
 
 private:
 
+    const G4Event*            fEvent;
     TrajectoryPointContainer* fPositionRecord;
     G4int                     fTrackID;
     G4int                     fParentID;
@@ -132,6 +140,8 @@ private:
     G4double                  fPDGCharge;
     G4String                  fParticleName;
     G4String                  fProcessName;
+    G4int                     fProcessType;
+    G4int                     fProcessSubType;
     G4ThreeVector             fInitialMomentum;
     G4double                  fSDEnergyDeposit;
     G4double                  fSDTotalEnergyDeposit;

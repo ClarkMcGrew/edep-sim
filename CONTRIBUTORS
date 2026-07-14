@@ -6,12 +6,14 @@ let me (clark.mcgrew@stonybrook.edu) know.
 
 C. Backhouse -- Compilation improvements
 A. Cudd      -- Arbitrary EM fields
+J. Elias     -- Suggested additional control for saving trajectories
 M. Kordosky  -- New geometry shapes
 M. Kramer    -- New geometry shapes
 C. McGrew    -- Has been working on this far to long
 A. Mogan     -- The HEPEVT reader
 X. Ning      -- Optical photon I/O and inspiration for optical photon handling
-B. Viren     -- Better ROOT integration
+B. Viren     -- Better ROOT integration, and interfacing to external libraries
+G. Galgoczi  -- Help defining requirements for external library interface
 C. Wilkinson -- New geometry shapes
 
 The main ideas here were developed within the T2K (ND280) and CAPTAIN

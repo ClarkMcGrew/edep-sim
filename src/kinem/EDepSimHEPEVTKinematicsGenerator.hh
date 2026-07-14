@@ -12,9 +12,9 @@
 class G4Event;
 class G4VPrimaryGenerator;
 
+namespace EDepSim {class HEPEVTKinematicsGenerator;}
 /// A class to read a HEPEVT file.  This normally uses an internal processor,
 /// but can be forced (using #defines) to use the G4HEPEvtInterface.
-namespace EDepSim {class HEPEVTKinematicsGenerator;}
 class EDepSim::HEPEVTKinematicsGenerator :
     public EDepSim::VKinematicsGenerator {
 public:

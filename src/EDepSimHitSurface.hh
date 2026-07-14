@@ -19,6 +19,7 @@ class G4Track;
 
 #include "EDepSimVolumeId.hh"
 
+namespace EDepSim {class HitSurface;}
 /// This is a base class used to save G4Hit objects into a root output file.
 /// It contains the global position of the hit on the surface of a detector,
 /// plus the any fields provided by CP::TG4VHit.  The electronics response is
@@ -26,7 +27,6 @@ class G4Track;
 /// digitized hits.  This class is used with the EDepSim::SurfaceSD sensitive
 /// detector class, and can be requested using the "surface" name from
 /// EDepSim::SensitiveDetectorFactor::MakeSD().
-namespace EDepSim {class HitSurface;}
 class EDepSim::HitSurface : public G4VHit {
 public:
     /// Create a new hit surface

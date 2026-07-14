@@ -4,6 +4,7 @@
 #include <G4String.hh>
 #include <G4LorentzVector.hh>
 
+namespace EDepSim {class VTimeGenerator;}
 /// A base class used by ND20PrimaryGenerator to select candiate vertex times.
 /// Classes derived from EDepSim::VTimeGenerator are responsible for returning new
 /// candidate times that are passed to EDepSim::VKinematicsGenerator by the
@@ -19,7 +20,6 @@
 /// EDepSim::VKinematicsGenerator with the one returned by
 /// EDepSim::VTimeGenerator::GetTime().  The ForceTime method should generally
 /// return true.
-namespace EDepSim {class VTimeGenerator;}
 class EDepSim::VTimeGenerator {
 public:
     VTimeGenerator(const G4String& name) : fName(name) {}

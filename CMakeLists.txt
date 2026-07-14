@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.30)
 
 # Set the project name and version.  The project name will be used to
 # import this into other CMAKE files.
-project(EDepSim VERSION 3.2.0)
+project(EDepSim VERSION 4.3.0)
 
 message(STATUS "Energy Deposition Simulation -- ${VERSION}")
 
@@ -38,8 +38,11 @@ else(DOXYGEN_FOUND)
 endif(DOXYGEN_FOUND)
 
 # Make sure that ROOT is available.  ROOT is absolutely required.
-find_package(ROOT REQUIRED
-  COMPONENTS Geom Physics Matrix MathCore Tree RIO)
+# This will check for each of the components, and set
+# ROOT_<component>_FOUND if it is available.  Note that Physics,
+# Matrix, MathCore, Tree and RIO are required.  Geom must be found if
+# the event display will be built.
+find_package(ROOT REQUIRED COMPONENTS Geom Physics Matrix MathCore Tree RIO)
 if(ROOT_FOUND)
   include(${ROOT_USE_FILE})
 endif(ROOT_FOUND)
@@ -47,7 +50,7 @@ endif(ROOT_FOUND)
 # Look for GEANT4.  If it's found, then build the simulation.
 # Otherwise, this can be skipped, but only the i/o library is built.
 if(NOT EDEPSIM_READONLY)
-  find_package(Geant4 10.0)
+  find_package(Geant4 11.0)
   if (Geant4_FOUND)
     include(${Geant4_USE_FILE})
   else (Geant4_FOUND)
@@ -56,38 +59,52 @@ if(NOT EDEPSIM_READONLY)
   endif (Geant4_FOUND)
 endif(NOT EDEPSIM_READONLY)
 
-set(IS_ROOT_CXX_STANDARD_SET OFF)
-get_target_property(root_features ROOT::Core INTERFACE_COMPILE_FEATURES)
-foreach(cxxstd IN ITEMS 23 20 17 14 11)
-  if("cxx_std_${cxxstd}" IN_LIST root_features)
-    message(STATUS "ROOT compiled with C++${cxxstd}")
-    set(IS_ROOT_CXX_STANDARD_SET ON)
-    set(CMAKE_CXX_STANDARD ${cxxstd})
-    set(CMAKE_CXX_STANDARD_REQUIRED ON)
-    break()
-  endif()
-endforeach()
+# Get the compiler version from ROOT.
+set(RootCxxStandardChecked OFF)
+if(NOT RootCxxStandardChecked)
+  get_target_property(root_features ROOT::Core INTERFACE_COMPILE_FEATURES)
+  foreach(cxxstd IN ITEMS 26 23 20 17 14 11)
+    if("cxx_std_${cxxstd}" IN_LIST root_features)
+      message(STATUS "ROOT compiled with C++${cxxstd}")
+      set(RootCxxStandardChecked ${cxxstd})
+      break()
+    endif()
+  endforeach()
+endif()
 
-if(!IS_ROOT_CXX_STANDARD_SET)
-  # !! This is an old routine that use to work in 2025 !!
-  # Explicitly set the compiler version so that it will match the
-  # compiler that was used to compile ROOT.  Recent ROOT documentation
-  # explicitly notes that the appliation needs to use the same C++
-  # standard as ROOT.
+# A second chance to get the compiler version from ROOT.
+if(NOT RootCxxStandardChecked)
+  # !! This is an way to check the ROOT C++ version that worked in 2025 !!
   if ( ROOT_cxx14_FOUND )
     message(STATUS "ROOT compiled with C++14")
-    set(CMAKE_CXX_STANDARD 14)
+    set(RootCxxStandardChecked 14)
   elseif ( ROOT_cxx17_FOUND )
     message(STATUS "ROOT compiled with C++17")
-    set(CMAKE_CXX_STANDARD 17)
+    set(RootCxxStandardChecked 17)
   elseif ( ROOT_cxx20_FOUND )
     message(STATUS "ROOT compiled with C++20")
-    set(CMAKE_CXX_STANDARD 20)
+    set(RootCxxStandardChecked 20)
   else ( ROOT_cxx14_FOUND )
     message(ALERT "ROOT C++ standard not set, use ROOT minimum (C++14)")
-    set(CMAKE_CXX_STANDARD 14)
+    set(RootCxxStandardChecked 14)
   endif ( ROOT_cxx14_FOUND)
 endif()
+
+# Check that the current compiler standard matches the one that was
+# used for ROOT.  Recent ROOT documentation explicitly notes that the
+# application needs to use the same C++ standard as ROOT.
+if(CMAKE_CXX_STANDARD)
+  if(NOT CMAKE_CXX_STANDARD EQUAL RootCxxStandardChecked)
+    message(WARNING "ROOT requires C++${RootCxxStandardChecked}")
+    message(WARNING "BUILD is using C++${CMAKE_CXX_STANDARD}")
+  endif()
+else()
+  # No compiler standard was set, so use the one found for ROOT.
+  message(WARNING "Set C++${CMAKE_CXX_STANDARD} to match ROOT")
+  set(CMAKE_CXX_STANDARD ${RootCxxStandardChecked})
+endif()
+
+message(STATUS "Building edep-sim with C++${CMAKE_CXX_STANDARD}")
 
 # Compile the input/output classes needed to read edep-sim output.
 # This does not depend on geant4.
@@ -96,10 +113,12 @@ add_subdirectory(io)
 # Compile the really simple debugging display.  There are better
 # displays out there, but this is what I use to debug the code.  This
 # does not depend on geant4.
-if(EDEPSIM_DISPLAY)
+if(EDEPSIM_DISPLAY AND ROOT_geom_FOUND)
   message(STATUS "Building edep-disp event display")
   add_subdirectory(display)
-endif(EDEPSIM_DISPLAY)
+else()
+  message(WARNING "Event display will not be built")
+endif()
 
 # Only build the simulation if this is not being built in "READONLY" mode.
 if(NOT EDEPSIM_READONLY)

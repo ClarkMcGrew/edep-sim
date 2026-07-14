@@ -4,6 +4,7 @@
 #include "EDepSimPersistencyMessenger.hh"
 #include "EDepSimPersistencyManager.hh"
 #include "EDepSimUserTrackingAction.hh"
+#include "EDepSimLog.hh"
 
 #include <G4UIdirectory.hh>
 #include <G4UIcmdWithAString.hh>
@@ -16,8 +17,8 @@
 #include <G4RunManager.hh>
 
 EDepSim::PersistencyMessenger::PersistencyMessenger(
-    EDepSim::PersistencyManager* persistencyMgr)
-    : fPersistencyManager(persistencyMgr) {
+    EDepSim::PersistencyManager* persistencyMgr):
+    fPersistencyManager(persistencyMgr) {
     fPersistencyDIR = new G4UIdirectory("/edep/db/");
     fPersistencyDIR->SetGuidance("Output file control commands.");
 
@@ -101,11 +102,11 @@ EDepSim::PersistencyMessenger::PersistencyMessenger(
     fClearBoundariesCMD->SetGuidance("Remove all of the boundaries for"
                                      " trajectory points.");
 
-    fTrajectoryPointRuleCMD
+    fTrajectoryRuleCMD
         = new G4UIcommand("/edep/db/set/trajectoryRule",this);
-    fTrajectoryPointRuleCMD->SetGuidance(
-        "Add a rule to save a trajectory point.");
-    fTrajectoryPointRuleCMD->AvailableForStates(
+    fTrajectoryRuleCMD->SetGuidance(
+        "Add a rule to save a trajectory or trajectory point.");
+    fTrajectoryRuleCMD->AvailableForStates(
         G4State_PreInit,G4State_Idle);
     G4UIparameter* param = new G4UIparameter("process",'i',false);
     param->SetGuidance(
@@ -113,7 +114,7 @@ EDepSim::PersistencyMessenger::PersistencyMessenger(
         " The process numbers are defined by geant"
         " in G4ProcessType.h."
         " A value of -1 specifies all processes.");
-    fTrajectoryPointRuleCMD->SetParameter(param);
+    fTrajectoryRuleCMD->SetParameter(param);
     param = new G4UIparameter("subprocess",'i',true);
     param->SetGuidance(
         "Select points with this subprocess."
@@ -124,24 +125,31 @@ EDepSim::PersistencyMessenger::PersistencyMessenger(
         " and G4HadronicProcessType.hh."
         " A value of -1 specifies all subprocesses.");
     param->SetDefaultValue(-1);
-    fTrajectoryPointRuleCMD->SetParameter(param);
+    fTrajectoryRuleCMD->SetParameter(param);
     param = new G4UIparameter("threshold",'d',true);
     param->SetGuidance("Select points with more than this energy deposit.");
     param->SetDefaultValue(-1.0);
-    fTrajectoryPointRuleCMD->SetParameter(param);
+    fTrajectoryRuleCMD->SetParameter(param);
     param = new G4UIparameter("energy unit",'s',true);
     param->SetDefaultValue("MeV");
-    fTrajectoryPointRuleCMD->SetParameter(param);
+    fTrajectoryRuleCMD->SetParameter(param);
+    param = new G4UIparameter("category",'s',true);
+    param->SetGuidance("What to apply the rule to (trajectories, or points)."
+                       " If the rule applies to trajectories, it will also be"
+                       " applied to trajectory points.");
+    param->SetParameterCandidates("all point trajectory");
+    param->SetDefaultValue("point");
+    fTrajectoryRuleCMD->SetParameter(param);
 
-    fClearTrajectoryPointRulesCMD
+    fClearTrajectoryRulesCMD
         = new G4UIcmdWithoutParameter("/edep/db/set/clearTrajectoryRules",this);
-    fClearTrajectoryPointRulesCMD->SetGuidance(
+    fClearTrajectoryRulesCMD->SetGuidance(
         "Clear all of the trajectory point"
         " save rules.");
 
     fSavePhotonTrajectoriesCMD
         = new G4UIcmdWithABool("/edep/db/set/savePhotonTraj", this);
-    fSaveAllPrimaryTrajectoriesCMD->SetGuidance(
+    fSavePhotonTrajectoriesCMD->SetGuidance(
         "Control if photon trajectories are placed into the trajectory stack"
         " so tracking is a little faster and uses less resources."
         " True: Photon trajectories will be saved"
@@ -161,8 +169,8 @@ EDepSim::PersistencyMessenger::~PersistencyMessenger() {
     delete fTrajectoryPointDepositCMD;
     delete fTrajectoryBoundaryCMD;
     delete fClearBoundariesCMD;
-    delete fTrajectoryPointRuleCMD;
-    delete fClearTrajectoryPointRulesCMD;
+    delete fTrajectoryRuleCMD;
+    delete fClearTrajectoryRulesCMD;
     delete fPersistencyDIR;
     delete fPersistencySetDIR;
     delete fSavePhotonTrajectoriesCMD;
@@ -170,7 +178,7 @@ EDepSim::PersistencyMessenger::~PersistencyMessenger() {
 
 
 void EDepSim::PersistencyMessenger::SetNewValue(G4UIcommand* command,
-                                            G4String newValue) {
+                                                G4String newValue) {
     if (command==fOpenCMD) {
         fPersistencyManager->Open(newValue);
     }
@@ -211,18 +219,29 @@ void EDepSim::PersistencyMessenger::SetNewValue(G4UIcommand* command,
     else if (command == fClearBoundariesCMD) {
         fPersistencyManager->ClearTrajectoryBoundaries();
     }
-    else if (command == fTrajectoryPointRuleCMD) {
+    else if (command == fTrajectoryRuleCMD) {
         int process;
         int subprocess;
         double threshold;
         std::string unit;
+        std::string categoryName;
+        int category = 0;
         std::istringstream val(newValue);
-        val >> process >> subprocess >> threshold >> unit;
-        fPersistencyManager->AddTrajectoryPointRule(
-            process,subprocess,threshold*G4UIcommand::ValueOf(unit.c_str()));
+        val >> process >> subprocess >> threshold >> unit >> categoryName;
+        EDepSimLog("Trajectory Rule: "
+                   << " Process: " << process << "/" << subprocess
+                   << " Energy: " << threshold << " " << unit
+                   << " Category: " << categoryName);
+        if (categoryName == "all") category = -1;
+        else if (categoryName == "trajectory") category = 1;
+        else if (categoryName == "point") category = 2;
+        fPersistencyManager->AddTrajectoryRule(
+            process,subprocess,
+            threshold*G4UIcommand::ValueOf(unit.c_str()),
+            category);
     }
-    else if (command == fClearTrajectoryPointRulesCMD) {
-        fPersistencyManager->ClearTrajectoryPointRules();
+    else if (command == fClearTrajectoryRulesCMD) {
+        fPersistencyManager->ClearTrajectoryRules();
     }
     else if (command == fSavePhotonTrajectoriesCMD) {
         bool save = fSavePhotonTrajectoriesCMD->GetNewBoolValue(newValue);

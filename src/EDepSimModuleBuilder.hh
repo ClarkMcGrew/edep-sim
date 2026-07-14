@@ -10,9 +10,8 @@ class G4LogicalVolume;
 #include "EDepSimBuilder.hh"
 #include "EDepSimComponentBuilder.hh"
 
-/// Construct a module from components.
-
 namespace EDepSim {class ModuleBuilder;}
+/// Construct a module from components.
 class EDepSim::ModuleBuilder : public EDepSim::Builder {
 
 public:
@@ -49,7 +48,7 @@ public:
     void ClearComponentList(void);
 
     /// Add a new component name to the FG tracker.  Components are added from
-    /// upstream (-Z) to downstream (+Z). 
+    /// upstream (-Z) to downstream (+Z).
     void AddComponent(G4String m);
 
     /// Set the number of repetitions for the last components added to the
@@ -59,8 +58,8 @@ public:
     /// components to be part of the repetion.
     void SetRepetitions(int r, int c);
 
-    /// Translate some components inside the module in X/Y 
-    /// according to module number and total components in a module. 
+    /// Translate some components inside the module in X/Y
+    /// according to module number and total components in a module.
     /// This simulates misalignment in FGD layers.
     void SetModuleCompTrans(int m, int cPerM, int c,
                             double transX, double transY);
@@ -101,10 +100,10 @@ private:
 
     /// The width of the module.
     double fWidth;
-    
+
     /// The height of the module.
     double fHeight;
-    
+
     /// The length of the module.
     double fLength;
 
@@ -152,7 +151,7 @@ private:
 
 public:
     ModuleBuilderMessenger(EDepSim::ModuleBuilder* c,
-                                    const char* guide=NULL) 
+                                    const char* guide=NULL)
         : EDepSim::BuilderMessenger(c,guide),
           fBuilder(c) {
         fClearCMD = new G4UIcmdWithoutParameter(CommandName("clear"),this);

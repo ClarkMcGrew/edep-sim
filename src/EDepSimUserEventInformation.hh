@@ -6,13 +6,21 @@
 
 #include <G4VUserEventInformation.hh>
 #include <G4PrimaryVertex.hh>
+#include <G4VTrajectory.hh>
 
-namespace EDepSim {class UserEventInformation;}
+#include <map>
+
+namespace EDepSim {
+    class UserEventInformation;
+    class TrajectoryMap;
+}
 class EDepSim::UserEventInformation : public G4VUserEventInformation {
+    friend EDepSim::TrajectoryMap;
+
 public:
     UserEventInformation();
     virtual ~UserEventInformation();
-    
+
     /// Print information about the event.
     virtual void Print() const;
 
@@ -22,5 +30,13 @@ public:
     void InitializeEvent(void);
 
 private:
+
+    /// A map to the trajectories information indexed the the track id. Be
+    /// careful since the trajectory information is owned by the G4Event, so
+    /// if you try to use this after a trajectory has been deleted... bad
+    /// things will happen.  That should never happen since the
+    /// UserEventInformation is also owned by the event.  This is directly
+    /// access by TrajectoryMap (which is a friend).
+    std::map<int, G4VTrajectory*> fMap;
 };
 #endif

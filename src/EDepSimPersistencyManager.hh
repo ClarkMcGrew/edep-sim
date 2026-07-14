@@ -23,6 +23,7 @@ class TPRegexp;
 
 namespace EDepSim {class PersistencyMessenger;}
 
+namespace EDepSim {class PersistencyManager;}
 /// The class is `singleton', with access via
 /// G4VPersistencyManager::GetPersistencyManager().  You need to create a
 /// single persistency manager for GEANT4 to work right.  It must derive from
@@ -40,7 +41,6 @@ namespace EDepSim {class PersistencyMessenger;}
 /// summarize the information would be in the
 /// G4UserEventAction::EndOfEventAction method and then keep the summary data
 /// in the EventUserInformation which is thread local.
-namespace EDepSim {class PersistencyManager;}
 class EDepSim::PersistencyManager : public G4VPersistencyManager {
 public:
     /// Creates a root persistency manager.  Through the "magic" of
@@ -60,30 +60,34 @@ public:
     virtual G4bool Retrieve(G4Run* &r) {r=NULL; return false;}
     virtual G4bool Retrieve(G4VPhysicalVolume* &w) {w=NULL; return false;}
 
-    /// A public accessor to the summarized event.  The primaries are
-    /// summarized during by a call to UpdateSummaries.  The
+    /// A public accessor to the summarized event.  The event is ///
+    /// summarized during by a call to UpdateSummaries, and if the
     /// EDepSim::PersistencyManager::Store(event) method is called from
-    /// G4RunManager::AnalyzeEvent and will call the UpdateSummaries() method.
-    /// Alternatively, the UpdateSummarize method can be called by a method of
-    /// a derived class (e.g. in its Store method).  The fEventSummary field
-    /// is protected so derived classes can directly access it.
-    const TG4Event& GetEventSummary();
+    /// G4RunManager::AnalyzeEvent, it will call the UpdateSummaries() method.
+    /// Alternatively, the UpdateSummaries method should be called by the
+    /// derived class (i.e. in its Store method).  The fEventSummary field is
+    /// protected so derived classes can directly access it.
+    const TG4Event& GetEventSummary() const {return fEventSummary;}
 
-    /// A public accessor to the summarized primaries.  The primaries are
-    /// summarized during by a call to UpdateSummaries.  The
-    /// EDepSim::PersistencyManager::Store(event) method is called from
-    /// G4RunManager::AnalyzeEvent and will call the UpdateSummaries() method.
-    /// Alternatively, the UpdateSummarize method can be called by a method of
-    /// a derived class (e.g. in its Store method).
-    const std::vector<TG4PrimaryVertex>& GetPrimaries() const;
+    /// A public accessor to the summarized primaries.  See the documentation
+    /// for GetEventSummary() for details.
+    const TG4PrimaryVertexContainer&
+    GetPrimaries() const {return fEventSummary.Primaries;}
 
     /// A public accessor to the summarized trajectories.  See the
-    /// documentation for the GetPrimaries() method.
-    const std::vector<TG4Trajectory>& GetTrajectories() const;
+    /// documentation for the GetEventSummary() method.
+    const TG4TrajectoryContainer&
+    GetTrajectories() const { return fEventSummary.Trajectories;}
 
     /// A public accessor to the summarized hit segment detectors.  See the
-    /// documentation for the GetPrimaries() method.
-    const TG4HitSegmentDetectors& GetSegmentDetectors() const;
+    /// documentation for the GetEventSummary() method.
+    const TG4HitSegmentDetectors&
+    GetSegmentDetectors() const {return fEventSummary.SegmentDetectors;}
+
+    /// A public accessor to the summarized photon hit detectors.  See the
+    /// documentation for the GetEventSummary() method.
+    const TG4PhotonHitDetectors&
+    GetPhotonDetectors() const {return fEventSummary.PhotonDetectors;}
 
     /// Open the output (ie database) file.  This is used by the persistency
     /// messenger to open files using the G4 macro language.  It can be an
@@ -203,19 +207,26 @@ public:
     /// point to be saved.
     virtual void ClearTrajectoryBoundaries();
 
-    /// Add a rule to save trajectory points.  The process type values are
+    /// Add a rule to save trajectory points. The process type values are
     /// defined in G4ProcessType.hh, and the subtype values are defined in
     /// several include files (particularly G4HadronicProcessType.hh, and
     /// G4EmProcessSubType.hh).  A value of -1 for either process or
     /// subprocess will match everything.
-    virtual void AddTrajectoryPointRule(int process,
-                                        int subprocess,
-                                        double threshold);
+    virtual void AddTrajectoryRule(int process,
+                                   int subprocess,
+                                   double threshold,
+                                   int category);
 
     /// Clear the rulees for trajectory points.
-    virtual void ClearTrajectoryPointRules() {
-        fTrajectoryPointRules.clear();
+    virtual void ClearTrajectoryRules() {
+        fTrajectoryRules.clear();
     }
+
+    /// Check to see if a particular process, subprocess, energy deposition
+    /// (or kinetic energy), plus category (1 for trajectory, 2 for trajectory
+    /// point, -1 for any) to be selected by a trajectory rule.
+    virtual bool MatchesTrajectoryRule(int process, int subprocess,
+                                       double enr, int category);
 
     /// Set the detector mask.
     void SetDetectorPartition(int partition) {fDetectorPartition = partition;}
@@ -262,14 +273,16 @@ private:
                              G4VHitsCollection* hits);
 
     /// Fill a container of hit segments.
-    void SummarizeHitSegments(std::vector<TG4HitSegment>& segments,
+    void SummarizeHitSegments(const G4Event* event,
+                              std::vector<TG4HitSegment>& segments,
                               G4VHitsCollection* hits);
 
     /// Fill the map of sensitive detectors which use hit segments as the
     /// Copy and map the contributing trajectories from the vector of
     /// contributors for the EDepSim::HitSegment into the vector of contributors
     /// for the TG4HitSegment.
-    void CopyHitContributors(std::vector<int>& dest,
+    void CopyHitContributors(const G4Event* event,
+                             std::vector<int>& dest,
                              const std::vector<int>& src);
 
     /// Copy the trajectory points into the trajectory summary.  This uses
@@ -352,10 +365,10 @@ private:
     std::vector<TPRegexp*> fTrajectoryBoundaries;
 
     /// An internal class to keep the rules used to save trajectory points.
-    class TrajectoryPointRule {
+    class TrajectoryRule {
     public:
-        TrajectoryPointRule(int p, int s, double t)
-            : fProcess(p), fSubprocess(s), fThreshold(t) {}
+        TrajectoryRule(int p, int s, double t, int c)
+            : fProcess(p), fSubprocess(s), fThreshold(t), fCategory(c) {}
         /// A process to be saved, or negative if all processes should be
         /// saved.
         int fProcess;
@@ -365,8 +378,12 @@ private:
         /// The minimum deposited energy to save a trajectory point.  A
         /// negative value removes the threshold.
         double fThreshold;
+        /// Categories to select (-1 all, 1: trajectories, 2: trajectory
+        /// points).  This is a bit mask, so "3" will select both trajectories
+        /// and trajectory points.
+        int fCategory;
     };
-    std::vector<TrajectoryPointRule> fTrajectoryPointRules;
+    std::vector<TrajectoryRule> fTrajectoryRules;
 
     /// The detector partition
     int fDetectorPartition;

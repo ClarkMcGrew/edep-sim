@@ -11,6 +11,11 @@ fi
 
 cat > 100TestTree.mac <<EOF
 #######################################
+# Test saving trajectory points
+#######################################
+/edep/db/set/trajectoryRule 2
+
+#######################################
 # Set the hit segment.
 #######################################
 /edep/hitSagitta drift 1.0 mm

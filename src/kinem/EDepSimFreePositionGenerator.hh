@@ -3,8 +3,8 @@
 
 #include "kinem/EDepSimVPositionGenerator.hh"
 
-/// Select a position and time to be used as the vertex of a primary particle.
 namespace EDepSim {class FreePositionGenerator;}
+/// Select a position and time to be used as the vertex of a primary particle.
 class EDepSim::FreePositionGenerator : public EDepSim::VPositionGenerator {
 public:
     FreePositionGenerator(const G4String& name);

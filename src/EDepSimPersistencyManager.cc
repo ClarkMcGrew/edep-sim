@@ -46,13 +46,13 @@
 // then it will create a simple tree that can be analyzed using root.  The
 // best way to access the tree is with the root interface to python (no
 // headers needed), or by using ROOT TFile::MakeProject.
-EDepSim::PersistencyManager::PersistencyManager()
-    : G4VPersistencyManager(), fFilename("/dev/null"),
-      fLengthThreshold(10*mm),
-      fGammaThreshold(5*MeV), fNeutronThreshold(50*MeV),
-      fTrajectoryPointAccuracy(1.*mm), fTrajectoryPointDeposit(0*MeV),
-      fSaveAllPrimaryTrajectories(true),
-      fSaveAllTrajectories(std::nan("not-set")) {
+EDepSim::PersistencyManager::PersistencyManager():
+    G4VPersistencyManager(), fFilename("/dev/null"),
+    fLengthThreshold(10*mm),
+    fGammaThreshold(5*MeV), fNeutronThreshold(50*MeV),
+    fTrajectoryPointAccuracy(1.*mm), fTrajectoryPointDeposit(0*MeV),
+    fSaveAllPrimaryTrajectories(true),
+    fSaveAllTrajectories(std::nan("not-set")) {
     fPersistencyMessenger = new EDepSim::PersistencyMessenger(this);
 }
 
@@ -84,7 +84,7 @@ G4bool EDepSim::PersistencyManager::Store(const G4Event* anEvent) {
 G4bool EDepSim::PersistencyManager::Store(const G4Run* aRun) {
     if (!aRun) return false;
     EDepSimSevere(" -- Run store called without a save method for "
-               << "GEANT4 run " << aRun->GetRunID());
+                  << "GEANT4 run " << aRun->GetRunID());
     return false;
 }
 
@@ -92,7 +92,7 @@ G4bool EDepSim::PersistencyManager::Store(const G4Run* aRun) {
 G4bool EDepSim::PersistencyManager::Store(const G4VPhysicalVolume* aWorld) {
     if (!aWorld) return false;
     EDepSimSevere(" -- Geometry store called without a save method for "
-               << aWorld->GetName());
+                  << aWorld->GetName());
     return false;
 }
 
@@ -110,17 +110,44 @@ void EDepSim::PersistencyManager::ClearTrajectoryBoundaries() {
     fTrajectoryBoundaries.clear();
 }
 
-void EDepSim::PersistencyManager::AddTrajectoryPointRule(int process,
-                                                         int subprocess,
-                                                         double threshold) {
-    fTrajectoryPointRules.emplace_back(
-        TrajectoryPointRule(process,subprocess,threshold));
+void EDepSim::PersistencyManager::AddTrajectoryRule(int process,
+                                                    int subprocess,
+                                                    double threshold,
+                                                    int category) {
+    if (category == 0) {
+        EDepSimError("Trajectory rule applies to nothing... skipped");
+        return;
+    }
+    fTrajectoryRules.emplace_back(
+        TrajectoryRule(process,subprocess,threshold,category));
+}
+
+bool EDepSim::PersistencyManager::MatchesTrajectoryRule(int process,
+                                                        int subprocess,
+                                                        double enr,
+                                                        int category) {
+    for (const TrajectoryRule& rule : fTrajectoryRules) {
+        if (enr < rule.fThreshold) {
+            continue;
+        }
+        if (rule.fProcess >= 0 and process != rule.fProcess) {
+            continue;
+        }
+        if (rule.fSubprocess >= 0 and subprocess != rule.fSubprocess) {
+            continue;
+        }
+        if (rule.fCategory >= 0 and (category & rule.fCategory) == 0) {
+            continue;
+        }
+        return true;
+    }
+    return false;
 }
 
 bool EDepSim::PersistencyManager::SaveTrajectoryBoundary(G4VTrajectory* g4Traj,
-                                                    G4StepStatus status,
-                                                    G4String currentVolume,
-                                                    G4String prevVolume) {
+                                                         G4StepStatus status,
+                                                         G4String currentVolume,
+                                                         G4String prevVolume) {
     if (status != fGeomBoundary) return false;
     std::string particleInfo = ":" + g4Traj->GetParticleName();
     if (std::abs(g4Traj->GetCharge())<0.1) particleInfo += ":neutral";
@@ -153,7 +180,9 @@ void EDepSim::PersistencyManager::UpdateSummaries(const G4Event* event) {
     EDepSimLog("Event Summary for run " << fEventSummary.RunId
                << " event " << fEventSummary.EventId);
 
-    // Summarize the trajectories first so that fTrackIdMap is filled.
+    // Summarize the trajectories first. This goes through the
+    // EDepSim::TrajectoryContainer and marks the trajectory objects that
+    // should be saved.
     MarkTrajectories(event);
 
     SummarizePrimaries(fEventSummary.Primaries,event->GetPrimaryVertex());
@@ -241,7 +270,9 @@ void EDepSim::PersistencyManager::SummarizeTrajectories(
     TG4TrajectoryContainer& dest,
     const G4Event* event) {
     dest.clear();
-    MarkTrajectories(event);
+
+    // The trajectories that should be saved must have already been marked
+    // using MarkTrajectories()
 
     // Build a map of the original G4 TrackID to the new relocated TrackId
     // (note capitalization).  This also uses the fact that maps are sorted as
@@ -282,8 +313,8 @@ void EDepSim::PersistencyManager::SummarizeTrajectories(
                 ndTraj->GetParticleName());
         if (!part) {
             EDepSimError(std::string("EDepSim::RootPersistencyManager::")
-                      + "No particle information for "
-                      + ndTraj->GetParticleName());
+                         + "No particle information for "
+                         + ndTraj->GetParticleName());
         }
 
         fTrackIdMap[ndTraj->GetTrackID()] = index++;
@@ -303,9 +334,10 @@ void EDepSim::PersistencyManager::SummarizeTrajectories(
             if (traj.ParentId == 0) break;
             EDepSim::Trajectory* pTraj
                 = dynamic_cast<EDepSim::Trajectory*>(
-                    EDepSim::TrajectoryMap::Get(traj.ParentId));
+                    EDepSim::TrajectoryMap::Get(traj.ParentId,event));
             if (!pTraj) {
-                EDepSimError("Trajectory " << traj.ParentId << " does not exist");
+                EDepSimError("Trajectory " << traj.ParentId
+                             << " does not exist");
                 throw;
             }
             if (pTraj->SaveTrajectory()) break;
@@ -360,6 +392,9 @@ void EDepSim::PersistencyManager::MarkTrajectories(const G4Event* event) {
     //       1) a daughter deposited energy in a sensitive detector
     //       2) or, SaveAllPrimaryTrajectories() is true
     //
+    //   ** Trajectories that the user has explicitly requested by
+    //         setting a /edep/db/set/trajectoryRule
+    //
     //   ** Trajectories created by a particle decay if
     //       1) a daughter deposited energy in a sensitve detector
     //       2) or, SaveAllPrimaryTrajectories() is true.
@@ -380,6 +415,8 @@ void EDepSim::PersistencyManager::MarkTrajectories(const G4Event* event) {
         }
         std::string particleName = ndTraj->GetParticleName();
         std::string processName = ndTraj->GetProcessName();
+        int processType = ndTraj->GetProcessType();
+        int processSubtype = ndTraj->GetProcessSubType();
         double initialMomentum = ndTraj->GetInitialMomentum().mag();
 
         // Check if all primary particle trajectories should be saved.  The
@@ -393,6 +430,17 @@ void EDepSim::PersistencyManager::MarkTrajectories(const G4Event* event) {
                 ndTraj->MarkTrajectory();
                 continue;
             }
+        }
+
+        // Check if the user as explicitly asked for this trajectory by
+        // setting a value for the /edep/db/set/trajectoryRule macro command.
+        // The argument "1" flags that this is checking for a trajectory, and
+        // not a trajectory point.
+        if (MatchesTrajectoryRule(processType, processSubtype,
+                                  initialMomentum, 1)) {
+            // Save this trajectory, and it's immediate parent.
+            ndTraj->MarkTrajectory(1);
+            continue;
         }
 
         // Check if everything should be saved.
@@ -423,8 +471,9 @@ void EDepSim::PersistencyManager::MarkTrajectories(const G4Event* event) {
         }
 
         // Save particles that produce charged track inside a sensitive
-        // detector.  This doesn't automatically save, but the parents will be
-        // automatically considered for saving by the next bit of code.
+        // detector.  This doesn't automatically save the parents, but the
+        // parents will be automatically considered for saving by the next bit
+        // of code.
         if (ndTraj->GetSDLength() > GetLengthThreshold()) {
             ndTraj->MarkTrajectory(0);
             continue;
@@ -490,7 +539,7 @@ void EDepSim::PersistencyManager::MarkTrajectories(const G4Event* event) {
             while (primaryId > 0) {
                 EDepSim::Trajectory* ndTraj
                     = dynamic_cast<EDepSim::Trajectory*>(
-                        EDepSim::TrajectoryMap::Get(primaryId));
+                        EDepSim::TrajectoryMap::Get(primaryId,event));
                 if (ndTraj) {
                     ndTraj->MarkTrajectory(0);
                 }
@@ -500,7 +549,8 @@ void EDepSim::PersistencyManager::MarkTrajectories(const G4Event* event) {
                 }
                 int parentId = ndTraj->GetParentID();
                 if (parentId <= 0) break;
-                primaryId = EDepSim::TrajectoryMap::FindPrimaryId(parentId);
+                primaryId
+                    = EDepSim::TrajectoryMap::FindPrimaryId(parentId,event);
             }
 
             // Make sure that all the contributors associated with this hit
@@ -510,7 +560,7 @@ void EDepSim::PersistencyManager::MarkTrajectories(const G4Event* event) {
                 int contribId = g4HitSeg->GetContributor(j);
                 EDepSim::Trajectory* contribTraj
                     = dynamic_cast<EDepSim::Trajectory*>(
-                        EDepSim::TrajectoryMap::Get(contribId));
+                        EDepSim::TrajectoryMap::Get(contribId,event));
                 if (contribTraj) {
                     contribTraj->MarkTrajectory(0);
                 }
@@ -523,7 +573,7 @@ void EDepSim::PersistencyManager::MarkTrajectories(const G4Event* event) {
 }
 
 void EDepSim::PersistencyManager::CopyTrajectoryPoints(TG4Trajectory& traj,
-                                                  G4VTrajectory* g4Traj) {
+                                                       G4VTrajectory* g4Traj) {
     std::vector<int> selected;
 
     // Choose the trajectory points that are going to be saved.
@@ -635,12 +685,13 @@ EDepSim::PersistencyManager::SummarizeSegmentDetectors(
         EDepSim::HitSegment* hitSeg
             = dynamic_cast<EDepSim::HitSegment*>(g4Hits->GetHit(0));
         if (!hitSeg) continue;
-        SummarizeHitSegments(dest[SDname],g4Hits);
+        SummarizeHitSegments(event, dest[SDname],g4Hits);
     }
 }
 
 void
-EDepSim::PersistencyManager::SummarizeHitSegments(TG4HitSegmentContainer& dest,
+EDepSim::PersistencyManager::SummarizeHitSegments(const G4Event* event,
+                                                  TG4HitSegmentContainer& dest,
                                                   G4VHitsCollection* g4Hits) {
     dest.clear();
 
@@ -660,21 +711,23 @@ EDepSim::PersistencyManager::SummarizeHitSegments(TG4HitSegmentContainer& dest,
         hit.EnergyDeposit = g4HitSeg->GetEnergyDeposit();
         hit.SecondaryDeposit = g4HitSeg->GetSecondaryDeposit();
         hit.TrackLength = g4HitSeg->GetTrackLength();
-        CopyHitContributors(hit.Contrib,g4HitSeg->GetContributors());
+        CopyHitContributors(event,hit.Contrib,g4HitSeg->GetContributors());
         hit.Start.SetXYZT(g4HitSeg->GetStart().x(),
                           g4HitSeg->GetStart().y(),
                           g4HitSeg->GetStart().z(),
                           g4HitSeg->GetStart().t());
         hit.Stop.SetXYZT(g4HitSeg->GetStop().x(),
-                          g4HitSeg->GetStop().y(),
-                          g4HitSeg->GetStop().z(),
-                          g4HitSeg->GetStop().t());
+                         g4HitSeg->GetStop().y(),
+                         g4HitSeg->GetStop().z(),
+                         g4HitSeg->GetStop().t());
         dest.push_back(hit);
     }
 }
 
-void EDepSim::PersistencyManager::CopyHitContributors(std::vector<int>& dest,
-                                                 const std::vector<int>& src) {
+void EDepSim::PersistencyManager::CopyHitContributors(
+    const G4Event* event,
+    std::vector<int>& dest,
+    const std::vector<int>& src) {
 
     dest.clear();
 
@@ -685,10 +738,10 @@ void EDepSim::PersistencyManager::CopyHitContributors(std::vector<int>& dest,
         // to a parent that is.
         EDepSim::Trajectory* ndTraj
             = dynamic_cast<EDepSim::Trajectory*>(
-                EDepSim::TrajectoryMap::Get(*c));
+                EDepSim::TrajectoryMap::Get(*c,event));
         while (ndTraj && !ndTraj->SaveTrajectory()) {
             ndTraj = dynamic_cast<EDepSim::Trajectory*>(
-                EDepSim::TrajectoryMap::Get(ndTraj->GetParentID()));
+                EDepSim::TrajectoryMap::Get(ndTraj->GetParentID(),event));
         }
         if (!ndTraj) {
             dest.push_back(-1);
@@ -697,7 +750,7 @@ void EDepSim::PersistencyManager::CopyHitContributors(std::vector<int>& dest,
         TrackIdMap::iterator t = fTrackIdMap.find(ndTraj->GetTrackID());
         if (t == fTrackIdMap.end()) {
             EDepSimThrow("Contributor with unknown trajectory: "
-                      << ndTraj->GetTrackID());
+                         << ndTraj->GetTrackID());
         }
         dest.push_back(t->second);
     }
@@ -730,7 +783,7 @@ double EDepSim::PersistencyManager::FindTrajectoryAccuracy(
 }
 
 int EDepSim::PersistencyManager::SplitTrajectory(G4VTrajectory* g4Traj,
-                                            int point1, int point2) {
+                                                 int point1, int point2) {
 
     int point3 = 0.5*(point1 + point2);
     if (point3 <= point1) EDepSimThrow("Points too close to split");
@@ -859,18 +912,10 @@ EDepSim::PersistencyManager::SelectTrajectoryPoints(std::vector<int>& selected,
         // Apply the trajectory point rules first to see if the user has asked
         // for this specific point.  A point might be selected multiple times,
         // but that's OK because duplicates will be rejected later.
-        for (const TrajectoryPointRule& rule : fTrajectoryPointRules) {
-            if (edepPoint->GetProcessDeposit() < rule.fThreshold) {
-                continue;
-            }
-            if (rule.fProcess >= 0
-                and edepPoint->GetProcessType() != rule.fProcess) {
-                continue;
-            }
-            if (rule.fSubprocess >= 0
-                and edepPoint->GetProcessSubType() != rule.fSubprocess) {
-                continue;
-            }
+        if (MatchesTrajectoryRule(edepPoint->GetProcessType(),
+                                  edepPoint->GetProcessSubType(),
+                                  edepPoint->GetProcessDeposit(),
+                                  2)) {
             selected.push_back(tp);
         }
         // Don't save pure navigation....

@@ -3,6 +3,7 @@
 
 #include <G4String.hh>
 
+namespace EDepSim {class VCountGenerator;}
 /// A base class used by ND20PrimaryGenerator to select the number of primary
 /// vertices to be generated for a G4Event.  Classes derived from
 /// EDepSim::VCountGenerator are responsible for returning the number of
@@ -14,7 +15,6 @@
 /// This method must return an integer for the number of verticies to be
 /// generated.  This count can be zero (or negative), in which case no
 /// verticies will be generated.
-namespace EDepSim {class VCountGenerator;}
 class EDepSim::VCountGenerator {
 public:
     VCountGenerator(const G4String& name, double intensity) 

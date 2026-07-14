@@ -11,6 +11,7 @@
 
 class G4Event;
 
+namespace EDepSim {class VKinematicsGenerator;}
 /// A base class for specific kinematics generators used by
 /// EDepSim::PrimaryGenerator to construct G4PrimaryVertex, and the kinematics
 /// for primary particles from that vertex.  Classes derived from
@@ -21,7 +22,6 @@ class G4Event;
 ///
 /// The EDepSim::VKinematicsGenerator derived class should throw an
 /// ENoMoreEvents when it runs out of input events.
-namespace EDepSim {class VKinematicsGenerator;}
 class EDepSim::VKinematicsGenerator {
 public:
     VKinematicsGenerator(const G4String& name) : fName(name) {}
@@ -68,8 +68,8 @@ private:
 
 };
 
-/// The exception to be thrown when the generator can't make any more events.
 namespace EDepSim {class NoMoreEvents;}
+/// The exception to be thrown when the generator can't make any more events.
 class EDepSim::NoMoreEvents : public EDepSim::Exception {
 public:
     NoMoreEvents() {}

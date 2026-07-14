@@ -16,6 +16,7 @@
 #include "TChain.h"
 
 
+namespace EDepSim {class KinemPassThrough;}
 /// Stores generator mc-truth pass-through information used as input into
 /// detsim.  This class is a singleton which allows a single tree to persist
 /// throughout multiple instantiations of the neutrino primary vertex
@@ -50,7 +51,6 @@
 /// (where X can be 1 or 2) will copy the i'th entry from the TChain when X
 /// = 1 and the (N_1 + i)'th entry when X = 2. There is no limit to the
 /// number of input trees.
-namespace EDepSim {class KinemPassThrough;}
 class EDepSim::KinemPassThrough {
 public:
     /// for relating input tree pointers to the input file.

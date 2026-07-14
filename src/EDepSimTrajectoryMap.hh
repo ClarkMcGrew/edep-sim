@@ -7,38 +7,30 @@
 #include <map>
 
 class G4VTrajectory;
+class G4Event;
 
-/// Maintain a singleton map of track Id to the trajectory in the trajectory
-/// container.  THIS IS NOT THREAD SAFE AND CAN NOT BE USED WITH MULTITHREAD
-/// GEANT4.
 namespace EDepSim {class TrajectoryMap;}
+/// Maintain a the track Id to the trajectory in the trajectory container for
+/// this event. This could be implemented directly using find and the
+/// G4TrajectoryContainer vector, but that seems like it's depending on an
+/// internal implementation detail.  Instead, this maintains a std::map
+/// between the integer trajectory id and the trajectory pointer.
 class EDepSim::TrajectoryMap {
 public:
     ~TrajectoryMap() {}
 
     /// Provide a map between the track id and the trajectory object.
-    static G4VTrajectory* Get(int trackId);
+    static G4VTrajectory* Get(int trackId, const G4Event* event = nullptr);
 
     /// Add a trajectory to the map.
-    static void Add(G4VTrajectory* traj);
-
-    /// Clear the trajectory map.  This must be done in the
-    /// EDepSim::UserEventAction::BeginOfEventAction() method.
-    static void Clear();
+    static void Add(G4VTrajectory* traj, G4Event* event = nullptr);
 
     /// Find the primary track ID for the current track.  This is the primary
     /// that is the ultimate parent of the current track.
-    static int FindPrimaryId(int trackId);
+    static int FindPrimaryId(int trackId, const G4Event* event = nullptr);
 
 private:
-    /// A map to the trajectories information indexed the the track id. Be
-    /// careful since the trajectory information is owned by the event, so if
-    /// you try to use this after a trajectory has been deleted... bad things
-    /// will happen.
-    static std::map<int,G4VTrajectory*> fMap;
-
-    /// The constructor is private so that it can only be created using the
-    /// static get method.
+    /// The constructor is private so that it cannot be instantiated
     TrajectoryMap() {}
 };
 #endif

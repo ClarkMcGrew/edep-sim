@@ -27,8 +27,8 @@ class TGeoNode;
 class G4Material;
 class G4VPhysicalVolume;
 
-/// Provide a root output for the geant 4 events.
 namespace EDepSim {class RootGeometryManager;}
+/// Provide a root output for the geant 4 events.
 class EDepSim::RootGeometryManager {
     typedef struct {
         int color;
