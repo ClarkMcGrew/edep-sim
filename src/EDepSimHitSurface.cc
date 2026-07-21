@@ -54,6 +54,16 @@ EDepSim::HitSurface::HitSurface(const G4Step* theStep)
     }
 }
 
+EDepSim::HitSurface::HitSurface(int primaryId, double energyDeposit,
+                                const G4LorentzVector& position,
+                                const G4LorentzVector& start,
+                                int pdgEncoding,
+                                int creatorType, int creatorSubtype)
+    :  fPrimaryId(primaryId), fEnergyDeposit(energyDeposit),
+       fPosition(position), fStart(start),
+       fPDGEncoding(pdgEncoding),
+       fCreatorType(creatorType), fCreatorSubtype(creatorSubtype) {}
+
 EDepSim::HitSurface::~HitSurface() { }
 
 void EDepSim::HitSurface::Draw(void) {
