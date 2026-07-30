@@ -44,6 +44,7 @@
 #include <G4Box.hh>
 #include <G4Trd.hh>
 #include <G4Tubs.hh>
+#include <G4CutTubs.hh>
 #include <G4Sphere.hh>
 #include <G4Polyhedra.hh>
 #include <G4Polycone.hh>
@@ -258,6 +259,23 @@ TGeoShape* EDepSim::RootGeometryManager::CreateShape(
         theShape = new TGeoTubeSeg(rmin, rmax,
                                    zhalf,
                                    minPhiDeg, maxPhiDeg);
+    }
+    else if (geometryType == "G4CutTubs") {
+        const G4CutTubs* tube = dynamic_cast<const G4CutTubs*>(theSolid);
+        // Root takes the angles in degrees so there is no extra
+        // conversion.  The cut-plane normals are unit vectors.
+        double zhalf = tube->GetZHalfLength()/CLHEP::mm;
+        double rmin = tube->GetInnerRadius()/CLHEP::mm;
+        double rmax = tube->GetOuterRadius()/CLHEP::mm;
+        double minPhiDeg = tube->GetStartPhiAngle()/CLHEP::degree;
+        double maxPhiDeg = minPhiDeg + tube->GetDeltaPhiAngle()/CLHEP::degree;
+        G4ThreeVector lowNorm = tube->GetLowNorm();
+        G4ThreeVector highNorm = tube->GetHighNorm();
+        theShape = new TGeoCtub(rmin, rmax,
+                                zhalf,
+                                minPhiDeg, maxPhiDeg,
+                                lowNorm.x(), lowNorm.y(), lowNorm.z(),
+                                highNorm.x(), highNorm.y(), highNorm.z());
     }
     else if (geometryType == "G4Sphere") {
         const G4Sphere* sphere = dynamic_cast<const G4Sphere*>(theSolid);
