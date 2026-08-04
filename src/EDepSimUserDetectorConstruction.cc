@@ -1,3 +1,5 @@
+#include <algorithm>
+
 #include "EDepSimUserDetectorConstruction.hh"
 #include "EDepSimDetectorMessenger.hh"
 #include "EDepSimRootGeometryManager.hh"
@@ -112,6 +114,9 @@ namespace {
 
 namespace {
     double ParseUnit(std::string value, std::string unit) {
+        // Accept both "0.5 cm" and the "0.5*cm" form written by LArSoft
+        // geometry generators (eg dunecore GDML StepLimit auxiliaries).
+        std::replace(value.begin(), value.end(), '*', ' ');
         double val = 0.0;
         std::istringstream theStream(value);
         theStream >> val >> unit;
