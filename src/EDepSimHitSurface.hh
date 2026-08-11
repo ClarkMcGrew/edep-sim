@@ -32,6 +32,16 @@ public:
     /// Create a new hit surface
     HitSurface();
     explicit HitSurface(const G4Step* theStep);
+
+    /// Create a hit surface from explicit values.  This is for photon
+    /// transport that is offloaded from Geant4 (e.g. GPU tracking), where
+    /// there is no G4Step to copy the hit information from.
+    HitSurface(int primaryId, double energyDeposit,
+               const G4LorentzVector& position,
+               const G4LorentzVector& start,
+               int pdgEncoding,
+               int creatorType, int creatorSubtype);
+
     virtual ~HitSurface();
 
     typedef G4THitsCollection<EDepSim::HitSurface> HitSurfaceCollection;
