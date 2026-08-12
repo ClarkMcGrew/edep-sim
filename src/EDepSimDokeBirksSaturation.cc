@@ -40,15 +40,13 @@ G4double EDepSim::DokeBirksSaturation::VisibleEnergyDeposition(
     // Assume that this is argon.
     bool inLiquidArgon = true;
 
-    // Check that we are in liquid.
-    if (aMaterial->GetState() != kStateLiquid) {
-        if (aMaterial->GetState() == kStateUndefined) {
-            static int throttle = 5;
-            if (throttle > 0) {
-                EDepSimError("Undefined material state for "
-                             << aMaterial->GetName());
-            }
-        }
+    // Check that we are not gaseous.  Ideally the material is flagged
+    // kStateLiquid, but GDML geometries written by LArSoft/dunecore leave the
+    // LAr material state unspecified, which Geant4 imports as kStateSolid (or
+    // kStateUndefined).  Treat any non-gaseous pure-argon material as liquid
+    // argon so those geometries still get field-dependent recombination
+    // (edep-sim issue #99); only reject an explicitly gaseous argon.
+    if (aMaterial->GetState() == kStateGas) {
         inLiquidArgon = false;
     }
 
@@ -161,12 +159,20 @@ G4double EDepSim::DokeBirksSaturation::VisibleEnergyDeposition(
             throw std::runtime_error("Electric field must be valid.");
         }
 
-        if (electricField <= 0) {
-            return G4EmSaturation::VisibleEnergyDeposition(
-                particle,couple,length,totalEDep,nonIonEDep);
-        }
-
     } while (false);
+
+    // If no usable field was found for this volume the field is left at zero:
+    // that happens both when the volume carries no field manager/field (the
+    // "break" paths above, e.g. buffer LAr outside the drift region) and when
+    // the registered field really is zero.  In every such case fall back to
+    // the field-independent base saturation model.  This MUST live outside the
+    // do/while: the Doke-Birks parameterization below has a
+    // pow(E/(kV/cm),-0.85) term that diverges as E->0, so entering it with a
+    // zero field would yield NaN recombination (edep-sim issue #99).
+    if (electricField <= 0) {
+        return G4EmSaturation::VisibleEnergyDeposition(
+            particle,couple,length,totalEDep,nonIonEDep);
+    }
 
     EDepSimTrace("Electric field " << electricField/(kilovolt/cm)
                  << " kV/cm");
