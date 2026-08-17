@@ -123,68 +123,81 @@ void EDepSim::UserEventAction::BeginOfEventAction(const G4Event* theEvent) {
 void EDepSim::UserEventAction::EndOfEventAction(const G4Event* theEvent) {
     EDepSimInfo("Event " << theEvent->GetEventID() << " completed.");
 
-    // Run external actions unconditionally first, before the early-return
-    // below. External plugins (e.g. GPU optical simulation) may need to run
-    // even when there are no ionization hits in any sensitive detector.
-    for (G4UserEventAction *action : fExternalActions) {
-        action->EndOfEventAction(theEvent);
-    }
-
     // Fill the trajectories with the amount of energy deposited into
-    // sensitive detectors.
+    // sensitive detectors.  This must happen before the external actions are
+    // run so that they see the completed trajectory information.  Notice that
+    // an event may legitimately have no hit collections (e.g. when all of the
+    // energy is carried away by optical photons handled outside of GEANT4),
+    // so this is a conditional block and not an early return.
     G4HCofThisEvent* HCofEvent = theEvent->GetHCofThisEvent();
-    if (!HCofEvent) return;
-    G4SDManager *sdM = G4SDManager::GetSDMpointer();
-    G4HCtable *hcT = sdM->GetHCtable();
+    if (HCofEvent) {
+        G4SDManager *sdM = G4SDManager::GetSDMpointer();
+        G4HCtable *hcT = sdM->GetHCtable();
 
-    for (int i=0; i<hcT->entries(); ++i) {
-        G4String SDname = hcT->GetSDname(i);
-        G4String HCname = hcT->GetHCname(i);
-        int HCId = sdM->GetCollectionID(SDname+"/"+HCname);
-        G4VHitsCollection* g4Hits = HCofEvent->GetHC(HCId);
-        if (g4Hits->GetSize()<1) {
-            EDepSimWarn("No hits for " << SDname << "/" << HCname);
-            continue;
-        }
-        for (unsigned int h=0; h<g4Hits->GetSize(); ++h) {
-            EDepSim::HitSegment* g4Hit
-                = dynamic_cast<EDepSim::HitSegment*>(g4Hits->GetHit(h));
-            if (g4Hit == nullptr) continue;
-            double energy = g4Hit->GetEnergyDeposit();
-            int trackId = g4Hit->GetContributors().front();
-            G4VTrajectory* g4Traj = EDepSim::TrajectoryMap::Get(trackId);
-            if (!g4Traj) {
-                EDepSimError("Missing trackId " << trackId);
+        for (int i=0; i<hcT->entries(); ++i) {
+            G4String SDname = hcT->GetSDname(i);
+            G4String HCname = hcT->GetHCname(i);
+            int HCId = sdM->GetCollectionID(SDname+"/"+HCname);
+            G4VHitsCollection* g4Hits = HCofEvent->GetHC(HCId);
+            // A sensitive detector can be registered in the hit collection
+            // table without a collection existing for this event.  That
+            // happens for a pseudo-SD that is not attached to any logical
+            // volume (e.g. a detector filled from a GPU offloaded simulation
+            // during the end of event action), so GetHC() returns null.
+            if (!g4Hits) continue;
+            if (g4Hits->GetSize()<1) {
+                EDepSimWarn("No hits for " << SDname << "/" << HCname);
                 continue;
             }
-            EDepSim::Trajectory* traj
-                = dynamic_cast<EDepSim::Trajectory*>(g4Traj);
-            if (!traj) {
-                EDepSimError("Not a EDepSim::Trajectory  " << trackId);
-                continue;
-            }
-            traj->AddSDEnergyDeposit(energy);
-            traj->AddSDLength(g4Hit->GetTrackLength());
-            for (int loopCount = 0; ; ++loopCount) {
-                int parentId = traj->GetParentID();
-                if (!parentId) break;
-                g4Traj = EDepSim::TrajectoryMap::Get(parentId);
+            for (unsigned int h=0; h<g4Hits->GetSize(); ++h) {
+                EDepSim::HitSegment* g4Hit
+                    = dynamic_cast<EDepSim::HitSegment*>(g4Hits->GetHit(h));
+                if (g4Hit == nullptr) continue;
+                double energy = g4Hit->GetEnergyDeposit();
+                int trackId = g4Hit->GetContributors().front();
+                G4VTrajectory* g4Traj = EDepSim::TrajectoryMap::Get(trackId);
                 if (!g4Traj) {
-                    EDepSimError("Missing parentId " << parentId);
-                    break;
+                    EDepSimError("Missing trackId " << trackId);
+                    continue;
                 }
-                traj = dynamic_cast<EDepSim::Trajectory*>(g4Traj);
+                EDepSim::Trajectory* traj
+                    = dynamic_cast<EDepSim::Trajectory*>(g4Traj);
                 if (!traj) {
                     EDepSimError("Not a EDepSim::Trajectory  " << trackId);
-                    break;
+                    continue;
                 }
-                traj->AddSDDaughterEnergyDeposit(energy);
-                if (loopCount>9999) {
-                    EDepSimError("Infinite loop for trajectory id " << trackId);
-                    EDepSimThrow("Infinite loop trap");
+                traj->AddSDEnergyDeposit(energy);
+                traj->AddSDLength(g4Hit->GetTrackLength());
+                for (int loopCount = 0; ; ++loopCount) {
+                    int parentId = traj->GetParentID();
+                    if (!parentId) break;
+                    g4Traj = EDepSim::TrajectoryMap::Get(parentId);
+                    if (!g4Traj) {
+                        EDepSimError("Missing parentId " << parentId);
+                        break;
+                    }
+                    traj = dynamic_cast<EDepSim::Trajectory*>(g4Traj);
+                    if (!traj) {
+                        EDepSimError("Not a EDepSim::Trajectory  " << trackId);
+                        break;
+                    }
+                    traj->AddSDDaughterEnergyDeposit(energy);
+                    if (loopCount>9999) {
+                        EDepSimError("Infinite loop for trajectory id "
+                                     << trackId);
+                        EDepSimThrow("Infinite loop trap");
+                    }
                 }
             }
         }
+    }
+
+    // Run the external actions.  These are run last so that they see the
+    // final trajectory and hit segment information, and they are run for
+    // every event, including events without any hit segments.  These must
+    // not change the state of G4 or EDepSim.
+    for (G4UserEventAction *action : fExternalActions) {
+        action->EndOfEventAction(theEvent);
     }
 
 }
