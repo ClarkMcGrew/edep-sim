@@ -124,6 +124,48 @@ namespace {
         return val;
     }
 
+    // Parse a scalar value that may carry its unit inline (as part of the
+    // value string, separated by whitespace and/or '*') or via a separate
+    // fallback unit string (eg the GDML "auxunit" attribute).  This supports
+    // the LArSoft-style scalar "Efield" auxiliary (see edep-sim issue #99),
+    // eg <auxiliary auxtype="Efield" auxunit="V/cm" auxvalue="500*V/cm"/>.
+    //
+    // If the value carries a unit, the fallback unit is ignored.  If neither
+    // the value nor the fallback supplies a unit, an exception is thrown.
+    double ParseUnitScalar(std::string value, std::string fallbackUnit) {
+        // LArSoft-style geometry writes units joined with '*' (eg "500*V/cm").
+        std::replace(value.begin(), value.end(), '*', ' ');
+        std::istringstream theStream(value);
+        double val = 0.0;
+        std::string unit;
+        theStream >> val >> unit;
+        if (unit.empty()) {
+            // No unit in the value: fall back to the auxunit attribute.
+            unit = fallbackUnit;
+        }
+        if (unit.empty()) {
+            EDepSimError("Electric field value \"" << value
+                         << "\" has no units (neither in the value nor as"
+                         << " an auxunit)");
+            throw std::runtime_error("Electric field value has no units");
+        }
+        val *= G4UnitDefinition::GetValueOf(unit);
+        return val;
+    }
+
+    // Parse a string containing a direction, eg "(1.0 0.0 0.0)" or
+    // "(1.0, 0.0, 0.0)".  Components may be separated by whitespace and/or
+    // commas.  The returned vector is not normalized here.
+    G4ThreeVector ParseDirection(std::string value) {
+        std::replace(value.begin(), value.end(), '(', ' ');
+        std::replace(value.begin(), value.end(), ')', ' ');
+        std::replace(value.begin(), value.end(), ',', ' ');
+        std::istringstream theStream(value);
+        double x = 0.0, y = 0.0, z = 0.0;
+        theStream >> x >> y >> z;
+        return G4ThreeVector(x, y, z);
+    }
+
     // Parse a string containing the electric field vector.
     G4ThreeVector ParseEField(std::string value) {
         G4ThreeVector field(0,0,0);
@@ -329,26 +371,44 @@ void EDepSim::UserDetectorConstruction::ConstructSDandField() {
         bool HasEField = false;
         std::string eField_fname;
         G4ThreeVector eField(0,0,0);
+
+        // The electric field can be specified in three (mutually exclusive)
+        // ways: the edep-sim vector "EField", the LArSoft-style scalar
+        // "Efield" (note the lower-case 'f') plus an optional direction
+        // "EfieldDir", or the arbitrary field file "ArbEField".  See
+        // edep-sim issue #99.  The vector "EField" and scalar "Efield" are
+        // collected here and reconciled after the loop with a first-one-wins
+        // tie-break.
+        bool hasVectorEField = false;   // edep-sim style vector "EField"
+        bool hasScalarEField = false;   // LArSoft style scalar "Efield"
+        std::string eFieldSource;       // "EField" or "Efield": first one wins
+        G4ThreeVector vectorEField(0,0,0);
+        double scalarEField = 0.0;
+        // Direction for the scalar "Efield".  LArSoft assumes a uniform field
+        // along +x, which is the default when no "EfieldDir" is given.
+        G4ThreeVector eFieldDir(1.0, 0.0, 0.0);
+
         for (G4GDMLAuxListType::const_iterator auxItem = auxItems.begin();
              auxItem != auxItems.end();
              ++auxItem) {
-            if (auxItem->type != "EField" && auxItem->type != "ArbEField") {
-                continue;
-            }
 
             if (auxItem->type == "EField") {
-                eField = ParseEField(auxItem->value);
-                HasEField = true;
-
-                EDepSimInfo("Set the electric field for "
-                        << logVolume->GetName()
-                        << " to "
-                        << " X=" << eField.x()/(volt/cm) << " V/cm"
-                        << ", Y=" << eField.y()/(volt/cm) << " V/cm"
-                        << ", Z=" << eField.z()/(volt/cm) << " V/cm");
+                vectorEField = ParseEField(auxItem->value);
+                hasVectorEField = true;
+                if (eFieldSource.empty()) eFieldSource = "EField";
             }
 
-            if (auxItem->type == "ArbEField") {
+            else if (auxItem->type == "Efield") {
+                scalarEField = ParseUnitScalar(auxItem->value, auxItem->unit);
+                hasScalarEField = true;
+                if (eFieldSource.empty()) eFieldSource = "Efield";
+            }
+
+            else if (auxItem->type == "EfieldDir") {
+                eFieldDir = ParseDirection(auxItem->value);
+            }
+
+            else if (auxItem->type == "ArbEField") {
                 eField_fname = auxItem->value;
                 HasEField = true;
 
@@ -356,6 +416,39 @@ void EDepSim::UserDetectorConstruction::ConstructSDandField() {
                         << logVolume->GetName()
                         << " to " << eField_fname);
             }
+        }
+
+        // Reconcile the vector "EField" and scalar "Efield" specifications.
+        if (hasVectorEField && hasScalarEField) {
+            EDepSimWarn("Both EField and Efield auxiliaries found for "
+                        << logVolume->GetName()
+                        << "; using the first one (" << eFieldSource
+                        << ") and ignoring the other.");
+        }
+
+        if (eFieldSource == "EField") {
+            eField = vectorEField;
+            HasEField = true;
+        }
+        else if (eFieldSource == "Efield") {
+            G4ThreeVector dir = eFieldDir;
+            if (dir.mag() > 0.0) {
+                dir = dir.unit();
+            }
+            else {
+                dir = G4ThreeVector(1.0, 0.0, 0.0);
+            }
+            eField = scalarEField * dir;
+            HasEField = true;
+        }
+
+        if (HasEField && eField_fname.empty()) {
+            EDepSimInfo("Set the electric field for "
+                    << logVolume->GetName()
+                    << " to "
+                    << " X=" << eField.x()/(volt/cm) << " V/cm"
+                    << ", Y=" << eField.y()/(volt/cm) << " V/cm"
+                    << ", Z=" << eField.z()/(volt/cm) << " V/cm");
         }
 
         // Find the magnetic field for the volume.
