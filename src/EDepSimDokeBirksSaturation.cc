@@ -40,16 +40,6 @@ G4double EDepSim::DokeBirksSaturation::VisibleEnergyDeposition(
     // Assume that this is argon.
     bool inLiquidArgon = true;
 
-    // Check that we are not gaseous.  Ideally the material is flagged
-    // kStateLiquid, but GDML geometries written by LArSoft/dunecore leave the
-    // LAr material state unspecified, which Geant4 imports as kStateSolid (or
-    // kStateUndefined).  Treat any non-gaseous pure-argon material as liquid
-    // argon so those geometries still get field-dependent recombination
-    // (edep-sim issue #99); only reject an explicitly gaseous argon.
-    if (aMaterial->GetState() == kStateGas) {
-        inLiquidArgon = false;
-    }
-
     // Find the dominant element.  It should be argon.
     double dominantZ = -1;
     double dominantFrac = 0.0;
@@ -62,8 +52,8 @@ G4double EDepSim::DokeBirksSaturation::VisibleEnergyDeposition(
     }
 
     // If the dominant fraction is small its not LAr.  Hard coded to allow 10
-    // PPM contamination.  More than that, there won't be drift anyway, and
-    // it's OK to fall back to something simpler.
+    // PPM contamination.  More than that, there won't be drift in LAr anyway,
+    // and it's OK to fall back to something simpler.
     if (dominantFrac < (1.0 - 1E-5)) {
         inLiquidArgon = false;
     }
@@ -73,7 +63,31 @@ G4double EDepSim::DokeBirksSaturation::VisibleEnergyDeposition(
         inLiquidArgon = false;
     }
 
-    // It's not LAr so pass off to the standard handler.
+    // If inLiquidArgon is still true, the material is "pure" argon.  Now
+    // check if we are in liquid.
+    if (inLiquidArgon && aMaterial->GetState() != kStateLiquid) {
+        // Argon can't be solid, so if it's not liquid it better be gaseous.
+        // Check and print a warning if the material isn't a gas
+        if (aMaterial->GetState() == kStateGas) {
+            inLiquidArgon = false;
+        }
+        else {
+            // Do not make a lot of noise
+            static int throttle = 5;
+            // GDML geometries written by LArSoft/dunecore leave the LAr
+            // material state unspecified, which Geant4 imports as kStateSolid
+            // (or kStateUndefined). Treat those states as liquid so those
+            // geometries still get field-dependent recombination (edep-sim
+            // issue #99), but print a warning.
+            if (throttle > 0) {
+                EDepSimWarn(
+                    "Found pure argon that is neither gaseous nor liquid "
+                    << aMaterial->GetName());
+            }
+        }
+    }
+
+    // It's not liquid argon so pass off to the standard handler.
     if (!inLiquidArgon) {
         return G4EmSaturation::VisibleEnergyDeposition(
             particle,couple,length,totalEDep,nonIonEDep);
