@@ -35,6 +35,6 @@ endif(NOT DEFINED EDEPSIM_VALIDATE_ARGUMENT OR EDEPSIM_VALIDATE_ARGUMENT STREQUA
 # Run the main executable test scripts.  These are relatively slow, so they
 add_test(
   NAME edep-sim-validate
-  COMMAND "sh" "-c" "(cd ${CMAKE_SOURCE_DIR}/validate && ./edep-sim-validate.sh  $(EDEPSIM_VALIDATE_ARGUMENT) -a ${CMAKE_BINARY_DIR}/Testing/validate.$(date +%Y-%m-%d-%H%M%S) )"
+  COMMAND "sh" "-c" "(cd ${CMAKE_SOURCE_DIR}/validate && ./edep-sim-validate.sh  ${EDEPSIM_VALIDATE_ARGUMENT} -a ${CMAKE_BINARY_DIR}/Testing/validate.$(date +%Y-%m-%d-%H%M%S) )"
 )
 

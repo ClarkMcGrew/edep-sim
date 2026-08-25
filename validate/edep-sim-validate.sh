@@ -1,12 +1,15 @@
 #!/bin/bash
 #
-# Run tests on edepsim.  Test scripts that are kept in the fast-tests
-# subdirectory will always be run.  Any test scripts that take a lot
-# of time and are for more detailed validation should be kept in
-# either regular-tests, extended-tests or slow-tests.  Tests that are
-# not part of "fast-tests" will only be run when the applicable
-# options are set.  The apply option ("-a") must be added to actually
-# run the scripts.
+# Run test scripts on the full edep-sim executable. The tests scripts
+# are run in order so that the output of early tests is available for
+# later tests.
+#
+# Test scripts that are kept in the fast-tests subdirectory will
+# always be run.  Any test scripts that take a lot of time and are for
+# more detailed validation should be kept in either regular-tests,
+# extended-tests or slow-tests.  Tests that are not part of
+# "fast-tests" will only be run when the applicable options are set.
+# The apply option ("-a") must be added to actually run the scripts.
 #
 # The testing levels are:
 #
