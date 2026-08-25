@@ -79,7 +79,7 @@ G4double EDepSim::DokeBirksSaturation::VisibleEnergyDeposition(
             // (or kStateUndefined). Treat those states as liquid so those
             // geometries still get field-dependent recombination (edep-sim
             // issue #99), but print a warning.
-            if (throttle > 0) {
+            if (throttle-- > 0) {
                 EDepSimWarn(
                     "Found pure argon that is neither gaseous nor liquid "
                     << aMaterial->GetName());
@@ -109,8 +109,7 @@ G4double EDepSim::DokeBirksSaturation::VisibleEnergyDeposition(
 
     if (nonIonEDep > 0.0) {
         static int throttle = 5;
-        if (throttle > 0) {
-            --throttle;
+        if (throttle-- > 0) {
             EDepSimError("Something else is using non-ionizing energy: "
                          << nonIonEDep/MeV << " MeV");
         }
@@ -132,26 +131,23 @@ G4double EDepSim::DokeBirksSaturation::VisibleEnergyDeposition(
         const G4LogicalVolume* aLogVolume = aVolume->GetLogicalVolume();
         const G4FieldManager* aFieldManager = aLogVolume->GetFieldManager();
         if (!aFieldManager) {
-            if (throttle > 0) {
+            if (throttle-- > 0) {
                 EDepSimError("No field manager for " << aLogVolume->GetName());
-                --throttle;
             }
             break;
         }
         if (!aFieldManager->DoesFieldExist()) {
-            if (throttle > 0) {
+            if (throttle-- > 0) {
                 EDepSimError("Field does not exist for "
                              << aLogVolume->GetName());
-                --throttle;
             }
             break;
         }
         const G4Field* aField = aFieldManager->GetDetectorField();
         if (!aField) {
-            if (throttle > 0) {
+            if (throttle-- > 0) {
                 EDepSimError("No field object for "
                              << aLogVolume->GetName());
-                --throttle;
             }
             break;
         }
