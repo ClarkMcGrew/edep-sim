@@ -3,14 +3,33 @@
 # Generate events using a non-trivial GDML geometry.
 #
 
-GDML=../fast-tests/100TestGDML.gdml
-OUTPUT=100TestGDML.root
+# Get the directory containing the script from the command line
+# parameters (avoids bash trickery).  Use the current directory as the
+# default.
+DIR=.
+if [ ${#1} -gt 0 ]; then
+    DIR=${1}
+fi
+
+# Make sure that edep-sim has been setup.
+if ! which edep-sim; then
+    echo FAIL: Executable not found for edep-sim
+    exit 1
+fi
+
+# Setup where base names 
+BASE=100TestGDML
+INPUTBASE=${DIR}/${BASE}
+
+GDML=${INPUTBASE}.gdml
+OUTPUT=${BASE}.root
 
 if [ -f ${OUTPUT} ]; then
     rm ${OUTPUT}
 fi
 
-cat > 100TestGDML.mac <<EOF
+MACRO=${BASE}.mac
+cat > ${MACRO} <<EOF
 /edep/material/birksConstant Scintillator 0.126 mm/MeV
 /edep/update
 
@@ -43,4 +62,4 @@ cat > 100TestGDML.mac <<EOF
 /generator/add
 EOF
 
-edep-sim -o ${OUTPUT} -g ${GDML} -e 10 100TestGDML.mac
+edep-sim -o ${OUTPUT} -g ${GDML} -e 10 ${MACRO}

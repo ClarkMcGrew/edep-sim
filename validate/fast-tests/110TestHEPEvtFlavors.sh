@@ -3,20 +3,37 @@
 # Demonstrates the usage of the HEPEvt reader. This
 # example uses the ParticleBomb ("pbomb") input flavor.
 
-OUTPUT=110TestHEPEvtFlavors.root
-# Modify the following line if using gdml file
-#GEOM=my_geometry.gdml
+
+# Get the directory containing the script from the command line
+# parameters (avoids bash trickery).  Use the current directory as the
+# default.
+DIR=.
+if [ ${#1} -gt 0 ]; then
+    DIR=${1}
+fi
+
+# Make sure that edep-sim has been setup.
+if ! which edep-sim; then
+    echo FAIL: Executable not found for edep-sim
+    exit 1
+fi
+
+# Setup where base names 
+BASE=110TestHEPEvtFlavors
+
+OUTPUT=${BASE}.root
 
 if [ -f ${OUTPUT} ]; then
     rm ${OUTPUT}
 fi
 
+INPUT=${BASE}.txt
 ## Create macro file
 # Header line: event ID, vertex ID, no. particles in that vertex, 
 #   and vertex (x,y,z,t)
 # Particle lines: status code, PDG code, first mother, second mother,
 #   first daughter, second daughter, px, py, pz, E, and mass
-cat > 110TestHEPEvtFlavors.txt <<EOF
+cat > ${INPUT} <<EOF
     0 0 2 -21.634 -16.103 -17.517 2.022
         1 13 0 0 0 0 0.291 -0.072 0.054 0.323 0.105658
         1 2212 1 1 0 0 0.091 -0.026 -0.831 1.257 0.9382
@@ -28,7 +45,8 @@ cat > 110TestHEPEvtFlavors.txt <<EOF
         1 13 5 5 0 0 -0.256 -0.386 -0.688 0.836 0.105658 
 EOF
 
-cat > 110TestHEPEvtFlavors.mac <<EOF
+MACRO=${BASE}.mac
+cat > ${MACRO} <<EOF
 #######################################
 # Set the hit segment.
 #######################################
@@ -37,7 +55,7 @@ cat > 110TestHEPEvtFlavors.mac <<EOF
 /run/setCut 0.001 mm 
 /edep/update
 
-/generator/kinematics/hepevt/input 110TestHEPEvtFlavors.txt
+/generator/kinematics/hepevt/input ${INPUT}
 /generator/kinematics/hepevt/flavor pbomb
 /generator/kinematics/hepevt/verbose 2
 /generator/kinematics/set hepevt
@@ -47,7 +65,5 @@ cat > 110TestHEPEvtFlavors.mac <<EOF
 /generator/add
 EOF
 
-edep-sim -o ${OUTPUT} -C -e 3 110TestHEPEvtFlavors.mac || exit 1
+edep-sim -o ${OUTPUT} -C -e 3 ${MACRO} || exit 1
 
-# Use the -g flag if using geometry file
-#edep-sim -o ${OUTPUT} -C -e 3 -g ${GEOM} 110TestHEPEvtFlavors.mac || exit 1

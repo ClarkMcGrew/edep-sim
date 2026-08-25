@@ -4,6 +4,8 @@ cmake_minimum_required(VERSION 3.30)
 # import this into other CMAKE files.
 project(EDepSim VERSION 4.3.0)
 
+include(CTest)
+
 message(STATUS "Energy Deposition Simulation -- ${VERSION}")
 
 # Define the options that can be set in the cache, or on the cmake
@@ -124,6 +126,7 @@ endif()
 if(NOT EDEPSIM_READONLY)
   add_subdirectory(src)
   add_subdirectory(app)
+  add_subdirectory(validate)
 endif(NOT EDEPSIM_READONLY)
 
 # Install some extra files.  These are in subdirectories, but are not
