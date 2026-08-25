@@ -1,0 +1,9 @@
+# Tests that are expected to fail.  This file can be empty.
+fast-tests/010ExpectedFailure.sh
+fast-tests/060GDMLGeometry.sh
+fast-tests/100TestGDML.sh
+fast-tests/100TestHEPEvt.sh
+fast-tests/100TestTree.sh
+fast-tests/110ReadTree.py
+fast-tests/110TestHEPEvtFlavors.sh
+#end of file
