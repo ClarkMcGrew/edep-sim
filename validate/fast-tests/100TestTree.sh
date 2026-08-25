@@ -3,13 +3,31 @@
 # Write a ROOT file in the default geometry.  This output file should
 # be tested to make sure that all of the fields are readable.
 
-OUTPUT=100TestTree.root
+# Get the directory containing the script from the command line
+# parameters (avoids bash trickery).  Use the current directory as the
+# default.
+DIR=.
+if [ ${#1} -gt 0 ]; then
+    DIR=${1}
+fi
+
+# Make sure that edep-sim has been setup.
+if ! which edep-sim; then
+    echo FAIL: Executable not found for edep-sim
+    exit 1
+fi
+
+# Setup the base names 
+BASE=100TestTree
+
+OUTPUT=${BASE}.root
 
 if [ -f ${OUTPUT} ]; then
     rm ${OUTPUT}
 fi
 
-cat > 100TestTree.mac <<EOF
+MACRO=${BASE}.mac
+cat > ${MACRO} <<EOF
 #######################################
 # Test saving trajectory points
 #######################################
@@ -76,4 +94,4 @@ cat > 100TestTree.mac <<EOF
 
 EOF
 
-edep-sim -o ${OUTPUT} -C -e 100 100TestTree.mac
+edep-sim -o ${OUTPUT} -C -e 100 ${MACRO}
