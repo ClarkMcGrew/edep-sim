@@ -178,27 +178,26 @@ G4double EDepSim::DokeBirksSaturation::VisibleEnergyDeposition(
     // If no usable field was found for this volume the field is left at zero:
     // that happens both when the volume carries no field manager/field (the
     // "break" paths above, e.g. buffer LAr outside the drift region) and when
-    // the registered field really is zero.  In every such case fall back to
-    // the field-independent base saturation model.  This MUST live outside the
-    // do/while: the Doke-Birks parameterization below has a
-    // pow(E/(kV/cm),-0.85) term that diverges as E->0, so entering it with a
-    // zero field would yield NaN recombination (edep-sim issue #99).
-    if (electricField <= 0) {
-        return G4EmSaturation::VisibleEnergyDeposition(
-            particle,couple,length,totalEDep,nonIonEDep);
-    }
-
+    // the registered field really is zero.
     EDepSimTrace("Electric field " << electricField/(kilovolt/cm)
                  << " kV/cm");
 
-    // The code below is pulled from G4S1Light and is simplified to be
-    // Doke-Birks only, in LAr only, and for an electric field only.  This is
-    // for ARGON only.  The Doke-Birks constants are in kilovolt/cm
     G4double dokeBirks[3];
-
-    dokeBirks[0] = 0.07*pow((electricField/(kilovolt/cm)),-0.85);
-    dokeBirks[2] = 0.00;
-    dokeBirks[1] = dokeBirks[0]/(1-dokeBirks[2]); //B=A/(1-C) (see paper)
+    if (electricField > 0.0) {
+        // The code below is pulled from G4S1Light and is simplified to be
+        // Doke-Birks only, in LAr only, and for an electric field only.  This
+        // is for ARGON only.  The Doke-Birks constants are in kilovolt/cm
+        dokeBirks[0] = 0.07*pow((electricField/(kilovolt/cm)),-0.85);
+        dokeBirks[2] = 0.00;
+    }
+    else {
+        // The code below is pulled from G4S1Light and is simplified to be
+        // Doke-Birks only, in LAr only, and for a zero electric field.  This
+        // is for ARGON only.  The Doke-Birks constants are in kilovolt/cm
+        dokeBirks[0] = 0.0003;
+        dokeBirks[2] = 0.75;
+    }
+    dokeBirks[1] = dokeBirks[0]/(1-dokeBirks[2]); //B=A/(1-C) (see NEST paper)
 
     G4double dE = totalEDep/MeV;
     G4double dx = length/cm;
