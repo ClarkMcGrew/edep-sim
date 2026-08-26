@@ -101,9 +101,11 @@ EDepSim::PhysicsList::PhysicsList(G4String physName)
     fExtra = new EDepSim::ExtraPhysics();
     RegisterPhysics(fExtra);
 
-    // Setup the parameters (override if necesssary)
+    // Setup the parameters (override if necesssary). The EmSaturation
+    // needs to be set after the materials are defined, so it is not
+    // done here.
     G4EmParameters* emParams = G4EmParameters::Instance();
-    emParams->SetEmSaturation(new EDepSim::DokeBirksSaturation(0));
+    // emParams->SetEmSaturation(new EDepSim::DokeBirksSaturation(0));
 
     // Force any necessary optical parameters.
     G4OpticalParameters* opParams = G4OpticalParameters::Instance();

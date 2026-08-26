@@ -13,9 +13,12 @@ namespace EDepSim {class DokeBirksSaturation;}
 /// accurate for LAr over the important energy ranges for a LArTPC (E more
 /// than about an MeV).
 ///
-/// When this is called for a material other than LAr, then the default G4
-/// Birk's Law implementation (G4EmSaturation) is used.
-///
+/// When this is called for a material that has the Birks constant define, it
+/// will use the standard G4EmSaturation model. If the Birks constant is not
+/// defined for the material, the Doke-Birks model will be used for LAr, and
+/// G4EmSaturation will be used for everything else (if there isn't a Birks
+/// constant G4EmSaturation will probably be a NOP).
+
 /// This file should always be accompanied by the full NEST implementation
 /// since this is a direct modification of the NEST code.  The NEST code needs
 /// to be provided since it is the arbitor of the performance of this code.

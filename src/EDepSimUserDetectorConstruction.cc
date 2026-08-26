@@ -9,6 +9,7 @@
 #include "EDepSimArbEMField.hh"
 #include "EDepSimArbElecField.hh"
 #include "EDepSimArbMagField.hh"
+#include "EDepSimDokeBirksSaturation.hh"
 
 #define BUILD_CAPTAIN
 #ifdef BUILD_CAPTAIN
@@ -39,7 +40,7 @@
 #include <G4LogicalVolumeStore.hh>
 #include <G4PhysicalVolumeStore.hh>
 #include <G4MaterialPropertiesTable.hh>
-
+#include <G4EmParameters.hh>
 #include <G4FieldManager.hh>
 
 #include <G4UnitsTable.hh>
@@ -273,6 +274,11 @@ G4VPhysicalVolume* EDepSim::UserDetectorConstruction::Construct() {
         EDepSimError("Physical world not built");
         EDepSimThrow("Physical world not built");
     }
+
+    // Setup the basic em parameter after the materials are defined.
+    // This is going to override the initial defaults.
+    G4EmParameters* emParams = G4EmParameters::Instance();
+    emParams->SetEmSaturation(new EDepSim::DokeBirksSaturation(0));
 
     EDepSim::RootGeometryManager::Get()->Update(fPhysicalWorld,
                                                 fValidateGeometry);

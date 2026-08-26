@@ -37,18 +37,12 @@ G4double EDepSim::DokeBirksSaturation::VisibleEnergyDeposition(
 
     const G4Material* aMaterial = couple->GetMaterial();
 
+    // There isn't a Birks constant, so check if it's PURE Liquid Argon. Pure
+    // LAr is going to be simulated using the Doke-Birks model. Otherwise the
+    // material is handed back to G4EmSaturation, and we hope for the best.
+
     // Assume that this is argon.
     bool inLiquidArgon = true;
-
-    // Check that we are not gaseous.  Ideally the material is flagged
-    // kStateLiquid, but GDML geometries written by LArSoft/dunecore leave the
-    // LAr material state unspecified, which Geant4 imports as kStateSolid (or
-    // kStateUndefined).  Treat any non-gaseous pure-argon material as liquid
-    // argon so those geometries still get field-dependent recombination
-    // (edep-sim issue #99); only reject an explicitly gaseous argon.
-    if (aMaterial->GetState() == kStateGas) {
-        inLiquidArgon = false;
-    }
 
     // Find the dominant element.  It should be argon.
     double dominantZ = -1;
@@ -62,8 +56,8 @@ G4double EDepSim::DokeBirksSaturation::VisibleEnergyDeposition(
     }
 
     // If the dominant fraction is small its not LAr.  Hard coded to allow 10
-    // PPM contamination.  More than that, there won't be drift anyway, and
-    // it's OK to fall back to something simpler.
+    // PPM contamination.  More than that, there won't be drift in LAr anyway,
+    // and it's OK to fall back to something simpler.
     if (dominantFrac < (1.0 - 1E-5)) {
         inLiquidArgon = false;
     }
@@ -73,13 +67,54 @@ G4double EDepSim::DokeBirksSaturation::VisibleEnergyDeposition(
         inLiquidArgon = false;
     }
 
-    // It's not LAr so pass off to the standard handler.
-    if (!inLiquidArgon) {
-        return G4EmSaturation::VisibleEnergyDeposition(
+    // If inLiquidArgon is still true, the material is "pure" argon.  Now
+    // check if we are in liquid.
+    if (inLiquidArgon && aMaterial->GetState() != kStateLiquid) {
+        // Argon can't be solid, so if it's not liquid it better be gaseous.
+        // Check and print a warning if the material isn't a gas
+        if (aMaterial->GetState() == kStateGas) {
+            inLiquidArgon = false;
+        }
+        else {
+            // Do not make a lot of noise
+            static int throttle = 5;
+            // GDML geometries written by LArSoft/dunecore leave the LAr
+            // material state unspecified, which Geant4 imports as kStateSolid
+            // (or kStateUndefined). Treat those states as liquid so those
+            // geometries still get field-dependent recombination (edep-sim
+            // issue #99), but print a warning.
+            if (throttle-- > 0) {
+                EDepSimLog(
+                    "Found pure argon that is neither gaseous nor liquid "
+                    << aMaterial->GetName());
+            }
+        }
+    }
+
+    // It's not liquid argon so pass off to the standard handler and hope for
+    // the best.
+    if (not inLiquidArgon) {
+        double eVis = G4EmSaturation::VisibleEnergyDeposition(
             particle,couple,length,totalEDep,nonIonEDep);
+        return eVis;
     }
 
     EDepSimTrace("In LAr");
+
+    // Check if the material already has a valid Birks constant.  If it does
+    // then hand it off to the default deposition.
+    if (aMaterial != nullptr
+        and aMaterial->GetIonisation() != nullptr
+        and aMaterial->GetIonisation()->GetBirksConstant() > 0.0) {
+        static int throttle = 5;
+        if (throttle-- > 0) {
+            EDepSimLog("Explicit Birks constant set for liquid argon: "
+                       << "Doke-Birks model is not used");
+        }
+        double eVis = G4EmSaturation::VisibleEnergyDeposition(
+            particle,couple,length,totalEDep,nonIonEDep);
+        return eVis;
+    }
 
     G4String particleName = particle->GetParticleName();
     // G4StepPoint* pPreStepPoint  = aStep.GetPreStepPoint();
@@ -95,8 +130,7 @@ G4double EDepSim::DokeBirksSaturation::VisibleEnergyDeposition(
 
     if (nonIonEDep > 0.0) {
         static int throttle = 5;
-        if (throttle > 0) {
-            --throttle;
+        if (throttle-- > 0) {
             EDepSimError("Something else is using non-ionizing energy: "
                          << nonIonEDep/MeV << " MeV");
         }
@@ -118,26 +152,23 @@ G4double EDepSim::DokeBirksSaturation::VisibleEnergyDeposition(
         const G4LogicalVolume* aLogVolume = aVolume->GetLogicalVolume();
         const G4FieldManager* aFieldManager = aLogVolume->GetFieldManager();
         if (!aFieldManager) {
-            if (throttle > 0) {
+            if (throttle-- > 0) {
                 EDepSimError("No field manager for " << aLogVolume->GetName());
-                --throttle;
             }
             break;
         }
         if (!aFieldManager->DoesFieldExist()) {
-            if (throttle > 0) {
+            if (throttle-- > 0) {
                 EDepSimError("Field does not exist for "
                              << aLogVolume->GetName());
-                --throttle;
             }
             break;
         }
         const G4Field* aField = aFieldManager->GetDetectorField();
         if (!aField) {
-            if (throttle > 0) {
+            if (throttle-- > 0) {
                 EDepSimError("No field object for "
                              << aLogVolume->GetName());
-                --throttle;
             }
             break;
         }
@@ -164,27 +195,26 @@ G4double EDepSim::DokeBirksSaturation::VisibleEnergyDeposition(
     // If no usable field was found for this volume the field is left at zero:
     // that happens both when the volume carries no field manager/field (the
     // "break" paths above, e.g. buffer LAr outside the drift region) and when
-    // the registered field really is zero.  In every such case fall back to
-    // the field-independent base saturation model.  This MUST live outside the
-    // do/while: the Doke-Birks parameterization below has a
-    // pow(E/(kV/cm),-0.85) term that diverges as E->0, so entering it with a
-    // zero field would yield NaN recombination (edep-sim issue #99).
-    if (electricField <= 0) {
-        return G4EmSaturation::VisibleEnergyDeposition(
-            particle,couple,length,totalEDep,nonIonEDep);
-    }
-
+    // the registered field really is zero.
     EDepSimTrace("Electric field " << electricField/(kilovolt/cm)
                  << " kV/cm");
 
-    // The code below is pulled from G4S1Light and is simplified to be
-    // Doke-Birks only, in LAr only, and for an electric field only.  This is
-    // for ARGON only.  The Doke-Birks constants are in kilovolt/cm
     G4double dokeBirks[3];
-
-    dokeBirks[0] = 0.07*pow((electricField/(kilovolt/cm)),-0.85);
-    dokeBirks[2] = 0.00;
-    dokeBirks[1] = dokeBirks[0]/(1-dokeBirks[2]); //B=A/(1-C) (see paper)
+    if (electricField > 0.0) {
+        // The code below is pulled from G4S1Light and is simplified to be
+        // Doke-Birks only, in LAr only, and for an electric field only.  This
+        // is for ARGON only.  The Doke-Birks constants are in kilovolt/cm
+        dokeBirks[0] = 0.07*pow((electricField/(kilovolt/cm)),-0.85);
+        dokeBirks[2] = 0.00;
+    }
+    else {
+        // The code below is pulled from G4S1Light and is simplified to be
+        // Doke-Birks only, in LAr only, and for a zero electric field.  This
+        // is for ARGON only.  The Doke-Birks constants are in kilovolt/cm
+        dokeBirks[0] = 0.0003;
+        dokeBirks[2] = 0.75;
+    }
+    dokeBirks[1] = dokeBirks[0]/(1-dokeBirks[2]); //B=A/(1-C) (see NEST paper)
 
     G4double dE = totalEDep/MeV;
     G4double dx = length/cm;

@@ -72,9 +72,10 @@ void EDepSim::CaptMaterialDefinitions::DefineMaterials() {
     }
 
     // Air -- Defined to have a default material.
+    const double AirDensity = 1.29*g/cm3;
     G4Material* air
         = new G4Material(name="Air",
-                         density = 1.29*CLHEP::mg/CLHEP::cm3,
+                         density = AirDensity,
                          nel=2,
                          kStateGas,
                          temperature = 293.15*CLHEP::kelvin,
@@ -82,6 +83,10 @@ void EDepSim::CaptMaterialDefinitions::DefineMaterials() {
     air->AddElement(elN, fractionmass = 70*CLHEP::perCent);
     air->AddElement(elO, fractionmass = 30*CLHEP::perCent);
     geoMan->SetDrawAtt(air,kGray+3,0.01);
+
+    // Bogus Birks for Air
+    const double AirBirks = 0.0486*g/cm2/MeV/AirDensity;
+    air->GetIonisation()->SetBirksConstant(AirBirks);
 
     G4MaterialPropertiesTable *airMPT = new G4MaterialPropertiesTable();
     air->SetMaterialPropertiesTable(airMPT);
@@ -218,7 +223,7 @@ void EDepSim::CaptMaterialDefinitions::DefineMaterials() {
                                       temperature = 87.3*CLHEP::kelvin,
                                       pressure=1*CLHEP::atmosphere);
     LAr->AddElement(elAr, natoms=1);
-    LAr->GetIonisation()->SetBirksConstant(LArBirks);
+    // LAr->GetIonisation()->SetBirksConstant(LArBirks);
 
     // Set up liquid argon material properties
     G4MaterialPropertiesTable *LArMPT = new G4MaterialPropertiesTable();
