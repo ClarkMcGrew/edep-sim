@@ -37,6 +37,10 @@ G4double EDepSim::DokeBirksSaturation::VisibleEnergyDeposition(
 
     const G4Material* aMaterial = couple->GetMaterial();
 
+    // There isn't a Birks constant, so check if it's PURE Liquid Argon. Pure
+    // LAr is going to be simulated using the Doke-Birks model. Otherwise the
+    // material is handed back to G4EmSaturation, and we hope for the best.
+
     // Assume that this is argon.
     bool inLiquidArgon = true;
 
@@ -80,20 +84,37 @@ G4double EDepSim::DokeBirksSaturation::VisibleEnergyDeposition(
             // geometries still get field-dependent recombination (edep-sim
             // issue #99), but print a warning.
             if (throttle-- > 0) {
-                EDepSimWarn(
+                EDepSimLog(
                     "Found pure argon that is neither gaseous nor liquid "
                     << aMaterial->GetName());
             }
         }
     }
 
-    // It's not liquid argon so pass off to the standard handler.
-    if (!inLiquidArgon) {
-        return G4EmSaturation::VisibleEnergyDeposition(
+    // It's not liquid argon so pass off to the standard handler and hope for
+    // the best.
+    if (not inLiquidArgon) {
+        double eVis = G4EmSaturation::VisibleEnergyDeposition(
             particle,couple,length,totalEDep,nonIonEDep);
+        return eVis;
     }
 
     EDepSimTrace("In LAr");
+
+    // Check if the material already has a valid Birks constant.  If it does
+    // then hand it off to the default deposition.
+    if (aMaterial != nullptr
+        and aMaterial->GetIonisation() != nullptr
+        and aMaterial->GetIonisation()->GetBirksConstant() > 0.0) {
+        static int throttle = 5;
+        if (throttle-- > 0) {
+            EDepSimLog("Explicit Birks constant set for liquid argon: "
+                       << "Doke-Birks model is not used");
+        }
+        double eVis = G4EmSaturation::VisibleEnergyDeposition(
+            particle,couple,length,totalEDep,nonIonEDep);
+        return eVis;
+    }
 
     G4String particleName = particle->GetParticleName();
     // G4StepPoint* pPreStepPoint  = aStep.GetPreStepPoint();
