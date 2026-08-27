@@ -135,6 +135,14 @@ first line for the x coordinate.
 Comment lines starting with the `#` character are supported in the
 grid file. They will be ignored when parsing the file.
 
+Note: Support is provided for the "Efield" tag (note the lower case "f")
+used by GDML files produced for LArSoft. The tag has a hard coded field
+direction, and is deprecated.  There is a warning if it is found.
+
+Note: The hard coded direction for "Efield" can be overridden using the
+EfieldDir tag. All new detector specifications should use either "EField"
+(note the upper case "F") or "ArbEField".
+
 #### Auxiliary field to set the drawing color for the volume
 
 The display properties for the logical volume can be set using the `Color`
