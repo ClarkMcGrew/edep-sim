@@ -1,5 +1,8 @@
 # Release 4.4.0
 
+Add support for the off-loading of photons to the GPU, and to better
+handle older DUNE inputs.
+
 ## Notable changes since 4.3.0
 
 * Feature: Add the ctest interface to the build system. The existing
@@ -25,11 +28,11 @@
   initialized after the materials are initialized.
 
 * Bug Fix: Call G4UserEventAction::EndOfEventAction in the right
-  places.  Previously it was only called when the event had
+  places. Previously it was only called when the event had
   ionization, which meant that "photon" only events didn't call the
   action and didn't have correct photon off-loading.
 
-* Work-around: Add support for LArSoft GDML.  This adds support for
+* Work-around: Add support for LArSoft GDML. This adds support for
   the LArSoft spelling of the electric field (i.e. Efield with a
   default direction along the X axis), and a way to work around
   LArSoft not specifying the electric field direction by adding the
@@ -40,7 +43,7 @@
 * Work-around: Add support for LArSoft GDML files with partial
   material property definitions that result in the argon being state
   as either unspecified, or solid. Argon is assumed to be liquid when
-  the state isn't specified.  Solid argon exists, but is assumed to be
+  the state isn't specified. Solid argon exists, but is assumed to be
   liquid so that old GDML files work. In the future, assuming solid
   argon is liquid argon will require setting an option in the macro
   file.
