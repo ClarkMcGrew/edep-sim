@@ -1,4 +1,45 @@
-Changes in 4.x.x
+Changes in 4.4.0
+
+* Feature: Add the ctest interface to the build system. The existing
+  tests are aimed at testing the full executables, but this provides a
+  base for future work.
+
+* Feature: Update the Doke-Birks model for liquid argon so that it can
+  handle the case without an electric field. The model now checks if
+  an explicit Birks constant has been defined a material before
+  applying the Doke-Birks model (which only applies for pure
+  LAr).
+
+* Feature: Add support to manage externally filled (GPU-offloaded)
+  photon hits. The offloading is managed through the external user
+  action interface, but adding the hits to the output required some
+  internal changes.
+
+* Feature: Add the G4CutTub shape.
+
+* Bug Fix: Fix the Em Saturation model so that it is correctly
+  initialized after the materials are initialized.
+
+* Bug Fix: Call G4UserEventAction::EndOfEventAction in the right
+  places.  Previously it was only called when the event had
+  ionization, which meant that "photon" only events didn't call the
+  action and didn't have correct photon off-loading.
+
+* Work-around: Add support for LArSoft GDML.  This adds support for
+  the LArSoft spelling of the electric field (i.e. Efield with a
+  default direction along the X axis), and a way to work around
+  LArSoft not specifying the electric field direction by adding the
+  option EfieldDir field auxillary type. Note: The "Efield" workaround
+  lacks the generality of the preferred GDML auxillary tag ("EField")
+  and is provided to work around old GDML files.
+
+* Work-around: Add support for LArSoft GDML files with partial
+  material property definitions that result in the argon being state
+  as either unspecified, or solid. Argon is assumed to be liquid when
+  the state isn't specified.  Solid argon exists, but is assumed to be
+  liquid so that old GDML files work. In the future, assuming solid
+  argon is liquid argon will require setting an option in the macro
+  file.
 
 * Expose the EDepSim::PersistencyManager::fEventSummary and members with
   `const& const` getters.  This augments the preferred way to access the

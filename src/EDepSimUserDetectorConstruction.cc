@@ -392,6 +392,7 @@ void EDepSim::UserDetectorConstruction::ConstructSDandField() {
         double scalarEField = 0.0;
         // Direction for the scalar "Efield".  LArSoft assumes a uniform field
         // along +x, which is the default when no "EfieldDir" is given.
+        bool hasEFieldDir = false;      // A EfieldDir auxtype was found
         G4ThreeVector eFieldDir(1.0, 0.0, 0.0);
 
         for (G4GDMLAuxListType::const_iterator auxItem = auxItems.begin();
@@ -412,6 +413,7 @@ void EDepSim::UserDetectorConstruction::ConstructSDandField() {
 
             else if (auxItem->type == "EfieldDir") {
                 eFieldDir = ParseDirection(auxItem->value);
+                hasEFieldDir = true;
             }
 
             else if (auxItem->type == "ArbEField") {
@@ -426,10 +428,16 @@ void EDepSim::UserDetectorConstruction::ConstructSDandField() {
 
         // Reconcile the vector "EField" and scalar "Efield" specifications.
         if (hasVectorEField && hasScalarEField) {
-            EDepSimWarn("Both EField and Efield auxiliaries found for "
+            EDepSimLog("Both EField and Efield auxiliaries found for "
                         << logVolume->GetName()
                         << "; using the first one (" << eFieldSource
                         << ") and ignoring the other.");
+        }
+
+        // Check for incompatible aux types
+        if (hasVectorEField and hasEFieldDir) {
+            EDepSimLog("EfieldDir ignored by vector EField in "
+                       << logVolume->GetName());
         }
 
         if (eFieldSource == "EField") {
@@ -437,6 +445,13 @@ void EDepSim::UserDetectorConstruction::ConstructSDandField() {
             HasEField = true;
         }
         else if (eFieldSource == "Efield") {
+            static int throttle = 5;
+            if (throttle-- > 0) {
+                EDepSimLog("DEPRECATED Scalar Efield specification for "
+                           << logVolume->GetName() << ": "
+                           << "Update using EField or ArbEField");
+            }
+
             G4ThreeVector dir = eFieldDir;
             if (dir.mag() > 0.0) {
                 dir = dir.unit();
