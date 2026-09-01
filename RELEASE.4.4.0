@@ -1,7 +1,8 @@
 # Release 4.4.0
 
-Add support for the off-loading of photons to the GPU, and to better
-handle older DUNE inputs.
+Add testing infrastructure to improve future stability as new features
+are added.  This release also adds better support for the off-loading
+of photons to the GPU, and handling of older DUNE GDML files.
 
 ## Notable changes since 4.3.0
 
@@ -13,7 +14,7 @@ handle older DUNE inputs.
   handle the case without an electric field. The model now checks if
   an explicit Birks constant has been defined a material before
   applying the Doke-Birks model (which only applies for pure
-  LAr).
+  LAr). This helps support older DUNE GDML based geometries.
 
 * Feature: Add support to manage externally filled (GPU-offloaded)
   photon hits. The offloading is managed through the external user
