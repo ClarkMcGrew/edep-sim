@@ -17,7 +17,6 @@
 #include <G4Tokenizer.hh>
 #include <G4UnitsTable.hh>
 #include <Randomize.hh>
-#include "G4TransportationManager.hh"
 
 #include <TFile.h>
 #include <TBits.h>
