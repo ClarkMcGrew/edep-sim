@@ -356,6 +356,18 @@ EDepSim::RooTrackerKinematicsGenerator::GeneratePrimaryVertex(
     auto groupedPositions = EDepSim::RooTrackerKinematicsGenerator::GroupParticlesByPosition();
     // flag for managing the assignment of vertexInfo
     bool firstVertex = true;
+
+    // if no final state particles (fStdHepStatus==1) are found
+    // create an empty primary vertex at EvtVtx carrying the info
+    if (groupedPositions.empty()) {
+        G4PrimaryVertex* theVertex = new G4PrimaryVertex(
+            G4ThreeVector(fEvtVtx[0]*m, fEvtVtx[1]*m, fEvtVtx[2]*m),
+            fEvtVtx[3]*second);
+        anEvent->AddPrimaryVertex(theVertex);
+        theVertex->SetUserInformation(vertexInfo);
+        firstVertex = false;
+    }   
+
     // loop over the final state particles in each vertex group
     for (const auto& particleGroup : groupedPositions){
         // get the vertex group indices
@@ -506,6 +518,5 @@ EDepSim::RooTrackerKinematicsGenerator::GeneratePrimaryVertex(
     theProductionVertex->SetPrimary(theProductionParticle);
 #endif
 
-    if (firstVertex) delete vertexInfo; // no vertex was created before the final return
     return generatorStatus;
 }
