@@ -127,6 +127,12 @@ if(NOT EDEPSIM_READONLY)
   add_subdirectory(src)
   add_subdirectory(app)
   add_subdirectory(validate)
+  # The thread-affine Geant4 tracking service layers on src/ (edepsim), so it
+  # must be added after it and before the tests that link it.
+  add_subdirectory(service)
+  if(BUILD_TESTING)
+    add_subdirectory(ctest)
+  endif()
 endif(NOT EDEPSIM_READONLY)
 
 # Install some extra files.  These are in subdirectories, but are not
