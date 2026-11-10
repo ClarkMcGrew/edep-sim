@@ -184,6 +184,34 @@ G4String EDepSim::RooTrackerKinematicsGenerator::GetInputName() {
     return G4String(fInput->GetName());
 }
 
+std::map<EDepSim::RooTrackerKinematicsGenerator::VertexKey, std::vector<int>> EDepSim::RooTrackerKinematicsGenerator::GroupParticlesByPosition() {
+    
+    constexpr double kPrecision = 1e-6;
+    // round the coordinates to a certain precision to avoid floating point issues
+    auto roundTo = [](double value){
+        return std::round(value / kPrecision) * kPrecision;
+    };
+
+    // create a container to group the particles in
+    std::map<VertexKey, std::vector<int>> positionToParticles;
+
+    // group the particles by their (t,x,y,z) position
+    for (int cnt = 0; cnt < fStdHepN; ++cnt)
+    {
+        // keep only the final state particles
+        if(fStdHepStatus[cnt] != 1)
+            continue;
+        // extract the coordinate array
+        const double* x4 = fStdHepX4[cnt];
+        // build the array as {t,x,y,z} so that the vertices are time-ordered
+        positionToParticles[{roundTo(x4[3]),
+                             roundTo(x4[0]),
+                             roundTo(x4[1]),
+                             roundTo(x4[2])}].push_back(cnt);
+    }
+    return positionToParticles;
+}
+
 EDepSim::VKinematicsGenerator::GeneratorStatus
 EDepSim::RooTrackerKinematicsGenerator::GeneratePrimaryVertex(
     G4Event* anEvent,
@@ -204,7 +232,7 @@ EDepSim::RooTrackerKinematicsGenerator::GeneratePrimaryVertex(
     int entry = fEntryVector.at(fNextEntry);
     // Get current entry to be used as new vertex - see comment below.
     fTree->GetEntry(entry);
-    // Store current entry in the pass-through obj. N.B. To avoid mismatch
+    // Store current entry in the pass-through obj. To avoid mismatch
     // and false results call EDepSim::KinemPassThrough::AddEntry(fTreePtr, X)
     // where X is same as X in most recent call to fTreePtr->GetEntry(X).
     EDepSim::KinemPassThrough::GetInstance()->AddEntry(fTree, entry);
@@ -232,22 +260,10 @@ EDepSim::RooTrackerKinematicsGenerator::GeneratePrimaryVertex(
         return kEndEvent;
     }
 
-    // Create a new vertex to add the new particles, and add the vertex to the
-    // event.
-    G4PrimaryVertex* theVertex
-        = new G4PrimaryVertex(G4ThreeVector(fEvtVtx[0]*m,
-                                            fEvtVtx[1]*m,
-                                            fEvtVtx[2]*m),
-                              fEvtVtx[3]*second);
-    anEvent->AddPrimaryVertex(theVertex);
-    EDepSimNamedInfo("rooTracker","Vertex @ "
-                     << G4BestUnit(theVertex->GetPosition(), "Length")
-                     << " Time: " << G4BestUnit(theVertex->GetT0(), "Time"));
-
-    // Add an information field to the vertex.
+    // VertexInfo holding the global interaction metadata and the informational
+    // vertices. It is attached to the first primary vertex; the other primary
+    // vertices get their own VertexInfo with a copy of the scalar fields only.
     EDepSim::VertexInfo *vertexInfo = new EDepSim::VertexInfo;
-    theVertex->SetUserInformation(vertexInfo);
-
     // Fill the information fields for this vertex.
     vertexInfo->SetReaction(eventCode);
 
@@ -265,6 +281,7 @@ EDepSim::RooTrackerKinematicsGenerator::GeneratePrimaryVertex(
 
     // Add an informational vertex for storing the incoming
     // neutrino particle and target nucleus.
+    // Fill the informational vertex outside the loop
     G4PrimaryVertex* theIncomingVertex
         = new G4PrimaryVertex(G4ThreeVector(fEvtVtx[0]*m,
                                             fEvtVtx[1]*m,
@@ -272,18 +289,17 @@ EDepSim::RooTrackerKinematicsGenerator::GeneratePrimaryVertex(
                               fEvtVtx[3]*second);
     vertexInfo->AddInformationalVertex(theIncomingVertex);
 
-    // Add an information field to the vertex.
     EDepSim::VertexInfo *incomingVertexInfo = new EDepSim::VertexInfo;
     incomingVertexInfo->SetName("initial-state");
     incomingVertexInfo->SetReaction(eventCode);
     theIncomingVertex->SetUserInformation(incomingVertexInfo);
 
-    // Fill the particles to be tracked (status ==1).  These particles are
-    // attached to the primary vertex.  Also save the incident neutrino
-    // particle and the incident target nucleus; these particles are attached
-    // to informational vertex.
     G4ParticleTable* particleTable = G4ParticleTable::GetParticleTable();
+
+    // save the incident neutrino and target (status==0 particles)
     for (int cnt = 0; cnt < fStdHepN; ++cnt) {
+        if(fStdHepStatus[cnt] != 0)
+            continue;
         G4ParticleDefinition* particleDef
             = particleTable->FindParticle(fStdHepPdg[cnt]);
         if (!particleDef) {
@@ -301,6 +317,12 @@ EDepSim::RooTrackerKinematicsGenerator::GeneratePrimaryVertex(
             }
         }
 
+        if (!particleDef) {
+            EDepSimSevere(" Particle code " << fStdHepPdg[cnt]
+                    << " not recognized (not tracking)");
+            continue;
+        }
+
         // Determine a name for the particle.
         std::string particleName =
             particleDef ? particleDef->GetParticleName(): "unknown";
@@ -310,28 +332,6 @@ EDepSim::RooTrackerKinematicsGenerator::GeneratePrimaryVertex(
                                  fStdHepP4[cnt][1]*GeV,
                                  fStdHepP4[cnt][2]*GeV,
                                  fStdHepP4[cnt][3]*GeV);
-
-        if (fStdHepStatus[cnt] != 1) {
-            EDepSimVerbose("Untracked particle: " << cnt
-                         << " " << particleName
-                           << " with " << momentum.e()/MeV
-                         << " MeV "
-                         << " w/ mothers " << fStdHepFm[cnt]
-                         << " to " << fStdHepLm[cnt]);
-        }
-
-        // We are only interested in particles to be tracked (status==1)
-        // or incident neutrino/target nucleus (status==0).
-        if( !(fStdHepStatus[cnt] == 0 || fStdHepStatus[cnt] == 1)) {
-            continue;
-        }
-
-        if (!particleDef) {
-            EDepSimSevere(" Particle code " << fStdHepPdg[cnt]
-                      << " not recognized (not tracking)");
-            continue;
-        }
-
         // create the particle.
         G4PrimaryParticle* theParticle
             = new G4PrimaryParticle(particleDef,
@@ -339,20 +339,126 @@ EDepSim::RooTrackerKinematicsGenerator::GeneratePrimaryVertex(
                                     momentum.py(),
                                     momentum.pz());
         theParticle->SetPolarization(fStdHepPolz[cnt][0],
-                                     fStdHepPolz[cnt][1],
-                                     fStdHepPolz[cnt][2]);
+                                    fStdHepPolz[cnt][1],
+                                    fStdHepPolz[cnt][2]);
+        EDepSimNamedInfo(
+            "rooTracker",
+            "Incoming "
+            << particleDef->GetParticleName()
+            << " " << theParticle->GetPDGcode()
+            << " " << momentum.e()/MeV << " MeV"
+            << " " << momentum.m()/MeV << " MeV/c^2");
+        // add the initial state particle to the informational vertex
+        theIncomingVertex->SetPrimary(theParticle);
+    }
 
-        if (fStdHepStatus[cnt] == 0) {
-            EDepSimNamedInfo(
-                "rooTracker",
-                "Incoming "
-                << particleDef->GetParticleName()
-                << " " << theParticle->GetPDGcode()
-                << " " << momentum.e()/MeV << " MeV"
-                << " " << momentum.m()/MeV << " MeV/c^2");
-            theIncomingVertex->SetPrimary(theParticle);
+    // Add multiple vertices by looping over the map
+    auto groupedPositions = EDepSim::RooTrackerKinematicsGenerator::GroupParticlesByPosition();
+    // flag for managing the assignment of vertexInfo
+    bool firstVertex = true;
+
+    // if no final state particles (fStdHepStatus==1) are found
+    // create an empty primary vertex at EvtVtx carrying the info
+    if (groupedPositions.empty()) {
+        G4PrimaryVertex* theVertex = new G4PrimaryVertex(
+            G4ThreeVector(fEvtVtx[0]*m, fEvtVtx[1]*m, fEvtVtx[2]*m),
+            fEvtVtx[3]*second);
+        anEvent->AddPrimaryVertex(theVertex);
+        theVertex->SetUserInformation(vertexInfo);
+        firstVertex = false;
+    }   
+
+    // loop over the final state particles in each vertex group
+    for (const auto& particleGroup : groupedPositions){
+        // get the vertex group indices
+        const auto &vtxIndices = particleGroup.second;
+        const int firstPartIdx = vtxIndices.front();
+
+        // first vertex adopts vertexInfo; the others get a copy of the scalar fields only
+        EDepSim::VertexInfo* thisVertexInfo = nullptr;
+        if (firstVertex) {
+            // adopt the original vertexInfo in the first G4PrimaryVertex
+            thisVertexInfo = vertexInfo;
+            firstVertex = false;
+        } else {
+            thisVertexInfo = new EDepSim::VertexInfo;
+            thisVertexInfo->SetReaction(vertexInfo->GetReaction());
+            thisVertexInfo->SetFilename(vertexInfo->GetFilename());
+            thisVertexInfo->SetInteractionNumber(vertexInfo->GetInteractionNumber());
+            thisVertexInfo->SetCrossSection(vertexInfo->GetCrossSection());
+            thisVertexInfo->SetDiffCrossSection(vertexInfo->GetDiffCrossSection());
+            thisVertexInfo->SetWeight(vertexInfo->GetWeight());
+            thisVertexInfo->SetProbability(vertexInfo->GetProbability());
         }
-        else if (fStdHepStatus[cnt] == 1){
+
+        // fill in the vtx. position from the first element in the group
+        // fStdHepX4 is assumed to be in [fermi, fermi, fermi, ys], so we convert
+        G4PrimaryVertex *theVertex = new G4PrimaryVertex(G4ThreeVector(fEvtVtx[0] * m + fStdHepX4[firstPartIdx][0] * fermi,
+                                                                       fEvtVtx[1] * m + fStdHepX4[firstPartIdx][1] * fermi,
+                                                                       fEvtVtx[2] * m + fStdHepX4[firstPartIdx][2] * fermi),
+                                                         fEvtVtx[3] * second + fStdHepX4[firstPartIdx][3] * (1e-24) * second);
+        // add the vertex to the event
+        anEvent->AddPrimaryVertex(theVertex);
+        EDepSimNamedInfo("rooTracker","Vertex @ "
+                        << G4BestUnit(theVertex->GetPosition(), "Length")
+                        << " Time: " << G4BestUnit(theVertex->GetT0(), "Time"));
+
+        // Add the information field to the vertex.
+        theVertex->SetUserInformation(thisVertexInfo);
+
+        // Fill the particles to be tracked (status ==1) in the vertex group.  
+        for (const auto& cnt : vtxIndices) {
+            G4ParticleDefinition* particleDef
+                = particleTable->FindParticle(fStdHepPdg[cnt]);
+            if (!particleDef) {
+                //maybe we have an ion; figure out if it makes any sense
+                int ionA = (fStdHepPdg[cnt]/10) % 1000;
+                int ionZ = (fStdHepPdg[cnt]/10000) % 1000;
+                int type = (fStdHepPdg[cnt]/100000000);
+                if (type == 10 && ionZ > 0 && ionA > ionZ) {
+                    G4IonTable* ionTable = particleTable->GetIonTable();
+                    particleDef = ionTable->GetIon(ionZ, ionA);
+                }
+                else if (type == 20) {
+                    // This is a pseudo-particle so skip it.
+                    continue;
+                }
+            }
+
+            // Determine a name for the particle.
+            std::string particleName =
+                particleDef ? particleDef->GetParticleName(): "unknown";
+
+            // Get the momentum.
+            G4LorentzVector momentum(fStdHepP4[cnt][0]*GeV,
+                                    fStdHepP4[cnt][1]*GeV,
+                                    fStdHepP4[cnt][2]*GeV,
+                                    fStdHepP4[cnt][3]*GeV);
+
+            if (fStdHepStatus[cnt] != 1) {
+                EDepSimVerbose("Untracked particle: " << cnt
+                            << " " << particleName
+                            << " with " << momentum.e()/MeV
+                            << " MeV "
+                            << " w/ mothers " << fStdHepFm[cnt]
+                            << " to " << fStdHepLm[cnt]);
+            }
+
+            if (!particleDef) {
+                EDepSimSevere(" Particle code " << fStdHepPdg[cnt]
+                        << " not recognized (not tracking)");
+                continue;
+            }
+
+            // create the particle.
+            G4PrimaryParticle* theParticle
+                = new G4PrimaryParticle(particleDef,
+                                        momentum.px(),
+                                        momentum.py(),
+                                        momentum.pz());
+            theParticle->SetPolarization(fStdHepPolz[cnt][0],
+                                        fStdHepPolz[cnt][1],
+                                        fStdHepPolz[cnt][2]);
             EDepSimNamedInfo(
                 "rooTracker",
                 "Tracking "
@@ -365,8 +471,7 @@ EDepSim::RooTrackerKinematicsGenerator::GeneratePrimaryVertex(
     }
 
 #ifdef PARENT_PARTICLE_PASS_THROUGH
-    // Fill the particles at the decay vertex.  These are the first info
-    // vertex.
+    // Fill the particles at the decay vertex.
     G4PrimaryVertex* theDecayVertex
         = new G4PrimaryVertex(G4ThreeVector(fNuParentDecX4[0]*m,
                                             fNuParentDecX4[1]*m,

@@ -37,8 +37,14 @@ public:
                                       const G4String& order,
                                       int firstEvent);
     virtual ~RooTrackerKinematicsGenerator();
+    
+    /// Get a map of the particle positions in the event. This is done to
+    /// allow multiple primary vertices within a single event for displaced particles.
+    /// Particles are grouped by a {t,x,y,z} VertexKey
+    using VertexKey = std::array<double, 4>; 
+    virtual std::map<VertexKey, std::vector<int>> GroupParticlesByPosition();
 
-    /// Add a primary vertex to the event.  
+    /// Add primary vertices to the event.  
     virtual GeneratorStatus GeneratePrimaryVertex(
         G4Event* evt, const G4LorentzVector& position);
 
